@@ -91,7 +91,7 @@ enum Clause: string
         return match ($this) {
             self::STARTS_WITH => "$value%",
             self::ENDS_WITH => "%$value",
-            self::SEARCH, self::LIKE => '%' . strtolower($value) . '%',
+            self::SEARCH, self::LIKE => '%'.strtolower($value).'%',
             default => $value,
         };
     }
