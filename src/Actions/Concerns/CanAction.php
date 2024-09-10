@@ -5,7 +5,7 @@ namespace Conquest\Table\Actions\Concerns;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 
-trait CanAction
+trait Actionable
 {
     protected ?Closure $action = null;
 
@@ -58,6 +58,7 @@ trait CanAction
             value: $this->getAction(),
             named: [
                 'record' => $record,
+                // Get the model name and inject record
             ],
             typed: [
                 Model::class => $record,

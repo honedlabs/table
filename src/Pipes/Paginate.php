@@ -14,28 +14,10 @@ class Paginate implements Paginates
 {
     public function handle(Table $table, Closure $next)
     {
-        $builder = $table->getResource();
-        /** @var array{records: \Illuminate\Support\Collection, meta: array} $data */
-        $data = match ($table->getPaginateType()) {
-            Paginator::Cursor => [
-                $data = $builder->cursorPaginate(
-                    perPage: $table->usePerPage(),
-                    cursorName: $table->getPageName(),
-                )->withQueryString(),
-                $this->getCursorMeta($data),
-            ],
-            Paginator::None => [
-                $data = $builder->get(),
-                $this->getCollectionMeta($data),
-            ],
-            default => [
-                $data = $builder->paginate(
-                    perPage: $this->usePerPage(),
-                    pageName: $this->getPageName(),
-                )->withQueryString(),
-                $this->getPaginateMeta($data),
-            ],
-        };
+        /** @var array{0: \Illuminate\Support\Collection, 1: array<string, array-key>} */
+        [$records, $meta] = $table->getPaginator()->paginate($table);
+        $table->setRecords($records);
+        $table->setMeta($meta);
 
         return $next($table);
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Conquest\Table\Actions\Concerns;
 
 use Closure;
+use Conquest\Table\Actions\Attributes\Confirm;
 use Conquest\Table\Actions\Confirm\Confirmable;
 use ReflectionClass;
 
@@ -71,11 +72,12 @@ trait CanBeConfirmable
      * Evaluate for a possible confirm attribute as a fallback.
      *
      * @internal
+     * @return void
      */
     protected function evaluateConfirmAttribute(): void
     {
         $reflection = new ReflectionClass($this);
-        $attributes = $reflection->getAttributes(Confirmable::class);
+        $attributes = $reflection->getAttributes(Confirm::class);
 
         if (! empty($attributes)) {
             $this->setConfirm($attributes[0]->newInstance());
@@ -86,6 +88,7 @@ trait CanBeConfirmable
      * Check if the action is confirmable.
      *
      * @internal
+     * @return bool
      */
     protected function isConfirmable(): bool
     {

@@ -5,6 +5,7 @@ namespace App\Table\Pipes;
 use Closure;
 use Conquest\Table\Pipes\Contracts\FormatsRecords;
 use Conquest\Table\Table;
+use Illuminate\Support\Collection;
 
 /**
  * @internal
@@ -23,5 +24,14 @@ class FormatRecords implements FormatsRecords
         }));
 
         return $next($table);
+    }
+
+    /**
+     * @param mixed $record
+     * @param Collection<BaseColumn> $columns
+     */
+    protected function formatRecord($record, Collection $columns)
+    {
+
     }
 }
