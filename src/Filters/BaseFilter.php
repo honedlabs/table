@@ -13,13 +13,13 @@ use Conquest\Core\Concerns\HasType;
 use Conquest\Core\Concerns\HasValue;
 use Conquest\Core\Concerns\IsActive;
 use Conquest\Core\Concerns\IsAuthorized;
+use Conquest\Core\Concerns\Transforms;
 use Conquest\Core\Primitive;
 use Conquest\Table\Contracts\Filters;
 use Illuminate\Support\Facades\Request;
 
 abstract class BaseFilter extends Primitive implements Filters
 {
-    use CanTransform;
     use HasLabel;
     use HasMeta;
     use HasName;
@@ -27,6 +27,7 @@ abstract class BaseFilter extends Primitive implements Filters
     use HasValue;
     use IsActive;
     use IsAuthorized;
+    use Transforms;
 
     public function __construct(string|Closure $name, string|Closure|null $label = null)
     {
@@ -35,11 +36,22 @@ abstract class BaseFilter extends Primitive implements Filters
         $this->setLabel($label ?? $this->toLabel($this->getName()));
     }
 
+    /**
+     * From the current request, get the value of the filter name
+     * 
+     * @return mixed
+     */
     public function getValueFromRequest(): mixed
     {
         return Request::input($this->getName(), null);
     }
 
+    /**
+     * Determine if the filter should be applied.
+     * 
+     * @param mixed $value
+     * @return bool
+     */
     public function filtering(mixed $value): bool
     {
         return ! is_null($value);

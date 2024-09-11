@@ -2,13 +2,19 @@
 
 namespace Conquest\Table\Concerns;
 
+use Conquest\Table\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 trait HasFilters
 {
+    /**
+     * @var array<int, BaseFilter>
+     */
     protected array $filters;
 
+    /**
+     * @param array<int, BaseFilter>|null $filters
+     */
     protected function setFilters(?array $filters): void
     {
         if (is_null($filters)) {
@@ -17,7 +23,12 @@ trait HasFilters
         $this->filters = $filters;
     }
 
-    public function getFilters()
+
+    /**
+     * @internal
+     * @return array<int, BaseFilter>
+     */
+    protected function definedFilters(): array
     {
         if (isset($this->filters)) {
             return $this->filters;
@@ -30,7 +41,22 @@ trait HasFilters
         return [];
     }
 
-    protected function filter(Builder|QueryBuilder $builder): void
+    /**
+     * Get the authorized filters.
+     * 
+     * @return array<int, BaseFilter>
+     */
+    public function getFilters(): array
+    {
+        return array_filter($this->definedFilters(), fn (BaseFilter $filter) => $filter->isAuthorized());
+    }
+
+    /**
+     * Apply the authorized filters to the builder.
+     * 
+     * @param Builder $builder
+     */
+    protected function filter(Builder $builder): void
     {
         foreach ($this->getFilters() as $filter) {
             $filter->apply($builder);

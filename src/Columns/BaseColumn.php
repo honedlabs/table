@@ -15,6 +15,7 @@ use Conquest\Core\Concerns\IsActive;
 use Conquest\Core\Concerns\IsAuthorized;
 use Conquest\Core\Concerns\IsHidden;
 use Conquest\Core\Concerns\IsKey;
+use Conquest\Core\Concerns\Transforms;
 use Conquest\Core\Primitive;
 use Conquest\Table\Columns\Concerns\HasBreakpoint;
 use Conquest\Table\Columns\Concerns\HasPrefix;
@@ -23,11 +24,11 @@ use Conquest\Table\Columns\Concerns\HasTooltip;
 use Conquest\Table\Columns\Concerns\IsSortable;
 use Conquest\Table\Columns\Concerns\IsSrOnly;
 use Conquest\Table\Columns\Concerns\IsToggleable;
+use Conquest\Table\Table;
 use InvalidArgumentException;
 
 abstract class BaseColumn extends Primitive
 {
-    use CanTransform;
     use HasBreakpoint;
     use HasLabel;
     use HasMeta;
@@ -44,18 +45,17 @@ abstract class BaseColumn extends Primitive
     use IsSortable;
     use IsSrOnly;
     use IsToggleable;
+    use Transforms;
 
     public function __construct(string|Closure $name, string|Closure|null $label = null)
     {
-        if ($name === 'actions') {
-            throw new InvalidArgumentException('Column name cannot be "actions"');
-        }
+        $this->checkIfReservedName($name);
         parent::__construct();
         $this->setName($name);
         $this->setLabel($label ?? $this->toLabel($this->getName()));
     }
 
-    public static function make(string|Closure $name, string|Closure|null $label = null): static
+    public static function make(string|Closure $name, string|Closure $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }
@@ -92,8 +92,24 @@ abstract class BaseColumn extends Primitive
         return $this->formatValue($value);
     }
 
+    /**
+     * Format the value to be displayed in the column.
+     * 
+     * @param mixed $value
+     * @return mixed
+     */
     public function formatValue(mixed $value): mixed
     {
         return $value;
+    }
+
+    /**
+     * @throws \InvalidArgumentException
+     */
+    public function checkIfReservedName(string|Closure $name): void
+    {
+        if (in_array($this->evaluate($name), Table::ReservedColumnNames)) {
+            throw new InvalidArgumentException(sprintf('Column name [%s] is reserved.', $name));
+        }
     }
 }
