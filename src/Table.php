@@ -42,7 +42,9 @@ class Table extends Primitive
     use IsAnonymous;
     use Paginates;
     use Remembers;
-    use RequiresKey;
+    use RequiresKey {
+        getKey as protected getInternalKey;
+    }
     use Searches;
     use Sorts;
 
@@ -81,10 +83,10 @@ class Table extends Primitive
      *
      * @throws MissingRequiredAttributeException
      */
-    public function getTableKey(): string
+    public function getKey(): string
     {
         try {
-            return $this->getKey();
+            return $this->getInternalKey();
         } catch (MissingRequiredAttributeException $e) {
             return $this->getKeyColumn()?->getName() ?? throw $e;
         }

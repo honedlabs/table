@@ -9,9 +9,10 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 
 trait HasResource
 {
-    // BaseContract
+    /**
+     * @var Builder|Model|null
+     */
     protected $resource = null;
-    // protected $modelClass = null;
 
     protected function setResource($resource): void
     {
