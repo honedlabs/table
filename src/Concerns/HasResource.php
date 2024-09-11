@@ -2,17 +2,20 @@
 
 namespace Conquest\Table\Concerns;
 
-use Illuminate\Contracts\Database\Query\Builder as BaseContract;
-use Illuminate\Database\Eloquent\Builder;
+use RuntimeException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 
 trait HasResource
 {
     /**
-     * @var Builder|Model|null
+     * @var Builder|Model|class-string
      */
-    protected $resource = null;
+    protected $resource;
+
+    /**
+     * @param Builder|Model|class-string|null $resource
+     */
 
     protected function setResource($resource): void
     {
@@ -20,37 +23,25 @@ trait HasResource
             return;
         }
 
-        if (is_string($resource)) {
-            if (class_exists($resource)) {
-                $this->resource = $resource;
-            } else {
-                throw new \InvalidArgumentException("Class {$resource} does not exist.");
-            }
-        } else {
-            $this->resource = $resource;
-        }
+        $this->resource = $resource;
     }
 
-    public function getResource()
+    /**
+     * @internal
+     * @throws \RuntimeException
+     * @return Builder|Model|class-string
+     */
+    protected function definedResource()
     {
         if (isset($this->resource)) {
-            if (is_string($this->resource)) {
-                // If it's a string (class name), create a query
-                return $this->resource::query();
-            }
-
-            // if ($this->resource instanceof \Illuminate\Database\Eloquent\Model) {
-            //     return $this->resource->newQuery();
-            // }
-            return $this->isBuilderInstance() ? $this->resource : $this->resource->query();
+            return $this->resource;
         }
 
-        // Check if the resource() function is defined
         if (method_exists($this, 'resource')) {
             return $this->resource();
         }
 
-        // Else, try to resolve a model from name
+        // Else, try to resolve a model from table name
         $modelClass = str(static::class)
             ->classBasename()
             ->beforeLast('Table')
@@ -59,37 +50,42 @@ trait HasResource
             ->toString();
 
         if (class_exists($modelClass)) {
-            return $modelClass::query();
+            return $modelClass;
         }
 
-        throw new \RuntimeException('Unable to resolve resource for '.static::class);
+        throw new RuntimeException(sprintf('Unable to resolve resource for [%s]', static::class));
     }
 
-    public function getModelClass(): string
+    /**
+     * @return Builder
+     */
+    public function getResource(): Builder
     {
-        $resource = $this->getResource();
-
-        if ($resource instanceof Builder) {
-            return get_class($resource->getModel());
+        if (!isset($this->resource)) {
+            $this->resource ??= $this->definedResource();
         }
 
-        if ($resource instanceof \Illuminate\Database\Eloquent\Model) {
-            return get_class($resource);
+        if ($this->resource instanceof Builder) {
+            return $this->resource;
         }
 
-        if ($resource instanceof QueryBuilder) {
-            return $resource->from;
+        if ($this->resource instanceof Model) {
+            return $this->resource->newQuery();
         }
-        throw new \RuntimeException('Unable to get base model for resource');
+
+        if (is_string($this->resource)) {
+            return $this->resource::query();
+        }
+
+        throw new RuntimeException('Invalid resource type');
     }
 
-    public function resolveModel(string $modelClass, string|int $key)
+    /**
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getResourceModel(): string
     {
-        return $modelClass::where($this->getTableKey(), $key)->first();
+        return class_basename($this->getResource()->getModel());
     }
 
-    public function isBuilderInstance()
-    {
-        return $this->resource instanceof Builder || $this->resource instanceof QueryBuilder;
-    }
 }

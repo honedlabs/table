@@ -15,7 +15,7 @@ class FormatRecords implements FormatsRecords
     public function handle(Table $table, Closure $next)
     {
         $columns = $table->getTableColumns();
-        
+
         $table->setRecords($table->getRecords()->map(function ($record) use ($table) {
             return $table->getTableColumns()->reduce(function ($filteredRecord, BaseColumn $column) use ($record) {
                 $columnName = $column->getName();
@@ -36,4 +36,14 @@ class FormatRecords implements FormatsRecords
     {
 
     }
+
+    // protected function setActions(Collection $actions, Collection $columns)
+    // {
+
+    // }
+
+    // protected function setSelect(Collection $select, Collection $columns)
+    // {
+
+    // }
 }

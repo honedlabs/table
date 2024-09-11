@@ -8,6 +8,17 @@ use Illuminate\Support\Collection;
 trait HasColumns
 {
     /**
+     * Prevent user-provided columns from conflicting with internal ones.
+     * 
+     * @var array<int, string>
+     */
+    const ReservedColumnNames = [
+        'key',
+        'actions',
+        'select',
+    ];
+
+    /**
      * @var Collection<BaseColumn>
      */
     protected Collection $cachedColumns;
@@ -70,12 +81,18 @@ trait HasColumns
         return $this->getColumns()->filter(fn (BaseColumn $column): bool => $column->isSearchable())->pluck('name');
     }
 
+    /**
+     * @return BaseColumn|null
+     */
     public function getKeyColumn(): ?BaseColumn
     {
         return $this->getColumns()->first(fn (BaseColumn $column): bool => $column->isKey());
     }
 
-    public function getHeadingColumns(): Collection
+    /**
+     * @return Collection<BaseColumn>
+     */
+    public function getToggledColumns(): Collection
     {
         return $this->getColumns()->filter(fn (BaseColumn $column): bool => $column->isActive())->values();
     }
