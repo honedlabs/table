@@ -11,12 +11,12 @@ use Conquest\Table\Sorts\BaseSort;
 trait HasSorts
 {
     /**
-     * @var array<int, BaseSort>
+     * @var array<int, \Conquest\Table\Sorts\BaseSort>
      */
     protected $sorts;
 
     /**
-     * @param array<int, Conquest\Table\Sorts\BaseSort>|null $sorts
+     * @param array<int, \Conquest\Table\Sorts\BaseSort>|null $sorts
      */
     protected function setSorts($sorts)
     {
@@ -26,10 +26,9 @@ trait HasSorts
         $this->sorts = $sorts;
     }
 
-
     /**
      * @internal
-     * @return array<int, Conquest\Table\Sorts\BaseSort>
+     * @return array<int, \Conquest\Table\Sorts\BaseSort>
      */
     protected function definedSorts()
     {
@@ -47,7 +46,7 @@ trait HasSorts
     /**
      * Get the authorized sorts.
      * 
-     * @return array<int, Conquest\Table\Sorts\BaseSort>
+     * @return array<int, \Conquest\Table\Sorts\BaseSort>
      */
     public function getSorts()
     {
@@ -57,12 +56,39 @@ trait HasSorts
     /**
      * Apply the authorized sorts to the builder.
      * 
-     * @param Illuminate\Database\Eloquent\Builder $builder
+     * @param \Illuminate\Database\Eloquent\Builder $builder
      */
     protected function sort($builder)
     {
-        foreach ($this->getSorts() as $sort) {
-            $sort->apply($builder);
+        if ($this->sorting()) {
+            foreach ($this->getSorts() as $sort) {
+                $sort->apply($builder, $this->getSort(), $this->getOrder());
+                if ($sort->isActive()) {
+                    break;
+                }
+            }
+        } else {
+            $this->getDefaultSort()?->handle($builder);
         }
+    }
+
+    /**
+     * Check if the request has a sort parameter.
+     * 
+     * @return bool
+     */
+    public function sorting()
+    {
+        return ! is_null($this->getSort());
+    }
+
+    /**
+     * Get the default sort to apply if no sort is provided.
+     * 
+     * @return \Conquest\Table\Sorts\BaseSort|null
+     */
+    public function getDefaultSort()
+    {
+        return collect($this->getSorts())->first(fn ($sort) => $sort->isDefault());
     }
 }

@@ -12,9 +12,10 @@ use App\Table\Pipes\ApplySearch;
 use App\Table\Pipes\ApplyFilters;
 use Illuminate\Pipeline\Pipeline;
 use App\Table\Pipes\FormatRecords;
-use Conquest\Table\Concerns\Sorts;
 use Conquest\Table\Concerns\HasMeta;
-use Conquest\Table\Pipes\SetActions;
+use Conquest\Table\Concerns\HasSort;
+use Conquest\Table\Concerns\HasOrder;
+use Conquest\Table\Concerns\HasSorts;
 use Conquest\Table\Concerns\EncodesId;
 use Conquest\Table\Pipes\ApplyToggles;
 use Conquest\Core\Concerns\IsAnonymous;
@@ -28,9 +29,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Conquest\Table\Concerns\Search\Searches;
 use Conquest\Table\Concerns\Remember\Remembers;
 use Conquest\Table\Pagination\Concerns\Paginates;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Conquest\Core\Exceptions\MissingRequiredAttributeException;
 
+/**
+ * 
+ */
 class Table extends Primitive
 {
     use EncodesId;
@@ -47,7 +50,9 @@ class Table extends Primitive
         getKey as protected getInternalKey;
     }
     use Searches;
-    use Sorts;
+    use HasSorts;
+    use HasOrder;
+    use HasSort;
 
     /**
      * Check if the table is built in-line.
@@ -56,7 +61,12 @@ class Table extends Primitive
      */
     protected $anonymous = Table::class;
 
-    public function __construct(array $assignments = [])
+    /**
+     * Build the table with the given assignments.
+     * 
+     * @param array<string, mixed> $assignments
+     */
+    public function __construct($assignments = [])
     {
         $this->setAssignments($assignments);
     }
@@ -71,6 +81,7 @@ class Table extends Primitive
      * @param array<string, BaseSort> $sorts
      * @param string|null $search
      * @param array|int|null $pagination
+     * @return static
      */
     public static function make($resource = null,
         $columns = null,
@@ -79,7 +90,7 @@ class Table extends Primitive
         $sorts = null,
         $search = null,
         $pagination = null,
-    ): static {
+    ) {
         return resolve(static::class, compact(
             'resource',
             'columns',
@@ -97,7 +108,7 @@ class Table extends Primitive
      * @throws MissingRequiredAttributeException
      * @return string
      */
-    public function getKey(): string
+    public function getKey()
     {
         try {
             return $this->getInternalKey();
@@ -109,7 +120,7 @@ class Table extends Primitive
     /**
      * Retrieve the table as an array
      */
-    public function toArray(): array
+    public function toArray()
     {
         $this->pipeline();
 
@@ -145,7 +156,7 @@ class Table extends Primitive
      *
      * @internal
      */
-    protected function pipeline(): void
+    protected function pipeline()
     {
         if ($this->hasRecords()) {
             return;

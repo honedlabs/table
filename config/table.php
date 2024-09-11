@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'action_route' => '/actions',
+    'endpoint' => '/actions',
     /*
     |--------------------------------------------------------------------------
     | Search configuration
@@ -40,7 +40,7 @@ return [
     'sorting' => [
         'sort' => 'sort',
         'order' => 'order',
-        'by_default' => 'asc', // 'asc' or 'desc'
+        'direction' => 'asc', // 'asc' or 'desc'
         // 'signed' => false,
     ],
 
@@ -53,6 +53,7 @@ return [
         'key' => 'show',
         'name' => 'page',
         'count' => 10,
+        'type' => 'simple', // 'simple' or 'full'
     ],
 
     /*
@@ -81,7 +82,6 @@ return [
     |--------------------------------------------------------------------------
     | Fallbacks
     |--------------------------------------------------------------------------
-    |
     | Control the fallback values for columns when the value is null.
     |
     */
