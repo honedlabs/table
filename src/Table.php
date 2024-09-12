@@ -57,7 +57,7 @@ class Table extends Primitive
     /**
      * Check if the table is built in-line.
      * 
-     * @var class-string<Table>
+     * @var class-string<\Conquest\Table\Table>
      */
     protected $anonymous = Table::class;
 

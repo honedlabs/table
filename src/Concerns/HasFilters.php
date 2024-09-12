@@ -56,7 +56,7 @@ trait HasFilters
      * 
      * @param Builder $builder
      */
-    protected function filter(Builder $builder): void
+    protected function applyFilters(Builder $builder): void
     {
         foreach ($this->getFilters() as $filter) {
             $filter->apply($builder);

@@ -58,7 +58,7 @@ trait HasSorts
      * 
      * @param \Illuminate\Database\Eloquent\Builder $builder
      */
-    protected function sort($builder)
+    protected function applySorts($builder)
     {
         if ($this->sorting()) {
             foreach ($this->getSorts() as $sort) {
