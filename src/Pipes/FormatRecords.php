@@ -3,11 +3,11 @@
 namespace App\Table\Pipes;
 
 use Closure;
-use Conquest\Table\Table;
-use Illuminate\Support\Collection;
 use Conquest\Table\Columns\BaseColumn;
-use Illuminate\Database\Eloquent\Model;
 use Conquest\Table\Pipes\Contracts\FormatsRecords;
+use Conquest\Table\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * @internal
@@ -26,29 +26,19 @@ class FormatRecords implements FormatsRecords
         }));
 
         // $table->setRecords($table->getRecords()->map(function (Model $record) use ($table) {
-            
+
         // }));
 
         return $next($table);
     }
 
     /**
-     * @param mixed $record
-     * @param Collection<int, \Conquest\Table\Columns\BaseColumn> $columns
+     * @param  mixed  $record
+     * @param  Collection<int, \Conquest\Table\Columns\BaseColumn>  $columns
      */
-    protected function formatRecord($record, Collection $columns)
-    {
+    protected function formatRecord($record, Collection $columns) {}
 
-    }
+    protected function setActions($record, $actions) {}
 
-    protected function setActions($record, $actions)
-    {
-
-    }
-
-    protected function setSelectable($record, bool|Closure $selectable)
-    {
-
-
-    }
+    protected function setSelectable($record, bool|Closure $selectable) {}
 }

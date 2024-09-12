@@ -2,7 +2,6 @@
 
 namespace Conquest\Table\Actions\Concerns;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 
 trait Actionable
@@ -14,8 +13,8 @@ trait Actionable
 
     /**
      * Set the action to apply.
-     * 
-     * @param \Closure|string $action
+     *
+     * @param  \Closure|string  $action
      * @return $this
      */
     public function action($action)
@@ -27,8 +26,8 @@ trait Actionable
 
     /**
      * Alias for action
-     * 
-     * @param \Closure|string $action
+     *
+     * @param  \Closure|string  $action
      * @return $this
      */
     public function each($action): static
@@ -38,7 +37,7 @@ trait Actionable
 
     /**
      * Check whether an action has been set.
-     * 
+     *
      * @return bool
      */
     public function hasAction()
@@ -48,9 +47,8 @@ trait Actionable
 
     /**
      * Set the action to apply.
-     * 
-     * @param \Closure|string|null $action
-     * @return void
+     *
+     * @param  \Closure|string|null  $action
      */
     public function setAction($action): void
     {
@@ -67,7 +65,7 @@ trait Actionable
 
     /**
      * Get the action to apply.
-     * 
+     *
      * @return \Closure|null
      */
     public function getAction()
@@ -77,9 +75,8 @@ trait Actionable
 
     /**
      * Apply the action to the record.
-     * 
-     * @param \Illuminate\Database\Eloquent\Model $record
-     * @return void
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      */
     public function applyAction($record, $modelClass): void
     {

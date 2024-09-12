@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Conquest\Table\Filters;
 
 use Closure;
-use Conquest\Core\Concerns\CanTransform;
 use Conquest\Core\Concerns\HasLabel;
 use Conquest\Core\Concerns\HasMeta;
 use Conquest\Core\Concerns\HasName;
@@ -38,8 +37,6 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * From the current request, get the value of the filter name
-     * 
-     * @return mixed
      */
     public function getValueFromRequest(): mixed
     {
@@ -48,9 +45,6 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Determine if the filter should be applied.
-     * 
-     * @param mixed $value
-     * @return bool
      */
     public function filtering(mixed $value): bool
     {

@@ -9,7 +9,7 @@ trait HasColumns
 {
     /**
      * Prevent user-provided columns from conflicting with internal ones.
-     * 
+     *
      * @var array<int, string>
      */
     const ReservedColumnNames = [
@@ -41,6 +41,7 @@ trait HasColumns
 
     /**
      * @internal
+     *
      * @return array<int, BaseColumn>
      */
     protected function definedColumns(): array
@@ -81,9 +82,6 @@ trait HasColumns
         return $this->getColumns()->filter(fn (BaseColumn $column): bool => $column->isSearchable())->pluck('name');
     }
 
-    /**
-     * @return BaseColumn|null
-     */
     public function getKeyColumn(): ?BaseColumn
     {
         return $this->getColumns()->first(fn (BaseColumn $column): bool => $column->isKey());

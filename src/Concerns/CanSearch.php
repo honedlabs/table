@@ -15,9 +15,8 @@ trait CanSearch
 
     /**
      * Set whether to use Laravel Scout for searching.
-     * 
-     * @param bool|null $searchAs
-     * @return void
+     *
+     * @param  bool|null  $searchAs
      */
     protected function setScout($scout): void
     {
@@ -29,7 +28,7 @@ trait CanSearch
 
     /**
      * Get whether to use Laravel Scout for searching.
-     * 
+     *
      * @return bool
      */
     protected function getScout()
@@ -47,8 +46,6 @@ trait CanSearch
 
     /**
      * Determine whether to apply searching.
-     * 
-     * @return bool
      */
     public function searching(): bool
     {
@@ -57,8 +54,8 @@ trait CanSearch
 
     /**
      * Apply the search to the builder.
-     * 
-     * @param \Illuminate\Database\Query\Builder $builder
+     *
+     * @param  \Illuminate\Database\Query\Builder  $builder
      */
     protected function applySearch($builder)
     {

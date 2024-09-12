@@ -16,7 +16,7 @@ trait HasSorts
     protected $sorts;
 
     /**
-     * @param array<int, \Conquest\Table\Sorts\BaseSort>|null $sorts
+     * @param  array<int, \Conquest\Table\Sorts\BaseSort>|null  $sorts
      */
     protected function setSorts($sorts)
     {
@@ -28,6 +28,7 @@ trait HasSorts
 
     /**
      * @internal
+     *
      * @return array<int, \Conquest\Table\Sorts\BaseSort>
      */
     protected function definedSorts()
@@ -45,7 +46,7 @@ trait HasSorts
 
     /**
      * Get the authorized sorts.
-     * 
+     *
      * @return array<int, \Conquest\Table\Sorts\BaseSort>
      */
     public function getSorts()
@@ -55,8 +56,8 @@ trait HasSorts
 
     /**
      * Apply the authorized sorts to the builder.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder $builder
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $builder
      */
     protected function applySorts($builder)
     {
@@ -74,7 +75,7 @@ trait HasSorts
 
     /**
      * Check if the request has a sort parameter.
-     * 
+     *
      * @return bool
      */
     public function sorting()
@@ -84,7 +85,7 @@ trait HasSorts
 
     /**
      * Get the default sort to apply if no sort is provided.
-     * 
+     *
      * @return \Conquest\Table\Sorts\BaseSort|null
      */
     public function getDefaultSort()

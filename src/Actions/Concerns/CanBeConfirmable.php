@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Conquest\Table\Actions\Concerns;
 
-use Closure;
 use Conquest\Table\Actions\Attributes\Confirm;
 use Conquest\Table\Actions\Confirm\Confirmable;
 use ReflectionClass;
@@ -18,8 +17,8 @@ trait CanBeConfirmable
 
     /**
      * Set the properties of the confirm
-     * 
-     * @param \Conquest\Table\Actions\Confirm\Confirm|bool|null $confirm
+     *
+     * @param  \Conquest\Table\Actions\Confirm\Confirm|bool|null  $confirm
      * @return $this
      */
     public function confirm($confirm)
@@ -90,6 +89,7 @@ trait CanBeConfirmable
      * Check if the action is confirmable.
      *
      * @internal
+     *
      * @return bool
      */
     protected function isConfirmable()

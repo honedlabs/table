@@ -11,9 +11,8 @@ trait HasSearch
 
     /**
      * Set the key to use as query parameter for searching.
-     * 
-     * @param string|array<int, string>|null $search
-     * @return void
+     *
+     * @param  string|array<int, string>|null  $search
      */
     protected function setSearch($search): void
     {
@@ -26,8 +25,9 @@ trait HasSearch
 
     /**
      * Get the columns to search for.
-     * 
+     *
      * @internal
+     *
      * @return string|array<int, string>
      */
     protected function definedSearch()
@@ -45,7 +45,7 @@ trait HasSearch
 
     /**
      * Get the columns to search for.
-     * 
+     *
      * @return array<int, string>
      */
     public function getSearch()

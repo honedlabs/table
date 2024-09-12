@@ -3,9 +3,7 @@
 namespace Conquest\Table\Concerns;
 
 use Closure;
-use Conquest\Table\Columns\BaseColumn;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 trait HasSelectability
 {
@@ -27,6 +25,7 @@ trait HasSelectability
 
     /**
      * @internal
+     *
      * @return bool|Closure<bool>
      */
     protected function definedSelectable(): bool|Closure
@@ -42,10 +41,6 @@ trait HasSelectability
         return true;
     }
 
-    /**
-     * @param Model $model
-     * @return bool
-     */
     public function isSelectable(Model $model): bool
     {
         $rule = $this->definedSelectable();

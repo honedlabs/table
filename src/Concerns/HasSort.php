@@ -11,9 +11,8 @@ trait HasSort
 
     /**
      * Set the key to use as query parameter for sorting.
-     * 
-     * @param string|null $sort
-     * @return void
+     *
+     * @param  string|null  $sort
      */
     protected function setSort($sort): void
     {
@@ -25,8 +24,9 @@ trait HasSort
 
     /**
      * Get the sort key to use.
-     * 
+     *
      * @internal
+     *
      * @return string
      */
     protected function definedSort()
@@ -44,8 +44,8 @@ trait HasSort
 
     /**
      * Get the active sort name.
-     * 
-     * @return string|null 
+     *
+     * @return string|null
      */
     public function getSort()
     {

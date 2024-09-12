@@ -2,9 +2,9 @@
 
 namespace Conquest\Table\Concerns;
 
-use RuntimeException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use RuntimeException;
 
 trait HasResource
 {
@@ -15,8 +15,8 @@ trait HasResource
 
     /**
      * Set the resource to use for the table.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|null $resource
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|null  $resource
      */
     public function setResource($resource)
     {
@@ -29,9 +29,12 @@ trait HasResource
 
     /**
      * Get the resource to use for the table.
+     *
      * @internal
-     * @throws \RuntimeException
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string
+     *
+     * @throws \RuntimeException
      */
     protected function definedResource()
     {
@@ -60,13 +63,14 @@ trait HasResource
 
     /**
      * Get the resource to use for the table as an Eloquent query builder.
-     * 
-     * @throws \RuntimeException
+     *
      * @return \Illuminate\Database\Eloquent\Builder
+     *
+     * @throws \RuntimeException
      */
     public function getResource()
     {
-        if (!isset($this->resource)) {
+        if (! isset($this->resource)) {
             $this->resource ??= $this->definedResource();
         }
 
@@ -87,7 +91,7 @@ trait HasResource
 
     /**
      * Get the fully qualified path of the resource.
-     * 
+     *
      * @return class-string<\Illuminate\Database\Eloquent\Model>
      */
     public function getResourceModel()
@@ -97,7 +101,7 @@ trait HasResource
 
     /**
      * Get the base class name of the resource.
-     * 
+     *
      * @return string
      */
     public function getResourceName()

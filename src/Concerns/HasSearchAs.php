@@ -11,9 +11,8 @@ trait HasSearchAs
 
     /**
      * Set the key to use as query parameter for searching.
-     * 
-     * @param string|null $searchAs
-     * @return void
+     *
+     * @param  string|null  $searchAs
      */
     protected function setSearchAs($searchAs): void
     {
@@ -26,8 +25,9 @@ trait HasSearchAs
 
     /**
      * Get the searchAs key to use.
-     * 
+     *
      * @internal
+     *
      * @return string
      */
     protected function getSearchAs()
@@ -45,8 +45,9 @@ trait HasSearchAs
 
     /**
      * Get the searchAs direction from the request query parameters.
-     * 
+     *
      * @internal
+     *
      * @return string|null
      */
     protected function getSearchFromRequest()

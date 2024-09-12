@@ -10,13 +10,13 @@ trait HasOrder
     protected $order;
 
     const Ascending = 'asc';
+
     const Descending = 'desc';
 
     /**
      * Set the key to use as query parameter for ordering.
-     * 
-     * @param string|null $order
-     * @return void
+     *
+     * @param  string|null  $order
      */
     protected function setOrder($order): void
     {
@@ -29,8 +29,9 @@ trait HasOrder
 
     /**
      * Get the order key to use.
-     * 
+     *
      * @internal
+     *
      * @return string
      */
     protected function definedOrder()
@@ -48,7 +49,7 @@ trait HasOrder
 
     /**
      * Get the order direction to use.
-     * 
+     *
      * @return string|null
      */
     public function getOrder(): string
@@ -58,8 +59,9 @@ trait HasOrder
 
     /**
      * Get the order direction from the request query parameters.
-     * 
+     *
      * @internal
+     *
      * @return string|null
      */
     protected function getOrderFromRequest()
@@ -69,8 +71,8 @@ trait HasOrder
 
     /**
      * Restrict potential directions to be asc or desc.
-     * 
-     * @param string|null $value
+     *
+     * @param  string|null  $value
      * @return string
      */
     public function sanitiseOrder($value)
@@ -79,7 +81,7 @@ trait HasOrder
             $value,
             [self::Ascending, self::Descending],
             true
-        ) ? $value : 
+        ) ? $value :
             config('table.sorting.default_order', self::Ascending);
     }
 }

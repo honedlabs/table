@@ -9,7 +9,7 @@ trait HasMeta
     /**
      * Set the meta data for the table.
      *
-     * @param array<string, mixed>|null $meta
+     * @param  array<string, mixed>|null  $meta
      */
     public function setMeta($meta)
     {

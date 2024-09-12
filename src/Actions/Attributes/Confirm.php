@@ -3,7 +3,6 @@
 namespace Conquest\Table\Actions\Attributes;
 
 use Attribute;
-use Closure;
 use Conquest\Table\Actions\Confirm\Confirmable;
 
 #[Attribute(Attribute::TARGET_CLASS)]
@@ -16,12 +15,12 @@ class Confirm
 
     /**
      * Create a new confirmable instance.
-     * 
-     * @param string|\Closure $title
-     * @param string|\Closure $description
-     * @param string|\Conquest\Table\Actions\Confirm\Enums\Intent|\Closure $intent
-     * @param string|\Closure $cancel
-     * @param string|\Closure $submit
+     *
+     * @param  string|\Closure  $title
+     * @param  string|\Closure  $description
+     * @param  string|\Conquest\Table\Actions\Confirm\Enums\Intent|\Closure  $intent
+     * @param  string|\Closure  $cancel
+     * @param  string|\Closure  $submit
      */
     public function __construct($title = null, $description = null, $intent = null, $cancel = null, $submit = null)
     {
@@ -36,7 +35,7 @@ class Confirm
 
     /**
      * Get the confirm instance.
-     * 
+     *
      * @return \Conquest\Table\Actions\Confirm\Confirmable
      */
     public function getConfirm()

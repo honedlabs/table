@@ -3,7 +3,6 @@
 namespace App\Table\Pipes;
 
 use Closure;
-use Conquest\Table\Pagination\Enums\Paginator;
 use Conquest\Table\Pipes\Contracts\Paginates;
 use Conquest\Table\Table;
 

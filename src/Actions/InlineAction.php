@@ -6,7 +6,6 @@ namespace Conquest\Table\Actions;
 
 use Conquest\Core\Concerns\IsDefault;
 use Conquest\Core\Concerns\Routable;
-use Conquest\Core\Contracts\HigherOrder;
 use Conquest\Core\Contracts\ProxiesHigherOrder;
 use Conquest\Table\Actions\Concerns\Actionable;
 use Conquest\Table\Actions\Concerns\CanBeConfirmable;
@@ -45,9 +44,9 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
 
     /**
      * Dynamically access the confirm property.
-     * 
-     * @param string $property
+     *
      * @return \Conquest\Core\Contracts\HigherOrder
+     *
      * @throws \Exception
      */
     public function __get(string $property)

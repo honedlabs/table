@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Conquest\Table\Columns;
 
 use Closure;
-use Conquest\Core\Concerns\CanTransform;
 use Conquest\Core\Concerns\HasLabel;
 use Conquest\Core\Concerns\HasMeta;
 use Conquest\Core\Concerns\HasName;
@@ -55,7 +54,7 @@ abstract class BaseColumn extends Primitive
         $this->setLabel($label ?? $this->toLabel($this->getName()));
     }
 
-    public static function make(string|Closure $name, string|Closure $label = null): static
+    public static function make(string|Closure $name, string|Closure|null $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }
@@ -94,9 +93,6 @@ abstract class BaseColumn extends Primitive
 
     /**
      * Format the value to be displayed in the column.
-     * 
-     * @param mixed $value
-     * @return mixed
      */
     public function formatValue(mixed $value): mixed
     {

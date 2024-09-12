@@ -20,8 +20,8 @@ trait IsSearchable
 
     /**
      * Set the searchable property.
-     * 
-     * @param string|\Closure $property
+     *
+     * @param  string|\Closure  $property
      * @return $this
      */
     public function searchable($property = null)
@@ -34,8 +34,8 @@ trait IsSearchable
 
     /**
      * Set the searchable property quietly.
-     * 
-     * @param bool|\Closure|null $searchable
+     *
+     * @param  bool|\Closure|null  $searchable
      * @return void
      */
     public function setSearchable($searchable)
@@ -48,8 +48,8 @@ trait IsSearchable
 
     /**
      * Set the search property quietly.
-     * 
-     * @param string|\Closure|null $property
+     *
+     * @param  string|\Closure|null  $property
      * @return void
      */
     public function setSearchProperty($property)
@@ -62,7 +62,7 @@ trait IsSearchable
 
     /**
      * Determine if the column is searchable.
-     * 
+     *
      * @return bool
      */
     public function isSearchable()
@@ -72,7 +72,7 @@ trait IsSearchable
 
     /**
      * Determine if the column is not searchable.
-     * 
+     *
      * @return bool
      */
     public function isNotSearchable()
@@ -82,7 +82,7 @@ trait IsSearchable
 
     /**
      * Get the search property.
-     * 
+     *
      * @return string|\Closure|null
      */
     public function getSearchProperty()
@@ -92,7 +92,7 @@ trait IsSearchable
 
     /**
      * Determine if the column lacks a search property.
-     * 
+     *
      * @return bool
      */
     public function lacksSearchProperty()
@@ -102,7 +102,7 @@ trait IsSearchable
 
     /**
      * Determine if the column has a search property.
-     * 
+     *
      * @return bool
      */
     public function hasSearchProperty()

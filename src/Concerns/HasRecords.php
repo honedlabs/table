@@ -13,14 +13,14 @@ trait HasRecords
 
     /**
      * Set the records for the table.
-     * 
-     * @param \Illuminate\Support\Collection<array-key, array<array-key, mixed>> $records
+     *
+     * @param  \Illuminate\Support\Collection<array-key, array<array-key, mixed>>  $records
      */
     public function setRecords($records): void
     {
         $this->records = $records;
     }
-    
+
     public function getRecords(): ?Collection
     {
         if (! $this->hasRecords()) {

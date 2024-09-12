@@ -38,6 +38,7 @@ trait HasActions
      * Get the actions for the table.
      *
      * @internal
+     *
      * @return array<int, Conquest\Table\Actions\BaseAction>
      */
     public function definedActions(): array
