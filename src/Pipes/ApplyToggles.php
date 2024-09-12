@@ -39,7 +39,7 @@ class ApplyToggles implements Toggles
     //         return;
     //     }
 
-    //     foreach ($this->getTableColumns() as $column) {
+    //     foreach ($this->getColumns() as $column) {
     //         if (in_array($column->getName(), $cols)) $column->active(true);
     //         else $column->active(false);
     //     }

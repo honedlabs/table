@@ -6,13 +6,21 @@ use Illuminate\Support\Collection;
 
 trait HasRecords
 {
+    /**
+     * @var \Illuminate\Support\Collection<array-key, array<array-key, mixed>>|null
+     */
     protected ?Collection $records = null;
 
-    protected function setRecords(Collection $records): void
+    /**
+     * Set the records for the table.
+     * 
+     * @param \Illuminate\Support\Collection<array-key, array<array-key, mixed>> $records
+     */
+    public function setRecords($records): void
     {
         $this->records = $records;
     }
-
+    
     public function getRecords(): ?Collection
     {
         if (! $this->hasRecords()) {

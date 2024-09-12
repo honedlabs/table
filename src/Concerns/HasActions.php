@@ -21,26 +21,6 @@ trait HasActions
     protected $actions;
 
     /**
-     * Get the actions for the table.
-     *
-     * @internal
-     *
-     * @return array<int, Conquest\Table\Actions\BaseAction>
-     */
-    public function getActions(): array
-    {
-        if (isset($this->actions)) {
-            return $this->actions;
-        }
-
-        if (method_exists($this, 'actions')) {
-            return $this->actions();
-        }
-
-        return [];
-    }
-
-    /**
      * Set the actions for the table.
      *
      * @param  array<int, Conquest\Table\Actions\BaseAction>  $actions
@@ -55,13 +35,32 @@ trait HasActions
     }
 
     /**
+     * Get the actions for the table.
+     *
+     * @internal
+     * @return array<int, Conquest\Table\Actions\BaseAction>
+     */
+    public function definedActions(): array
+    {
+        if (isset($this->actions)) {
+            return $this->actions;
+        }
+
+        if (method_exists($this, 'actions')) {
+            return $this->actions();
+        }
+
+        return [];
+    }
+
+    /**
      * Get all available actions.
      *
      * @return Collection<int, Conquest\Table\Actions\BaseAction>
      */
-    public function getTableActions(): Collection
+    public function getActions(): Collection
     {
-        return $this->cachedActions ??= collect($this->getActions())
+        return $this->cachedActions ??= collect($this->definedActions())
             ->filter(static fn (BaseAction $action): bool => $action->isAuthorized());
     }
 
@@ -72,7 +71,7 @@ trait HasActions
      */
     public function getInlineActions(): Collection
     {
-        return $this->getTableActions()
+        return $this->getActions()
             ->filter(static fn (BaseAction $action): bool => $action instanceof InlineAction);
     }
 
@@ -83,7 +82,7 @@ trait HasActions
      */
     public function getBulkActions(): Collection
     {
-        return $this->getTableActions()
+        return $this->getActions()
             ->filter(static fn (BaseAction $action): bool => $action instanceof BulkAction);
     }
 
@@ -94,7 +93,7 @@ trait HasActions
      */
     public function getPageActions(): Collection
     {
-        return $this->getTableActions()
+        return $this->getActions()
             ->filter(static fn (BaseAction $action): bool => $action instanceof PageAction);
     }
 

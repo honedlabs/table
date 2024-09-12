@@ -58,11 +58,10 @@ trait HasSelectability
             $rule,
             [
                 'model' => $model,
-                'modelName' => $model,
+                str($model)->afterLast('\\')->camel()->value() => $model,
                 'record' => $model,
             ],
             [
-                class_basename($model) => $model,
                 Model::class => $model,
             ]
         );

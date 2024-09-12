@@ -14,7 +14,10 @@ class Paginate implements Paginates
 {
     public function handle(Table $table, Closure $next)
     {
-        /** @var array{0: \Illuminate\Support\Collection, 1: array<string, array-key>} */
+        /**
+         * @var \Illuminate\Support\Collection<array-key, array<array-key, mixed>> $records
+         * @var array<string, array<array-key, mixed>> $meta
+         */
         [$records, $meta] = $table->getPaginator()->paginate($table);
         $table->setRecords($records);
         $table->setMeta($meta);

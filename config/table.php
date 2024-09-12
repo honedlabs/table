@@ -13,7 +13,7 @@ return [
     | searching for every table, this assumes you have Scout configured.
     */
     'search' => [
-        'key' => 'q',
+        'search' => 'q',
         'scout' => false,
         'columns' => [
             // 'name',

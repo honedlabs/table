@@ -26,17 +26,24 @@ use Conquest\Table\Concerns\HasFilters;
 use Conquest\Table\Concerns\HasRecords;
 use Conquest\Table\Concerns\HasResource;
 use Illuminate\Database\Eloquent\Builder;
-use Conquest\Table\Concerns\Search\Searches;
 use Conquest\Table\Concerns\Remember\Remembers;
 use Conquest\Table\Pagination\Concerns\Paginates;
 use Conquest\Core\Exceptions\MissingRequiredAttributeException;
+use Conquest\Table\Concerns\CanSearch;
+use Conquest\Table\Concerns\HasSearchAs;
+use Conquest\Table\Concerns\Search\HasSearch;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * 
  */
 class Table extends Primitive
 {
+    /** Infrastructure traits */
     use EncodesId;
+    use RequiresKey {
+        getKey as protected getInternalKey;
+    }
     use HasActions;
     use HasColumns;
     use HasFilters;
@@ -45,14 +52,16 @@ class Table extends Primitive
     use HasResource;
     use IsAnonymous;
     use Paginates;
+    /** Toggle traits */
     use Remembers;
-    use RequiresKey {
-        getKey as protected getInternalKey;
-    }
-    use Searches;
+    /** Sort traits */
     use HasSorts;
     use HasOrder;
     use HasSort;
+    /** Search traits */
+    use HasSearch;
+    use HasSearchAs;
+    use CanSearch;
 
     /**
      * Check if the table is built in-line.
@@ -74,11 +83,11 @@ class Table extends Primitive
     /**
      * Create a new table instance.
      * 
-     * @param Builder|Model|class-string $resource
-     * @param array<string, BaseColumn> $columns
-     * @param array<string, BaseAction> $actions
-     * @param array<string, BaseFilter> $filters
-     * @param array<string, BaseSort> $sorts
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string $resource
+     * @param array<string, \Conquest\Table\Columns\BaseColumn> $columns
+     * @param array<string, \Conquest\Table\Actions\BaseAction> $actions
+     * @param array<string, \Conquest\Table\Filters\BaseFilter> $filters
+     * @param array<string, \Conquest\Table\Sorts\BaseSort> $sorts
      * @param string|null $search
      * @param array|int|null $pagination
      * @return static
@@ -113,7 +122,7 @@ class Table extends Primitive
         try {
             return $this->getInternalKey();
         } catch (MissingRequiredAttributeException $e) {
-            return $this->getKeyColumn()?->getName() ?: $this->getResourceModel()->getKeyName();
+            return $this->getKeyColumn()?->getName() ?? throw $e;
         }
     }
 
@@ -127,11 +136,10 @@ class Table extends Primitive
         return [
             'id' => $this->getEncodedId($this->getId()),
             'records' => $this->records,
-            'headings' => $this->getHeadingColumns(),
             'meta' => $this->meta,
             'sorts' => $this->getSorts(),
             'filters' => $this->getFilters(),
-            'columns' => $this->getTableColumns(),
+            'columns' => $this->getColumns(),
             'pagination' => $this->getPagination($this->usePerPage()),
             'actions' => [
                 'inline' => $this->getInlineActions(),
@@ -140,12 +148,11 @@ class Table extends Primitive
                 'default' => $this->getDefaultAction(),
             ],
             'keys' => [
-                'id' => $this->getTableKey(),
-                'sort' => $this->getSortKey(),
-                'order' => $this->getOrderKey(),
+                'id' => $this->getKey(),
+                'sort' => $this->getSort(),
+                'order' => $this->getOrder(),
                 'show' => $this->getShowKey(),
-                'post' => $this->getActionRoute(),
-                'search' => $this->getSearchKey(),
+                'search' => $this->getSearch(),
                 'toggle' => $this->getToggleKey(),
             ],
         ];
@@ -175,16 +182,30 @@ class Table extends Primitive
             ->thenReturn();
     }
 
-    public function __call(string $method, array $parameters)
+    /**
+     * Dynamically handle calls to the class and handle anonymous table methods.
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     *
+     * @throws \BadMethodCallException
+     */
+    public function __call($method, $parameters)
     {
         match ($method) {
             'actions' => $this->setActions(...$parameters),
             'columns' => $this->setColumns(...$parameters),
             'filters' => $this->setFilters(...$parameters),
             'sorts' => $this->setSorts(...$parameters),
-            default => throw new BadMethodCallException(sprintf('Method %s does not exist on [%s].', $method, static::class))
+            default => parent::__call($method, $parameters)
         };
 
         return $this;
     }
+
+    
+    // Table::register('/table'); -> alias for Route::post('/table/{table}', ActionHandler::class);
+        // But must first do the model binding such that it can be resolved from the container
+    // Table::router(); -> registers the default routes for the table
 }

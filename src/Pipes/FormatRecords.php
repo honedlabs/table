@@ -3,9 +3,11 @@
 namespace App\Table\Pipes;
 
 use Closure;
-use Conquest\Table\Pipes\Contracts\FormatsRecords;
 use Conquest\Table\Table;
 use Illuminate\Support\Collection;
+use Conquest\Table\Columns\BaseColumn;
+use Illuminate\Database\Eloquent\Model;
+use Conquest\Table\Pipes\Contracts\FormatsRecords;
 
 /**
  * @internal
@@ -14,10 +16,8 @@ class FormatRecords implements FormatsRecords
 {
     public function handle(Table $table, Closure $next)
     {
-        $columns = $table->getTableColumns();
-
         $table->setRecords($table->getRecords()->map(function ($record) use ($table) {
-            return $table->getTableColumns()->reduce(function ($filteredRecord, BaseColumn $column) use ($record) {
+            return $table->getColumns()->reduce(function ($filteredRecord, BaseColumn $column) use ($record) {
                 $columnName = $column->getName();
                 $filteredRecord[$columnName] = $column->apply($record[$columnName] ?? null);
 
@@ -25,25 +25,30 @@ class FormatRecords implements FormatsRecords
             }, []);
         }));
 
+        // $table->setRecords($table->getRecords()->map(function (Model $record) use ($table) {
+            
+        // }));
+
         return $next($table);
     }
 
     /**
      * @param mixed $record
-     * @param Collection<BaseColumn> $columns
+     * @param Collection<int, \Conquest\Table\Columns\BaseColumn> $columns
      */
     protected function formatRecord($record, Collection $columns)
     {
 
     }
 
-    // protected function setActions(Collection $actions, Collection $columns)
-    // {
+    protected function setActions($record, $actions)
+    {
 
-    // }
+    }
 
-    // protected function setSelect(Collection $select, Collection $columns)
-    // {
+    protected function setSelectable($record, bool|Closure $selectable)
+    {
 
-    // }
+
+    }
 }

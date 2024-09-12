@@ -18,7 +18,7 @@ it('has a resource', function () {
 });
 
 it('has columns', function () {
-    expect($this->table->getTableColumns())->toHaveCount(7);
+    expect($this->table->getColumns())->toHaveCount(7);
 });
 
 it('has filters', function () {

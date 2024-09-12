@@ -14,9 +14,10 @@ trait HasResource
     protected $resource;
 
     /**
+     * Set the resource to use for the table.
+     * 
      * @param Builder|Model|class-string|null $resource
      */
-
     protected function setResource($resource): void
     {
         if (is_null($resource)) {
@@ -27,6 +28,7 @@ trait HasResource
     }
 
     /**
+     * Get the resource to use for the table.
      * @internal
      * @throws \RuntimeException
      * @return Builder|Model|class-string
@@ -57,6 +59,8 @@ trait HasResource
     }
 
     /**
+     * Get the resource to use for the table as an Eloquent query builder.
+     * 
      * @return Builder
      */
     public function getResource(): Builder
@@ -77,15 +81,26 @@ trait HasResource
             return $this->resource::query();
         }
 
-        throw new RuntimeException('Invalid resource type');
+        throw new RuntimeException(sprintf('[%s] requires a class-string, model or Eloquent resource.', static::class));
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Model
+     * Get the fully qualified path of the resource.
+     * 
+     * @return class-string<\Illuminate\Database\Eloquent\Model>
      */
-    public function getResourceModel(): string
+    public function getResourceModel()
     {
-        return class_basename($this->getResource()->getModel());
+        return $this->getResource()->getModel()::class;
     }
 
+    /**
+     * Get the base class name of the resource.
+     * 
+     * @return string
+     */
+    public function getResourceName()
+    {
+        return class_basename($this->getResourceModel());
+    }
 }
