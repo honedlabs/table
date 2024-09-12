@@ -18,8 +18,11 @@ trait CanBeConfirmable
 
     /**
      * Set the properties of the confirm
+     * 
+     * @param \Conquest\Table\Actions\Confirm\Confirm|bool|null $confirm
+     * @return $this
      */
-    public function confirm(Closure|array $confirm): static
+    public function confirm($confirm)
     {
         $this->setConfirm(true);
 
@@ -41,7 +44,7 @@ trait CanBeConfirmable
      *
      * @param  \Conquest\Table\Actions\Confirm\Confirm|bool|null  $confirm
      */
-    public function setConfirm(Confirmable|bool|null $confirm): void
+    public function setConfirm($confirm)
     {
         if (is_null($confirm)) {
             return;
@@ -59,7 +62,7 @@ trait CanBeConfirmable
      *
      * @return \Conquest\Table\Actions\Confirm\Confirm|null
      */
-    public function getConfirm(): ?Confirmable
+    public function getConfirm()
     {
         if (! $this->isConfirmable()) {
 
@@ -72,9 +75,8 @@ trait CanBeConfirmable
      * Evaluate for a possible confirm attribute as a fallback.
      *
      * @internal
-     * @return void
      */
-    protected function evaluateConfirmAttribute(): void
+    protected function evaluateConfirmAttribute()
     {
         $reflection = new ReflectionClass($this);
         $attributes = $reflection->getAttributes(Confirm::class);
@@ -90,7 +92,7 @@ trait CanBeConfirmable
      * @internal
      * @return bool
      */
-    protected function isConfirmable(): bool
+    protected function isConfirmable()
     {
         return ! is_null($this->confirm);
     }

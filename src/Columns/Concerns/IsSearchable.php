@@ -8,11 +8,23 @@ use Closure;
 
 trait IsSearchable
 {
-    protected bool|Closure $searchable = false;
+    /**
+     * @var bool|Closure
+     */
+    protected $searchable = false;
 
-    protected string|Closure|null $searchProperty = null;
+    /**
+     * @var string|Closure|null
+     */
+    protected $searchProperty = null;
 
-    public function searchable(string|Closure|null $property = null): static
+    /**
+     * Set the searchable property.
+     * 
+     * @param string|\Closure $property
+     * @return $this
+     */
+    public function searchable($property = null)
     {
         $this->setSearchable(true);
         $this->setSearchProperty($property);
@@ -20,7 +32,13 @@ trait IsSearchable
         return $this;
     }
 
-    public function setSearchable(bool|Closure|null $searchable): void
+    /**
+     * Set the searchable property quietly.
+     * 
+     * @param bool|\Closure|null $searchable
+     * @return void
+     */
+    public function setSearchable($searchable)
     {
         if (is_null($searchable)) {
             return;
@@ -28,7 +46,13 @@ trait IsSearchable
         $this->searchable = $searchable;
     }
 
-    public function setSearchProperty(string|Closure|null $property): void
+    /**
+     * Set the search property quietly.
+     * 
+     * @param string|\Closure|null $property
+     * @return void
+     */
+    public function setSearchProperty($property)
     {
         if (is_null($property)) {
             return;
@@ -36,27 +60,52 @@ trait IsSearchable
         $this->searchProperty = $property;
     }
 
-    public function isSearchable(): bool
+    /**
+     * Determine if the column is searchable.
+     * 
+     * @return bool
+     */
+    public function isSearchable()
     {
         return $this->evaluate($this->searchable);
     }
 
-    public function isNotSearchable(): bool
+    /**
+     * Determine if the column is not searchable.
+     * 
+     * @return bool
+     */
+    public function isNotSearchable()
     {
         return ! $this->isSearchable();
     }
 
-    public function getSearchProperty(): ?string
+    /**
+     * Get the search property.
+     * 
+     * @return string|\Closure|null
+     */
+    public function getSearchProperty()
     {
         return $this->evaluate($this->searchProperty);
     }
 
-    public function lacksSearchProperty(): bool
+    /**
+     * Determine if the column lacks a search property.
+     * 
+     * @return bool
+     */
+    public function lacksSearchProperty()
     {
         return is_null($this->searchProperty);
     }
 
-    public function hasSearchProperty(): bool
+    /**
+     * Determine if the column has a search property.
+     * 
+     * @return bool
+     */
+    public function hasSearchProperty()
     {
         return ! $this->lacksSearchProperty();
     }

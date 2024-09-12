@@ -3,6 +3,7 @@
 namespace Conquest\Table\Actions;
 
 use Conquest\Core\Concerns\Routable;
+use Conquest\Table\Actions\Enums\Context;
 
 class PageAction extends BaseAction
 {
@@ -10,7 +11,7 @@ class PageAction extends BaseAction
 
     public function setUp(): void
     {
-        $this->setType('page');
+        $this->setType(Context::Page->value);
     }
 
     public function toArray(): array

@@ -17,13 +17,15 @@ use Conquest\Core\Primitive;
 class HigherOrderConfirm implements HigherOrder
 {
     /**
-     * @param  T  $primitive
+     * @param T $primitive
      */
     public function __construct(
         protected readonly Primitive $primitive
     ) {}
 
     /**
+     * Call the method on the confirm class
+     * 
      * @return T
      */
     public function __call(string $name, array $arguments)

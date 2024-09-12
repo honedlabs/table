@@ -9,16 +9,16 @@ use Illuminate\Database\Eloquent\Builder;
 trait HasResource
 {
     /**
-     * @var Builder|Model|class-string
+     * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string
      */
     protected $resource;
 
     /**
      * Set the resource to use for the table.
      * 
-     * @param Builder|Model|class-string|null $resource
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|null $resource
      */
-    protected function setResource($resource): void
+    public function setResource($resource)
     {
         if (is_null($resource)) {
             return;
@@ -31,7 +31,7 @@ trait HasResource
      * Get the resource to use for the table.
      * @internal
      * @throws \RuntimeException
-     * @return Builder|Model|class-string
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string
      */
     protected function definedResource()
     {
@@ -61,9 +61,10 @@ trait HasResource
     /**
      * Get the resource to use for the table as an Eloquent query builder.
      * 
-     * @return Builder
+     * @throws \RuntimeException
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getResource(): Builder
+    public function getResource()
     {
         if (!isset($this->resource)) {
             $this->resource ??= $this->definedResource();

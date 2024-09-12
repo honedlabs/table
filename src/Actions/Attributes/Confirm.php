@@ -5,27 +5,41 @@ namespace Conquest\Table\Actions\Attributes;
 use Attribute;
 use Closure;
 use Conquest\Table\Actions\Confirm\Confirmable;
-use Conquest\Table\Actions\Confirm\Enums\Intent;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class Confirm
 {
-    protected Confirmable $confirm;
+    /**
+     * @var \Conquest\Table\Actions\Confirm\Confirmable
+     */
+    protected $confirm;
 
-    public function __construct(
-        string|Closure|null $title = null,
-        string|Closure|null $description = null,
-        string|Intent|Closure|null $intent = null,
-        string|Closure|null $cancel = null,
-        string|Closure|null $submit = null,
-    ) {
-        $this->confirm = new Confirmable(func_get_args());
+    /**
+     * Create a new confirmable instance.
+     * 
+     * @param string|\Closure $title
+     * @param string|\Closure $description
+     * @param string|\Conquest\Table\Actions\Confirm\Enums\Intent|\Closure $intent
+     * @param string|\Closure $cancel
+     * @param string|\Closure $submit
+     */
+    public function __construct($title = null, $description = null, $intent = null, $cancel = null, $submit = null)
+    {
+        $this->confirm = new Confirmable(compact(
+            'title',
+            'description',
+            'intent',
+            'cancel',
+            'submit',
+        ));
     }
 
     /**
      * Get the confirm instance.
+     * 
+     * @return \Conquest\Table\Actions\Confirm\Confirmable
      */
-    public function getConfirm(): Confirmable
+    public function getConfirm()
     {
         return $this->confirm;
     }

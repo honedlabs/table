@@ -8,17 +8,18 @@ use Conquest\Core\Concerns\IsDefault;
 use Conquest\Core\Concerns\Routable;
 use Conquest\Core\Contracts\HigherOrder;
 use Conquest\Core\Contracts\ProxiesHigherOrder;
-use Conquest\Table\Actions\Concerns\CanAction;
+use Conquest\Table\Actions\Concerns\Actionable;
 use Conquest\Table\Actions\Concerns\CanBeConfirmable;
 use Conquest\Table\Actions\Concerns\IsBulk;
 use Conquest\Table\Actions\Confirm\Proxies\HigherOrderConfirm;
+use Conquest\Table\Actions\Enums\Context;
 
 /**
  * @property-read \Conquest\Table\Actions\Confirm\Confirm $confirm
  */
 class InlineAction extends BaseAction implements ProxiesHigherOrder
 {
-    use CanAction;
+    use Actionable;
     use CanBeConfirmable;
     use IsBulk;
     use IsDefault;
@@ -26,7 +27,7 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
 
     public function setUp(): void
     {
-        $this->setType('inline');
+        $this->setType(Context::Inline->value);
     }
 
     public function toArray(): array
@@ -42,7 +43,14 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
         );
     }
 
-    public function __get(string $property): HigherOrder
+    /**
+     * Dynamically access the confirm property.
+     * 
+     * @param string $property
+     * @return \Conquest\Core\Contracts\HigherOrder
+     * @throws \Exception
+     */
+    public function __get(string $property)
     {
         return match ($property) {
             'confirm' => new HigherOrderConfirm($this),
