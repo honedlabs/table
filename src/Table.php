@@ -41,16 +41,20 @@ class Table extends Primitive
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasFilters;
-    use HasMeta; // -> Remove
+    use Concerns\Pageable;
+    use Concerns\Sortable;
+    use Concerns\Toggleable;
+    use Concerns\Searchable;
     use Concerns\Records; // Records
-    // use IsAnonymous;
+    use HasMeta; // -> Remove
+    use IsAnonymous;
     use Paginates; // Pageable
     /** Toggle traits -> toggleable */
-    use Remembers;
+    // use Remembers;
     /** Sort traits -> sortable*/
-    use HasSorts;
-    use HasOrder;
-    use HasSort;
+    // use HasSorts;
+    // use HasOrder;
+    // use HasSort;
     // use Concerns\Searchable;
     // use Concerns\Toggleable;
     // use Concerns\Sortable;

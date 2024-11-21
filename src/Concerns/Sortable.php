@@ -6,5 +6,190 @@ namespace Honed\Table\Concerns;
 
 trait Sortable
 {
+    // /**
+    //  * @var string
+    //  */
+    // protected $defaultSort;
 
+    /**
+     * @var string
+     */
+    protected $sortAs;
+
+    /**
+     * @var string
+     */
+    protected static $globalSortAs = 'sort';
+
+    /**
+     * @var string
+     */
+    protected $orderAs;
+
+    /**
+     * @var string
+     */
+    protected static $globalOrderAs = 'order';
+
+    /**
+     * @var string
+     */
+    protected $defaultOrder;
+
+    /**
+     * @var string
+     */
+    protected static $globalDefaultOrder = 'asc';
+
+    /**
+     * @var bool
+     */
+    protected $signed;
+
+    /**
+     * @var bool
+     */
+    protected static $globalSigned = true;
+
+    /**
+     * Configure the default query parameter to use for sorting.
+     * 
+     * @param string $sortAs
+     * @return void
+     */
+    public static function setSortAs(string $sortAs)
+    {
+        static::$sortAs = $sortAs;
+    }
+
+    /**
+     * Configure the default query parameter to use for ordering.
+     * 
+     * @param string $orderAs
+     * @return void
+     */
+    public static function setOrderAs(string $orderAs)
+    {
+        static::$orderAs = $orderAs;
+    }
+
+    /**
+     * Configure the default order to use for sorting.
+     * 
+     * @param string $defaultOrder
+     * @return void
+     */
+    public static function setDefaultOrder(string $defaultOrder)
+    {
+        static::$defaultOrder = $defaultOrder;
+    }
+
+    /**
+     * Configure whether to enable signed sorting for all tables by default.
+     * 
+     * @param bool $signed
+     * @return void
+     */
+    public static function enableSigned(bool $signed = true)
+    {
+        static::$signed = $signed;
+    }
+
+    /**
+     * Configure whether to disable signed sorting for all tables by default.
+     * 
+     * @param bool $signed
+     * @return void
+     */
+    public static function disableSigned(bool $signed = false)
+    {
+        static::$signed = $signed;
+    }
+
+    /**
+     * Get the query parameter to use for sorting.
+     * 
+     * @return string
+     */
+    public function getSortAs()
+    {
+        return $this->inspect('sortAs', static::$globalSortAs);
+    }
+
+    /**
+     * Get the query parameter to use for ordering.
+     * 
+     * @return string
+     */
+    public function getOrderAs()
+    {
+        return $this->inspect('orderAs', static::$globalOrderAs);
+    }
+
+    /**
+     * Get the default order to use for sorting if one is not supplied.
+     * 
+     * @return string
+     */
+    public function getDefaultOrder()
+    {
+        return $this->inspect('defaultOrder', static::$globalDefaultOrder);
+    }
+
+    /**
+     * Determine whether to enable signed sorting.
+     * 
+     * @return bool
+     */
+    public function isSigned()
+    {
+        return $this->inspect('signed', static::$globalSigned);
+    }
+
+    /**
+     * Get the sorting field to use from the request query parameters.
+     * 
+     * @return string|null
+     */
+    public function getSortTerm()
+    {
+        $value = request()->input($this->getSortAs());
+        
+        if (is_null($value)) {
+            return null;
+        }
+
+        return (string) $value;
+    }
+
+    /**
+     * Get the sorting direction to use from the request query parameters.
+     * 
+     * @return string|null
+     */
+    public function getOrderTerm()
+    {
+        $direction = request()->input($this->getOrderAs());
+
+        if (\is_null($direction) || ! \in_array($direction, ['asc', 'desc'])) {
+            return null;
+        }
+
+        return $direction;
+    }
+
+    /**
+     * Get the direction to use from a term if signed sorting is enabled.
+     * 
+     * @param array{string,string} $term
+     * @return string
+     */
+    public function getSignedTerm(string $term)
+    {
+        if (! $this->isSigned()) {
+            return $term;
+        }
+
+        return $term === 'asc' ? 'desc' : 'asc';
+    }
 }
