@@ -6,13 +6,17 @@ namespace Honed\Table\Pagination\Concerns;
 
 use Honed\Table\Pagination\Enums\Paginator;
 
+/**
+ * @mixin \Honed\Core\Concerns\Inspectable
+ */
 trait HasPaginator
 {
     /**
-     * @var Paginator
+     * Set the pagination type to use.
+     *
+     * @param  Paginator|string|null  $paginator
+     * @return void
      */
-    protected $paginator;
-
     public function setPaginator(Paginator|string|null $paginator): void
     {
         if (is_null($paginator)) {
@@ -21,23 +25,26 @@ trait HasPaginator
         $this->paginator = $this->resolvePaginator($paginator);
     }
 
+    /**
+     * Retrieve the pagination type to use.
+     *
+     * @return Paginator
+     */
     public function getPaginator(): Paginator
     {
-        if (isset($this->paginator)) {
-            return $this->resolvePaginator($this->paginator);
-        }
-
-        if (method_exists($this, 'paginator')) {
-            $result = $this->paginator();
-
-            return $this->resolvePaginator($result);
-        }
-
-        return Paginator::Page;
+        return $this->resolvePaginator($this->inspect('paginator', Paginator::Default));
     }
 
-    private function resolvePaginator(string|Paginator $paginator): Paginator
+    /**
+     * Resolve the paginator from the defined value.
+     *
+     * @param  string|Paginator  $paginator
+     * @return Paginator
+     */
+    protected function resolvePaginator(string|Paginator $paginator): Paginator
     {
-        return $paginator instanceof Paginator ? $paginator : Paginator::from($paginator);
+        return $paginator instanceof Paginator
+            ? $paginator
+            : Paginator::from($paginator);
     }
 }

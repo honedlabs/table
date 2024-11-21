@@ -21,11 +21,6 @@ use Honed\Table\Concerns\EncodesId;
 use Honed\Table\Pipes\ApplyToggles;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
-use Honed\Table\Concerns\HasActions;
-use Honed\Table\Concerns\HasColumns;
-use Honed\Table\Concerns\HasFilters;
-use Honed\Table\Concerns\HasRecords;
-use Honed\Table\Concerns\HasResource;
 use Illuminate\Database\Eloquent\Builder;
 use Honed\Table\Concerns\Remember\Remembers;
 use Honed\Table\Pagination\Concerns\Paginates;
@@ -35,31 +30,33 @@ use Honed\Table\Concerns\HasSearchAs;
 use Honed\Table\Concerns\Search\HasSearch;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * 
- */
 class Table extends Primitive
 {
     use Inspectable;
-    use EncodesId;
+    use EncodesId; // Encodable
     use RequiresKey {
         getKey as protected getTableKey;
     }
-    use HasResource;
-    use HasActions;
-    use HasColumns;
-    use HasFilters;
-    use HasMeta;
-    use HasRecords;
+    use Concerns\HasResource;
+    use Concerns\HasActions;
+    use Concerns\HasColumns;
+    use Concerns\HasFilters;
+    use HasMeta; // -> Remove
+    use Concerns\Records; // Records
     // use IsAnonymous;
-    use Paginates;
-    /** Toggle traits */
+    use Paginates; // Pageable
+    /** Toggle traits -> toggleable */
     use Remembers;
-    /** Sort traits */
+    /** Sort traits -> sortable*/
     use HasSorts;
     use HasOrder;
     use HasSort;
-    /** Search traits */
+    // use Concerns\Searchable;
+    // use Concerns\Toggleable;
+    // use Concerns\Sortable;
+    // use Concerns\Records;
+    // use Concerns\Encodable;
+    /** Search traits -> searchable */
     // use HasSearch;
     // use HasSearchAs;
     // use CanSearch;
@@ -158,7 +155,7 @@ class Table extends Primitive
                 'sort' => $this->getSort(),
                 'order' => $this->getOrder(),
                 'show' => $this->getShowKey(),
-                'search' => $this->getSearch(),
+                // 'search' => $this->getSearch(),
                 'toggle' => $this->getToggleKey(),
             ],
         ];

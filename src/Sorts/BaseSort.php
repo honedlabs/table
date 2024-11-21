@@ -36,7 +36,7 @@ abstract class BaseSort extends Primitive implements Sorts
         $this->setLabel($label ?? $this->makeLabel($this->getName()));
     }
 
-    public static function make(string|Closure $property, string|Closure|null $name = null, string|Closure|null $label = null): static
+    final public static function make(string|Closure $property, string|Closure|null $name = null, string|Closure|null $label = null): static
     {
         return resolve(static::class, compact('property', 'name', 'label'));
     }

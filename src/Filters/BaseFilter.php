@@ -38,7 +38,7 @@ abstract class BaseFilter extends Primitive implements Filters
     {
         parent::__construct();
         $this->setProperty($attribute);
-        $this->setLabel($label ?? $this->makeLabel($attribute));
+        $this->setLabel($label ?? $this->makeLabel($this->getProperty()));
     }
 
     /**
@@ -47,7 +47,7 @@ abstract class BaseFilter extends Primitive implements Filters
      * @param string|Closure():string $attribute
      * @param string|(Closure():string)|null $label
      */
-    public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
+    final public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
     {
         return resolve(static::class, compact('attribute', 'label'));
     }

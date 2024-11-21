@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Closure;
 use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Primitive;
 use Honed\Core\Concerns\HasLabel;
@@ -17,6 +16,7 @@ use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\IsHidden;
 use Honed\Core\Concerns\Transformable;
 use Honed\Table\Columns\Concerns\HasBreakpoint;
+use Honed\Table\Columns\Concerns\HasFallback;
 use Honed\Table\Columns\Concerns\HasTooltip;
 use Honed\Table\Columns\Concerns\IsSortable;
 use Honed\Table\Columns\Concerns\IsSrOnly;
@@ -39,19 +39,37 @@ abstract class BaseColumn extends Primitive
     use IsSrOnly;
     use IsToggleable;
     use Transformable;
+    use HasFallback;
 
-    final public function __construct(string|Closure $name, string|Closure $label = null)
+    /**
+     * Create a new column instance specifying the related database attribute, and optionally the display label.
+     * 
+     * @param string|Closure():string $attribute
+     * @param string|(Closure():string)|null $label
+     */
+    final public function __construct(string|\Closure $name, string|\Closure|null $label = null)
     {
         parent::__construct();
         $this->setName($name);
-        $this->setLabel($label ?? $this->makeLabel($this->getName()));
+        $this->setLabel($label ?? $this->makeLabel($name));
     }
 
-    final public static function make(string|Closure $name, string|Closure $label = null): static
+    /**
+     * Make a column specifying the related database attribute, and optionally the display label.
+     * 
+     * @param string|Closure():string $attribute
+     * @param string|(Closure():string)|null $label
+     */
+    public static function make(string|\Closure $name, string|\Closure|null $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }
 
+    /**
+     * Get the column state as an array
+     * 
+     * @return array<string,mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -72,6 +90,13 @@ abstract class BaseColumn extends Primitive
         ];
     }
 
+    /**
+     * Modify the record value to align it with the column configuration.
+     * 
+     * @template T
+     * @param T $value
+     * @return T|mixed
+     */
     public function apply(mixed $value): mixed
     {
         $value = $this->applyTransform($value);
@@ -80,10 +105,11 @@ abstract class BaseColumn extends Primitive
     }
 
     /**
-     * Format the value to be displayed in the column.
+     * Format how the records' values are displayed in this column.
      * 
-     * @param mixed $value
-     * @return mixed
+     * @template T
+     * @param T $value
+     * @return T|mixed
      */
     public function formatValue(mixed $value): mixed
     {

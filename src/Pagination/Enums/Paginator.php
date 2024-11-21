@@ -9,13 +9,13 @@ use Honed\Table\Table;
 enum Paginator: string
 {
     case None = 'none';
-    case Page = 'page';
+    case Default = 'default';
     case Cursor = 'cursor';
 
     /**
      * Retrieve the records and metadata based on the selected paginator.
      *
-     * @return array{\Illuminate\Support\Collection, array}
+     * @return array{\Illuminate\Support\Collection, array<string, int|string|bool>}
      */
     public function paginate(Table $table): array
     {
@@ -23,10 +23,10 @@ enum Paginator: string
 
         return match ($this) {
             self::Cursor => [
-                $data = $builder->cursorPaginate(
+                ($data = $builder->cursorPaginate(
                     perPage: $table->usePerPage(),
                     cursorName: $table->getPageName(),
-                )->withQueryString(),
+                )->withQueryString()->getCollection()),
                 self::getMeta($data),
             ],
             self::None => [
@@ -34,10 +34,10 @@ enum Paginator: string
                 self::getMeta($data),
             ],
             default => [
-                $data = $builder->paginate(
+                ($data = $builder->paginate(
                     perPage: $table->usePerPage(),
                     pageName: $table->getPageName(),
-                )->withQueryString(),
+                ))->getCollection(),
                 self::getMeta($data),
             ],
         };
@@ -46,9 +46,10 @@ enum Paginator: string
     /**
      * Get metadata based on the current pagination type.
      *
-     * @param  \Illuminate\Support\Collection  $data  When self::None
-     * @param  \Illuminate\Pagination\CursorPaginator  $data  When self::Cursor
-     * @param  \Illuminate\Pagination\LengthAwarePaginator  $data  When self::Page
+     * @param  \Illuminate\Support\Collection $data When self::None
+     * @param  \Illuminate\Pagination\CursorPaginator $data When self::Cursor
+     * @param  \Illuminate\Pagination\LengthAwarePaginator $data When self::Page
+     * @return array<string, int|string|bool>
      */
     public function getMeta($data): array
     {

@@ -9,7 +9,7 @@ use Honed\Table\Columns\Concerns\Formatters\FormatsMoney;
 use Honed\Table\Columns\Concerns\Formatters\FormatsNumeric;
 use Honed\Table\Columns\Concerns\Formatters\FormatsSeparator;
 
-class Column extends FallbackColumn
+class Column extends BaseColumn
 {
     use FormatsBoolean;
     use FormatsMoney;

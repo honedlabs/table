@@ -4,7 +4,7 @@ namespace Honed\Table\Concerns;
 
 use Illuminate\Support\Collection;
 
-trait HasRecords
+trait Records
 {
     /**
      * @var \Illuminate\Support\Collection<array-key, array<array-key, mixed>>|null

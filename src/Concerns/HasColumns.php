@@ -5,6 +5,9 @@ namespace Honed\Table\Concerns;
 use Honed\Table\Columns\BaseColumn;
 use Illuminate\Support\Collection;
 
+/**
+ * @mixin Honed\Core\Concerns\Inspectable
+ */
 trait HasColumns
 {
     /**
@@ -29,28 +32,11 @@ trait HasColumns
     }
 
     /**
-     * @internal
-     * @return array<int, BaseColumn>
-     */
-    protected function definedColumns(): array
-    {
-        if (isset($this->columns)) {
-            return $this->columns;
-        }
-
-        if (method_exists($this, 'columns')) {
-            return $this->columns();
-        }
-
-        return [];
-    }
-
-    /**
      * @return Collection<BaseColumn>
      */
     public function getColumns(): Collection
     {
-        return $this->cachedColumns ??= collect($this->definedColumns())
+        return $this->cachedColumns ??= collect($this->inspect('columns', []))
             ->filter(fn (BaseColumn $column): bool => $column->isAuthorized());
     }
 

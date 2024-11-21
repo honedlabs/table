@@ -20,7 +20,7 @@ trait EncodesId
         static::$decodeUsing = $decodeUsing;
     }
 
-    public static function getEncodedID(string $id): string
+    public static function getEncodedId(string $id): string
     {
         if (static::$encodeUsing) {
             return value(static::$encodeUsing, $id);
