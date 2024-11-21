@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters;
+namespace Honed\Table\Filters;
 
-use Conquest\Table\Filters\Concerns\HasClause;
-use Conquest\Table\Filters\Concerns\HasOperator;
-use Conquest\Table\Filters\Enums\Clause;
-use Conquest\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\Concerns\HasClause;
+use Honed\Table\Filters\Concerns\HasOperator;
+use Honed\Table\Filters\Enums\Clause;
+use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 

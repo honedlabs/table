@@ -1,8 +1,8 @@
 <?php
 
-namespace Conquest\Table\Sorts;
+namespace Honed\Table\Sorts;
 
-use Conquest\Core\Concerns\IsDefault;
+use Honed\Core\Concerns\IsDefault;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 

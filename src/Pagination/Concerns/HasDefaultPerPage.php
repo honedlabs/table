@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Pagination\Concerns;
+namespace Honed\Table\Pagination\Concerns;
 
 trait HasDefaultPerPage
 {

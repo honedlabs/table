@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Pagination\Concerns;
+namespace Honed\Table\Pagination\Concerns;
 
-use Conquest\Table\Pagination\Enums\Paginator;
+use Honed\Table\Pagination\Enums\Paginator;
 
 trait HasPaginator
 {

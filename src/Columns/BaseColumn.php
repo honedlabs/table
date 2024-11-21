@@ -2,29 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Columns;
+namespace Honed\Table\Columns;
 
 use Closure;
-use Conquest\Core\Concerns\CanTransform;
-use Conquest\Core\Concerns\HasLabel;
-use Conquest\Core\Concerns\HasMeta;
-use Conquest\Core\Concerns\HasName;
-use Conquest\Core\Concerns\HasPlaceholder;
-use Conquest\Core\Concerns\HasType;
-use Conquest\Core\Concerns\IsActive;
-use Conquest\Core\Concerns\IsAuthorized;
-use Conquest\Core\Concerns\IsHidden;
-use Conquest\Core\Concerns\IsKey;
-use Conquest\Core\Concerns\Transforms;
-use Conquest\Core\Primitive;
-use Conquest\Table\Columns\Concerns\HasBreakpoint;
-use Conquest\Table\Columns\Concerns\HasPrefix;
-use Conquest\Table\Columns\Concerns\HasSuffix;
-use Conquest\Table\Columns\Concerns\HasTooltip;
-use Conquest\Table\Columns\Concerns\IsSortable;
-use Conquest\Table\Columns\Concerns\IsSrOnly;
-use Conquest\Table\Columns\Concerns\IsToggleable;
-use Conquest\Table\Table;
+use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Concerns\HasMeta;
+use Honed\Core\Concerns\HasName;
+use Honed\Core\Concerns\HasPlaceholder;
+use Honed\Core\Concerns\HasType;
+use Honed\Core\Concerns\IsActive;
+use Honed\Core\Concerns\IsAuthorized;
+use Honed\Core\Concerns\IsHidden;
+use Honed\Core\Concerns\IsKey;
+use Honed\Core\Concerns\Transforms;
+use Honed\Core\Primitive;
+use Honed\Table\Columns\Concerns\HasBreakpoint;
+use Honed\Table\Columns\Concerns\HasTooltip;
+use Honed\Table\Columns\Concerns\IsSortable;
+use Honed\Table\Columns\Concerns\IsSrOnly;
+use Honed\Table\Columns\Concerns\IsToggleable;
+use Honed\Table\Table;
 use InvalidArgumentException;
 
 abstract class BaseColumn extends Primitive
@@ -34,8 +31,6 @@ abstract class BaseColumn extends Primitive
     use HasMeta;
     use HasName;
     use HasPlaceholder;
-    use HasPrefix;
-    use HasSuffix;
     use HasTooltip;
     use HasType;
     use IsActive;
@@ -49,7 +44,6 @@ abstract class BaseColumn extends Primitive
 
     public function __construct(string|Closure $name, string|Closure|null $label = null)
     {
-        $this->checkIfReservedName($name);
         parent::__construct();
         $this->setName($name);
         $this->setLabel($label ?? $this->toLabel($this->getName()));
@@ -72,16 +66,14 @@ abstract class BaseColumn extends Primitive
             'breakpoint' => $this->getBreakpoint(),
             'sr' => $this->isSrOnly(),
 
-            'toggleable' => $this->isToggleable(),
+            'toggle' => $this->isToggleable(),
             'active' => $this->isToggledOn(),
 
-            'sortable' => $this->isSortable(),
+            'sort' => $this->isSortable(),
             'sorting' => $this->isSorting(),
             'direction' => $this->getSort()?->getDirection(),
 
             'meta' => $this->getMeta(),
-            'prefix' => $this->getPrefix(),
-            'suffix' => $this->getSuffix(),
         ];
     }
 
@@ -101,15 +93,5 @@ abstract class BaseColumn extends Primitive
     public function formatValue(mixed $value): mixed
     {
         return $value;
-    }
-
-    /**
-     * @throws \InvalidArgumentException
-     */
-    public function checkIfReservedName(string|Closure $name): void
-    {
-        if (in_array($this->evaluate($name), Table::ReservedColumnNames)) {
-            throw new InvalidArgumentException(sprintf('Column name [%s] is reserved.', $name));
-        }
     }
 }

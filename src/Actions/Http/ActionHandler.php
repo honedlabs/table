@@ -2,12 +2,12 @@
 
 namespace Conques\Table\Actions\Http;
 
-use Conquest\Table\Actions\BaseAction;
-use Conquest\Table\Actions\Enums\Context;
-use Conquest\Table\Actions\Http\DTOs\ActionData;
-use Conquest\Table\Actions\Http\DTOs\BulkActionData;
-use Conquest\Table\Actions\Http\DTOs\InlineActionData;
-use Conquest\Table\Table;
+use Honed\Table\Actions\BaseAction;
+use Honed\Table\Actions\Enums\Context;
+use Honed\Table\Actions\Http\DTOs\ActionData;
+use Honed\Table\Actions\Http\DTOs\BulkActionData;
+use Honed\Table\Actions\Http\DTOs\InlineActionData;
+use Honed\Table\Table;
 use Illuminate\Http\Request;
 
 class ActionHandler

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Tests\Pagination\Concerns\Classes;
+namespace Honed\Table\Tests\Pagination\Concerns\Classes;
 
-use Conquest\Table\Table;
+use Honed\Table\Table;
 
 final class MethodTable extends Table
 {

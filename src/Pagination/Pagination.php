@@ -1,10 +1,10 @@
 <?php
 
-namespace Conquest\Table\Pagination;
+namespace Honed\Table\Pagination;
 
-use Conquest\Core\Concerns\HasValue;
-use Conquest\Core\Concerns\IsActive;
-use Conquest\Core\Primitive;
+use Honed\Core\Concerns\HasValue;
+use Honed\Core\Concerns\IsActive;
+use Honed\Core\Primitive;
 
 class Pagination extends Primitive
 {

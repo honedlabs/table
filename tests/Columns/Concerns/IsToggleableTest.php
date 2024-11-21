@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Columns\Column;
+use Honed\Table\Columns\Column;
 
 beforeEach(function () {
     $this->column = Column::make('name');

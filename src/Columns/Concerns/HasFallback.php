@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Columns\Concerns;
+namespace Honed\Table\Columns\Concerns;
 
 trait HasFallback
 {

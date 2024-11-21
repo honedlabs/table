@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Columns;
+namespace Honed\Table\Columns;
 
-use Conquest\Table\Columns\Concerns\Formatters\FormatsMoney;
-use Conquest\Table\Columns\Concerns\Formatters\FormatsNumeric;
+use Honed\Table\Columns\Concerns\Formatters\FormatsMoney;
+use Honed\Table\Columns\Concerns\Formatters\FormatsNumeric;
 
 class NumericColumn extends FallbackColumn
 {

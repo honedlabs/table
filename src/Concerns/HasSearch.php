@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Concerns\Search;
+namespace Honed\Table\Concerns\Search;
 
 trait HasSearch
 {

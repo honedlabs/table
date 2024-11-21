@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Pagination\Enums;
+namespace Honed\Table\Pagination\Enums;
 
-use Conquest\Table\Table;
+use Honed\Table\Table;
 
 enum Paginator: string
 {

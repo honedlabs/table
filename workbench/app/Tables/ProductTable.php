@@ -2,22 +2,22 @@
 
 namespace Workbench\App\Tables;
 
-use Conquest\Core\Options\Option;
-use Conquest\Table\Actions\BulkAction;
-use Conquest\Table\Actions\InlineAction;
-use Conquest\Table\Actions\PageAction;
-use Conquest\Table\Columns\BooleanColumn;
-use Conquest\Table\Columns\Column;
-use Conquest\Table\Columns\DateColumn;
-use Conquest\Table\Columns\NumericColumn;
-use Conquest\Table\Columns\TextColumn;
-use Conquest\Table\Filters\BooleanFilter;
-use Conquest\Table\Filters\DateFilter;
-use Conquest\Table\Filters\Filter;
-use Conquest\Table\Filters\QueryFilter;
-use Conquest\Table\Filters\SelectFilter;
-use Conquest\Table\Sorts\Sort;
-use Conquest\Table\Table;
+use Honed\Core\Options\Option;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Actions\InlineAction;
+use Honed\Table\Actions\PageAction;
+use Honed\Table\Columns\BooleanColumn;
+use Honed\Table\Columns\Column;
+use Honed\Table\Columns\DateColumn;
+use Honed\Table\Columns\NumericColumn;
+use Honed\Table\Columns\TextColumn;
+use Honed\Table\Filters\BooleanFilter;
+use Honed\Table\Filters\DateFilter;
+use Honed\Table\Filters\Filter;
+use Honed\Table\Filters\QueryFilter;
+use Honed\Table\Filters\SelectFilter;
+use Honed\Table\Sorts\Sort;
+use Honed\Table\Table;
 use Workbench\App\Models\Product;
 
 final class ProductTable extends Table

@@ -1,10 +1,10 @@
 <?php
 
-namespace Conquest\Table\Concerns;
+namespace Honed\Table\Concerns;
 
 /**
- * @mixin \Conquest\Table\Concerns\HasSearch
- * @mixin \Conquest\Table\Concerns\HasSearchAs
+ * @mixin \Honed\Table\Concerns\HasSearch
+ * @mixin \Honed\Table\Concerns\HasSearchAs
  */
 trait CanSearch
 {

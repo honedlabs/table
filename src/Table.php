@@ -2,36 +2,36 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table;
+namespace Honed\Table;
 
 use BadMethodCallException;
-use Conquest\Core\Primitive;
+use Honed\Core\Primitive;
 use App\Table\Pipes\Paginate;
 use App\Table\Pipes\ApplySorts;
 use App\Table\Pipes\ApplySearch;
 use App\Table\Pipes\ApplyFilters;
 use Illuminate\Pipeline\Pipeline;
 use App\Table\Pipes\FormatRecords;
-use Conquest\Table\Concerns\HasMeta;
-use Conquest\Table\Concerns\HasSort;
-use Conquest\Table\Concerns\HasOrder;
-use Conquest\Table\Concerns\HasSorts;
-use Conquest\Table\Concerns\EncodesId;
-use Conquest\Table\Pipes\ApplyToggles;
-use Conquest\Core\Concerns\IsAnonymous;
-use Conquest\Core\Concerns\RequiresKey;
-use Conquest\Table\Concerns\HasActions;
-use Conquest\Table\Concerns\HasColumns;
-use Conquest\Table\Concerns\HasFilters;
-use Conquest\Table\Concerns\HasRecords;
-use Conquest\Table\Concerns\HasResource;
+use Honed\Table\Concerns\HasMeta;
+use Honed\Table\Concerns\HasSort;
+use Honed\Table\Concerns\HasOrder;
+use Honed\Table\Concerns\HasSorts;
+use Honed\Table\Concerns\EncodesId;
+use Honed\Table\Pipes\ApplyToggles;
+use Honed\Core\Concerns\IsAnonymous;
+use Honed\Core\Concerns\RequiresKey;
+use Honed\Table\Concerns\HasActions;
+use Honed\Table\Concerns\HasColumns;
+use Honed\Table\Concerns\HasFilters;
+use Honed\Table\Concerns\HasRecords;
+use Honed\Table\Concerns\HasResource;
 use Illuminate\Database\Eloquent\Builder;
-use Conquest\Table\Concerns\Remember\Remembers;
-use Conquest\Table\Pagination\Concerns\Paginates;
-use Conquest\Core\Exceptions\MissingRequiredAttributeException;
-use Conquest\Table\Concerns\CanSearch;
-use Conquest\Table\Concerns\HasSearchAs;
-use Conquest\Table\Concerns\Search\HasSearch;
+use Honed\Table\Concerns\Remember\Remembers;
+use Honed\Table\Pagination\Concerns\Paginates;
+use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Honed\Table\Concerns\CanSearch;
+use Honed\Table\Concerns\HasSearchAs;
+use Honed\Table\Concerns\Search\HasSearch;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -39,10 +39,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Table extends Primitive
 {
-    /** Infrastructure traits */
     use EncodesId;
     use RequiresKey {
-        getKey as protected getInternalKey;
+        getKey as protected getTableKey;
     }
     use HasActions;
     use HasColumns;
@@ -66,7 +65,7 @@ class Table extends Primitive
     /**
      * Check if the table is built in-line.
      * 
-     * @var class-string<\Conquest\Table\Table>
+     * @var class-string<\Honed\Table\Table>
      */
     protected $anonymous = Table::class;
 
@@ -84,10 +83,10 @@ class Table extends Primitive
      * Create a new table instance.
      * 
      * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string $resource
-     * @param array<string, \Conquest\Table\Columns\BaseColumn> $columns
-     * @param array<string, \Conquest\Table\Actions\BaseAction> $actions
-     * @param array<string, \Conquest\Table\Filters\BaseFilter> $filters
-     * @param array<string, \Conquest\Table\Sorts\BaseSort> $sorts
+     * @param array<\Honed\Table\Columns\BaseColumn> $columns
+     * @param array<\Honed\Table\Actions\BaseAction> $actions
+     * @param array<\Honed\Table\Filters\BaseFilter> $filters
+     * @param array<\Honed\Table\Sorts\BaseSort> $sorts
      * @param string|null $search
      * @param array|int|null $pagination
      * @return static
@@ -120,7 +119,7 @@ class Table extends Primitive
     public function getKey()
     {
         try {
-            return $this->getInternalKey();
+            return $this->getTableKey();
         } catch (MissingRequiredAttributeException $e) {
             return $this->getKeyColumn()?->getName() ?? throw $e;
         }
@@ -145,7 +144,6 @@ class Table extends Primitive
                 'inline' => $this->getInlineActions(),
                 'bulk' => $this->getBulkActions(),
                 'page' => $this->getPageActions(),
-                'default' => $this->getDefaultAction(),
             ],
             'keys' => [
                 'id' => $this->getKey(),

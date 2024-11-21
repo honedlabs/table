@@ -1,9 +1,9 @@
 <?php
 
-use Conquest\Table\Pagination\Enums\Paginator;
-use Conquest\Table\Table;
-use Conquest\Table\Tests\Pagination\Concerns\Classes\MethodTable;
-use Conquest\Table\Tests\Pagination\Concerns\Classes\PropertyTable;
+use Honed\Table\Pagination\Enums\Paginator;
+use Honed\Table\Table;
+use Honed\Table\Tests\Pagination\Concerns\Classes\MethodTable;
+use Honed\Table\Tests\Pagination\Concerns\Classes\PropertyTable;
 
 it('uses paginator default as simple', function () {
     expect(Table::make()->getPaginator())->toBe(Paginator::Simple);

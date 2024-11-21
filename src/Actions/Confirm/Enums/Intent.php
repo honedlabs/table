@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Actions\Confirm\Enums;
+namespace Honed\Table\Actions\Confirm\Enums;
 
 enum Intent: string
 {

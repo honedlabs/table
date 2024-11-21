@@ -1,23 +1,12 @@
 <?php
 
-namespace Conquest\Table\Concerns;
+namespace Honed\Table\Concerns;
 
-use Conquest\Table\Columns\BaseColumn;
+use Honed\Table\Columns\BaseColumn;
 use Illuminate\Support\Collection;
 
 trait HasColumns
 {
-    /**
-     * Prevent user-provided columns from conflicting with internal ones.
-     * 
-     * @var array<int, string>
-     */
-    const ReservedColumnNames = [
-        'key',
-        'actions',
-        'select',
-    ];
-
     /**
      * @var Collection<BaseColumn>
      */
@@ -29,7 +18,7 @@ trait HasColumns
     protected array $columns;
 
     /**
-     * @param  array<int, BaseColumn>|null  $columns
+     * @param  array<BaseColumn>|null  $columns
      */
     protected function setColumns(?array $columns): void
     {

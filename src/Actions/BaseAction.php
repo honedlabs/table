@@ -1,14 +1,14 @@
 <?php
 
-namespace Conquest\Table\Actions;
+namespace Honed\Table\Actions;
 
 use Closure;
-use Conquest\Core\Concerns\HasLabel;
-use Conquest\Core\Concerns\HasMeta;
-use Conquest\Core\Concerns\HasName;
-use Conquest\Core\Concerns\HasType;
-use Conquest\Core\Concerns\IsAuthorized;
-use Conquest\Core\Primitive;
+use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Concerns\HasMeta;
+use Honed\Core\Concerns\HasName;
+use Honed\Core\Concerns\HasType;
+use Honed\Core\Concerns\IsAuthorized;
+use Honed\Core\Primitive;
 
 abstract class BaseAction extends Primitive
 {

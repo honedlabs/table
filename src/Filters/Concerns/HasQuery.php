@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters\Concerns;
+namespace Honed\Table\Filters\Concerns;
 
 use Closure;
-use Conquest\Table\Exceptions\QueryNotDefined;
+use Honed\Table\Exceptions\QueryNotDefined;
 
 trait HasQuery
 {

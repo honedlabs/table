@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Actions\Concerns\Chunk;
+namespace Honed\Table\Actions\Concerns\Chunk;
 
 use Closure;
 

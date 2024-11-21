@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Columns\DateColumn;
+use Honed\Table\Columns\DateColumn;
 
 beforeEach(function () {
     $this->column = DateColumn::make('name');

@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Filters\SetFilter;
+use Honed\Table\Filters\SetFilter;
 
 beforeEach(function () {
     $this->action = SetFilter::make('Delete');

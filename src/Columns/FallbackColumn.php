@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Columns;
+namespace Honed\Table\Columns;
 
-use Conquest\Table\Columns\Concerns\HasFallback;
-use Conquest\Table\Columns\Concerns\IsSearchable;
+use Honed\Table\Columns\Concerns\HasFallback;
+use Honed\Table\Columns\Concerns\IsSearchable;
 
 abstract class FallbackColumn extends BaseColumn
 {

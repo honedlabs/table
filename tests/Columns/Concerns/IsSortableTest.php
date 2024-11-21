@@ -3,8 +3,8 @@
 /**
  * @todo: Add property tests then duplicate to searchable
  */
-use Conquest\Table\Columns\Column;
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Columns\Column;
+use Honed\Table\Sorts\ToggleSort;
 
 beforeEach(function () {
     $this->column = Column::make('name');

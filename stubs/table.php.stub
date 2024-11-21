@@ -2,13 +2,13 @@
 
 namespace {{ namespace }};
 
-use Conquest\Table\Table;
-use Conquest\Table\Columns\Column;
-use Conquest\Table\Sorts\Sort;
-use Conquest\Table\Filters\Filter;
-use Conquest\Table\Actions\BulkAction;
-use Conquest\Table\Actions\PageAction;
-use Conquest\Table\Actions\InlineAction;
+use Honed\Table\Table;
+use Honed\Table\Columns\Column;
+use Honed\Table\Sorts\Sort;
+use Honed\Table\Filters\Filter;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Actions\PageAction;
+use Honed\Table\Actions\InlineAction;
 
 final class {{ class }} extends Table
 {

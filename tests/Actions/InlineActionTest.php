@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Actions\InlineAction;
+use Honed\Table\Actions\InlineAction;
 use Workbench\App\Models\Product;
 
 // it('testing', function () {

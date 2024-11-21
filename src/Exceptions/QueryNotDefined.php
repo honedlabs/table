@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Exceptions;
+namespace Honed\Table\Exceptions;
 
 use Exception;
 

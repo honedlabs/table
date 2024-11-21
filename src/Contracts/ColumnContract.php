@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Contracts;
+namespace Honed\Table\Contracts;
 
 interface ColumnContract
 {

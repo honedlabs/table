@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Concerns\Remember;
+namespace Honed\Table\Concerns\Remember;
 
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;

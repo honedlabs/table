@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Sorts\Sort;
-use Conquest\Table\Table;
+use Honed\Table\Sorts\Sort;
+use Honed\Table\Table;
 use Illuminate\Support\Facades\DB;
 use Workbench\App\Models\Product;
 

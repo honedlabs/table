@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Actions;
+namespace Honed\Table\Actions;
 
-use Conquest\Core\Concerns\IsDefault;
-use Conquest\Core\Concerns\Routable;
-use Conquest\Core\Contracts\HigherOrder;
-use Conquest\Core\Contracts\ProxiesHigherOrder;
-use Conquest\Table\Actions\Concerns\Actionable;
-use Conquest\Table\Actions\Concerns\CanBeConfirmable;
-use Conquest\Table\Actions\Concerns\IsBulk;
-use Conquest\Table\Actions\Confirm\Proxies\HigherOrderConfirm;
-use Conquest\Table\Actions\Enums\Context;
+use Honed\Core\Concerns\IsDefault;
+use Honed\Core\Concerns\Routable;
+use Honed\Core\Contracts\HigherOrder;
+use Honed\Core\Contracts\ProxiesHigherOrder;
+use Honed\Table\Actions\Concerns\Actionable;
+use Honed\Table\Actions\Concerns\CanBeConfirmable;
+use Honed\Table\Actions\Concerns\IsBulk;
+use Honed\Table\Actions\Confirm\Proxies\HigherOrderConfirm;
+use Honed\Table\Actions\Enums\Context;
 
 /**
- * @property-read \Conquest\Table\Actions\Confirm\Confirm $confirm
+ * @property-read \Honed\Table\Actions\Confirm\Confirm $confirm
  */
 class InlineAction extends BaseAction implements ProxiesHigherOrder
 {
@@ -47,7 +47,7 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
      * Dynamically access the confirm property.
      * 
      * @param string $property
-     * @return \Conquest\Core\Contracts\HigherOrder
+     * @return \Honed\Core\Contracts\HigherOrder
      * @throws \Exception
      */
     public function __get(string $property)

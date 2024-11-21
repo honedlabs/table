@@ -1,16 +1,16 @@
 <?php
 
-namespace Conquest\Table\Actions\Attributes;
+namespace Honed\Table\Actions\Attributes;
 
 use Attribute;
 use Closure;
-use Conquest\Table\Actions\Confirm\Confirmable;
+use Honed\Table\Actions\Confirm\Confirmable;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class Confirm
 {
     /**
-     * @var \Conquest\Table\Actions\Confirm\Confirmable
+     * @var \Honed\Table\Actions\Confirm\Confirmable
      */
     protected $confirm;
 
@@ -19,7 +19,7 @@ class Confirm
      * 
      * @param string|\Closure $title
      * @param string|\Closure $description
-     * @param string|\Conquest\Table\Actions\Confirm\Enums\Intent|\Closure $intent
+     * @param string|\Honed\Table\Actions\Confirm\Enums\Intent|\Closure $intent
      * @param string|\Closure $cancel
      * @param string|\Closure $submit
      */
@@ -37,7 +37,7 @@ class Confirm
     /**
      * Get the confirm instance.
      * 
-     * @return \Conquest\Table\Actions\Confirm\Confirmable
+     * @return \Honed\Table\Actions\Confirm\Confirmable
      */
     public function getConfirm()
     {

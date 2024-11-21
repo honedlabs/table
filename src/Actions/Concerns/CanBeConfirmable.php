@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Actions\Concerns;
+namespace Honed\Table\Actions\Concerns;
 
 use Closure;
-use Conquest\Table\Actions\Attributes\Confirm;
-use Conquest\Table\Actions\Confirm\Confirmable;
+use Honed\Table\Actions\Attributes\Confirm;
+use Honed\Table\Actions\Confirm\Confirmable;
 use ReflectionClass;
 
 trait CanBeConfirmable
 {
     /**
-     * @var \Conquest\Table\Actions\Confirm\Confirm|null
+     * @var \Honed\Table\Actions\Confirm\Confirm|null
      */
     protected ?Confirmable $confirm = null;
 
     /**
      * Set the properties of the confirm
      * 
-     * @param \Conquest\Table\Actions\Confirm\Confirm|bool|null $confirm
+     * @param \Honed\Table\Actions\Confirm\Confirm|bool|null $confirm
      * @return $this
      */
     public function confirm($confirm)
@@ -42,7 +42,7 @@ trait CanBeConfirmable
      *
      * @internal
      *
-     * @param  \Conquest\Table\Actions\Confirm\Confirm|bool|null  $confirm
+     * @param  \Honed\Table\Actions\Confirm\Confirm|bool|null  $confirm
      */
     public function setConfirm($confirm)
     {
@@ -60,7 +60,7 @@ trait CanBeConfirmable
     /**
      * Get the confirm instance.
      *
-     * @return \Conquest\Table\Actions\Confirm\Confirm|null
+     * @return \Honed\Table\Actions\Confirm\Confirm|null
      */
     public function getConfirm()
     {

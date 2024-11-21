@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters\Concerns;
+namespace Honed\Table\Filters\Concerns;
 
 use Closure;
 

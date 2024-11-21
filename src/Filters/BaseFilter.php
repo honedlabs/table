@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters;
+namespace Honed\Table\Filters;
 
 use Closure;
-use Conquest\Core\Concerns\CanTransform;
-use Conquest\Core\Concerns\HasLabel;
-use Conquest\Core\Concerns\HasMeta;
-use Conquest\Core\Concerns\HasName;
-use Conquest\Core\Concerns\HasType;
-use Conquest\Core\Concerns\HasValue;
-use Conquest\Core\Concerns\IsActive;
-use Conquest\Core\Concerns\IsAuthorized;
-use Conquest\Core\Concerns\Transforms;
-use Conquest\Core\Primitive;
-use Conquest\Table\Contracts\Filters;
+use Honed\Core\Concerns\CanTransform;
+use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Concerns\HasMeta;
+use Honed\Core\Concerns\HasName;
+use Honed\Core\Concerns\HasType;
+use Honed\Core\Concerns\HasValue;
+use Honed\Core\Concerns\IsActive;
+use Honed\Core\Concerns\IsAuthorized;
+use Honed\Core\Concerns\Transforms;
+use Honed\Core\Primitive;
+use Honed\Table\Contracts\Filters;
 use Illuminate\Support\Facades\Request;
 
 abstract class BaseFilter extends Primitive implements Filters

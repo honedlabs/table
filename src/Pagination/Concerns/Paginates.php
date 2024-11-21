@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Pagination\Concerns;
+namespace Honed\Table\Pagination\Concerns;
 
-use Conquest\Table\Pagination\Pagination;
+use Honed\Table\Pagination\Pagination;
 
 trait Paginates
 {

@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Columns\TextColumn;
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Columns\TextColumn;
+use Honed\Table\Sorts\ToggleSort;
 
 it('can instantiate a text column', function () {
     $col = new TextColumn('name');

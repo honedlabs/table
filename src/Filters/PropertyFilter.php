@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters;
+namespace Honed\Table\Filters;
 
 use Closure;
-use Conquest\Core\Concerns\CanValidate;
-use Conquest\Core\Concerns\HasProperty;
-use Conquest\Table\Exceptions\CannotResolveNameFromProperty;
+use Honed\Core\Concerns\CanValidate;
+use Honed\Core\Concerns\HasProperty;
+use Honed\Table\Exceptions\CannotResolveNameFromProperty;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 

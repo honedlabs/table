@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Actions\BulkAction;
+use Honed\Table\Actions\BulkAction;
 use Workbench\App\Models\Product;
 
 it('can instantiate an bulk action', function () {

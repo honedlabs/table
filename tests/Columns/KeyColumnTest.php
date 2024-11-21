@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Columns\KeyColumn;
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Columns\KeyColumn;
+use Honed\Table\Sorts\ToggleSort;
 
 it('can instantiate a key column', function () {
     $col = new KeyColumn('id');

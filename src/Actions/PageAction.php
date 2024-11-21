@@ -1,9 +1,9 @@
 <?php
 
-namespace Conquest\Table\Actions;
+namespace Honed\Table\Actions;
 
-use Conquest\Core\Concerns\Routable;
-use Conquest\Table\Actions\Enums\Context;
+use Honed\Core\Concerns\Routable;
+use Honed\Table\Actions\Enums\Context;
 
 class PageAction extends BaseAction
 {

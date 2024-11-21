@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Sorts\Concerns;
+namespace Honed\Table\Sorts\Concerns;
 
 trait HasDirection
 {

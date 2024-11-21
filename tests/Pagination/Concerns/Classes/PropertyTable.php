@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Tests\Pagination\Concerns\Classes;
+namespace Honed\Table\Tests\Pagination\Concerns\Classes;
 
-use Conquest\Table\Pagination\Enums\Paginator;
-use Conquest\Table\Table;
+use Honed\Table\Pagination\Enums\Paginator;
+use Honed\Table\Table;
 
 final class PropertyTable extends Table
 {

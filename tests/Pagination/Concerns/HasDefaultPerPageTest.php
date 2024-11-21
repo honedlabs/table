@@ -1,8 +1,8 @@
 <?php
 
-use Conquest\Table\Table;
-use Conquest\Table\Tests\Pagination\Concerns\Classes\MethodTable;
-use Conquest\Table\Tests\Pagination\Concerns\Classes\PropertyTable;
+use Honed\Table\Table;
+use Honed\Table\Tests\Pagination\Concerns\Classes\MethodTable;
+use Honed\Table\Tests\Pagination\Concerns\Classes\PropertyTable;
 
 it('uses default per page default as null', function () {
     expect(Table::make()->getDefaultPerPage())->toBe(config('table.pagination.default'));

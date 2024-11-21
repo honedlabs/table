@@ -1,13 +1,13 @@
 <?php
 
-namespace Conquest\Table\Actions;
+namespace Honed\Table\Actions;
 
-use Conquest\Table\Actions\Concerns\Actionable;
-use Conquest\Table\Actions\Concerns\CanBeConfirmable;
-use Conquest\Table\Actions\Concerns\Chunk\Chunks;
-use Conquest\Table\Actions\Concerns\IsDeselectable;
-use Conquest\Table\Actions\Concerns\IsInline;
-use Conquest\Table\Actions\Enums\Context;
+use Honed\Table\Actions\Concerns\Actionable;
+use Honed\Table\Actions\Concerns\CanBeConfirmable;
+use Honed\Table\Actions\Concerns\Chunk\Chunks;
+use Honed\Table\Actions\Concerns\IsDeselectable;
+use Honed\Table\Actions\Concerns\IsInline;
+use Honed\Table\Actions\Enums\Context;
 
 class BulkAction extends BaseAction
 {

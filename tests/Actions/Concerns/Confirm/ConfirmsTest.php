@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Actions\BulkAction;
-use Conquest\Table\Actions\Concerns\Confirm\ConfirmType;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Actions\Concerns\Confirm\ConfirmType;
 
 beforeEach(function () {
     $this->action = BulkAction::make('Delete');

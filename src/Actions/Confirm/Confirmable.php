@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Actions\Confirm;
+namespace Honed\Table\Actions\Confirm;
 
 use Closure;
-use Conquest\Core\Concerns\HasDescription;
-use Conquest\Core\Concerns\HasTitle;
-use Conquest\Core\Primitive;
-use Conquest\Table\Actions\Confirm\Concerns\HasCancel;
-use Conquest\Table\Actions\Confirm\Concerns\HasIntent;
-use Conquest\Table\Actions\Confirm\Concerns\HasSubmit;
+use Honed\Core\Concerns\HasDescription;
+use Honed\Core\Concerns\HasTitle;
+use Honed\Core\Primitive;
+use Honed\Table\Actions\Confirm\Concerns\HasCancel;
+use Honed\Table\Actions\Confirm\Concerns\HasIntent;
+use Honed\Table\Actions\Confirm\Concerns\HasSubmit;
 
 class Confirmable extends Primitive
 {

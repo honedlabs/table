@@ -1,29 +1,29 @@
 <?php
 
-namespace Conquest\Table\Concerns;
+namespace Honed\Table\Concerns;
 
-use Conquest\Table\Actions\BaseAction;
-use Conquest\Table\Actions\BulkAction;
-use Conquest\Table\Actions\InlineAction;
-use Conquest\Table\Actions\PageAction;
+use Honed\Table\Actions\BaseAction;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Actions\InlineAction;
+use Honed\Table\Actions\PageAction;
 use Illuminate\Support\Collection;
 
 trait HasActions
 {
     /**
-     * @var Collection<int, Conquest\Table\Actions\BaseAction>
+     * @var Collection<int, Honed\Table\Actions\BaseAction>
      */
     private Collection $cachedActions;
 
     /**
-     * @var array<int, Conquest\Table\Actions\BaseAction>
+     * @var array<int, Honed\Table\Actions\BaseAction>
      */
     protected $actions;
 
     /**
      * Set the actions for the table.
      *
-     * @param  array<int, Conquest\Table\Actions\BaseAction>  $actions
+     * @param  array<int, Honed\Table\Actions\BaseAction>  $actions
      */
     public function setActions(?array $actions): void
     {
@@ -38,7 +38,7 @@ trait HasActions
      * Get the actions for the table.
      *
      * @internal
-     * @return array<int, Conquest\Table\Actions\BaseAction>
+     * @return array<int, Honed\Table\Actions\BaseAction>
      */
     public function definedActions(): array
     {
@@ -56,7 +56,7 @@ trait HasActions
     /**
      * Get all available actions.
      *
-     * @return Collection<int, Conquest\Table\Actions\BaseAction>
+     * @return Collection<int, Honed\Table\Actions\BaseAction>
      */
     public function getActions(): Collection
     {
@@ -67,7 +67,7 @@ trait HasActions
     /**
      * Get the inline actions.
      *
-     * @return Collection<int, Conquest\Table\Actions\InlineAction>
+     * @return Collection<int, Honed\Table\Actions\InlineAction>
      */
     public function getInlineActions(): Collection
     {
@@ -78,7 +78,7 @@ trait HasActions
     /**
      * Get the bulk actions.
      *
-     * @return Collection<int, Conquest\Table\Actions\BulkAction>
+     * @return Collection<int, Honed\Table\Actions\BulkAction>
      */
     public function getBulkActions(): Collection
     {
@@ -89,7 +89,7 @@ trait HasActions
     /**
      * Get the page actions.
      *
-     * @return Collection<int, Conquest\Table\Actions\PageAction>
+     * @return Collection<int, Honed\Table\Actions\PageAction>
      */
     public function getPageActions(): Collection
     {
@@ -100,7 +100,7 @@ trait HasActions
     /**
      * Get the default inline action for a record.
      *
-     * @return ?Conquest\Table\Actions\BaseAction
+     * @return ?Honed\Table\Actions\BaseAction
      */
     public function getDefaultAction(): ?BaseAction
     {

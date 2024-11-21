@@ -1,7 +1,7 @@
 <?php
 
 use Carbon\Carbon;
-use Conquest\Table\Columns\DateColumn;
+use Honed\Table\Columns\DateColumn;
 
 beforeEach(function () {
     Carbon::setTestNow(Carbon::parse('1st January 2000'));

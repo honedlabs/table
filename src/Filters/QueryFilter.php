@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters;
+namespace Honed\Table\Filters;
 
 use Closure;
-use Conquest\Core\Concerns\CanTransform;
-use Conquest\Core\Concerns\CanValidate;
-use Conquest\Table\Filters\Concerns\HasQuery;
+use Honed\Core\Concerns\CanTransform;
+use Honed\Core\Concerns\CanValidate;
+use Honed\Table\Filters\Concerns\HasQuery;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 

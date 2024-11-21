@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Actions\Enums;
+namespace Honed\Table\Actions\Enums;
 
 enum Context: string
 {

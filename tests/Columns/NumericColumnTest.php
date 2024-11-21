@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Columns\NumericColumn;
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Columns\NumericColumn;
+use Honed\Table\Sorts\ToggleSort;
 
 it('can instantiate a numeric column', function () {
     $col = new NumericColumn('amount');

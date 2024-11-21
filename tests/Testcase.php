@@ -1,8 +1,8 @@
 <?php
 
-namespace Conquest\Table\Tests;
+namespace Honedble\Tests;
 
-use Conquest\Table\TableServiceProvider;
+use Honedble\TableServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Workbench\App\Providers\WorkbenchServiceProvider;
 

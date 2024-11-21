@@ -3,8 +3,8 @@
 namespace App\Table\Pipes;
 
 use Closure;
-use Conquest\Table\Pipes\Contracts\Searches;
-use Conquest\Table\Table;
+use Honed\Table\Pipes\Contracts\Searches;
+use Honed\Table\Table;
 
 /**
  * @internal

@@ -1,8 +1,8 @@
 <?php
 
-use Conquest\Table\Columns\Column;
-use Conquest\Table\Pagination\Enums\PaginationType;
-use Conquest\Table\Table;
+use Honed\Table\Columns\Column;
+use Honed\Table\Pagination\Enums\PaginationType;
+use Honed\Table\Table;
 use Illuminate\Support\Facades\Request;
 use Workbench\App\Models\Product;
 

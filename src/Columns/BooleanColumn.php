@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Columns;
+namespace Honed\Table\Columns;
 
-use Conquest\Table\Columns\Concerns\Formatters\FormatsBoolean;
+use Honed\Table\Columns\Concerns\Formatters\FormatsBoolean;
 
 class BooleanColumn extends BaseColumn
 {

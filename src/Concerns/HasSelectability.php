@@ -1,9 +1,9 @@
 <?php
 
-namespace Conquest\Table\Concerns;
+namespace Honed\Table\Concerns;
 
 use Closure;
-use Conquest\Table\Columns\BaseColumn;
+use Honed\Table\Columns\BaseColumn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 

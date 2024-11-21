@@ -1,22 +1,22 @@
 <?php
 
-namespace Conquest\Table\Concerns;
+namespace Honed\Table\Concerns;
 
-use Conquest\Table\Sorts\BaseSort;
+use Honed\Table\Sorts\BaseSort;
 
 /**
- * @mixin Conquest\Table\Concerns\HasOrder
- * @mixin Conquest\Table\Concerns\HasSort
+ * @mixin Honed\Table\Concerns\HasOrder
+ * @mixin Honed\Table\Concerns\HasSort
  */
 trait HasSorts
 {
     /**
-     * @var array<int, \Conquest\Table\Sorts\BaseSort>
+     * @var array<int, \Honed\Table\Sorts\BaseSort>
      */
     protected $sorts;
 
     /**
-     * @param array<int, \Conquest\Table\Sorts\BaseSort>|null $sorts
+     * @param array<int, \Honed\Table\Sorts\BaseSort>|null $sorts
      */
     protected function setSorts($sorts)
     {
@@ -28,7 +28,7 @@ trait HasSorts
 
     /**
      * @internal
-     * @return array<int, \Conquest\Table\Sorts\BaseSort>
+     * @return array<int, \Honed\Table\Sorts\BaseSort>
      */
     protected function definedSorts()
     {
@@ -46,7 +46,7 @@ trait HasSorts
     /**
      * Get the authorized sorts.
      * 
-     * @return array<int, \Conquest\Table\Sorts\BaseSort>
+     * @return array<int, \Honed\Table\Sorts\BaseSort>
      */
     public function getSorts()
     {
@@ -85,7 +85,7 @@ trait HasSorts
     /**
      * Get the default sort to apply if no sort is provided.
      * 
-     * @return \Conquest\Table\Sorts\BaseSort|null
+     * @return \Honed\Table\Sorts\BaseSort|null
      */
     public function getDefaultSort()
     {

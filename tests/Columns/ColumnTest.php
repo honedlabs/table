@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Columns\Column;
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Columns\Column;
+use Honed\Table\Sorts\ToggleSort;
 
 it('can instantiate a column', function () {
     $col = new Column('name');

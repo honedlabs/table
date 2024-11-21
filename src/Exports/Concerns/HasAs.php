@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Exports\Concerns;
+namespace Honed\Table\Exports\Concerns;
 
 use Maatwebsite\Excel\Excel;
 

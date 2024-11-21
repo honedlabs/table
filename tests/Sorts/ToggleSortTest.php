@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Sorts\ToggleSort;
 
 it('can create a toggle sort', function () {
     $sort = new ToggleSort($n = 'name');

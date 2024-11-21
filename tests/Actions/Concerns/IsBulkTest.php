@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Actions\InlineAction;
+use Honed\Table\Actions\InlineAction;
 
 beforeEach(function () {
     $this->action = InlineAction::make('Delete');

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters;
+namespace Honed\Table\Filters;
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
-use Conquest\Table\Filters\Concerns\HasDateClause;
-use Conquest\Table\Filters\Concerns\HasOperator;
-use Conquest\Table\Filters\Enums\DateClause;
-use Conquest\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\Concerns\HasDateClause;
+use Honed\Table\Filters\Concerns\HasOperator;
+use Honed\Table\Filters\Enums\DateClause;
+use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Request;

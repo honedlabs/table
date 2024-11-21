@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Columns\BooleanColumn;
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Columns\BooleanColumn;
+use Honed\Table\Sorts\ToggleSort;
 
 it('can instantiate a boolean column', function () {
     $col = new BooleanColumn('active');

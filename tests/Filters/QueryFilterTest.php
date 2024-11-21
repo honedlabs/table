@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Exceptions\QueryNotDefined;
-use Conquest\Table\Filters\QueryFilter;
+use Honed\Table\Exceptions\QueryNotDefined;
+use Honed\Table\Filters\QueryFilter;
 use Illuminate\Support\Facades\Request;
 use Workbench\App\Models\Product;
 

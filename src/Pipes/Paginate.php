@@ -3,9 +3,9 @@
 namespace App\Table\Pipes;
 
 use Closure;
-use Conquest\Table\Pagination\Enums\Paginator;
-use Conquest\Table\Pipes\Contracts\Paginates;
-use Conquest\Table\Table;
+use Honed\Table\Pagination\Enums\Paginator;
+use Honed\Table\Pipes\Contracts\Paginates;
+use Honed\Table\Table;
 
 /**
  * @internal

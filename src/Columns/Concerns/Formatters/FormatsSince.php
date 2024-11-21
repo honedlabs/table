@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Columns\Concerns\Formatters;
+namespace Honed\Table\Columns\Concerns\Formatters;
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;

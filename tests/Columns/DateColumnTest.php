@@ -1,8 +1,8 @@
 <?php
 
 use Carbon\Carbon;
-use Conquest\Table\Columns\DateColumn;
-use Conquest\Table\Sorts\ToggleSort;
+use Honed\Table\Columns\DateColumn;
+use Honed\Table\Sorts\ToggleSort;
 
 beforeEach(function () {
     Carbon::setTestNow('2000-01-01 00:00:00');

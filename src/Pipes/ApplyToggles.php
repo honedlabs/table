@@ -1,10 +1,10 @@
 <?php
 
-namespace Conquest\Table\Pipes;
+namespace Honed\Table\Pipes;
 
 use Closure;
-use Conquest\Table\Pipes\Contracts\Toggles;
-use Conquest\Table\Table;
+use Honed\Table\Pipes\Contracts\Toggles;
+use Honed\Table\Table;
 
 /**
  * @internal

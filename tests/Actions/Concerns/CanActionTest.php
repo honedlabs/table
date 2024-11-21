@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Actions\InlineAction;
+use Honed\Table\Actions\InlineAction;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Workbench\App\Models\Product;

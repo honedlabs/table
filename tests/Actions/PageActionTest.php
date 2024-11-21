@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Actions\PageAction;
+use Honed\Table\Actions\PageAction;
 
 it('can instantiate an page action', function () {
     $action = new PageAction('Create');

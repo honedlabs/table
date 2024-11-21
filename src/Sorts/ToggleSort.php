@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Sorts;
+namespace Honed\Table\Sorts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters\Concerns;
+namespace Honed\Table\Filters\Concerns;
 
-use Conquest\Table\Filters\Enums\Clause;
+use Honed\Table\Filters\Enums\Clause;
 
 trait HasClause
 {

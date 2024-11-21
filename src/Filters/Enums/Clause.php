@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Filters\Enums;
+namespace Honed\Table\Filters\Enums;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;

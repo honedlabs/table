@@ -1,6 +1,6 @@
 <?php
 
-use Conquest\Table\Actions\BulkAction;
+use Honed\Table\Actions\BulkAction;
 
 beforeEach(function () {
     $this->action = BulkAction::make('Duplicate');

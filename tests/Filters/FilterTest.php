@@ -1,9 +1,9 @@
 <?php
 
-use Conquest\Table\Exceptions\CannotResolveNameFromProperty;
-use Conquest\Table\Filters\Enums\Clause;
-use Conquest\Table\Filters\Enums\Operator;
-use Conquest\Table\Filters\Filter;
+use Honed\Table\Exceptions\CannotResolveNameFromProperty;
+use Honed\Table\Filters\Enums\Clause;
+use Honed\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\Filter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Workbench\App\Models\Product;

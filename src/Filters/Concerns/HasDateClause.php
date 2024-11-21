@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Filters\Concerns;
+namespace Honed\Table\Filters\Concerns;
 
-use Conquest\Table\Filters\Enums\DateClause;
+use Honed\Table\Filters\Enums\DateClause;
 
 trait HasDateClause
 {

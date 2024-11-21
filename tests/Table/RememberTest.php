@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Columns\Column;
-use Conquest\Table\Table;
+use Honed\Table\Columns\Column;
+use Honed\Table\Table;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;

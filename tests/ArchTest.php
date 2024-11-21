@@ -7,4 +7,4 @@ arch('does not use debugging functions')
 // arch()->preset()->php();
 // arch()->preset()->security();
 // arch()->preset()->relaxed();
-// arch()->preset()->conquest();
+// arch()->preset()->honed();

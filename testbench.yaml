@@ -1,4 +1,4 @@
-laravel: './vendor/conquest/inertia-testbench/skeleton'
+laravel: './vendor/honed/inertia-testbench/skeleton'
 
 migrations:
   - workbench/database/migrations
@@ -8,7 +8,7 @@ seeders:
 
 providers:
   - Workbench\App\Providers\WorkbenchServiceProvider
-  - Conquest\Table\TableServiceProvider
+  - Honed\Table\TableServiceProvider
 
 connections:
   testing:

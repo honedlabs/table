@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Concerns;
+namespace Honed\Table\Concerns;
 
 use RuntimeException;
 use Illuminate\Database\Eloquent\Model;

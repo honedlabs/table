@@ -1,18 +1,18 @@
 <?php
 
-namespace Conquest\Table\Actions\Confirm\Proxies;
+namespace Honed\Table\Actions\Confirm\Proxies;
 
-use Conquest\Core\Contracts\HigherOrder;
-use Conquest\Core\Primitive;
+use Honed\Core\Contracts\HigherOrder;
+use Honed\Core\Primitive;
 
 /**
  * @internal
  *
- * @mixin Conquest\Table\Actions\Confirm\Confirmable
+ * @mixin Honed\Table\Actions\Confirm\Confirmable
  *
- * @template T of Conquest\Core\Primitive
+ * @template T of Honed\Core\Primitive
  *
- * @template-implements Conquest\Core\Concerns\HigherOrder
+ * @template-implements Honed\Core\Concerns\HigherOrder
  */
 class HigherOrderConfirm implements HigherOrder
 {

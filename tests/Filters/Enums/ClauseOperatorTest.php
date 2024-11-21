@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Filters\DateFilter;
-use Conquest\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\DateFilter;
+use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Support\Facades\Request;
 use Workbench\App\Models\Product;
 

@@ -1,5 +1,5 @@
 <?php
 
-namespace Conquest\Table\DataObjects;
+namespace Honed\Table\DataObjects;
 
 class ExportData extends BulkActionData {}

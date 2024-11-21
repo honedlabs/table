@@ -1,8 +1,8 @@
 <?php
 
-namespace Conquest\Table;
+namespace Honed\Table;
 
-use Conquest\Table\Console\Commands\TableMakeCommand;
+use Honed\Table\Console\Commands\TableMakeCommand;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,7 +31,7 @@ class TableServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../stubs' => base_path('stubs'),
-        ], 'conquest-stubs');
+        ], 'honed-stubs');
 
         $this->publishes([
             __DIR__.'/../config/table.php' => $this->app['path.config'].DIRECTORY_SEPARATOR.'table.php',

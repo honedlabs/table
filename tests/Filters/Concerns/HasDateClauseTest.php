@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Filters\DateFilter;
-use Conquest\Table\Filters\Enums\DateClause;
+use Honed\Table\Filters\DateFilter;
+use Honed\Table\Filters\Enums\DateClause;
 
 beforeEach(function () {
     $this->filter = DateFilter::make('name');

@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Actions\Http\DTOs;
+namespace Honed\Table\Actions\Http\DTOs;
 
 use Illuminate\Http\Request;
 

@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Pagination\Pagination;
-use Conquest\Table\Table;
+use Honed\Table\Pagination\Pagination;
+use Honed\Table\Table;
 
 uses(Table::class);
 

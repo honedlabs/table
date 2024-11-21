@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Console\Commands;
+namespace Honed\Table\Console\Commands;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;

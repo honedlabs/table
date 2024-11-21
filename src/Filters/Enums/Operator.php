@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Filters\Enums;
+namespace Honed\Table\Filters\Enums;
 
 enum Operator: string
 {

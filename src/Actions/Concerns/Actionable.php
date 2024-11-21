@@ -1,6 +1,6 @@
 <?php
 
-namespace Conquest\Table\Actions\Concerns;
+namespace Honed\Table\Actions\Concerns;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;

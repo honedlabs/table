@@ -1,8 +1,8 @@
 <?php
 
-namespace Conquest\Table\Concerns;
+namespace Honed\Table\Concerns;
 
-use Conquest\Table\Filters\BaseFilter;
+use Honed\Table\Filters\BaseFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 trait HasFilters

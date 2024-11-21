@@ -1,7 +1,7 @@
 <?php
 
-namespace Conquest\Table\Exports;
+namespace Honed\Table\Exports;
 
-use Conquest\Core\Primitive;
+use Honed\Core\Primitive;
 
 class Export extends Primitive {}

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Pipes\Contracts;
+namespace Honed\Table\Pipes\Contracts;
 
 use Closure;
-use Conquest\Table\Table;
+use Honed\Table\Table;
 
 interface PipelinesTable
 {

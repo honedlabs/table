@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conquest\Table\Columns;
+namespace Honed\Table\Columns;
 
 class TextColumn extends FallbackColumn
 {

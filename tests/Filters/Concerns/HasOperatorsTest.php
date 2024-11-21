@@ -1,7 +1,7 @@
 <?php
 
-use Conquest\Table\Filters\Enums\Operator;
-use Conquest\Table\Filters\OperatorFilter;
+use Honed\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\OperatorFilter;
 
 beforeEach(function () {
     $this->filter = OperatorFilter::make('name');

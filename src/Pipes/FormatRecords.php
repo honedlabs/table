@@ -3,11 +3,11 @@
 namespace App\Table\Pipes;
 
 use Closure;
-use Conquest\Table\Table;
+use Honed\Table\Table;
 use Illuminate\Support\Collection;
-use Conquest\Table\Columns\BaseColumn;
+use Honed\Table\Columns\BaseColumn;
 use Illuminate\Database\Eloquent\Model;
-use Conquest\Table\Pipes\Contracts\FormatsRecords;
+use Honed\Table\Pipes\Contracts\FormatsRecords;
 
 /**
  * @internal
@@ -34,7 +34,7 @@ class FormatRecords implements FormatsRecords
 
     /**
      * @param mixed $record
-     * @param Collection<int, \Conquest\Table\Columns\BaseColumn> $columns
+     * @param Collection<int, \Honed\Table\Columns\BaseColumn> $columns
      */
     protected function formatRecord($record, Collection $columns)
     {
