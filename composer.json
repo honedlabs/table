@@ -25,17 +25,25 @@
             "Honed\\Table\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
-            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/",
-            "App\\": "vendor/honed/inertia-testbench/skeleton/app/"
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
+    "repositories": [
+    {
+        "type": "path",
+        "url": "../../honed/core",
+        "options": {
+            "symlink": true
+        }
+    }
+],
     "require": {
         "php": "^8.2",
         "illuminate/support": "^10.0||^11.0",
         "illuminate/console": "^10.0||^11.0",
         "illuminate/database": "^10.0||^11.0",
         "illuminate/contracts": "^10.0||^11.0",
-        "honed/core": "0.4.3",
+        "honed/core": "@dev",
         "maatwebsite/excel": "^1.1"
     },
     "require-dev": {
@@ -49,8 +57,7 @@
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "phpstan/phpstan-phpunit": "^1.3",
-        "inertiajs/inertia-laravel": "^1.0",
-        "honed/inertia-testbench": "^0.1.1"
+        "inertiajs/inertia-laravel": "^1.0"
     },
     "scripts": {
         "post-autoload-dump": [
@@ -77,9 +84,7 @@
             "@composer run analyse",
             "@composer run test",
             "@composer run format"
-        ],
-        "node": "cd vendor/honed/inertia-testbench/skeleton && npm run dev",
-        "node-install": "cd vendor/honed/inertia-testbench/skeleton && npm i"
+        ]
     },
     "config": {
         "allow-plugins": {
