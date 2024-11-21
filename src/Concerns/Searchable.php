@@ -15,19 +15,14 @@ trait Searchable
     protected $search;
 
     /**
-     * @var string|null
-     */
-    protected static $defaultSearchAs = 'q';
-
-    /**
      * @var string
      */
     protected $searchAs;
 
     /**
-     * @var bool
+     * @var string
      */
-    protected static $defaultScout = false;
+    protected static $globalSearchAs = 'search';
 
     /**
      * @var bool
@@ -35,23 +30,28 @@ trait Searchable
     protected $scout;
 
     /**
+     * @var bool
+     */
+    protected static $globalScout = false;
+
+    /**
      * Configure the default search query parameter to use for all tables.
      * 
-     * @param string $search
+     * @param string|array<int,string> $search
      * @return void
      */
-    public static function searchUsing(string $search)
+    public static function setSearch(string|array $search)
     {
         static::$search = $search;
     }
 
     /**
-     * Configure whether to use Laravel Scout for searching of tables.
+     * Configure whether to enable Laravel Scout for searching of all tables by default.
      * 
      * @param bool $scout
      * @return void
      */
-    public static function useScout(bool $scout = true)
+    public static function enableScout(bool $scout = true)
     {
         static::$scout = $scout;
     }
@@ -73,7 +73,7 @@ trait Searchable
      */
     public function getSearchAs()
     {
-        return $this->inspect('searchAs', static::$defaultSearchAs);
+        return $this->inspect('searchAs', static::$globalSearchAs);
     }
 
     /**
@@ -83,7 +83,7 @@ trait Searchable
      */
     public function isScoutSearch()
     {
-        return $this->inspect('scout', static::$defaultScout);
+        return $this->inspect('scout', static::$globalScout);
     }
 
     /**

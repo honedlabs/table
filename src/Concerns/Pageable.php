@@ -37,7 +37,7 @@ trait Pageable
     /**
      * @var string
      */
-    protected static $defaultPaginator = Paginator::Default;
+    protected static $globalPaginator = Paginator::Default;
 
     /**
      * @var string
@@ -47,7 +47,7 @@ trait Pageable
     /**
      * @var string
      */
-    protected static $defaultPageAs = 'page';
+    protected static $globalPageAs = 'page';
 
     /**
      * @var string
@@ -57,7 +57,7 @@ trait Pageable
     /**
      * @var string
      */
-    protected static $defaultCountAs = 'show';
+    protected static $globalCountAs = 'show';
 
     /**
      * Configure the default number of items to show per page.
@@ -87,9 +87,9 @@ trait Pageable
      * @param string|Paginator $paginator
      * @return void
      */
-    public static function setDefaultPaginator(string|Paginator $paginator)
+    public static function sePaginator(string|Paginator $paginator)
     {
-        static::$defaultPaginator = $paginator;
+        static::$globalPaginator = $paginator;
     }
 
     /**
@@ -98,9 +98,9 @@ trait Pageable
      * @param string $pageAs
      * @return void
      */
-    public static function setDefaultPageAs(string $pageAs)
+    public static function setPageAs(string $pageAs)
     {
-        static::$defaultPageAs = $pageAs;
+        static::$globalPageAs = $pageAs;
     }
 
     /**
@@ -109,9 +109,9 @@ trait Pageable
      * @param string $countAs
      * @return void
      */
-    public static function setDefaultCountAs(string $countAs)
+    public static function setCountAs(string $countAs)
     {
-        static::$defaultCountAs = $countAs;
+        static::$globalCountAs = $countAs;
     }
 
     /**
@@ -141,7 +141,7 @@ trait Pageable
      */
     public function getPaginator()
     {
-        return $this->inspect('paginator', static::$defaultPaginator);
+        return $this->inspect('paginator', static::$globalPaginator);
     }
 
     /**
@@ -151,7 +151,7 @@ trait Pageable
      */
     public function getPageAs()
     {
-        return $this->inspect('pageAs', static::$defaultPageAs);
+        return $this->inspect('pageAs', static::$globalPageAs);
     }
 
     /**
@@ -161,7 +161,7 @@ trait Pageable
      */
     public function getCountAs()
     {
-        return $this->inspect('countAs', static::$defaultCountAs);
+        return $this->inspect('countAs', static::$globalCountAs);
     }
 
     /**
