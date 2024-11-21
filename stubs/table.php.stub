@@ -3,45 +3,73 @@
 namespace {{ namespace }};
 
 use Honed\Table\Table;
-use Honed\Table\Columns\Column;
 use Honed\Table\Sorts\Sort;
+use Honed\Table\Columns\Column;
 use Honed\Table\Filters\Filter;
 use Honed\Table\Actions\BulkAction;
 use Honed\Table\Actions\PageAction;
 use Honed\Table\Actions\InlineAction;
+use Illuminate\Contracts\Database\Query\Builder;
 
 final class {{ class }} extends Table
 {
-    protected $search = [];
-    protected $count = 10;
+    /* The database column(s) to use for searching */
+    public $search = [];
+    /* The number of records to show per page */
+    public $count = 10;
 
-    protected function resource()
+    /**
+     * Define the database resource to use.
+     * 
+     * @return \Illuminate\Contracts\Database\Query\Builder|class-string<\Illuminate\Database\Eloquent\Model>
+     */
+    public function resource(): Builder|string
     {
         // return Model::query();
     }
 
-    protected function columns(): array
+    /**
+     * Define the columns to apply.
+     * 
+     * @return array<int, \Honed\Table\Columns\BaseColumn>
+     */
+    public function columns(): array
     {
         return [
             Column::make('id')->hide()->asKey(),
         ];
     }
 
-    protected function filters(): array
+    /**
+     * Define the filters available to refine the resource query.
+     * 
+     * @return array<int, \Honed\Table\Filters\BaseFilter>
+     */
+    public function filters(): array
     {
         return [
 
         ];
     }
 
-    protected function sorts(): array
+    /**
+     * Define the sorts available to order the records.
+     * 
+     * @return array<int, \Honed\Table\Sorts\BaseSort>
+     */
+    public function sorts(): array
     {
         return [
 
         ];
     }
 
-    protected function actions(): array
+    /**
+     * Define the actions available on the records, or the page itself.
+     * 
+     * @return array<int, \Honed\Table\Actions\BaseAction>
+     */
+    public function actions(): array
     {
         return [
 

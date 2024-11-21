@@ -3,12 +3,12 @@
 namespace Honed\Table\Actions;
 
 use Closure;
+use Honed\Core\Primitive;
+use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasType;
-use Honed\Core\Concerns\IsAuthorized;
-use Honed\Core\Primitive;
 
 abstract class BaseAction extends Primitive
 {
@@ -16,7 +16,7 @@ abstract class BaseAction extends Primitive
     use HasMeta;
     use HasName;
     use HasType;
-    use IsAuthorized;
+    use Authorizable;
 
     public function __construct(string $label, string|Closure|null $name = null)
     {

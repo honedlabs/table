@@ -5,6 +5,9 @@ namespace Honed\Table\Actions\Concerns;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin \Honed\Core\Concerns\Evaluable
+ */
 trait Actionable
 {
     /**

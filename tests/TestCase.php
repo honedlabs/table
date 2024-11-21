@@ -1,8 +1,8 @@
 <?php
 
-namespace Conquest\Table\Tests;
+namespace Honed\Table\Tests;
 
-use Conquest\Table\TableServiceProvider;
+use Honed\Table\TableServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Workbench\App\Providers\WorkbenchServiceProvider;

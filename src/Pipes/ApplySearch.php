@@ -9,9 +9,9 @@ use Honed\Table\Table;
 /**
  * @internal
  */
-class ApplySearch implements Searches
+class ApplySearch implements ConSearches
 {
-    public function handle(Table $table, Closure $next)
+    public function handle(Table $table, \Closure $next)
     {
         $builder = $table->getResource();
         $searches = array_merge(

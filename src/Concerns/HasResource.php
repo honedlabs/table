@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Builder;
 trait HasResource
 {
     /**
-     * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string
+     * @var \Illuminate\Contracts\Database\Eloquent\Builder|class-string
      */
     protected $resource;
 
     /**
      * Set the resource to use for the table.
      * 
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|null $resource
+     * @param \Illuminate\Contracts\Database\Eloquent\Builder|class-string|null $resource
      */
     public function setResource($resource)
     {
@@ -31,7 +31,7 @@ trait HasResource
      * Get the resource to use for the table.
      * @internal
      * @throws \RuntimeException
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string
+     * @return \Illuminate\Contracts\Database\Eloquent\Builder|class-string
      */
     protected function definedResource()
     {

@@ -12,24 +12,24 @@ use Honed\Table\Actions\Enums\Context;
 class BulkAction extends BaseAction
 {
     use Actionable;
-    use CanBeConfirmable;
-    use Chunks;
-    use IsDeselectable;
-    use IsInline;
+    // use CanBeConfirmable;
+    // use Chunks;
+    // use IsDeselectable;
+    // use IsInline;
 
     public function setUp(): void
     {
-        $this->setType(Context::Bulk->value);
+        $this->setType('bulk');
     }
 
-    public function toArray(): array
-    {
-        return array_merge(
-            parent::toArray(),
-            [
-                'confirm' => $this->getConfirm()?->toArray(),
-                'deselect' => $this->isDeselectable(),
-            ]
-        );
-    }
+    // public function toArray(): array
+    // {
+    //     return array_merge(
+    //         parent::toArray(),
+    //         [
+    //             'confirm' => $this->getConfirm()?->toArray(),
+    //             'deselect' => $this->isDeselectable(),
+    //         ]
+    //     );
+    // }
 }

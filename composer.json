@@ -28,22 +28,13 @@
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
-    "repositories": [
-    {
-        "type": "path",
-        "url": "../../honed/core",
-        "options": {
-            "symlink": true
-        }
-    }
-],
     "require": {
         "php": "^8.2",
         "illuminate/support": "^10.0||^11.0",
         "illuminate/console": "^10.0||^11.0",
         "illuminate/database": "^10.0||^11.0",
         "illuminate/contracts": "^10.0||^11.0",
-        "honed/core": "@dev",
+        "honed/core": "^0.1.0@alpha",
         "maatwebsite/excel": "^1.1"
     },
     "require-dev": {

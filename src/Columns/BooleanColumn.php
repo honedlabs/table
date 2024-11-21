@@ -8,18 +8,18 @@ use Honed\Table\Columns\Concerns\Formatters\FormatsBoolean;
 
 class BooleanColumn extends BaseColumn
 {
-    use FormatsBoolean;
+    // use FormatsBoolean;
 
     public function setUp(): void
     {
         $this->setType('boolean');
-        $this->boolean();
+        // $this->boolean();
     }
 
-    public function apply(mixed $value): mixed
-    {
-        $value = $this->applyTransform($value);
+    // public function apply(mixed $value): mixed
+    // {
+    //     $value = $this->applyTransform($value);
 
-        return $this->formatBoolean($value);
-    }
+    //     return $this->formatBoolean($value);
+    // }
 }

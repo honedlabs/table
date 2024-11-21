@@ -12,6 +12,7 @@ use App\Table\Pipes\ApplySearch;
 use App\Table\Pipes\ApplyFilters;
 use Illuminate\Pipeline\Pipeline;
 use App\Table\Pipes\FormatRecords;
+use Honed\Core\Concerns\Inspectable;
 use Honed\Table\Concerns\HasMeta;
 use Honed\Table\Concerns\HasSort;
 use Honed\Table\Concerns\HasOrder;
@@ -39,17 +40,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Table extends Primitive
 {
+    use Inspectable;
     use EncodesId;
     use RequiresKey {
         getKey as protected getTableKey;
     }
+    use HasResource;
     use HasActions;
     use HasColumns;
     use HasFilters;
     use HasMeta;
     use HasRecords;
-    use HasResource;
-    use IsAnonymous;
+    // use IsAnonymous;
     use Paginates;
     /** Toggle traits */
     use Remembers;
@@ -125,26 +127,32 @@ class Table extends Primitive
         }
     }
 
-    /**
-     * Retrieve the table as an array
-     */
     public function toArray()
     {
         $this->pipeline();
 
         return [
+            /* The table id used to deserialize it for actions */
             'id' => $this->getEncodedId($this->getId()),
+            /* The records of the table */
             'records' => $this->records,
+            /* The pagination data for the records */
             'meta' => $this->meta,
+            /* The available sort options */
             'sorts' => $this->getSorts(),
+            /* The available filter options */
             'filters' => $this->getFilters(),
+            /* The available column options */
             'columns' => $this->getColumns(),
+            /* The pagination counter */
             'pagination' => $this->getPagination($this->usePerPage()),
+            /* The available action options -> bulk/inline only for non-anonymous tables */
             'actions' => [
                 'inline' => $this->getInlineActions(),
                 'bulk' => $this->getBulkActions(),
                 'page' => $this->getPageActions(),
             ],
+            /* Track the keys used to make requests to identify changes to this specific table */
             'keys' => [
                 'id' => $this->getKey(),
                 'sort' => $this->getSort(),
@@ -157,11 +165,11 @@ class Table extends Primitive
     }
 
     /**
-     * Retrieve the records and table metadata.
+     * Build the table records and metadata using the current request.
      *
      * @internal
      */
-    protected function pipeline()
+    protected function pipeline(): void
     {
         if ($this->hasRecords()) {
             return;
@@ -181,7 +189,7 @@ class Table extends Primitive
     }
 
     /**
-     * Dynamically handle calls to the class and handle anonymous table methods.
+     * Dynamically handle calls to the class for handling anonymous table methods.
      *
      * @param  string  $method
      * @param  array  $parameters

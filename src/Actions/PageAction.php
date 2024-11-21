@@ -11,7 +11,7 @@ class PageAction extends BaseAction
 
     public function setUp(): void
     {
-        $this->setType(Context::Page->value);
+        $this->setType('page');
     }
 
     public function toArray(): array

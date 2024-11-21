@@ -20,28 +20,28 @@ use Honed\Table\Actions\Enums\Context;
 class InlineAction extends BaseAction implements ProxiesHigherOrder
 {
     use Actionable;
-    use CanBeConfirmable;
-    use IsBulk;
-    use IsDefault;
-    use Routable;
+    // use CanBeConfirmable;
+    // use IsBulk;
+    // use IsDefault;
+    // use Routable;
 
     public function setUp(): void
     {
-        $this->setType(Context::Inline->value);
+        $this->setType('inline');
     }
 
-    public function toArray(): array
-    {
-        return array_merge(
-            parent::toArray(),
-            [
-                'route' => $this->getRoute(),
-                'method' => $this->getMethod(),
-                'actionable' => $this->canAction(),
-                'confirm' => $this->getConfirm()?->toArray(),
-            ]
-        );
-    }
+    // public function toArray(): array
+    // {
+    //     return array_merge(
+    //         parent::toArray(),
+    //         [
+    //             'route' => $this->getRoute(),
+    //             'method' => $this->getMethod(),
+    //             'actionable' => $this->canAction(),
+    //             'confirm' => $this->getConfirm()?->toArray(),
+    //         ]
+    //     );
+    // }
 
     /**
      * Dynamically access the confirm property.

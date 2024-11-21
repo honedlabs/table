@@ -3,6 +3,7 @@
 namespace Honed\Table\Sorts;
 
 use Closure;
+use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasName;
@@ -25,14 +26,14 @@ abstract class BaseSort extends Primitive implements Sorts
     use HasProperty;
     use HasType;
     use IsActive;
-    use IsAuthorized;
+    use Authorizable;
 
-    public function __construct(string|Closure $property, string|Closure|null $name = null, string|Closure|null $label = null)
+    final public function __construct(string|Closure $property, string|Closure|null $name = null, string|Closure|null $label = null)
     {
         parent::__construct();
         $this->setProperty($property);
-        $this->setName($name ?? $this->toName($property));
-        $this->setLabel($label ?? $this->toLabel($this->getName()));
+        $this->setName($name ?? $this->makeName($property));
+        $this->setLabel($label ?? $this->makeLabel($this->getName()));
     }
 
     public static function make(string|Closure $property, string|Closure|null $name = null, string|Closure|null $label = null): static
