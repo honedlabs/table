@@ -4,46 +4,62 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Closure;
-use Honed\Core\Concerns\CanTransform;
+use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
-use Honed\Core\Concerns\HasName;
+use Honed\Core\Concerns\HasProperty;
 use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
-use Honed\Core\Concerns\IsAuthorized;
-use Honed\Core\Concerns\Transforms;
+use Honed\Core\Concerns\Transformable;
 use Honed\Core\Primitive;
+use Honed\Table\Concerns\HasAlias;
 use Honed\Table\Contracts\Filters;
-use Illuminate\Support\Facades\Request;
 
 abstract class BaseFilter extends Primitive implements Filters
 {
     use HasLabel;
     use HasMeta;
-    use HasName;
+    use HasProperty; // Change to HasAttribute
     use HasType;
     use HasValue;
     use IsActive;
-    use IsAuthorized;
-    use Transforms;
+    use Authorizable;
+    use Transformable;
+    use HasAlias;
 
-    public function __construct(string|Closure $name, string|Closure|null $label = null)
+    /**
+     * Create a new filter instance specifying the database column, and optionally the display label.
+     * 
+     * @param string|Closure():string $attribute
+     * @param string|(Closure():string)|null $label
+     */
+    final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
         parent::__construct();
-        $this->setName($name);
-        $this->setLabel($label ?? $this->toLabel($this->getName()));
+        $this->setProperty($attribute);
+        $this->setLabel($label ?? $this->makeLabel($attribute));
     }
 
     /**
-     * From the current request, get the value of the filter name
+     * Make a filter specifying the database column, and optionally the display label.
      * 
-     * @return mixed
+     * @param string|Closure():string $attribute
+     * @param string|(Closure():string)|null $label
+     */
+    public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
+    {
+        return resolve(static::class, compact('attribute', 'label'));
+    }
+
+    /**
+     * Retrieve the value of the filter name from the current request.
+     * 
+     * @return int|string|array<int,int|string>|null
      */
     public function getValueFromRequest(): mixed
     {
-        return Request::input($this->getName(), null);
+        return request()->input($this->getParameterName(), null);
     }
 
     /**
@@ -54,13 +70,29 @@ abstract class BaseFilter extends Primitive implements Filters
      */
     public function filtering(mixed $value): bool
     {
-        return ! is_null($value);
+        return ! \is_null($value);
     }
 
+    /**
+     * Retrieve the display name of the filter
+     * 
+     * @internal
+     * @return string
+     */
+    protected function getParameterName(): string
+    {
+        return $this->getAlias() ?? $this->getProperty();
+    }
+
+    /**
+     * Get the filter state as an array
+     * 
+     * @return array<string,mixed>
+     */
     public function toArray(): array
     {
         return [
-            'name' => $this->getName(),
+            'name' => $this->getParameterName(),
             'label' => $this->getLabel(),
             'type' => $this->getType(),
             'active' => $this->isActive(),

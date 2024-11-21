@@ -6,12 +6,12 @@ namespace Honed\Table;
 
 use BadMethodCallException;
 use Honed\Core\Primitive;
-use App\Table\Pipes\Paginate;
-use App\Table\Pipes\ApplySorts;
-use App\Table\Pipes\ApplySearch;
-use App\Table\Pipes\ApplyFilters;
+use Honed\Table\Pipes\Paginate;
+use Honed\Table\Pipes\ApplySorts;
+use Honed\Table\Pipes\ApplySearch;
+use Honed\Table\Pipes\ApplyFilters;
 use Illuminate\Pipeline\Pipeline;
-use App\Table\Pipes\FormatRecords;
+use Honed\Table\Pipes\FormatRecords;
 use Honed\Core\Concerns\Inspectable;
 use Honed\Table\Concerns\HasMeta;
 use Honed\Table\Concerns\HasSort;
@@ -60,9 +60,9 @@ class Table extends Primitive
     use HasOrder;
     use HasSort;
     /** Search traits */
-    use HasSearch;
-    use HasSearchAs;
-    use CanSearch;
+    // use HasSearch;
+    // use HasSearchAs;
+    // use CanSearch;
 
     /**
      * Check if the table is built in-line.
@@ -179,7 +179,7 @@ class Table extends Primitive
             ->through([
                 ApplyToggles::class,
                 ApplyFilters::class,
-                ApplySearch::class,
+                // ApplySearch::class,
                 ApplySorts::class,
                 Paginate::class,
                 FormatRecords::class,

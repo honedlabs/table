@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Table\Pipes;
+namespace Honed\Table\Pipes;
 
 use Closure;
 use Honed\Table\Pipes\Contracts\Searches;
@@ -9,7 +9,7 @@ use Honed\Table\Table;
 /**
  * @internal
  */
-class ApplySearch implements ConSearches
+class ApplySearch implements Searches
 {
     public function handle(Table $table, \Closure $next)
     {

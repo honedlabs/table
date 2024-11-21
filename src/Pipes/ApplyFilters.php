@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Table\Pipes;
+namespace Honed\Table\Pipes;
 
 use Closure;
 use Honed\Table\Pipes\Contracts\Filters;

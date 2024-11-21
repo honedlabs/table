@@ -34,11 +34,11 @@ final class ProductTable extends Table
     {
         return [
             Column::make('id')->key()->hide(),
-            TextColumn::make('name')->sort(),
-            TextColumn::make('description')->fallback('No description')->sort(),
-            DateColumn::make('created_at')->format('d M Y'),
-            NumericColumn::make('price')->transform(fn ($value) => '$'.number_format($value, 2)),
-            BooleanColumn::make('best_seller', 'Favourite'),
+            // TextColumn::make('name')->sort(),
+            // TextColumn::make('description')->fallback('No description')->sort(),
+            // DateColumn::make('created_at')->format('d M Y'),
+            // NumericColumn::make('price')->transform(fn ($value) => '$'.number_format($value, 2)),
+            // BooleanColumn::make('best_seller', 'Favourite'),
             Column::make('misc')->fallback('N/A'),
         ];
     }
@@ -47,8 +47,8 @@ final class ProductTable extends Table
     {
         return [
             Filter::make('name')->like(),
-            BooleanFilter::make('best_seller', 'availability', 1),
-            DateFilter::make('created_at', 'before')->operator('<='),
+            // BooleanFilter::make('best_seller', 'availability', 1),
+            // DateFilter::make('created_at', 'before')->operator('<='),
             // SelectFilter::make('price', 'price-max')->options([
             //     Option::make(100),
             //     Option::make(500),

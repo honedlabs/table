@@ -17,7 +17,7 @@ use Honed\Table\Actions\Enums\Context;
 /**
  * @property-read \Honed\Table\Actions\Confirm\Confirm $confirm
  */
-class InlineAction extends BaseAction implements ProxiesHigherOrder
+class InlineAction extends BaseAction
 {
     use Actionable;
     // use CanBeConfirmable;
@@ -43,18 +43,18 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
     //     );
     // }
 
-    /**
-     * Dynamically access the confirm property.
-     * 
-     * @param string $property
-     * @return \Honed\Core\Contracts\HigherOrder
-     * @throws \Exception
-     */
-    public function __get(string $property)
-    {
-        return match ($property) {
-            'confirm' => new HigherOrderConfirm($this),
-            default => throw new \Exception("Property [{$property}] does not exist on ".self::class),
-        };
-    }
+    // /**
+    //  * Dynamically access the confirm property.
+    //  * 
+    //  * @param string $property
+    //  * @return \Honed\Core\Contracts\HigherOrder
+    //  * @throws \Exception
+    //  */
+    // public function __get(string $property)
+    // {
+    //     return match ($property) {
+    //         'confirm' => new HigherOrderConfirm($this),
+    //         default => throw new \Exception("Property [{$property}] does not exist on ".self::class),
+    //     };
+    // }
 }
