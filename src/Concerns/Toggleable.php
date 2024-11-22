@@ -68,7 +68,7 @@ trait Toggleable
     /**
      * Configure whether to enable toggling of columns for all tables by default.
      * 
-     * @param bool $toggle
+     * @param bool $toggleable
      * @return void
      */
     public static function enableToggleable(bool $toggleable = true)

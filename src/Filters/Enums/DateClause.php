@@ -4,7 +4,6 @@ namespace Honed\Table\Filters\Enums;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 enum DateClause: string
 {
@@ -36,7 +35,7 @@ enum DateClause: string
         };
     }
 
-    public function apply(Builder|QueryBuilder $builder, string $property, Operator $operator, Carbon $value): void
+    public function apply(Builder $builder, string $property, Operator $operator, Carbon $value): void
     {
         $builder->{$this->statement()}(
             $property,

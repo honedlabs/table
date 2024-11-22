@@ -1,35 +1,27 @@
 <?php
 
-namespace Honed\Table\Actions;
+declare(strict_types=1);
 
-use Honed\Table\Actions\Concerns\Actionable;
-use Honed\Table\Actions\Concerns\CanBeConfirmable;
-use Honed\Table\Actions\Concerns\Chunk\Chunks;
-use Honed\Table\Actions\Concerns\IsDeselectable;
-use Honed\Table\Actions\Concerns\IsInline;
-use Honed\Table\Actions\Enums\Context;
+namespace Honed\Table\Actions;
 
 class BulkAction extends BaseAction
 {
-    use Actionable;
-    // use CanBeConfirmable;
     // use Chunks;
-    // use IsDeselectable;
-    // use IsInline;
+    use Concerns\IsInline;
+    use Concerns\Actionable;
+    use Concerns\Confirmable;
+    use Concerns\DeselectsOnEnd;
 
     public function setUp(): void
     {
         $this->setType('bulk');
     }
 
-    // public function toArray(): array
-    // {
-    //     return array_merge(
-    //         parent::toArray(),
-    //         [
-    //             'confirm' => $this->getConfirm()?->toArray(),
-    //             'deselect' => $this->isDeselectable(),
-    //         ]
-    //     );
-    // }
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'confirm' => $this->getConfirm()?->toArray(),
+            'deselect' => $this->deselectsOnEnd(),
+        ]);
+    }
 }

@@ -1,27 +1,23 @@
 <?php
 
-namespace Honed\Table\Actions;
+declare(strict_types=1);
 
-use Honed\Core\Concerns\Routable;
-use Honed\Table\Actions\Enums\Context;
+namespace Honed\Table\Actions;
 
 class PageAction extends BaseAction
 {
-    // use Routable;
+    use Concerns\Urlable;
 
     public function setUp(): void
     {
         $this->setType('page');
     }
 
-    // public function toArray(): array
-    // {
-    //     return array_merge(
-    //         parent::toArray(),
-    //         [
-    //             'route' => $this->getRoute(),
-    //             'method' => $this->getMethod(),
-    //         ]
-    //     );
-    // }
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'url' => $this->getUrl(),
+            'method' => $this->getMethod(),
+        ]);
+    }
 }

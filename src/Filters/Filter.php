@@ -8,7 +8,6 @@ use Honed\Core\Concerns\HasValue;
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 
 
 class Filter extends BaseFilter
@@ -23,7 +22,7 @@ class Filter extends BaseFilter
         $this->setOperator(Operator::Equal);
     }
 
-    public function apply(Builder|QueryBuilder $builder): void
+    public function apply(Builder $builder): void
     {
         $value = $this->applyTransform($this->getValueFromRequest());
         $this->setValue($value);
@@ -31,11 +30,11 @@ class Filter extends BaseFilter
 
         $builder->when(
             $this->isActive() && $this->applyValidation($value),
-            fn (Builder|QueryBuilder $builder) => $this->handle($builder),
+            fn (Builder $builder) => $this->handle($builder),
         );
     }
 
-    public function handle(Builder|QueryBuilder $builder): void
+    public function handle(Builder $builder): void
     {
         $this->getClause()
             ->apply($builder,

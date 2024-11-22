@@ -3,8 +3,6 @@
 namespace Honed\Table\Sorts;
 
 use Honed\Core\Concerns\IsDefault;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class Sort extends BaseSort
 {

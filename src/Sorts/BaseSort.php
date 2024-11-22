@@ -13,7 +13,6 @@ use Honed\Core\Primitive;
 use Honed\Table\Concerns\HasAlias;
 use Honed\Table\Contracts\Sorts;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 abstract class BaseSort extends Primitive implements Sorts
 {
@@ -53,27 +52,27 @@ abstract class BaseSort extends Primitive implements Sorts
     /**
      * Apply the sort to the builder based on the current request.
      * 
-     * @param Builder|QueryBuilder $builder
+     * @param Builder $builder
      * @param string|null $sortBy
      * @param string|null $direction
      */
-    public function apply(Builder|QueryBuilder $builder, ?string $sortBy = null, ?string $direction = null): void
+    public function apply(Builder $builder, ?string $sortBy = null, ?string $direction = null): void
     {
         $this->setActive($this->sorting($sortBy, $direction));
 
         $builder->when(
             $this->isActive(),
-            fn (Builder|QueryBuilder $builder) => $this->handle($builder, $direction),
+            fn (Builder $builder) => $this->handle($builder, $direction),
         );
     }
 
     /**
      * Handle the sort by applying the direction to the builder.
      * 
-     * @param Builder|QueryBuilder $builder
+     * @param Builder $builder
      * @param string|null $direction
      */
-    public function handle(Builder|QueryBuilder $builder, ?string $direction = null): void
+    public function handle(Builder $builder, ?string $direction = null): void
     {
         $builder->orderBy($builder->qualifyColumn($this->getProperty()), $direction);
     }

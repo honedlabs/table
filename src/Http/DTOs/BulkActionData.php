@@ -9,7 +9,7 @@ final class BulkActionData
     /**
      * Create a transfer object for a bulk action.
      * 
-     * @param string $id
+     * @param string $table
      * @param string $name
      * @param bool $all
      * @param array<array-key, string|int> $except

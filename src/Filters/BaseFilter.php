@@ -33,8 +33,8 @@ abstract class BaseFilter extends Primitive implements Filters
     /**
      * Create a new filter instance specifying the database column, and optionally the display label.
      * 
-     * @param string|Closure():string $attribute
-     * @param string|(Closure():string)|null $label
+     * @param string|(\Closure():string) $attribute
+     * @param string|(\Closure():string)|null $label
      */
     final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
@@ -46,8 +46,8 @@ abstract class BaseFilter extends Primitive implements Filters
     /**
      * Make a filter specifying the database column, and optionally the display label.
      * 
-     * @param string|Closure():string $attribute
-     * @param string|(Closure():string)|null $label
+     * @param string|(\Closure():string) $attribute
+     * @param string|(\Closure():string)|null $label
      */
     final public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
     {

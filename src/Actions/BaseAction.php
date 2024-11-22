@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Actions;
 
-use Closure;
 use Honed\Core\Primitive;
 use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Concerns\HasLabel;
@@ -12,17 +13,17 @@ use Honed\Core\Concerns\HasType;
  
 abstract class BaseAction extends Primitive
 {
-    use HasLabel;
     use HasMeta;
     use HasName;
     use HasType;
+    use HasLabel;
     use Authorizable;
 
     /**
      * Create a new action instance with a unique name, optionally specifying a display label.
      * 
-     * @param string|Closure():string $name
-     * @param string|(Closure():string)|null $label
+     * @param string|(\Closure():string) $name
+     * @param string|(\Closure():string)|null $label
      */
     final public function __construct(string|\Closure $name, string|\Closure|null $label = null)
     {
@@ -34,8 +35,8 @@ abstract class BaseAction extends Primitive
     /**
      * Make an action with a unique name, optionally the display label.
      * 
-     * @param string|Closure():string $name
-     * @param string|(Closure():string)|null $label
+     * @param string|(\Closure():string) $name
+     * @param string|(\Closure():string)|null $label
      * @return $this
      */
     final public static function make(string|\Closure $name, string|\Closure|null $label = null): static

@@ -22,7 +22,7 @@ trait EnforceableColumns
     /**
      * Enable enforce columns globally for all tables.
      *
-     * @param  bool|null $enforceColumns
+     * @param  bool $enforceColumns
      */
     public static function enableEnforceColumns(bool $enforceColumns = true): void
     {
@@ -42,6 +42,6 @@ trait EnforceableColumns
      */
     public function doesNotEnforceColumns(): bool
     {
-        return ! $this->isEnforceColumns();
+        return ! $this->enforcesColumns();
     }
 }

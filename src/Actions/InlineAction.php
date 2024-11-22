@@ -5,43 +5,33 @@ declare(strict_types=1);
 namespace Honed\Table\Actions;
 
 use Honed\Core\Concerns\IsDefault;
-use Honed\Core\Concerns\Routable;
-use Honed\Core\Contracts\HigherOrder;
-use Honed\Core\Contracts\ProxiesHigherOrder;
-use Honed\Table\Actions\Concerns\Actionable;
-use Honed\Table\Actions\Concerns\CanBeConfirmable;
-use Honed\Table\Actions\Concerns\IsBulk;
-use Honed\Table\Actions\Confirm\Proxies\HigherOrderConfirm;
-use Honed\Table\Actions\Enums\Context;
+
 
 /**
- * @property-read \Honed\Table\Actions\Confirm\Confirm $confirm
+ * @property-read \Honed\Table\Confirm\Confirm $confirm
  */
 class InlineAction extends BaseAction
 {
-    use Actionable;
-    // use CanBeConfirmable;
-    // use IsBulk;
-    // use IsDefault;
-    // use Routable;
+    use IsDefault;
+    use Concerns\IsBulk;
+    use Concerns\Actionable;
+    use Concerns\Confirmable;
+    use Concerns\Urlable;
 
     public function setUp(): void
     {
         $this->setType('inline');
     }
 
-    // public function toArray(): array
-    // {
-    //     return array_merge(
-    //         parent::toArray(),
-    //         [
-    //             'route' => $this->getRoute(),
-    //             'method' => $this->getMethod(),
-    //             'actionable' => $this->canAction(),
-    //             'confirm' => $this->getConfirm()?->toArray(),
-    //         ]
-    //     );
-    // }
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'url' => $this->getUrl(),
+            'method' => $this->getMethod(),
+            'action' => $this->canAction(),
+            'confirm' => $this->getConfirm()?->toArray(),
+        ]);
+    }
 
     // /**
     //  * Dynamically access the confirm property.

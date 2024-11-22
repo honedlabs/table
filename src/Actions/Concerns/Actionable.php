@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Actions\Concerns;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 
 /**

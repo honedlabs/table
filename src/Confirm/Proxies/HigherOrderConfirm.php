@@ -1,6 +1,6 @@
 <?php
 
-namespace Honed\Table\Actions\Confirm\Proxies;
+namespace Honed\Table\Confirm\Proxies;
 
 use Honed\Core\Contracts\HigherOrder;
 use Honed\Core\Primitive;
@@ -8,7 +8,7 @@ use Honed\Core\Primitive;
 /**
  * @internal
  *
- * @mixin Honed\Table\Actions\Confirm\Confirmable
+ * @mixin Honed\Table\Confirm\Confirmable
  *
  * @template T of Honed\Core\Primitive
  *

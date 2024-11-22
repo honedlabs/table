@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * @mixin \Honed\Core\Concerns\Inspectable
  */
@@ -109,10 +111,10 @@ trait Searchable
     /**
      * Apply the search to the builder.
      * 
-     * @param \Illuminate\Database\Query\Builder $builder
+     * @param \Illuminate\Database\Eloquent\Builder $builder
      * @return void
      */
-    protected function applySearch($builder)
+    protected function applySearch(Builder $builder)
     {
         if (! $this->searching()) {
             return;

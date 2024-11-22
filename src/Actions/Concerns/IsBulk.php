@@ -4,32 +4,53 @@ declare(strict_types=1);
 
 namespace Honed\Table\Actions\Concerns;
 
-use Closure;
-
+/**
+ * @mixin \Honed\Core\Concerns\Evaluable
+ */
 trait IsBulk
 {
-    protected bool|Closure $bulk = false;
+    /**
+     * @var bool|(\Closure():bool)
+     */
+    protected $bulk = false;
 
-    public function bulk(bool|Closure $bulk = true): static
+    /**
+     * Set the bulk property, chainable.
+     *
+     * @param  bool|(\Closure():bool)  $bulk
+     * @return $this
+     */
+    public function bulk(bool|\Closure $bulk = true): static
     {
         $this->setBulk($bulk);
 
         return $this;
     }
 
-    public function setBulk(bool|Closure|null $bulk): void
+    /**
+     * Set the bulk property quietly.
+     *
+     * @param  bool|(\Closure():bool)|null  $bulk
+     */
+    public function setBulk(bool|\Closure|null $bulk): void
     {
-        if (is_null($bulk)) {
+        if (\is_null($bulk)) {
             return;
         }
         $this->bulk = $bulk;
     }
 
+    /**
+     * Determine if the class is bulk.
+     */
     public function isBulk(): bool
     {
-        return $this->evaluate($this->bulk);
+        return (bool) $this->evaluate($this->bulk);
     }
 
+    /**
+     * Determine if the class is not bulk.
+     */
     public function isNotBulk(): bool
     {
         return ! $this->isBulk();

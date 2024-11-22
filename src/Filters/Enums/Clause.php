@@ -3,7 +3,6 @@
 namespace Honed\Table\Filters\Enums;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
 
 enum Clause: string
@@ -105,7 +104,7 @@ enum Clause: string
         };
     }
 
-    public function apply(Builder|QueryBuilder $builder, string $attribute, Operator $operator, mixed $value): void
+    public function apply(Builder $builder, string $attribute, Operator $operator, mixed $value): void
     {
         $operator = $this->overrideOperator($operator);
 

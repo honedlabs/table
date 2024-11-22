@@ -4,36 +4,34 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Primitive;
-use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Concerns\IsKey;
 use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasType;
-use Honed\Core\Concerns\IsKey;
 use Honed\Core\Concerns\HasMeta;
-use Honed\Core\Concerns\HasPlaceholder;
+use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\IsHidden;
+use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Concerns\Transformable;
 
 abstract class BaseColumn extends Primitive
 {
-    use HasLabel;
+    use IsKey;
     use HasMeta;
     use HasName;
-    use HasPlaceholder;
     use HasType;
-    use Authorizable;
-    use IsHidden;
-    use IsKey;
-    use Transformable;
+    use HasLabel;
     use IsActive;
-    use Concerns\HasBreakpoint;
+    use IsHidden;
+    use Authorizable;
+    use Transformable;
+    use Concerns\IsSrOnly;
     use Concerns\HasTooltip;
     use Concerns\IsSortable;
-    use Concerns\IsSrOnly;
-    use Concerns\IsToggleable;
     use Concerns\HasFallback;
+    use Concerns\IsToggleable;
+    use Concerns\HasBreakpoint;
 
     /**
      * Create a new column instance specifying the related database attribute, and optionally the display label.

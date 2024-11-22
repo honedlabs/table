@@ -42,11 +42,11 @@ trait Encodable
      */
     public static function encode(string $value): string
     {
-        if (static::$encoder) {
-            return value(static::$encoder, $value);
+        if (\is_null(static::$encoder)) {
+            return encrypt($value);
         }
 
-        return encrypt($value);
+        return value(static::$encoder, $value);
     }
 
     /**
@@ -57,11 +57,11 @@ trait Encodable
      */
     public static function decode(string $value): string
     {
-        if (static::$decoder) {
-            return value(static::$decoder, $value);
+        if (\is_null(static::$decoder)) {
+            return decrypt($value);
         }
 
-        return decrypt($value);
+        return value(static::$decoder, $value);
     }
 
     /**

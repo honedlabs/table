@@ -3,7 +3,6 @@
 namespace Honed\Table\Sorts;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class ToggleSort extends BaseSort
 {
@@ -12,7 +11,7 @@ class ToggleSort extends BaseSort
         $this->setType('sort:toggle');
     }
 
-    public function apply(Builder|QueryBuilder $builder, ?string $sortBy = null, ?string $direction = null): void
+    public function apply(Builder $builder, ?string $sortBy = null, ?string $direction = null): void
     {
         $this->setDirection($direction);
         parent::apply($builder, $sortBy, $direction);
