@@ -8,6 +8,6 @@ class Column extends BaseColumn
 {
     public function setUp()
     {
-        $this->setType('col');
+        $this->setType('default');
     }
 }

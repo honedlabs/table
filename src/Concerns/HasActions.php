@@ -8,13 +8,11 @@ use Honed\Table\Actions\InlineAction;
 use Honed\Table\Actions\PageAction;
 use Illuminate\Support\Collection;
 
+/**
+ * @mixin \Honed\Core\Concerns\Inspectable
+ */
 trait HasActions
 {
-    /**
-     * @var Collection<int, Honed\Table\Actions\BaseAction>
-     */
-    private Collection $cachedActions;
-
     /**
      * @var array<int, Honed\Table\Actions\BaseAction>
      */
@@ -24,8 +22,9 @@ trait HasActions
      * Set the actions for the table.
      *
      * @param  array<int, Honed\Table\Actions\BaseAction>  $actions
+     * @return void
      */
-    public function setActions(?array $actions): void
+    public function setActions($actions): void
     {
         if (is_null($actions)) {
             return;
@@ -35,33 +34,13 @@ trait HasActions
     }
 
     /**
-     * Get the actions for the table.
-     *
-     * @internal
-     * @return array<int, Honed\Table\Actions\BaseAction>
-     */
-    public function definedActions(): array
-    {
-        if (isset($this->actions)) {
-            return $this->actions;
-        }
-
-        if (method_exists($this, 'actions')) {
-            return $this->actions();
-        }
-
-        return [];
-    }
-
-    /**
      * Get all available actions.
      *
      * @return Collection<int, Honed\Table\Actions\BaseAction>
      */
     public function getActions(): Collection
     {
-        return $this->cachedActions ??= collect($this->definedActions())
-            ->filter(static fn (BaseAction $action): bool => $action->isAuthorized());
+        return collect($this->inspect('actions', []));
     }
 
     /**
@@ -83,7 +62,7 @@ trait HasActions
     public function getBulkActions(): Collection
     {
         return $this->getActions()
-            ->filter(static fn (BaseAction $action): bool => $action instanceof BulkAction);
+            ->filter(static fn (BaseAction $action): bool => $action instanceof BulkAction && $action->isAuthorized());
     }
 
     /**
@@ -94,17 +73,6 @@ trait HasActions
     public function getPageActions(): Collection
     {
         return $this->getActions()
-            ->filter(static fn (BaseAction $action): bool => $action instanceof PageAction);
-    }
-
-    /**
-     * Get the default inline action for a record.
-     *
-     * @return ?Honed\Table\Actions\BaseAction
-     */
-    public function getDefaultAction(): ?BaseAction
-    {
-        return $this->getInlineActions()
-            ->first(fn (InlineAction $action): bool => $action->isDefault());
+            ->filter(static fn (BaseAction $action): bool => $action instanceof PageAction && $action->isAuthorized());
     }
 }

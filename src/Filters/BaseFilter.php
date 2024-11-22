@@ -74,14 +74,14 @@ abstract class BaseFilter extends Primitive implements Filters
     }
 
     /**
-     * Retrieve the display name of the filter
+     * Retrieve the query parameter name of the filter
      * 
      * @internal
      * @return string
      */
     protected function getParameterName(): string
     {
-        return $this->getAlias() ?? $this->getProperty();
+        return $this->getAlias() ?? str($this->getProperty())->afterLast('.')->toString();
     }
 
     /**

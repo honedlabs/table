@@ -15,31 +15,25 @@ use Honed\Core\Concerns\HasPlaceholder;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\IsHidden;
 use Honed\Core\Concerns\Transformable;
-use Honed\Table\Columns\Concerns\HasBreakpoint;
-use Honed\Table\Columns\Concerns\HasFallback;
-use Honed\Table\Columns\Concerns\HasTooltip;
-use Honed\Table\Columns\Concerns\IsSortable;
-use Honed\Table\Columns\Concerns\IsSrOnly;
-use Honed\Table\Columns\Concerns\IsToggleable;
 
 abstract class BaseColumn extends Primitive
 {
-    use HasBreakpoint;
     use HasLabel;
     use HasMeta;
     use HasName;
     use HasPlaceholder;
-    use HasTooltip;
     use HasType;
     use IsActive;
     use Authorizable;
     use IsHidden;
     use IsKey;
-    use IsSortable;
-    use IsSrOnly;
-    use IsToggleable;
     use Transformable;
-    use HasFallback;
+    use Concerns\HasBreakpoint;
+    use Concerns\HasTooltip;
+    use Concerns\IsSortable;
+    use Concerns\IsSrOnly;
+    use Concerns\IsToggleable;
+    use Concerns\HasFallback;
 
     /**
      * Create a new column instance specifying the related database attribute, and optionally the display label.
@@ -82,7 +76,7 @@ abstract class BaseColumn extends Primitive
             'sr' => $this->isSrOnly(),
             'toggle' => $this->isToggleable(),
             'active' => $this->isToggledOn(),
-            'sort' => $this->isSortable(),
+            'sortable' => $this->isSortable(),
             'sorting' => $this->isSorting(),
             'direction' => $this->getSort()?->getDirection(),
             'meta' => $this->getMeta(),
@@ -112,6 +106,6 @@ abstract class BaseColumn extends Primitive
      */
     public function formatValue(mixed $value): mixed
     {
-        return $value;
+        return $value ?? $this->getFallback();
     }
 }

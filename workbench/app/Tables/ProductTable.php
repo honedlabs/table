@@ -70,7 +70,13 @@ final class ProductTable extends Table
     protected function actions(): array
     {
         return [
-            InlineAction::make('Edit')->action(fn (Product $product) => $product->update(['name' => 'Inline'])),
+            InlineAction::make('edit')
+                ->action(fn (Product $product) => $product->update(['name' => 'Inline'])),
+                
+            InlineAction::make('delete')
+                ->authorize(fn (Product $product) => true)
+                ->action(fn (Product $product) => $product->delete()),
+
             BulkAction::make('Edit')->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
             BulkAction::make('Mass')->action(fn (Product $product) => $product->update(['name' => 'All'])),
             // PageAction::make('add')->label('Add User'),

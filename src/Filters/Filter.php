@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Honed\Core\Concerns\HasProperty;
 use Honed\Core\Concerns\HasValue;
-use Honed\Table\Filters\Concerns\HasClause;
-use Honed\Table\Filters\Concerns\HasOperator;
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,10 +13,9 @@ use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 
 class Filter extends BaseFilter
 {
-    use HasClause;
-    use HasOperator;
-    use HasProperty;
     use HasValue;
+    use Concerns\HasClause;
+    use Concerns\HasOperator;
 
     public function setUp(): void
     {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Honed\Core\Concerns;
+namespace Honed\Table\Columns\Concerns;
 
 /**
  * @mixin \Honed\Core\Concerns\Evaluable

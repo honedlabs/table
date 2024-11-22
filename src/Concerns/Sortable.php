@@ -202,4 +202,15 @@ trait Sortable
     {
         return $this->inspect('sorts', []);
     }
+
+    /**
+     * Get the sort name to use, and direction for the current request.
+     * 
+     * @return array{string,string}
+     */
+    public function getSortBy()
+    {
+        // Check if signed, and remove the +- terms from it -> TODO
+        return [$this->getSortTerm(), $this->getOrderTerm()];
+    }
 }

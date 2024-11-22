@@ -19,6 +19,7 @@ class ApplyFilters implements Filters
         foreach ($table->getFilters() as $filter) {
             $filter->apply($builder);
         }
+
         $table->setResource($builder);
 
         return $next($table);

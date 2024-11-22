@@ -8,14 +8,9 @@ use Honed\Core\Primitive;
 use BadMethodCallException;
 use Honed\Table\Pipes\Paginate;
 use Honed\Table\Concerns\HasMeta;
-use Honed\Table\Concerns\HasSort;
 use Honed\Table\Pipes\ApplySorts;
 use Illuminate\Pipeline\Pipeline;
-use Honed\Table\Concerns\HasOrder;
-use Honed\Table\Concerns\HasSorts;
-use Honed\Table\Pipes\ApplySearch;
-use Honed\Table\Concerns\CanSearch;
-use Honed\Table\Concerns\EncodesId;
+use Honed\Table\Concerns\Encodable;
 use Honed\Table\Pipes\ApplyFilters;
 use Honed\Table\Pipes\ApplyToggles;
 use Honed\Core\Concerns\Inspectable;
@@ -23,22 +18,17 @@ use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
 use Honed\Table\Pipes\FormatRecords;
 use Honed\Table\Pipes\OptimalSelect;
-use Honed\Table\Concerns\HasSearchAs;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Honed\Table\Concerns\Search\HasSearch;
 use Honed\Table\Pipes\ApplyBeforeRetrieval;
-use Honed\Table\Concerns\Remember\Remembers;
-use Honed\Table\Pagination\Concerns\Paginates;
 use Honed\Core\Exceptions\MissingRequiredAttributeException;
 
 class Table extends Primitive
 {
     use Inspectable;
-    use EncodesId; // Encodable
+    use Encodable;
     use RequiresKey {
         getKey as protected getTableKey;
     }
+    use IsAnonymous;
     use Concerns\HasResource;
     use Concerns\HasActions;
     use Concerns\HasColumns;
@@ -48,8 +38,8 @@ class Table extends Primitive
     use Concerns\Toggleable;
     use Concerns\Searchable;
     use Concerns\Records; // Records
+    use Concerns\Selectable;
     use HasMeta; // -> Remove
-    use IsAnonymous;
 
     /**
      * Check if the table is built in-line.
@@ -118,9 +108,10 @@ class Table extends Primitive
     {
         $this->pipeline();
 
+        dd(static::class);
         return [
             /* The table id used to deserialize it for actions */
-            'id' => $this->getEncodedId($this->getId()),
+            'id' => $this->encodeClass(),
             /* The records of the table */
             'records' => $this->records,
             /* The pagination data for the records */

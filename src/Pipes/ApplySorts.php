@@ -22,8 +22,11 @@ class ApplySorts implements Sorts
             // $table->getSortableColumns()->map(fn ($column) => $column->getSort())->toArray()
         );
 
+        // Get a single source of truth for the sort name and direction
+        [$sortBy, $direction] = $table->getSortBy();
+
         foreach ($sorts as $sort) {
-            $sort->apply($builder);
+            $sort->apply($builder, $sortBy, $direction);
         }
 
         $table->setResource($builder);

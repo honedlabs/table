@@ -2,42 +2,32 @@
 
 declare(strict_types=1);
 
-namespace Honed\Table\Columns\Concerns;
+namespace Honed\Table\Concerns;
 
 /**
  * @mixin \Honed\Core\Concerns\Evaluable
  */
-trait IsSelectable
+trait Selectable
 {
     /**
      * @var bool|(\Closure():bool)
      */
-    protected $selectable = false;
+    protected $selectable;
 
     /**
-     * Set the selectable for bulk actions property, chainable.
-     *
-     * @param  bool|(\Closure():bool)  $selectable
-     * @return $this
+     * @var bool|(\Closure():bool)
      */
-    public function selectable(bool|\Closure $selectable = true): static
-    {
-        $this->setSelectable($selectable);
+    protected static $globalSelectable = true;
 
-        return $this;
-    }
 
     /**
      * Set the selectable for bulk actions property quietly.
      *
      * @param  bool|(\Closure():bool)|null $selectable
      */
-    public function setSelectable(bool|\Closure|null $selectable): void
+    public static function setSelectable(bool|\Closure $selectable = true): void
     {
-        if (\is_null($selectable)) {
-            return;
-        }
-        $this->selectable = $selectable;
+        static::$globalSelectable = $selectable;
     }
 
     /**
@@ -45,7 +35,7 @@ trait IsSelectable
      */
     public function isSelectable(): bool
     {
-        return (bool) $this->evaluate($this->selectable);
+        return (bool) ($this->evaluate($this->inspect('selectable', null)) ?? static::$globalSelectable);
     }
 
     /**
