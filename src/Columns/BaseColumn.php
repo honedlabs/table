@@ -23,11 +23,11 @@ abstract class BaseColumn extends Primitive
     use HasName;
     use HasPlaceholder;
     use HasType;
-    use IsActive;
     use Authorizable;
     use IsHidden;
     use IsKey;
     use Transformable;
+    use IsActive;
     use Concerns\HasBreakpoint;
     use Concerns\HasTooltip;
     use Concerns\IsSortable;
@@ -38,8 +38,8 @@ abstract class BaseColumn extends Primitive
     /**
      * Create a new column instance specifying the related database attribute, and optionally the display label.
      * 
-     * @param string|Closure():string $attribute
-     * @param string|(Closure():string)|null $label
+     * @param string|(\Closure():string) $name
+     * @param string|(\Closure():string)|null $label
      */
     final public function __construct(string|\Closure $name, string|\Closure|null $label = null)
     {
@@ -51,8 +51,8 @@ abstract class BaseColumn extends Primitive
     /**
      * Make a column specifying the related database attribute, and optionally the display label.
      * 
-     * @param string|Closure():string $attribute
-     * @param string|(Closure():string)|null $label
+     * @param string|(\Closure():string) $name
+     * @param string|(\Closure():string)|null $label
      */
     public static function make(string|\Closure $name, string|\Closure|null $label = null): static
     {
@@ -75,7 +75,7 @@ abstract class BaseColumn extends Primitive
             'breakpoint' => $this->getBreakpoint(),
             'sr' => $this->isSrOnly(),
             'toggle' => $this->isToggleable(),
-            'active' => $this->isToggledOn(),
+            'active' => $this->isActive(),
             'sortable' => $this->isSortable(),
             'sorting' => $this->isSorting(),
             'direction' => $this->getSort()?->getDirection(),

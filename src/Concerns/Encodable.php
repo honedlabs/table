@@ -40,7 +40,7 @@ trait Encodable
      * @param string $value
      * @return string
      */
-    public static function encodeValue(string $value): string
+    public static function encode(string $value): string
     {
         if (static::$encoder) {
             return value(static::$encoder, $value);
@@ -55,7 +55,7 @@ trait Encodable
      * @param string $value
      * @return string
      */
-    public static function decodeValue(string $value): string
+    public static function decode(string $value): string
     {
         if (static::$decoder) {
             return value(static::$decoder, $value);
@@ -69,19 +69,19 @@ trait Encodable
      * 
      * @return string
      */
-    public function encodeClass(): string
+    public static function encodeClass(): string
     {
-        return $this->encodeValue(static::class);
+        return static::encode(static::class);
     }
 
     /**
      * Decode a class name.
      * 
      * @param string $value
-     * @return string
+     * @return class-string
      */
-    public function decodeClass(string $value): string
+    public static function decodeClass(string $value): string
     {
-        return $this->decodeValue($value);
+        return static::decode($value);
     }
 }

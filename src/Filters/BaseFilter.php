@@ -12,6 +12,7 @@ use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\Transformable;
+use Honed\Core\Concerns\Validatable;
 use Honed\Core\Primitive;
 use Honed\Table\Concerns\HasAlias;
 use Honed\Table\Contracts\Filters;
@@ -27,6 +28,7 @@ abstract class BaseFilter extends Primitive implements Filters
     use Authorizable;
     use Transformable;
     use HasAlias;
+    use Validatable;
 
     /**
      * Create a new filter instance specifying the database column, and optionally the display label.

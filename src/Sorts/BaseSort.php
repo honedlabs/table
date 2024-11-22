@@ -29,8 +29,8 @@ abstract class BaseSort extends Primitive implements Sorts
     /**
      * Create a new sort instance specifying the database column, and optionally the display label.
      * 
-     * @param string|Closure():string $attribute
-     * @param string|(Closure():string)|null $label
+     * @param string|\Closure():string $attribute
+     * @param string|(\Closure():string)|null $label
      */
     final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
@@ -42,8 +42,8 @@ abstract class BaseSort extends Primitive implements Sorts
     /**
      * Make a sort specifying the database column, and optionally the display label.
      * 
-     * @param string|Closure():string $attribute
-     * @param string|(Closure():string)|null $label
+     * @param string|(\Closure():string) $attribute
+     * @param string|(\Closure():string)|null $label
      */
     final public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
     {

@@ -51,7 +51,7 @@ trait Toggleable
      */
     public static function setDuration(int $duration)
     {
-        static::$duration = $duration;
+        static::$globalDuration = $duration;
     }
 
     /**
@@ -62,7 +62,7 @@ trait Toggleable
      */
     public static function setToggleAs(string $toggleAs)
     {
-        static::$toggleAs = $toggleAs;
+        static::$globalToggleAs = $toggleAs;
     }
 
     /**
@@ -73,7 +73,7 @@ trait Toggleable
      */
     public static function enableToggleable(bool $toggleable = true)
     {
-        static::$toggleable = $toggleable;
+        static::$globalToggleable = $toggleable;
     }
 
     /**

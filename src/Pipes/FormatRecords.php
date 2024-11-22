@@ -20,13 +20,16 @@ class FormatRecords implements FormatsRecords
 {
     public function handle(Table $table, Closure $next)
     {
+        // All columns
         $columns = $table->getColumns();
-        $enforceColumns = true;
+        // Whether to reduce the records to only the columns that are defined
+        $enforceColumns = $table->enforcesColumns();
+        // All inline actions
         $actions = $table->getInlineActions();
         
         $table->setRecords(
             $table->getRecords()->map(function ($record) use ($columns, $enforceColumns, $actions) {
-                $formattedRecord = $enforceColumns ? [] : $record;
+                $formattedRecord = $enforceColumns ? [] : $record->toArray();
                 
                 // $this->applySelectable($record, $formattedRecord, $table);
                 $this->applyColumns($record, $formattedRecord, $columns);

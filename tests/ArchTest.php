@@ -1,5 +1,7 @@
 <?php
 
+use Honed\Table\Table;
+use Workbench\App\Models\Product;
 use Workbench\App\Tables\ProductTable;
 
 use function Pest\Laravel\get;
@@ -13,7 +15,6 @@ use function Pest\Laravel\get;
 // arch()->preset()->relaxed();
 // arch()->preset()->honed();
 
-it('tests', function() {
-    // dd(get(route('product.index')));
+it('tests', function () {
     dd(ProductTable::make()->toArray());
 });

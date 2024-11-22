@@ -21,8 +21,6 @@ class TableServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Route::bind('table', fn (int|string $value) => Table::from($value));
-
         if ($this->app->runningInConsole()) {
             $this->commands([
                 TableMakeCommand::class,
@@ -36,6 +34,28 @@ class TableServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/table.php' => $this->app['path.config'].DIRECTORY_SEPARATOR.'table.php',
         ]);
+
+        Route::macro('honedTable', function () {
+            Route::post(config('table.endpoint', '/actions'), [Table::class, 'actionHandler']);
+        });
+
+        Route::bind('honedTable', function (string $value) {
+            try {
+                $class = Table::decodeClass($value);
+                
+                if (!class_exists($class)) {
+                    abort(404);
+                }
+
+                if (!is_subclass_of($class, Table::class)) {
+                    abort(404); 
+                }
+
+                return $class::make();
+            } catch (\Throwable $th) {
+                abort(404);
+            }
+        });
     }
 
     public function provides()

@@ -37,12 +37,12 @@ trait Searchable
     /**
      * Configure the default search query parameter to use for all tables.
      * 
-     * @param string|array<int,string> $search
+     * @param string|array<int,string> $searchAs
      * @return void
      */
-    public static function setSearch(string|array $search)
+    public static function setSearchAs(string $searchAs)
     {
-        static::$search = $search;
+        static::$globalSearchAs = $searchAs;
     }
 
     /**
@@ -53,7 +53,7 @@ trait Searchable
      */
     public static function enableScout(bool $scout = true)
     {
-        static::$scout = $scout;
+        static::$globalScout = $scout;
     }
 
     /**

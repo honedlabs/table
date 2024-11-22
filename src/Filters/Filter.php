@@ -30,7 +30,7 @@ class Filter extends BaseFilter
         $this->setActive($this->filtering($value));
 
         $builder->when(
-            $this->isActive() && $this->isValid($value),
+            $this->isActive() && $this->applyValidation($value),
             fn (Builder|QueryBuilder $builder) => $this->handle($builder),
         );
     }

@@ -52,6 +52,21 @@ trait Sortable
     protected static $globalSigned = true;
 
     /**
+     * Set the list of sorts to apply to the table.
+     * 
+     * @param array<int, \Honed\Table\Sorts\BaseSort>|null $sorts
+     * @return void
+     */
+    public function setSorts(array|null $sorts)
+    {
+        if (is_null($sorts)) {
+            return;
+        }
+
+        $this->sorts = $sorts;
+    }
+
+    /**
      * Configure the default query parameter to use for sorting.
      * 
      * @param string $sortAs
