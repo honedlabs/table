@@ -77,7 +77,6 @@ abstract class BaseColumn extends Primitive
             'label' => $this->getLabel(),
             'type' => $this->getType(),
             'hidden' => $this->isHidden(),
-            'placeholder' => $this->getPlaceholder(),
             'tooltip' => $this->getTooltip(),
             'breakpoint' => $this->getBreakpoint(),
             'sr' => $this->isSrOnly(),

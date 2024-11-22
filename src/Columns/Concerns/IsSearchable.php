@@ -4,109 +4,55 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Closure;
-
+/**
+ * @mixin \Honed\Core\Concerns\Evaluable
+ */
 trait IsSearchable
 {
     /**
-     * @var bool|Closure
+     * @var bool|(\Closure():bool)
      */
     protected $searchable = false;
 
     /**
-     * @var string|Closure|null
-     */
-    protected $searchProperty = null;
-
-    /**
-     * Set the searchable property.
-     * 
-     * @param string|\Closure $property
+     * Set the searchable property, chainable.
+     *
+     * @param  bool|(\Closure():bool)  $searchable
      * @return $this
      */
-    public function searchable($property = null)
+    public function searchable(bool|\Closure $searchable = true): static
     {
-        $this->setSearchable(true);
-        $this->setSearchProperty($property);
+        $this->setSearchable($searchable);
 
         return $this;
     }
 
     /**
      * Set the searchable property quietly.
-     * 
-     * @param bool|\Closure|null $searchable
-     * @return void
+     *
+     * @param  bool|(\Closure():bool)|null $searchable
      */
-    public function setSearchable($searchable)
+    public function setSearchable(bool|\Closure|null $searchable): void
     {
-        if (is_null($searchable)) {
+        if (\is_null($searchable)) {
             return;
         }
         $this->searchable = $searchable;
     }
 
     /**
-     * Set the search property quietly.
-     * 
-     * @param string|\Closure|null $property
-     * @return void
-     */
-    public function setSearchProperty($property)
-    {
-        if (is_null($property)) {
-            return;
-        }
-        $this->searchProperty = $property;
-    }
-
-    /**
      * Determine if the column is searchable.
-     * 
-     * @return bool
      */
-    public function isSearchable()
+    public function isSearchable(): bool
     {
-        return $this->evaluate($this->searchable);
+        return (bool) $this->evaluate($this->searchable);
     }
 
     /**
      * Determine if the column is not searchable.
-     * 
-     * @return bool
      */
-    public function isNotSearchable()
+    public function isNotSearchable(): bool
     {
         return ! $this->isSearchable();
-    }
-
-    /**
-     * Get the search property.
-     * 
-     * @return string|\Closure|null
-     */
-    public function getSearchProperty()
-    {
-        return $this->evaluate($this->searchProperty);
-    }
-
-    /**
-     * Determine if the column lacks a search property.
-     * 
-     * @return bool
-     */
-    public function lacksSearchProperty()
-    {
-        return is_null($this->searchProperty);
-    }
-
-    /**
-     * Determine if the column has a search property.
-     * 
-     * @return bool
-     */
-    public function hasSearchProperty()
-    {
-        return ! $this->lacksSearchProperty();
     }
 }

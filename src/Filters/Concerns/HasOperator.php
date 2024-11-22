@@ -41,14 +41,14 @@ trait HasOperator
         return $this->operator;
     }
 
-    public function lacksOperator(): bool
+    public function missingOperator(): bool
     {
         return is_null($this->operator);
     }
 
     public function hasOperator(): bool
     {
-        return ! $this->lacksOperator();
+        return ! $this->missingOperator();
     }
 
     /**

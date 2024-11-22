@@ -20,10 +20,10 @@ trait CanSetRoundToNearest
 
     public function hasRoundToNearest(): bool
     {
-        return ! $this->lacksRoundToNearest();
+        return ! $this->missingRoundToNearest();
     }
 
-    public function lacksRoundToNearest(): bool
+    public function missingRoundToNearest(): bool
     {
         return is_null($this->roundToNearest);
     }

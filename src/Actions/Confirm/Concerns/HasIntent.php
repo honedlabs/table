@@ -28,10 +28,10 @@ trait HasIntent
 
     public function hasIntent(): bool
     {
-        return ! $this->lacksIntent();
+        return ! $this->missingIntent();
     }
 
-    public function lacksIntent(): bool
+    public function missingIntent(): bool
     {
         return is_null($this->intent);
     }

@@ -22,10 +22,10 @@ trait HasFallback
 
     public function hasFallback(): bool
     {
-        return ! $this->lacksFallback();
+        return ! $this->missingFallback();
     }
 
-    public function lacksFallback(): bool
+    public function missingFallback(): bool
     {
         return is_null($this->getFallback());
     }

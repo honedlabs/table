@@ -4,31 +4,33 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use BadMethodCallException;
 use Honed\Core\Primitive;
+use BadMethodCallException;
 use Honed\Table\Pipes\Paginate;
-use Honed\Table\Pipes\ApplySorts;
-use Honed\Table\Pipes\ApplySearch;
-use Honed\Table\Pipes\ApplyFilters;
-use Illuminate\Pipeline\Pipeline;
-use Honed\Table\Pipes\FormatRecords;
-use Honed\Core\Concerns\Inspectable;
 use Honed\Table\Concerns\HasMeta;
 use Honed\Table\Concerns\HasSort;
+use Honed\Table\Pipes\ApplySorts;
+use Illuminate\Pipeline\Pipeline;
 use Honed\Table\Concerns\HasOrder;
 use Honed\Table\Concerns\HasSorts;
+use Honed\Table\Pipes\ApplySearch;
+use Honed\Table\Concerns\CanSearch;
 use Honed\Table\Concerns\EncodesId;
+use Honed\Table\Pipes\ApplyFilters;
 use Honed\Table\Pipes\ApplyToggles;
+use Honed\Core\Concerns\Inspectable;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
+use Honed\Table\Pipes\FormatRecords;
+use Honed\Table\Pipes\OptimalSelect;
+use Honed\Table\Concerns\HasSearchAs;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Honed\Table\Concerns\Search\HasSearch;
+use Honed\Table\Pipes\ApplyBeforeRetrieval;
 use Honed\Table\Concerns\Remember\Remembers;
 use Honed\Table\Pagination\Concerns\Paginates;
 use Honed\Core\Exceptions\MissingRequiredAttributeException;
-use Honed\Table\Concerns\CanSearch;
-use Honed\Table\Concerns\HasSearchAs;
-use Honed\Table\Concerns\Search\HasSearch;
-use Illuminate\Database\Eloquent\Model;
 
 class Table extends Primitive
 {
@@ -48,22 +50,6 @@ class Table extends Primitive
     use Concerns\Records; // Records
     use HasMeta; // -> Remove
     use IsAnonymous;
-    use Paginates; // Pageable
-    /** Toggle traits -> toggleable */
-    // use Remembers;
-    /** Sort traits -> sortable*/
-    // use HasSorts;
-    // use HasOrder;
-    // use HasSort;
-    // use Concerns\Searchable;
-    // use Concerns\Toggleable;
-    // use Concerns\Sortable;
-    // use Concerns\Records;
-    // use Concerns\Encodable;
-    /** Search traits -> searchable */
-    // use HasSearch;
-    // use HasSearchAs;
-    // use CanSearch;
 
     /**
      * Check if the table is built in-line.
@@ -146,7 +132,7 @@ class Table extends Primitive
             /* The available column options */
             'columns' => $this->getColumns(),
             /* The pagination counter */
-            'pagination' => $this->getPagination($this->usePerPage()),
+            'pagination' => $this->getPaginationCounts($this->getPageCount()),
             /* The available action options -> bulk/inline only for non-anonymous tables */
             'actions' => [
                 'inline' => $this->getInlineActions(),
@@ -156,11 +142,11 @@ class Table extends Primitive
             /* Track the keys used to make requests to identify changes to this specific table */
             'keys' => [
                 'id' => $this->getKey(),
-                'sort' => $this->getSort(),
-                'order' => $this->getOrder(),
-                'show' => $this->getShowKey(),
-                // 'search' => $this->getSearch(),
-                'toggle' => $this->getToggleKey(),
+                'sort' => $this->getSortAs(),
+                'order' => $this->getOrderAs(),
+                'count' => $this->getCountAs(),
+                'search' => $this->getSearchAs(),
+                'toggle' => $this->getToggleAs(),
             ],
         ];
     }
@@ -182,6 +168,8 @@ class Table extends Primitive
                 ApplyFilters::class,
                 // ApplySearch::class,
                 ApplySorts::class,
+                OptimalSelect::class,
+                ApplyBeforeRetrieval::class,
                 Paginate::class,
                 FormatRecords::class,
             ])

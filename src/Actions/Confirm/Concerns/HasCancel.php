@@ -27,10 +27,10 @@ trait HasCancel
 
     public function HasCancel(): bool
     {
-        return ! $this->lacksCancelText();
+        return ! $this->missingCancelText();
     }
 
-    public function lacksCancelText(): bool
+    public function missingCancelText(): bool
     {
         return is_null($this->cancel);
     }

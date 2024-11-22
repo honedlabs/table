@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Honed\Table\Pagination\Enums;
+namespace Honed\Table\Enums;
 
 use Honed\Table\Table;
 
@@ -24,8 +24,8 @@ enum Paginator: string
         return match ($this) {
             self::Cursor => [
                 ($data = $builder->cursorPaginate(
-                    perPage: $table->usePerPage(),
-                    cursorName: $table->getPageName(),
+                    perPage: $table->getPageCount(),
+                    cursorName: $table->getPageAs(),
                 )->withQueryString()->getCollection()),
                 self::getMeta($data),
             ],
@@ -35,8 +35,8 @@ enum Paginator: string
             ],
             default => [
                 ($data = $builder->paginate(
-                    perPage: $table->usePerPage(),
-                    pageName: $table->getPageName(),
+                    perPage: $table->getPageCount(),
+                    pageName: $table->getPageAs(),
                 ))->getCollection(),
                 self::getMeta($data),
             ],

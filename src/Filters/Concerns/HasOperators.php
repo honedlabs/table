@@ -61,10 +61,10 @@ trait HasOperators
 
     public function hasOperators(): bool
     {
-        return ! $this->lacksOperators();
+        return ! $this->missingOperators();
     }
 
-    public function lacksOperators(): bool
+    public function missingOperators(): bool
     {
         return is_null($this->operators);
     }

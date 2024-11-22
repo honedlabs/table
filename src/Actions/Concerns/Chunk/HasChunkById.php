@@ -35,7 +35,7 @@ trait HasChunkById
         return ! is_null($this->chunkById);
     }
 
-    public function lacksChunkById(): bool
+    public function missingChunkById(): bool
     {
         return ! $this->hasChunkById();
     }

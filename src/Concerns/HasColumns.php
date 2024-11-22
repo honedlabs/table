@@ -63,12 +63,4 @@ trait HasColumns
     {
         return $this->getColumns()->first(fn (BaseColumn $column): bool => $column->isKey());
     }
-
-    /**
-     * @return Collection<BaseColumn>
-     */
-    public function getToggledColumns(): Collection
-    {
-        return $this->getColumns()->filter(fn (BaseColumn $column): bool => $column->isActive())->values();
-    }
 }

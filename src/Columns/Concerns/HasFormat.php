@@ -27,10 +27,10 @@ trait HasFormat
 
     public function hasFormat(): bool
     {
-        return ! $this->lacksFormat();
+        return ! $this->missingFormat();
     }
 
-    public function lacksFormat(): bool
+    public function missingFormat(): bool
     {
         return is_null($this->format);
     }

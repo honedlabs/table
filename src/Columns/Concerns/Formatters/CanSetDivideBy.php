@@ -20,10 +20,10 @@ trait CanSetDivideBy
 
     public function hasDivideBy(): bool
     {
-        return ! $this->lacksDivideBy();
+        return ! $this->missingDivideBy();
     }
 
-    public function lacksDivideBy(): bool
+    public function missingDivideBy(): bool
     {
         return is_null($this->divideBy);
     }

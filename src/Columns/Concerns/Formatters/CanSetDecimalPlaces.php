@@ -20,10 +20,10 @@ trait CanSetDecimalPlaces
 
     public function hasDecimalPlaces(): bool
     {
-        return ! $this->lacksDecimalPlaces();
+        return ! $this->missingDecimalPlaces();
     }
 
-    public function lacksDecimalPlaces(): bool
+    public function missingDecimalPlaces(): bool
     {
         return is_null($this->decimalPlaces);
     }

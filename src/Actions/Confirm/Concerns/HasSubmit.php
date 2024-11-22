@@ -27,10 +27,10 @@ trait HasSubmit
 
     public function HasSubmit(): bool
     {
-        return ! $this->lacksSubmitText();
+        return ! $this->missingSubmitText();
     }
 
-    public function lacksSubmitText(): bool
+    public function missingSubmitText(): bool
     {
         return is_null($this->submit);
     }

@@ -36,7 +36,7 @@ trait HasDirection
     /**
      * Check if the direction is not set
      */
-    public function lacksDirection(): bool
+    public function missingDirection(): bool
     {
         return is_null($this->direction);
     }
@@ -46,7 +46,7 @@ trait HasDirection
      */
     public function hasDirection(): bool
     {
-        return ! $this->lacksDirection();
+        return ! $this->missingDirection();
     }
 
     /**

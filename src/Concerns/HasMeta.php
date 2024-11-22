@@ -36,7 +36,7 @@ trait HasMeta
      */
     public function hasMeta()
     {
-        return ! $this->lacksMeta();
+        return ! $this->missingMeta();
     }
 
     /**
@@ -44,7 +44,7 @@ trait HasMeta
      *
      * @return bool
      */
-    public function lacksMeta()
+    public function missingMeta()
     {
         return empty($this->meta);
     }

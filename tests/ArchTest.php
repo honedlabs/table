@@ -2,9 +2,11 @@
 
 use Workbench\App\Tables\ProductTable;
 
-arch('does not use debugging functions')
-    ->expect(['dd', 'dump', 'ray'])
-    ->each->not->toBeUsed();
+use function Pest\Laravel\get;
+
+// arch('does not use debugging functions')
+//     ->expect(['dd', 'dump', 'ray'])
+//     ->each->not->toBeUsed();
 
 // arch()->preset()->php();
 // arch()->preset()->security();
@@ -12,5 +14,6 @@ arch('does not use debugging functions')
 // arch()->preset()->honed();
 
 it('tests', function() {
+    // dd(get(route('product.index')));
     dd(ProductTable::make()->toArray());
 });

@@ -35,7 +35,7 @@ trait HasChunkSize
         return ! is_null($this->chunkSize);
     }
 
-    public function lacksChunkSize(): bool
+    public function missingChunkSize(): bool
     {
         return ! $this->hasChunkSize();
     }

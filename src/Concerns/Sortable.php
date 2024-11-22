@@ -192,4 +192,14 @@ trait Sortable
 
         return $term === 'asc' ? 'desc' : 'asc';
     }
+
+    /**
+     * Get the sorts to apply to the resource.
+     * 
+     * @return array<int, \Honed\Table\Sorts\BaseSort>
+     */
+    public function getSorts()
+    {
+        return $this->inspect('sorts', []);
+    }
 }

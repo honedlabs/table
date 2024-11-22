@@ -27,10 +27,10 @@ trait HasTooltip
 
     public function hasTooltip(): bool
     {
-        return ! $this->lacksTooltip();
+        return ! $this->missingTooltip();
     }
 
-    public function lacksTooltip(): bool
+    public function missingTooltip(): bool
     {
         return is_null($this->tooltip);
     }

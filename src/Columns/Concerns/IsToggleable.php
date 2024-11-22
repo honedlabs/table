@@ -4,55 +4,55 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Closure;
-
+/**
+ * @mixin \Honed\Core\Concerns\Evaluable
+ */
 trait IsToggleable
 {
-    protected bool|Closure $toggleable = false;
+    /**
+     * @var bool|(\Closure():bool)
+     */
+    protected $toggleable = false;
 
-    protected bool|Closure $toggledOn = true;
-
-    public function toggleable(bool|Closure $toggledOn = true): static
+    /**
+     * Set the toggleable property, chainable.
+     *
+     * @param  bool|(\Closure():bool)  $toggleable
+     * @return $this
+     */
+    public function toggleable(bool|\Closure $toggleable = true): static
     {
-        $this->setToggleable(true);
-        $this->setToggledOn($toggledOn);
+        $this->setToggleable($toggleable);
 
         return $this;
     }
 
-    public function setToggleable(bool|Closure|null $toggleable): void
+    /**
+     * Set the toggleable property quietly.
+     *
+     * @param  bool|(\Closure():bool)|null $toggleable
+     */
+    public function setToggleable(bool|\Closure|null $toggleable): void
     {
-        if (is_null($toggleable)) {
+        if (\is_null($toggleable)) {
             return;
         }
         $this->toggleable = $toggleable;
     }
 
+    /**
+     * Determine if the column is toggleable.
+     */
     public function isToggleable(): bool
     {
-        return $this->evaluate($this->toggleable);
+        return (bool) $this->evaluate($this->toggleable);
     }
 
+    /**
+     * Determine if the column is not toggleable.
+     */
     public function isNotToggleable(): bool
     {
         return ! $this->isToggleable();
-    }
-
-    public function setToggledOn(bool|Closure|null $toggledOn): void
-    {
-        if (is_null($toggledOn)) {
-            return;
-        }
-        $this->toggledOn = $toggledOn;
-    }
-
-    public function isToggledOn(): bool
-    {
-        return $this->evaluate($this->toggledOn);
-    }
-
-    public function isNotToggledOn(): bool
-    {
-        return ! $this->isToggledOn();
     }
 }

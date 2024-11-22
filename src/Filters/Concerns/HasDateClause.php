@@ -24,7 +24,7 @@ trait HasDateClause
     /**
      * Check if the clause is not set.
      */
-    public function lacksDateClause(): bool
+    public function missingDateClause(): bool
     {
         return is_null($this->dateClause);
     }
@@ -34,7 +34,7 @@ trait HasDateClause
      */
     public function hasDateClause(): bool
     {
-        return ! $this->lacksDateClause();
+        return ! $this->missingDateClause();
     }
 
     /**

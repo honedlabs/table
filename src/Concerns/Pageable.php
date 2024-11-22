@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Pagination\Enums\Paginator;
+use Honed\Table\Enums\Paginator;
 use Honed\Table\Pagination\Pagination;
 
 trait Pageable
@@ -178,15 +178,15 @@ trait Pageable
      * Get the pagination options for the number of items to show per page.
      * 
      * @param int|null $active
-     * @return array<int,Pagination>
+     * @return array<int, array{value: int, active: bool}>
      */
     public function getPaginationCounts(?int $active = null): array
     {
         $perPage = $this->getPerPage();
 
         return is_array($perPage)
-            ? array_map(fn ($count) => Pagination::make($count, $count === $active), $perPage)
-            : [Pagination::make($perPage, true)];
+            ? array_map(fn ($count) => ['value' => $count, 'active' => $count === $active], $perPage)
+            : [['value' => $perPage, 'active' => true]];
     }
 
     /**
@@ -196,7 +196,8 @@ trait Pageable
      */
     public function getPageCount(): int
     {
-        $count = $this->getPaginationCounts();
+        $count = $this->getPerPage();
+
         if (is_int($count)) {
             return $count;
         }

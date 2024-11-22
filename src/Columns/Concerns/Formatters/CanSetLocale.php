@@ -20,10 +20,10 @@ trait CanSetLocale
 
     public function hasLocale(): bool
     {
-        return ! $this->lacksLocale();
+        return ! $this->missingLocale();
     }
 
-    public function lacksLocale(): bool
+    public function missingLocale(): bool
     {
         return is_null($this->locale);
     }

@@ -26,7 +26,7 @@ final class ProductTable extends Table
 
     protected $search = ['name', 'description'];
 
-    protected $pagination = [10, 50, 100];
+    protected $perPage = [10, 50, 100];
 
     protected $toggleable = true;
 

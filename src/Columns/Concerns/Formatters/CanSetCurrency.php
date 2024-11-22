@@ -20,10 +20,10 @@ trait CanSetCurrency
 
     public function hasCurrency(): bool
     {
-        return ! $this->lacksCurrency();
+        return ! $this->missingCurrency();
     }
 
-    public function lacksCurrency(): bool
+    public function missingCurrency(): bool
     {
         return is_null($this->currency);
     }

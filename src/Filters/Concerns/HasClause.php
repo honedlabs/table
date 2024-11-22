@@ -26,14 +26,14 @@ trait HasClause
         $this->clause = $clause instanceof Clause ? $clause : Clause::tryFrom($clause);
     }
 
-    public function lacksClause(): bool
+    public function missingClause(): bool
     {
         return is_null($this->clause);
     }
 
     public function hasClause(): bool
     {
-        return ! $this->lacksClause();
+        return ! $this->missingClause();
     }
 
     public function getClause(): ?Clause
