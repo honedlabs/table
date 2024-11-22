@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Confirm\Proxies;
 
 use Honed\Core\Contracts\HigherOrder;

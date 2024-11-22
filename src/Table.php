@@ -185,22 +185,24 @@ class Table extends Primitive
             'columns' => $this->getColumns(),
             /* The pagination counter */
             'pagination' => $this->getPaginationCounts($this->getPageCount()),
-            /* The available action options -> bulk/inline only for non-anonymous tables */
-            'actions' => [
-                'inline' => $this->getInlineActions(),
-                'bulk' => $this->getBulkActions(),
-                'page' => $this->getPageActions(),
-            ],
-            /* Track the keys used to make requests to identify changes to this specific table */
-            'config' => [
-                'record_id' => $this->getKey(),
-                'sort' => $this->getSortAs(),
-                'order' => $this->getOrderAs(),
-                'count' => $this->getCountAs(),
-                'search' => $this->getSearchAs(),
-                'toggle' => $this->getToggleAs(),
-                // 'route'
-            ],
+            /* The available bulk action options */
+            'bulk_actions' => $this->getBulkActions(),
+            /* The available page action options, generally page links */
+            'page_actions' => $this->getPageActions(),
+            /* The column attribute used to identify a record */
+            'record_id' => $this->getKey(),
+            /* The query parameter term for sorting */
+            'sort_as' => $this->getSortAs(),
+            /* The query parameter term for ordering */
+            'order_as' => $this->getOrderAs(),
+            /* The query parameter term for changing the number of records per page */
+            'count_as' => $this->getCountAs(),
+            /* The query parameter term for searching */
+            'search_as' => $this->getSearchAs(),
+            /* The query parameter term for toggling column visibility */
+            'toggle_as' => $this->getToggleAs(),
+            /* The route used to handle actions, it is required to be a 'post' route */
+            // 'route' => $this->getRoute(),
         ];
     }
 

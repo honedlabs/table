@@ -6,7 +6,7 @@ namespace Honed\Table\Actions;
 
 class PageAction extends BaseAction
 {
-    use Concerns\Urlable;
+    use Concerns\Routable;
 
     public function setUp(): void
     {

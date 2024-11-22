@@ -16,7 +16,7 @@ class InlineAction extends BaseAction
     use Concerns\IsBulk;
     use Concerns\Actionable;
     use Concerns\Confirmable;
-    use Concerns\Urlable;
+    use Concerns\Routable;
 
     public function setUp(): void
     {
@@ -26,7 +26,7 @@ class InlineAction extends BaseAction
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'url' => $this->getUrl(),
+            'url' => $this->getResolvedRoute(),
             'method' => $this->getMethod(),
             'action' => $this->canAction(),
             'confirm' => $this->getConfirm()?->toArray(),

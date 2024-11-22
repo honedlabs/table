@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Sorts;
 
 use Honed\Core\Concerns\Authorizable;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
-use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasProperty;
 use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\IsActive;
