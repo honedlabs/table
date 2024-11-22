@@ -4,20 +4,35 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Closure;
-
+/**
+ * @mixin \Honed\Core\Concerns\Evaluable
+ */
 trait HasTooltip
 {
-    protected string|Closure|null $tooltip = null;
+    /**
+     * @var string|(\Closure():string)|null
+     */
+    protected $tooltip = null;
 
-    public function tooltip(string|Closure $tooltip): static
+    /**
+     * Set the tooltip, chainable.
+     *
+     * @param  string|\Closure():string  $tooltip
+     * @return $this
+     */
+    public function tooltip(string|\Closure $tooltip): static
     {
         $this->setTooltip($tooltip);
 
         return $this;
     }
 
-    public function setTooltip(string|Closure|null $tooltip): void
+    /**
+     * Set the tooltip quietly.
+     *
+     * @param  string|(\Closure():string)|null  $tooltip
+     */
+    public function setTooltip(string|\Closure|null $tooltip): void
     {
         if (is_null($tooltip)) {
             return;
@@ -25,20 +40,27 @@ trait HasTooltip
         $this->tooltip = $tooltip;
     }
 
+    /**
+     * Get the tooltip.
+     */
+    public function getTooltip(): ?string
+    {
+        return $this->evaluate($this->tooltip);
+    }
+
+    /**
+     * Determine if the column does not have a tooltip.
+     */
+    public function missingTooltip(): bool
+    {
+        return \is_null($this->tooltip);
+    }
+
+    /**
+     * Determine if the column has a tooltip.
+     */
     public function hasTooltip(): bool
     {
         return ! $this->missingTooltip();
-    }
-
-    public function missingTooltip(): bool
-    {
-        return is_null($this->tooltip);
-    }
-
-    public function getTooltip(): ?string
-    {
-        return $this->evaluate(
-            value: $this->tooltip,
-        );
     }
 }
