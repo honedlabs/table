@@ -17,7 +17,7 @@ trait Resourceful
     protected $resource;
 
     /**
-     * @var \Closure(string|int): \Illuminate\Database\Eloquent\Model
+     * @var \Closure(class-string,string|int):\Illuminate\Database\Eloquent\Model
      */
     protected \Closure $modelResolver;
 
@@ -64,7 +64,7 @@ trait Resourceful
     /**
      * Set the resolver to use for the table.
      * 
-     * @param (\Closure(class-string, string|int): \Illuminate\Database\Eloquent\Model)|null $modelResolver
+     * @param (\Closure(class-string,string|int):\Illuminate\Database\Eloquent\Model)|null $modelResolver
      */
     public function setResolver(\Closure|null $modelResolver)
     {
@@ -83,7 +83,8 @@ trait Resourceful
      */
     public function getResource()
     {
-        $this->resource ??= $this->inspect('resource', null);
+        // @phpstan-ignore-next-line
+        $this->resource ??= $this->inspect('resource', static fn () => throw new RuntimeException(sprintf('[%s] requires a class-string, model or Eloquent resource.', static::class)));
 
         return match (true) {
             $this->resource instanceof Builder => $this->resource,
@@ -96,7 +97,6 @@ trait Resourceful
     /**
      * Resolve a model instance from the given key.
      * 
-     * @param class-string<\Illuminate\Database\Eloquent\Model> $modelClass
      * @param int|string $key
      * @return \Illuminate\Database\Eloquent\Model
      */

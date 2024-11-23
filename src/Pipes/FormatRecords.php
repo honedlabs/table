@@ -63,10 +63,16 @@ class FormatRecords implements FormatsRecords
             if ($action->isNotAuthorized()) {
                 return;
             }
+
             // Resolve the link if applicable
-            if ($action->isRoutable()) {
-                $action->resolveRoute([$originalRecord]);
+            if ($action->isUrlable()) {
+                $action->getUrl()->resolveUrl([$originalRecord]);
             }
+
+            // Resolve the confirm if applicable
+            // if ($action->isConfirmable()) {
+            //     $action->getConfirm()->resolve($originalRecord);
+            // }
 
             $formattedRecord['actions'][] = $action->toArray();
         });

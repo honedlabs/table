@@ -6,8 +6,6 @@ namespace Honed\Table\Columns;
 
 class Column extends BaseColumn
 {
-    use Concerns\IsSearchable;
-    
     public function setUp()
     {
         $this->setType('default');

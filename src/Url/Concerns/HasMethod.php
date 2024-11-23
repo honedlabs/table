@@ -34,11 +34,11 @@ trait HasMethod
      */
     public function setMethod(string|\Closure|null $method): void
     {
-        $method = strtolower($method);
-
         if (\is_null($method)) {
             return;
         }
+
+        $method = strtolower($method);
 
         if (! \in_array($method, ['get', 'post', 'put', 'patch', 'delete'])) {
             throw new \InvalidArgumentException("Invalid HTTP method [{$method}] provided for url.");

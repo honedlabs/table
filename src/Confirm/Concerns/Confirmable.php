@@ -19,47 +19,51 @@ trait Confirmable
     /**
      * Set the properties of the confirm
      * 
-     * @param \Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void)|bool $confirm
+     * @param \Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void)|array<string,mixed> $confirm
      * @return $this
      */
-    public function confirm($confirm)
+    public function confirm(mixed $confirm): static
     {
-        $this->setConfirm(true);
+        $confirmInstance = $this->makeConfirm();
 
-        if (is_array($confirm)) {
-            $this->confirm->assign($confirm);
-        }
-
-        if (is_callable($confirm)) {
-            $confirm($this->confirm);
-            $this->evaluate($confirm, [
-
+        match (true) {
+            $confirm instanceof Confirm => $this->setConfirm($confirm),
+            is_array($confirm) => $this->getConfirm()->assign($confirm),
+            is_callable($confirm) => $this->evaluate($confirm, [
+                'confirm' => $confirmInstance,
             ], [
-
-            ]);
-        }
+                Confirm::class => $confirmInstance,
+            ]),
+        };
 
         return $this;
     }
 
     /**
-     * Enable a confirm instance.
+     * Create a new confirm instance if one is not already set.
+     * 
+     * @internal
+     * @return \Honed\Table\Confirm\Confirm
+     */
+    public function makeConfirm(): Confirm
+    {
+        return $this->confirm ??= Confirm::make();
+    }
+
+
+    /**
+     * Override the confirm instance.
      *
      * @internal
-     *
-     * @param  \Honed\Table\Confirm\Confirm|bool|null  $confirm
+     * @param \Honed\Table\Confirm\Confirm|bool|null $confirm
      */
-    public function setConfirm($confirm)
+    public function setConfirm(mixed $confirm)
     {
-        if (is_null($confirm)) {
+        if (\is_null($confirm)) {
             return;
         }
 
-        $this->confirm ??= match (true) {
-            $confirm instanceof Confirm => $confirm,
-            (bool) $confirm => Confirm::make(),
-            default => null,
-        };
+        $this->confirm = $confirm;
     }
 
     /**
@@ -72,16 +76,7 @@ trait Confirmable
         return $this->confirm;
     }
 
-    /**
-     * Determine if the action is confirmable.
-     *
-     * @return bool
-     */
-    public function isConfirmable()
-    {
-        return ! \is_null($this->confirm);
-    }
-
+    
     /**
      * Determine if the action is not confirmable.
      *
@@ -89,6 +84,16 @@ trait Confirmable
      */
     public function isNotConfirmable()
     {
-        return ! $this->isConfirmable();
+        return \is_null($this->confirm);
+    }
+
+    /**
+     * Determine if the action is confirmable.
+     *
+     * @return bool
+     */
+    public function isConfirmable()
+    {
+        return ! $this->isNotConfirmable();
     }
 }

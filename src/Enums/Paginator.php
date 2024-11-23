@@ -26,7 +26,7 @@ enum Paginator: string
                 ($data = $builder->cursorPaginate(
                     perPage: $table->getPageCount(),
                     cursorName: $table->getPageAs(),
-                )->withQueryString()->getCollection()),
+                )->withQueryString())->getCollection(),
                 self::getMeta($data),
             ],
             self::None => [
@@ -46,9 +46,7 @@ enum Paginator: string
     /**
      * Get metadata based on the current pagination type.
      *
-     * @param  \Illuminate\Support\Collection $data When self::None
-     * @param  \Illuminate\Pagination\CursorPaginator $data When self::Cursor
-     * @param  \Illuminate\Pagination\LengthAwarePaginator $data When self::Page
+     * @param  \Illuminate\Support\Collection|\Illuminate\Pagination\CursorPaginator|\Illuminate\Pagination\LengthAwarePaginator $data
      * @return array<string, int|string|bool>
      */
     public function getMeta($data): array

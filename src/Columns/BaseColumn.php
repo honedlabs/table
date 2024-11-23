@@ -30,6 +30,7 @@ abstract class BaseColumn extends Primitive
     use Concerns\HasTooltip;
     use Concerns\IsSortable;
     use Concerns\HasFallback;
+    use Concerns\IsSearchable;
     use Concerns\IsToggleable;
     use Concerns\HasBreakpoint;
 

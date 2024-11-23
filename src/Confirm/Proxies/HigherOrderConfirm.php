@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace Honed\Table\Confirm\Proxies;
 
-use Honed\Core\Contracts\HigherOrder;
 use Honed\Core\Primitive;
+use Honed\Core\Contracts\HigherOrder;
 
 /**
  * @internal
  *
- * @mixin Honed\Table\Confirm\Confirmable
- *
- * @template T of Honed\Core\Primitive
- *
- * @template-implements Honed\Core\Concerns\HigherOrder
+ * @template T of \Honed\Core\Primitive
+ * @implements \Honed\Core\Contracts\HigherOrder<T>
  */
 class HigherOrderConfirm implements HigherOrder
 {
@@ -32,13 +29,15 @@ class HigherOrderConfirm implements HigherOrder
      */
     public function __call(string $name, array $arguments)
     {
-        $this->primitive->setConfirm(true);
+        $primitive = $this->primitive;
 
-        $confirm = $this->primitive->getConfirm();
+        $primitive->makeConfirm(); // @phpstan-ignore-line
+
+        $confirm = $primitive->getConfirm(); // @phpstan-ignore-line
         if ($confirm && method_exists($confirm, $name)) {
             $confirm->{$name}(...$arguments);
         }
 
-        return $this->primitive;
+        return $primitive;
     }
 }

@@ -262,6 +262,7 @@ class Table extends Primitive
         $result = match ($request->validated('type')) {
             'inline' => $this->executeInlineAction(InlineActionData::from($request)),
             'bulk' => $this->executeBulkAction(BulkActionData::from($request)),
+            default => abort(404)
         };
 
         if ($result instanceof Response) {
@@ -301,8 +302,8 @@ class Table extends Primitive
                 $this->getModelClassName() => $record,
             ],
             typed: [
-                Model::class => $record,
-                $this->getModelClass() => $record,
+                (string) $this->getModelClass() => $record,
+                // Model::class => $record,
             ],
         );
     }
@@ -328,7 +329,7 @@ class Table extends Primitive
 
         $key = $this->getKey();
 
-        $query = $this->getResourceQuery();
+        $query = $this->getResource();
         $query = match (true) {
             $data->all => $query->whereNotIn($key, $data->except),
             default => $query->whereIn($key, $data->only)
@@ -337,7 +338,7 @@ class Table extends Primitive
         $reflection = new \ReflectionFunction($action->getAction());
         $hasRecordsParameter = collect($reflection->getParameters())
             ->some(fn (\ReflectionParameter $parameter) => 'records' === $parameter->getName() 
-                || Collection::class === $parameter->getType()
+                || ($parameter->getType() instanceof \ReflectionNamedType && $parameter->getType()->getName() === Collection::class)
             );
 
         return $this->evaluate(

@@ -42,7 +42,7 @@ trait Searchable
      * @param string|array<int,string> $searchAs
      * @return void
      */
-    public static function setSearchAs(string $searchAs)
+    public static function setSearchAs($searchAs)
     {
         static::$globalSearchAs = $searchAs;
     }

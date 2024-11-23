@@ -6,10 +6,10 @@ namespace Honed\Table\Concerns;
 
 trait Sortable
 {
-    // /**
-    //  * @var string
-    //  */
-    // protected $defaultSort;
+    /**
+     * @var array<int,\Honed\Table\Sorts\BaseSort>
+     */
+    protected $sorts;
 
     /**
      * @var string
@@ -74,7 +74,7 @@ trait Sortable
      */
     public static function setSortAs(string $sortAs)
     {
-        static::$sortAs = $sortAs;
+        static::$globalSortAs = $sortAs;
     }
 
     /**
@@ -85,7 +85,7 @@ trait Sortable
      */
     public static function setOrderAs(string $orderAs)
     {
-        static::$orderAs = $orderAs;
+        static::$globalOrderAs = $orderAs;
     }
 
     /**
@@ -96,7 +96,7 @@ trait Sortable
      */
     public static function setDefaultOrder(string $defaultOrder)
     {
-        static::$defaultOrder = $defaultOrder;
+        static::$globalDefaultOrder = $defaultOrder;
     }
 
     /**
@@ -107,7 +107,7 @@ trait Sortable
      */
     public static function enableSigned(bool $signed = true)
     {
-        static::$signed = $signed;
+        static::$globalSigned = $signed;
     }
 
     /**
@@ -118,7 +118,7 @@ trait Sortable
      */
     public static function disableSigned(bool $signed = false)
     {
-        static::$signed = $signed;
+        static::$globalSigned = $signed;
     }
 
     /**
@@ -196,7 +196,7 @@ trait Sortable
     /**
      * Get the direction to use from a term if signed sorting is enabled.
      * 
-     * @param array{string,string} $term
+     * @param string $term
      * @return string
      */
     public function getSignedTerm(string $term)

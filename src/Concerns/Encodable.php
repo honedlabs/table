@@ -46,7 +46,7 @@ trait Encodable
             return encrypt($value);
         }
 
-        return value(static::$encoder, $value);
+        return (static::$encoder)($value);
     }
 
     /**
@@ -61,7 +61,7 @@ trait Encodable
             return decrypt($value);
         }
 
-        return value(static::$decoder, $value);
+        return (static::$decoder)($value);
     }
 
     /**

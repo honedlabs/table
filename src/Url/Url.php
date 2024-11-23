@@ -25,7 +25,7 @@ class Url extends Primitive
     /**
      * Create a new parameterised url instance.
      * 
-     * @param string|(\Closure():string) $url
+     * @param string|(\Closure():string)|null $url
      * @param string|(\Closure():string) $method
      * @param bool|(\Closure():bool) $signed
      * @param int|(\Closure():int) $duration
@@ -35,18 +35,18 @@ class Url extends Primitive
      */
     final public function __construct(
         string|\Closure|null $url = null, 
-        string|\Closure|null $method = 'get',
-        bool|\Closure|null $signed = false,
-        int|\Closure|null $duration = 0,
-        bool|\Closure|null $named = false,
-        bool|\Closure|null $newTab = false,
-        bool|\Closure|null $download = false,
+        string|\Closure $method = 'get',
+        bool|\Closure $signed = false,
+        int|\Closure $duration = 0,
+        bool|\Closure $named = false,
+        bool|\Closure $newTab = false,
+        bool|\Closure $download = false,
     ) {
         parent::__construct();
         $this->setUrl($url);
         $this->setMethod($method);
-        $this->setSigned($signed || $duration > 0);
         $this->setDuration($duration);
+        $this->setSigned($signed || $this->getDuration() > 0);
         $this->setNamed($named || !str($url ?? '')->startsWith('/'));
         $this->setNewTab($newTab);
         $this->setDownload($download);
@@ -72,13 +72,15 @@ class Url extends Primitive
         bool|\Closure|null $newTab = false,
         bool|\Closure|null $download = false,
     ): static {
-        return resolve(static::class, compact('url', 'method', 'signed', 'duration', 'named', 'newTab', 'download'));
+        return resolve(static::class, compact(
+            'url', 'method', 'signed', 'duration', 'named', 'newTab', 'download'
+        ));
     }
 
     /**
      * Set an URL route, chainable.
      * 
-     * @param string|(\Closure(...):string)|null $url
+     * @param string|(\Closure(mixed...):string)|null $url
      * @return $this
      */
     public function to($url): static
@@ -92,7 +94,7 @@ class Url extends Primitive
     /**
      * Set a named route, chainable.
      * 
-     * @param string|(\Closure(...):string) $route
+     * @param string|(\Closure(mixed...):string) $route
      * @return $this
      */
     public function route($route): static
@@ -106,7 +108,7 @@ class Url extends Primitive
     /**
      * Set the signed route, chainable.
      * 
-     * @param string|(\Closure(...):string) $route
+     * @param string|(\Closure(mixed...):string) $route
      * @param int $duration
      * @return $this
      */
@@ -139,7 +141,7 @@ class Url extends Primitive
     /**
      * Resolve and retrieve the url.
      * 
-     * @param array<string, mixed> $parameters
+     * @param array<int,mixed> $parameters
      */
     public function getResolvedUrl(array $parameters = []): string|null
     {
@@ -153,7 +155,7 @@ class Url extends Primitive
     /**
      * Resolve the url using parameters
      * 
-     * @param array<string, mixed> $parameters
+     * @param array<int,mixed> $parameters
      */
     public function resolveUrl(array $parameters = []): string
     {

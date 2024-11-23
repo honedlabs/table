@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Honed\Table\Concerns;
 
 use Honed\Table\Enums\Paginator;
-use Honed\Table\Pagination\Pagination;
 
 trait Pageable
 {
@@ -30,12 +29,12 @@ trait Pageable
     protected static $globalPerPage = 10;
 
     /**
-     * @var string|Paginator
+     * @var string|\Honed\Table\Enums\Paginator
      */
     protected $paginator;
 
     /**
-     * @var string
+     * @var string|\Honed\Table\Enums\Paginator
      */
     protected static $globalPaginator = Paginator::Default;
 
@@ -62,12 +61,12 @@ trait Pageable
     /**
      * Configure the default number of items to show per page.
      * 
-     * @param int $perPage
+     * @param int $defaultPerPage
      * @return void
      */
     public static function setDefaultPerPage(int $defaultPerPage)
     {
-        static::$defaultPerPage = $defaultPerPage;
+        static::$globalDefaultPerPage = $defaultPerPage;
     }
 
     /**
@@ -78,13 +77,13 @@ trait Pageable
      */
     public static function setPerPage(int|array $perPage)
     {
-        static::$perPage = $perPage;
+        static::$globalPerPage = $perPage;
     }
 
     /**
      * Configure the default paginator to use.
      * 
-     * @param string|Paginator $paginator
+     * @param string|\Honed\Table\Enums\Paginator $paginator
      * @return void
      */
     public static function sePaginator(string|Paginator $paginator)
@@ -137,7 +136,7 @@ trait Pageable
     /**
      * Get the default paginator to use.
      * 
-     * @return string|Paginator
+     * @return string|\Honed\Table\Enums\Paginator
      */
     public function getPaginator()
     {

@@ -84,7 +84,7 @@ final class ProductTable extends Table
 
             BulkAction::make('Edit')->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
             BulkAction::make('Mass')->action(fn (Product $product) => $product->update(['name' => 'All'])),
-            PageAction::make('create')->to('/products/create'),
+            PageAction::make('create')->url->to('/products/create'),
         ];
     }
 }

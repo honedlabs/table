@@ -14,19 +14,19 @@ use Illuminate\Support\Collection;
 trait HasActions
 {
     /**
-     * @var array<int, Honed\Table\Actions\BaseAction>
+     * @var array<int,\Honed\Table\Actions\BaseAction>
      */
     protected $actions;
 
     /**
      * Set the actions for the table.
      *
-     * @param  array<int, Honed\Table\Actions\BaseAction>  $actions
+     * @param  array<int,\Honed\Table\Actions\BaseAction>|null  $actions
      * @return void
      */
     public function setActions($actions): void
     {
-        if (is_null($actions)) {
+        if (\is_null($actions)) {
             return;
         }
 
@@ -36,7 +36,7 @@ trait HasActions
     /**
      * Get all available actions.
      *
-     * @return Collection<int, Honed\Table\Actions\BaseAction>
+     * @return Collection<int,\Honed\Table\Actions\BaseAction>
      */
     public function getActions(): Collection
     {
@@ -46,7 +46,7 @@ trait HasActions
     /**
      * Get the inline actions.
      *
-     * @return Collection<int, Honed\Table\Actions\InlineAction>
+     * @return Collection<int,\Honed\Table\Actions\InlineAction>
      */
     public function getInlineActions(): Collection
     {
@@ -57,7 +57,7 @@ trait HasActions
     /**
      * Get the bulk actions.
      *
-     * @return Collection<int, Honed\Table\Actions\BulkAction>
+     * @return Collection<int,\Honed\Table\Actions\BulkAction>
      */
     public function getBulkActions(): Collection
     {
@@ -68,7 +68,7 @@ trait HasActions
     /**
      * Get the page actions.
      *
-     * @return Collection<int, Honed\Table\Actions\PageAction>
+     * @return Collection<int,\Honed\Table\Actions\PageAction>
      */
     public function getPageActions(): Collection
     {

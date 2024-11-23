@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Honed\Table\Actions;
 
-class PageAction extends BaseAction
+use Honed\Core\Contracts\HigherOrder;
+use Honed\Table\Url\Concerns\Urlable;
+use Honed\Table\Url\Proxies\HigherOrderUrl;
+use Honed\Core\Contracts\ProxiesHigherOrder;
+
+class PageAction extends BaseAction implements ProxiesHigherOrder
 {
-    use Concerns\Routable;
+    use Urlable;
 
     public function setUp(): void
     {
@@ -15,9 +20,23 @@ class PageAction extends BaseAction
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), [
-            'url' => $this->getResolvedRoute(),
-            'method' => $this->getMethod(),
-        ]);
+        return array_merge(parent::toArray(), 
+            $this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
+        );
+    }
+
+    /**
+     * Dynamically forward calls to the proxies.
+     * 
+     * @param string $property
+     * 
+     * @throws \Exception
+     */
+    public function __get(string $property): HigherOrder
+    {
+        return match ($property) {
+            'url' => new HigherOrderUrl($this),
+            default => throw new \Exception("Property [{$property}] does not exist on ".self::class),
+        };
     }
 }
