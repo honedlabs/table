@@ -57,7 +57,7 @@ trait Confirmable
      * @internal
      * @param \Honed\Table\Confirm\Confirm|bool|null $confirm
      */
-    public function setConfirm(mixed $confirm)
+    public function setConfirm($confirm)
     {
         if (\is_null($confirm)) {
             return;
@@ -84,6 +84,7 @@ trait Confirmable
      */
     public function isNotConfirmable()
     {
+        // @phpstan-ignore-next-line
         return \is_null($this->confirm);
     }
 
