@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Honed\Table\Actions\Concerns;
+namespace Honed\Table\Confirm\Concerns;
 
 use Honed\Table\Confirm\Confirm;
 
@@ -27,11 +27,16 @@ trait Confirmable
         $this->setConfirm(true);
 
         if (is_array($confirm)) {
-            $this->confirm->setState($confirm);
+            $this->confirm->assign($confirm);
         }
 
         if (is_callable($confirm)) {
             $confirm($this->confirm);
+            $this->evaluate($confirm, [
+
+            ], [
+
+            ]);
         }
 
         return $this;

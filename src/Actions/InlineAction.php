@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Actions;
 
 use Honed\Core\Concerns\IsDefault;
-
+use Honed\Table\Confirm\Concerns\Confirmable;
 
 /**
  * @property-read \Honed\Table\Confirm\Confirm $confirm
@@ -13,10 +13,10 @@ use Honed\Core\Concerns\IsDefault;
 class InlineAction extends BaseAction
 {
     use IsDefault;
+    use Confirmable;
     use Concerns\IsBulk;
-    use Concerns\Actionable;
-    use Concerns\Confirmable;
     use Concerns\Routable;
+    use Concerns\Actionable;
 
     public function setUp(): void
     {
@@ -28,7 +28,7 @@ class InlineAction extends BaseAction
         return array_merge(parent::toArray(), [
             'url' => $this->getResolvedRoute(),
             'method' => $this->getMethod(),
-            'action' => $this->canAction(),
+            'action' => $this->hasAction(),
             'confirm' => $this->getConfirm()?->toArray(),
         ]);
     }

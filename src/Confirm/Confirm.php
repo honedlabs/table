@@ -21,7 +21,7 @@ class Confirm extends Primitive
      */
     public function __construct(array $state = [])
     {
-        $this->setState($state);
+        $this->assign($state);
     }
 
     /**

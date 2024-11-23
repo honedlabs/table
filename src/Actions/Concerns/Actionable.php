@@ -30,24 +30,23 @@ trait Actionable
     }
 
     /**
-     * Alias for action
-     * 
-     * @param \Closure|string $action
-     * @return $this
-     */
-    public function each($action): static
-    {
-        return $this->action($action);
-    }
-
-    /**
-     * Check whether an action has been set.
+     * Determine whether there is not an action to apply.
      * 
      * @return bool
      */
-    public function hasAction()
+    public function missingAction(): bool
     {
-        return is_null($this->action);
+        return \is_null($this->action);
+    }
+
+    /**
+     * Determine whether there is an action to apply.
+     * 
+     * @return bool
+     */
+    public function hasAction(): bool
+    {
+        return ! $this->missingAction();
     }
 
     /**

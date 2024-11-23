@@ -402,13 +402,15 @@ trait Routable
      * 
      * @param array<string, mixed> $parameters
      */
-    protected function resolveRoute(array $parameters = []): string
+    public function resolveRoute(array $parameters = []): string
     {
-        return match (true) {
+        $this->resolvedRoute = match (true) {
             $this->isNotNamedRoute() => $this->evaluate($this->route, named: $parameters),
             $this->isSignedTemporaryRoute() => URL::temporarySignedRoute($this->route, $this->getDuration(), ...$parameters),
             $this->isSignedRoute() => URL::signedRoute($this->route, ...$parameters),
             default => URL::route($this->route, ...$parameters),
         };
+
+        return $this->resolvedRoute;
     }
 }

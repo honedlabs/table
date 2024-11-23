@@ -4,6 +4,7 @@ namespace Workbench\App\Tables;
 
 use Honed\Core\Options\Option;
 use Honed\Table\Actions\BulkAction;
+use Honed\Table\Confirm\Confirm;
 use Honed\Table\Actions\InlineAction;
 use Honed\Table\Actions\PageAction;
 use Honed\Table\Columns\BooleanColumn;
@@ -75,12 +76,15 @@ final class ProductTable extends Table
                 
             InlineAction::make('delete')
                 ->authorize(fn (Product $product) => true)
-                ->action(fn (Product $product) => $product->delete()),
+                ->action(fn (Product $product) => $product->delete())
+                ->confirm(fn (Confirm $confirm) => $confirm->title('Hello')->description('Are you sure?')),
+
+            InlineAction::make('edit-route')
+                ->route('product.show'),
 
             BulkAction::make('Edit')->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
             BulkAction::make('Mass')->action(fn (Product $product) => $product->update(['name' => 'All'])),
-            // PageAction::make('add')->label('Add User'),
-            // BulkAction::make('delete')->label('Delete Users'),
+            PageAction::make('create')->to('/products/create'),
         ];
     }
 }

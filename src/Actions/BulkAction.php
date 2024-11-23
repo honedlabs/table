@@ -6,7 +6,6 @@ namespace Honed\Table\Actions;
 
 class BulkAction extends BaseAction
 {
-    // use Chunks;
     use Concerns\IsInline;
     use Concerns\Actionable;
     use Concerns\Confirmable;

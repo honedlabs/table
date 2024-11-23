@@ -16,7 +16,7 @@ class PageAction extends BaseAction
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'url' => $this->getUrl(),
+            'url' => $this->getResolvedRoute(),
             'method' => $this->getMethod(),
         ]);
     }

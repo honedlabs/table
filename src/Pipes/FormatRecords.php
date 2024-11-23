@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipes;
 
-use ArrayAccess;
 use Closure;
+use ArrayAccess;
 use Honed\Table\Table;
 use Illuminate\Support\Collection;
 use Honed\Table\Columns\BaseColumn;
-use Illuminate\Database\Eloquent\Model;
+use Honed\Table\Actions\InlineAction;
 use Honed\Table\Pipes\Contracts\FormatsRecords;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @internal
@@ -60,10 +59,16 @@ class FormatRecords implements FormatsRecords
      */
     protected function applyActions($originalRecord, &$formattedRecord, Collection $actions)
     {
-        $actions->each(function ($action) use (&$formattedRecord) {
-            if ($action->isAuthorized()) {
-                $formattedRecord['actions'][] = $action->toArray();
+        $actions->each(function (InlineAction $action) use ($originalRecord, &$formattedRecord) {
+            if ($action->isNotAuthorized()) {
+                return;
             }
+            // Resolve the link if applicable
+            if ($action->isRoutable()) {
+                $action->resolveRoute([$originalRecord]);
+            }
+
+            $formattedRecord['actions'][] = $action->toArray();
         });
     }
 
