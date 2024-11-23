@@ -38,7 +38,7 @@ class Filter extends BaseFilter
     {
         $this->getClause()
             ->apply($builder,
-                $this->getProperty(),
+                $this->getAttribute(),
                 $this->getOperator(),
                 $this->getValue()
             );

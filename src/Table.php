@@ -284,14 +284,20 @@ class Table extends Primitive
         $action = $this->getInlineActions()->first(fn (InlineAction $action) => $action->getName() === $data->name);
 
         if (\is_null($action)) {
-            throw new Exception('Invalid action');
+            throw new \Exception('Invalid action');
         }
 
         $record = $this->resolveModel($data->id);
 
         // Ensure that the user is authorized to perform the action on this model
-        if (!$action->isAuthorized($record)) {
-            throw new Exception('Unauthorized');
+        if (!$action->isAuthorized([
+            'record' => $record,
+            $this->getModelClassName() => $record,
+        ], [
+            (string) $this->getModelClass() => $record,
+            Model::class => $record,
+        ])) {
+            throw new \Exception('Unauthorized');
         }
 
         return $this->evaluate(

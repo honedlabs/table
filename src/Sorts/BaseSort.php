@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Honed\Table\Sorts;
 
 use Honed\Core\Concerns\Authorizable;
+use Honed\Core\Concerns\HasAttribute;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
-use Honed\Core\Concerns\HasProperty;
 use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Primitive;
@@ -20,11 +20,11 @@ abstract class BaseSort extends Primitive implements Sorts
     use Concerns\HasDirection;
     use HasLabel;
     use HasMeta;
-    use HasProperty;
     use HasType;
     use IsActive;
     use Authorizable;
     use HasAlias;
+    use HasAttribute;
 
     /**
      * Create a new sort instance specifying the database column, and optionally the display label.
@@ -35,8 +35,8 @@ abstract class BaseSort extends Primitive implements Sorts
     final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
         parent::__construct();
-        $this->setProperty($attribute);
-        $this->setLabel($label ?? $this->makeLabel($this->getProperty()));
+        $this->setAttribute($attribute);
+        $this->setLabel($label ?? $this->makeLabel($this->getAttribute()));
     }
 
     /**
@@ -75,7 +75,7 @@ abstract class BaseSort extends Primitive implements Sorts
      */
     public function handle(Builder $builder, ?string $direction = null): void
     {
-        $builder->orderBy($builder->qualifyColumn($this->getProperty()), $direction);
+        $builder->orderBy($builder->qualifyColumn($this->getAttribute()), $direction);
     }
 
     /**
@@ -98,7 +98,7 @@ abstract class BaseSort extends Primitive implements Sorts
      */
     protected function getParameterName(): string
     {
-        return $this->getAlias() ?? str($this->getProperty())->afterLast('.')->toString();
+        return $this->getAlias() ?? str($this->getAttribute())->afterLast('.')->toString();
     }
 
     /**

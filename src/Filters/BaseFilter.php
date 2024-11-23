@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Honed\Core\Concerns\Authorizable;
-use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Primitive;
 use Honed\Core\Concerns\HasMeta;
-use Honed\Core\Concerns\HasProperty;
 use Honed\Core\Concerns\HasType;
+use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
-use Honed\Core\Concerns\Transformable;
-use Honed\Core\Concerns\Validatable;
-use Honed\Core\Primitive;
 use Honed\Table\Concerns\HasAlias;
 use Honed\Table\Contracts\Filters;
+use Honed\Core\Concerns\Validatable;
+use Honed\Core\Concerns\Authorizable;
+use Honed\Core\Concerns\HasAttribute;
+use Honed\Core\Concerns\Transformable;
 
 abstract class BaseFilter extends Primitive implements Filters
 {
     use HasLabel;
     use HasMeta;
-    use HasProperty; // Change to HasAttribute
+    use HasAttribute;
     use HasType;
     use HasValue;
     use IsActive;
@@ -39,8 +39,8 @@ abstract class BaseFilter extends Primitive implements Filters
     final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
         parent::__construct();
-        $this->setProperty($attribute);
-        $this->setLabel($label ?? $this->makeLabel($this->getProperty()));
+        $this->setAttribute($attribute);
+        $this->setLabel($label ?? $this->makeLabel($this->getAttribute()));
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class BaseFilter extends Primitive implements Filters
      */
     protected function getParameterName(): string
     {
-        return $this->getAlias() ?? str($this->getProperty())->afterLast('.')->toString();
+        return $this->getAlias() ?? str($this->getAttribute())->afterLast('.')->toString();
     }
 
     /**
