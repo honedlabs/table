@@ -14,6 +14,7 @@ use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
 
 /**
  * @property-read \Honed\Table\Confirm\Confirm $confirm
+ * @property-read \Honed\Table\Url\Url $url
  */
 class InlineAction extends BaseAction implements ProxiesHigherOrder
 {

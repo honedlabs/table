@@ -9,6 +9,9 @@ use Honed\Table\Url\Concerns\Urlable;
 use Honed\Table\Url\Proxies\HigherOrderUrl;
 use Honed\Core\Contracts\ProxiesHigherOrder;
 
+/**
+ * @property-read \Honed\Table\Url\Url $url
+ */
 class PageAction extends BaseAction implements ProxiesHigherOrder
 {
     use Urlable;

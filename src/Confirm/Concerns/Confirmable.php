@@ -19,7 +19,7 @@ trait Confirmable
     /**
      * Set the properties of the confirm
      * 
-     * @param \Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void)|array<string,mixed> $confirm
+     * @param string|\Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void)|array<string,mixed> $confirm
      * @return $this
      */
     public function confirm(mixed $confirm): static
@@ -34,6 +34,7 @@ trait Confirmable
             ], [
                 Confirm::class => $confirmInstance,
             ]),
+            is_string($confirm) => $this->getConfirm()->setDescription($confirm),
         };
 
         return $this;

@@ -14,6 +14,7 @@ use Honed\Table\Concerns\HasMeta;
 use Honed\Table\Pipes\ApplySorts;
 use Illuminate\Pipeline\Pipeline;
 use Honed\Core\Concerns\Encodable;
+use Honed\Table\Pipes\ApplySearch;
 use Illuminate\Support\Collection;
 use Honed\Table\Actions\BaseAction;
 use Honed\Table\Actions\BulkAction;
@@ -202,7 +203,7 @@ class Table extends Primitive
             /* The query parameter term for toggling column visibility */
             'toggle_as' => $this->getToggleAs(),
             /* The route used to handle actions, it is required to be a 'post' route */
-            // 'route' => $this->getRoute(),
+            // 'route' => $this->getActionRoute(),
         ];
     }
 
@@ -221,7 +222,7 @@ class Table extends Primitive
             ->through([
                 ApplyToggles::class,
                 ApplyFilters::class,
-                // ApplySearch::class,
+                ApplySearch::class,
                 ApplySorts::class,
                 OptimalSelect::class,
                 ApplyBeforeRetrieval::class,

@@ -51,7 +51,8 @@ trait HasActions
     public function getInlineActions(): Collection
     {
         return $this->getActions()
-            ->filter(static fn (BaseAction $action): bool => $action instanceof InlineAction);
+            ->filter(static fn (BaseAction $action): bool => $action instanceof InlineAction || ($action instanceof BulkAction && $action->isInline()))
+            ->values();
     }
 
     /**
@@ -62,7 +63,8 @@ trait HasActions
     public function getBulkActions(): Collection
     {
         return $this->getActions()
-            ->filter(static fn (BaseAction $action): bool => $action instanceof BulkAction && $action->isAuthorized());
+            ->filter(static fn (BaseAction $action): bool => $action instanceof BulkAction || ($action instanceof InlineAction && $action->isBulk()))
+            ->values();
     }
 
     /**
@@ -73,6 +75,7 @@ trait HasActions
     public function getPageActions(): Collection
     {
         return $this->getActions()
-            ->filter(static fn (BaseAction $action): bool => $action instanceof PageAction && $action->isAuthorized());
+            ->filter(static fn (BaseAction $action): bool => $action instanceof PageAction && $action->isAuthorized())
+            ->values();
     }
 }
