@@ -42,6 +42,8 @@ trait IsToggleable
 
     /**
      * Determine if the column is toggleable.
+     * 
+     * @return bool
      */
     public function isToggleable(): bool
     {
@@ -50,6 +52,8 @@ trait IsToggleable
 
     /**
      * Determine if the column is not toggleable.
+     * 
+     * @return bool
      */
     public function isNotToggleable(): bool
     {

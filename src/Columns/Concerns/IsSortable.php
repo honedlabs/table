@@ -11,45 +11,54 @@ use Honed\Table\Sorts\ToggleSort;
  */
 trait IsSortable
 {
-    protected ?ToggleSort $sort = null;
+    /**
+     * @var bool|(\Closure():bool)
+     */
+    protected $sortable = false;
 
     /**
-     * Alias for sortable
+     * Set the sortable property, chainable.
+     * 
+     * @param string|\Closure $sortable
+     * @return $this
      */
-    public function sort(?string $property = null): static
+    public function sortable(bool|\Closure $sortable = true): static
     {
-        return $this->sortable($property);
-    }
-
-    public function sortable(?string $property = null): static
-    {
-        $this->setSortable($property);
+        $this->setSortable($sortable);
 
         return $this;
     }
 
-    public function setSortable(?string $property = null): void
+    /**
+     * Set the sortable property quietly.
+     * 
+     * @param bool|\Closure|null $sortable
+     */
+    public function setSortable(bool|\Closure|null $sortable): void
     {
-        $this->sort = ToggleSort::make($property ?? $this->getName(), $this->getName());
+        if (\is_null($sortable)) {
+            return;
+        }
+        $this->sortable = $sortable;
     }
 
-    public function getSort(): ?ToggleSort
-    {
-        return $this->evaluate($this->sort);
-    }
-
+    /**
+     * Determine if the column is sortable.
+     * 
+     * @return bool
+     */
     public function isSortable(): bool
     {
-        return ! $this->isNotSortable();
+        return (bool) $this->evaluate($this->sortable);
     }
 
+    /**
+     * Determine if the column is not sortable.
+     * 
+     * @return bool
+     */
     public function isNotSortable(): bool
     {
-        return is_null($this->sort);
-    }
-
-    public function isSorting(): bool
-    {
-        return (bool) $this->getSort()?->isActive();
+        return ! $this->isSortable();
     }
 }

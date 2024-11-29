@@ -70,6 +70,13 @@ it('has to alias', function () {
     expect($this->urlable->getUrl()->getUrl())->toBe('product.show');
 });
 
+it('has route alias', function () {
+    expect($this->urlable->route('product.show'))->toBeInstanceOf(InlineAction::class)
+        ->isUrlable()->toBeTrue();
+
+    expect($this->urlable->getUrl()->getUrl())->toBe('product.show');
+});
+
 it('can make a new url instance', function () {
     expect($this->urlable->makeUrl())->toBeInstanceOf(Url::class);
     expect($this->urlable->isUrlable())->toBeTrue();

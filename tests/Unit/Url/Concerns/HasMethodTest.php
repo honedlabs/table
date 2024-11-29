@@ -50,3 +50,7 @@ it('has shorthand for delete method', function () {
     expect($this->url->delete())->toBeInstanceOf(Url::class)
         ->getMethod()->toBe('delete');
 });
+
+it('does not accept invalid methods', function () {
+    expect(fn () => $this->url->method('invalid'))->toThrow(\InvalidArgumentException::class);
+});
