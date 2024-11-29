@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Url\Concerns;
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * @mixin \Honed\Core\Concerns\Evaluable
  */
@@ -62,7 +64,7 @@ trait HasMethod
      */
     public function get(): static
     {
-        return $this->method('get');
+        return $this->method(Request::METHOD_GET);
     }
 
     /**
@@ -72,7 +74,7 @@ trait HasMethod
      */
     public function post(): static
     {
-        return $this->method('post');
+        return $this->method(Request::METHOD_POST);
     }
 
     /**
@@ -82,7 +84,7 @@ trait HasMethod
      */
     public function put(): static
     {
-        return $this->method('put');
+        return $this->method(Request::METHOD_PUT);
     }
 
     /**
@@ -92,7 +94,7 @@ trait HasMethod
      */
     public function patch(): static
     {
-        return $this->method('patch');
+        return $this->method(Request::METHOD_PATCH);
     }
 
     /**
@@ -102,7 +104,7 @@ trait HasMethod
      */
     public function delete(): static
     {
-        return $this->method('delete');
+        return $this->method(Request::METHOD_DELETE);
     }
 
 }

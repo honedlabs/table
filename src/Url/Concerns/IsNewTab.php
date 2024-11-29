@@ -20,7 +20,7 @@ trait IsNewTab
      * @param  bool|(\Closure():bool)  $newTab
      * @return $this
      */
-    public function newTab(bool|\Closure $newTab): static
+    public function newTab(bool|\Closure $newTab = true): static
     {
         $this->setNewTab($newTab);
 

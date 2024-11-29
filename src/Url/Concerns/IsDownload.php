@@ -20,7 +20,7 @@ trait IsDownload
      * @param  bool|(\Closure():bool)  $download
      * @return $this
      */
-    public function download(bool|\Closure $download): static
+    public function download(bool|\Closure $download = true): static
     {
         $this->setDownload($download);
 

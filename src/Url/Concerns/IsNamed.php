@@ -20,7 +20,7 @@ trait IsNamed
      * @param  bool|(\Closure():bool)  $named
      * @return $this
      */
-    public function named(bool|\Closure $named): static
+    public function named(bool|\Closure $named = true): static
     {
         $this->setNamed($named);
 

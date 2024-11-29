@@ -20,7 +20,7 @@ trait IsSigned
      * @param  bool|(\Closure():bool)  $signed
      * @return $this
      */
-    public function signed(bool|\Closure $signed): static
+    public function signed(bool|\Closure $signed = true): static
     {
         $this->setSigned($signed);
 

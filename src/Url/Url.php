@@ -47,7 +47,7 @@ class Url extends Primitive
         $this->setMethod($method);
         $this->setDuration($duration);
         $this->setSigned($signed || $this->getDuration() > 0);
-        $this->setNamed($named || !str($url ?? '')->startsWith('/'));
+        $this->setNamed($named || $url && str($url)->startsWith('/'));
         $this->setNewTab($newTab);
         $this->setDownload($download);
     }
