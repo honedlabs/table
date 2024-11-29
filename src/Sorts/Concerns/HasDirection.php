@@ -4,13 +4,21 @@ namespace Honed\Table\Sorts\Concerns;
 
 trait HasDirection
 {
-    /** Can be asc, desc or null */
-    public ?string $direction = null;
+    /**
+     * @var string|(\Closure():string)|null
+     */
+    protected $direction = null;
+
+    public const Ascending = 'asc';
+    public const Descending = 'desc';
 
     /**
-     * Set the direction
+     * Set the direction, chainable.
+     * 
+     * @param string|\Closure():string $direction
+     * @return $this
      */
-    public function direction(string $direction): static
+    public function direction(string|\Closure $direction): static
     {
         $this->setDirection($direction);
 
@@ -19,30 +27,38 @@ trait HasDirection
 
     /**
      * Set the direction quietly.
+     * 
+     * @param string|\Closure():string|null $direction
      */
-    protected function setDirection(?string $direction): void
+    public function setDirection(string|\Closure|null $direction): void
     {
         $this->direction = $direction;
     }
 
     /**
      * Get the direction
+     * 
+     * @return string|null
      */
     public function getDirection(): ?string
     {
-        return $this->direction;
+        return $this->evaluate($this->direction);
     }
 
     /**
-     * Check if the direction is not set
+     * Determine if the direction is not set
+     * 
+     * @return bool
      */
     public function missingDirection(): bool
     {
-        return is_null($this->direction);
+        return \is_null($this->direction);
     }
 
     /**
-     * Check if the direction is set
+     * Determine if the direction is set
+     * 
+     * @return bool
      */
     public function hasDirection(): bool
     {
@@ -50,18 +66,22 @@ trait HasDirection
     }
 
     /**
-     * Set the direction to descending
+     * Set the direction to be descending
+     * 
+     * @return $this
      */
     public function desc(): static
     {
-        return $this->direction('desc');
+        return $this->direction(self::Descending);
     }
 
     /**
-     * Set the direction to ascending
+     * Set the direction to be ascending
+     * 
+     * @return $this
      */
     public function asc(): static
     {
-        return $this->direction('asc');
+        return $this->direction(self::Ascending);
     }
 }

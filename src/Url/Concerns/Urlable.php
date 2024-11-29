@@ -36,8 +36,8 @@ trait Urlable
             ], [
                 Url::class => $urlInstance,
             ]),
-            is_string($url) && str($url)->startsWith('/') => $this->getUrl()->to($url),
-            default => $this->getUrl()->route($url),
+            is_string($url) && str($url)->startsWith('/') => $this->getUrl()->url($url),
+            default => $this->getUrl()->to($url),
         };
 
         return $this;

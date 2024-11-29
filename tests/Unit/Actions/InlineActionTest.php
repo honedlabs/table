@@ -22,7 +22,7 @@ it('has an array form', function () {
 });
 
 it('forwards calls to url', function () {
-    expect($this->action->url->to('/products'))->toBeInstanceOf(InlineAction::class)
+    expect($this->action->url->url('/products'))->toBeInstanceOf(InlineAction::class)
         ->toArray()->toEqual([
             'type' => 'inline',
             'name' => 'test',

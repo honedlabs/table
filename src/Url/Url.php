@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Url;
 
+use Closure;
 use Honed\Core\Primitive;
 use Illuminate\Support\Facades\URL as UrlFacade;
 
@@ -25,10 +26,10 @@ class Url extends Primitive
     /**
      * Create a new parameterised url instance.
      * 
-     * @param string|(\Closure():string)|null $url
+     * @param string|(\Closure(mixed...):string)|null $url
      * @param string|(\Closure():string) $method
      * @param bool|(\Closure():bool) $signed
-     * @param int|(\Closure():int) $duration
+     * @param int|\Carbon\Carbon|\Closure|null $duration
      * @param bool|(\Closure():bool) $named
      * @param bool|(\Closure():bool) $newTab
      * @param bool|(\Closure():bool) $download
@@ -37,7 +38,7 @@ class Url extends Primitive
         string|\Closure|null $url = null, 
         string|\Closure $method = 'get',
         bool|\Closure $signed = false,
-        int|\Closure $duration = 0,
+        int|\Carbon\Carbon|\Closure $duration = 0,
         bool|\Closure $named = false,
         bool|\Closure $newTab = false,
         bool|\Closure $download = false,
@@ -47,7 +48,7 @@ class Url extends Primitive
         $this->setMethod($method);
         $this->setDuration($duration);
         $this->setSigned($signed || $this->getDuration() > 0);
-        $this->setNamed($named || $url && str($url)->startsWith('/'));
+        $this->setNamed($named || $this->checkIfNamed($url));
         $this->setNewTab($newTab);
         $this->setDownload($download);
     }
@@ -55,10 +56,10 @@ class Url extends Primitive
     /**
      * Make a url parameter object.
      * 
-     * @param string|(\Closure():string) $url
+     * @param string|(\Closure(mixed...):string) $url
      * @param string|(\Closure():string)|null $method
      * @param bool|(\Closure():bool) $signed
-     * @param int|(\Closure():int) $duration
+     * @param int|\Carbon\Carbon|\Closure|null $duration
      * @param bool|(\Closure():bool) $named
      * @param bool|(\Closure():bool) $newTab
      * @param bool|(\Closure():bool) $download
@@ -67,7 +68,7 @@ class Url extends Primitive
         string|\Closure $url = null, 
         string|\Closure|null $method = 'get',
         bool|\Closure|null $signed = false,
-        int|\Closure|null $duration = 0,
+        int|\Carbon\Carbon|\Closure|null $duration = 0,
         bool|\Closure|null $named = false,
         bool|\Closure|null $newTab = false,
         bool|\Closure|null $download = false,
@@ -78,28 +79,14 @@ class Url extends Primitive
     }
 
     /**
-     * Set an URL route, chainable.
-     * 
-     * @param string|(\Closure(mixed...):string)|null $url
-     * @return $this
-     */
-    public function to($url): static
-    {
-        $this->setNamed(false);
-        $this->setUrl($url);
-
-        return $this;
-    }
-
-    /**
-     * Set a named route, chainable.
+     * Alias for setting a url.
      * 
      * @param string|(\Closure(mixed...):string) $route
      * @return $this
      */
-    public function route($route): static
+    public function to($route): static
     {
-        $this->setNamed(true);
+        $this->setNamed($this->checkIfNamed($route));
         $this->setUrl($route);
 
         return $this;
@@ -109,12 +96,12 @@ class Url extends Primitive
      * Set the signed route, chainable.
      * 
      * @param string|(\Closure(mixed...):string) $route
-     * @param int $duration
+     * @param int|\Carbon\Carbon $duration
      * @return $this
      */
-    public function signedRoute($route, int $duration = 0): static
+    public function signedRoute($route, int|\Carbon\Carbon $duration = 0): static
     {
-        $this->setNamed(true);
+        $this->setNamed($this->checkIfNamed($route));
         $this->setUrl($route);
         $this->setSigned(true);
         $this->setDuration($duration);
@@ -123,50 +110,53 @@ class Url extends Primitive
     }
 
     /**
-     * Determine if the action does not have an associated URL
-     */
-    public function isNotUrlable(): bool
-    {
-        return \is_null($this->getUrl());
-    }
-
-    /**
-     * Determine if the action has an associated URL
-     */
-    public function isUrlable(): bool
-    {
-        return ! $this->isNotUrlable();
-    }
-
-    /**
      * Resolve and retrieve the url.
      * 
-     * @param array<int,mixed> $parameters
+     * @param array $parameters
+     * @param array<string,mixed> $typed
      */
-    public function getResolvedUrl(array $parameters = []): string|null
+    public function getResolvedUrl(array $parameters = [], array $typed = []): string|null
     {
-        if ($this->isNotUrlable()) {
+        if ($this->missingUrl()) {
             return null;
         }
 
-        return $this->resolvedUrl ??= $this->resolveUrl($parameters);
+        return $this->resolvedUrl ??= $this->resolveUrl($parameters, $typed);
     }
 
     /**
      * Resolve the url using parameters
      * 
-     * @param array<int,mixed> $parameters
+     * @param array $parameters
+     * @param array<string,mixed> $typed
      */
-    public function resolveUrl(array $parameters = []): string
+    public function resolveUrl(array $parameters = [], array $typed = []): string
     {
         $this->resolvedUrl = match (true) {
-            $this->isNotNamed() => $this->evaluate($this->getUrl(), named: $parameters),
+            $this->isNotNamed() => $this->getUrl($parameters, $typed),
             $this->isSigned() && $this->isTemporary() => URLFacade::temporarySignedRoute($this->getUrl(), $this->getDuration(), ...$parameters),
             $this->isSigned() => URLFacade::signedRoute($this->getUrl(), ...$parameters),
             default => URLFacade::route($this->getUrl(), ...$parameters),
         };
 
         return $this->resolvedUrl;
+    }
+
+    /**
+     * Check if the provided url is a named route. It does not check if the route exists.
+     * 
+     * @internal
+     * @param string|\Closure|null $url
+     * @return bool
+     */
+    protected function checkIfNamed(string|\Closure|null $url): bool
+    {
+        // Indeterminate
+        if (\is_null($url) || !\is_string($url)) {
+            return false;
+        }
+        
+        return !str($url)->startsWith('/') && !str($url)->startsWith('http');
     }
 
     public function toArray()

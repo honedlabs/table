@@ -63,13 +63,6 @@ it('proxies case when it is a uri', function () {
         ->isNamed()->toBeFalse();
 });
 
-it('has route alias', function () {
-    expect($this->urlable->route('product.show'))->toBeInstanceOf(InlineAction::class)
-        ->isUrlable()->toBeTrue();
-
-    expect($this->urlable->getUrl()->getUrl())->toBe('product.show');
-});
-
 it('has to alias', function () {
     expect($this->urlable->to('product.show'))->toBeInstanceOf(InlineAction::class)
         ->isUrlable()->toBeTrue();

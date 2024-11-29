@@ -1,7 +1,6 @@
 <?php
 
 use Honed\Table\Url\Url;
-use Workbench\App\Component;
 
 beforeEach(function () {
     $this->url = Url::make();

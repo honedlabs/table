@@ -2,7 +2,6 @@
 
 use Honed\Table\Url\Url;
 use Symfony\Component\HttpFoundation\Request;
-use Workbench\App\Component;
 
 beforeEach(function () {
     $this->url = Url::make();

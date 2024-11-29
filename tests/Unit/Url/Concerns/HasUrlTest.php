@@ -1,7 +1,6 @@
 <?php
 
 use Honed\Table\Url\Url;
-use Workbench\App\Component;
 
 beforeEach(function () {
     $this->url = Url::make();
@@ -11,7 +10,7 @@ it('does not have a url by default', function () {
     expect($this->url->getUrl())->toBeNull();
 });
 
-it('can set a duration', function () {
+it('can set an url', function () {
     expect($this->url->url('https://example.com'))->toBeInstanceOf(Url::class)
         ->getUrl()->toBe('https://example.com');
 });
@@ -32,10 +31,4 @@ it('checks if it has a url', function () {
     $this->url->setUrl('https://example.com');
     expect($this->url->hasUrl())->toBeTrue();
     expect($this->url->missingUrl())->toBeFalse();
-});
-
-it('resolves a url', function () {
-    expect($this->url->url(fn ($record) => sprintf('%s.%s', $record, 'com')))
-        ->toBeInstanceOf(Url::class)
-        ->resolveUrl(['record' => 'google'])->toBe('google.com');
 });

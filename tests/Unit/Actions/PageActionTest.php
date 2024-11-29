@@ -20,7 +20,7 @@ it('has an array form', function () {
 });
 
 it('forwards calls to url', function () {
-    expect($this->action->url->to('/products'))->toBeInstanceOf(PageAction::class)
+    expect($this->action->url->url('/products'))->toBeInstanceOf(PageAction::class)
         ->toArray()->toEqual([
             'type' => 'page',
             'name' => 'test',

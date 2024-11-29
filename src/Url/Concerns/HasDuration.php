@@ -10,17 +10,17 @@ namespace Honed\Table\Url\Concerns;
 trait HasDuration
 {
     /**
-     * @var int|(\Closure():int)
+     * @var int|\Carbon\Carbon|\Closure|null
      */
     protected $duration = 0;
 
     /**
      * Set the duration, chainable.
      *
-     * @param  int|\Closure():int  $duration
+     * @param  int|\Carbon\Carbon|\Closure|null $duration
      * @return $this
      */
-    public function duration(int|\Closure $duration): static
+    public function duration(int|\Carbon\Carbon|\Closure|null $duration): static
     {
         $this->setDuration($duration);
 
@@ -30,9 +30,9 @@ trait HasDuration
     /**
      * Set the duration quietly.
      *
-     * @param  int|(\Closure():int)|null  $duration
+     * @param  int|\Carbon\Carbon|\Closure|null $duration
      */
-    public function setDuration(int|\Closure|null $duration): void
+    public function setDuration(int|\Carbon\Carbon|\Closure|null $duration): void
     {
         if (is_null($duration)) {
             return;
@@ -43,7 +43,7 @@ trait HasDuration
     /**
      * Get the duration.
      */
-    public function getDuration(): int
+    public function getDuration(): int|\Carbon\Carbon
     {
         return $this->evaluate($this->duration);
     }

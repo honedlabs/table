@@ -10,14 +10,14 @@ namespace Honed\Table\Url\Concerns;
 trait HasUrl
 {
     /**
-     * @var string|(\Closure():string)|null
+     * @var string|(\Closure(mixed...):string)|null
      */
     protected $url = null;
 
     /**
      * Set the url, chainable.
      *
-     * @param  string|\Closure():string  $url
+     * @param  string|\Closure(mixed...):string  $url
      * @return $this
      */
     public function url(string|\Closure $url): static
@@ -30,7 +30,7 @@ trait HasUrl
     /**
      * Set the url quietly.
      *
-     * @param  string|(\Closure():string)|null  $url
+     * @param  string|(\Closure(mixed...):string)|null  $url
      */
     public function setUrl(string|\Closure|null $url): void
     {
@@ -49,19 +49,6 @@ trait HasUrl
     public function getUrl(array $named = [], array $typed = []): ?string
     {
         return $this->evaluate($this->url, $named, $typed);
-    }
-
-    /**
-     * Resolve the url using the given closure dependencies.
-     *
-     * @param  array<string, mixed> $named
-     * @param  array<string, mixed> $typed
-     */
-    public function resolveUrl(array $named = [], array $typed = []): ?string
-    {
-        $this->setUrl($this->getUrl($named, $typed));
-
-        return $this->url;
     }
 
     /**
