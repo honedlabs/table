@@ -49,7 +49,7 @@ it('can be applied to a record', function () {
         ->apply(Product::find(1)))->toBe('none');
 });
 
-it('can be formatted', function () {
+it('can format a record', function () {
     expect($this->column->placeholder('test')
         ->formatValue(null)->apply(Product::find(1)))->toBe('test');
 });
