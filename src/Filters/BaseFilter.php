@@ -10,7 +10,7 @@ use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
-use Honed\Table\Concerns\HasAlias;
+use Honed\Core\Concerns\HasAlias;
 use Honed\Table\Contracts\Filters;
 use Honed\Core\Concerns\Validatable;
 use Honed\Core\Concerns\Authorizable;

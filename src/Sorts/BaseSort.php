@@ -11,7 +11,7 @@ use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Primitive;
-use Honed\Table\Concerns\HasAlias;
+use Honed\Core\Concerns\HasAlias;
 use Honed\Table\Contracts\Sorts;
 use Illuminate\Database\Eloquent\Builder;
 

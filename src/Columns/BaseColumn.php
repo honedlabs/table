@@ -6,15 +6,16 @@ namespace Honed\Table\Columns;
 
 use Honed\Core\Primitive;
 use Honed\Core\Concerns\IsKey;
+use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasType;
-use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\IsHidden;
 use Honed\Core\Concerns\Authorizable;
-use Honed\Core\Concerns\HasPlaceholder;
 use Honed\Core\Concerns\Transformable;
+use Honed\Core\Concerns\HasPlaceholder;
+use Honed\Core\Formatters\Concerns\Formattable;
 
 abstract class BaseColumn extends Primitive
 {
@@ -34,6 +35,7 @@ abstract class BaseColumn extends Primitive
     use Concerns\IsSearchable;
     use Concerns\IsToggleable;
     use Concerns\HasBreakpoint;
+    use Formattable;
 
     /**
      * Create a new column instance specifying the related database attribute, and optionally the display label.
@@ -82,7 +84,7 @@ abstract class BaseColumn extends Primitive
      */
     public function formatValue(mixed $value): mixed
     {
-        return $value ?? $this->getPlaceholder();
+        return $this->format($value) ?? $this->getPlaceholder();
     }
 
     /**
