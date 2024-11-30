@@ -11,7 +11,7 @@ it('has an array form', function () {
         'title' => null,
         'description' => null,
         'cancel' => null,
-        'submit' => null,
+        'success' => null,
         'intent' => null
     ]);
 });
@@ -22,7 +22,7 @@ it('can be made', function () {
             'title' => 'Are you sure?',
             'description' => 'This action cannot be undone.',
             'cancel' => 'Cancel',
-            'submit' => 'Submit',
+            'success' => 'Submit',
             'intent' => Confirm::Destructive
         ]);
 });

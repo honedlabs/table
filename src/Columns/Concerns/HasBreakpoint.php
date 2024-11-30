@@ -11,7 +11,23 @@ trait HasBreakpoint
 {
     protected ?string $breakpoint = null;
 
-    public const BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl'];
+    public const ExtraSmall = 'xs';
+
+    public const Small = 'sm';
+
+    public const Medium = 'md';
+
+    public const Large = 'lg';
+
+    public const ExtraLarge = 'xl';
+
+    public const BREAKPOINTS = [
+        self::ExtraSmall,
+        self::Small,
+        self::Medium,
+        self::Large,
+        self::ExtraLarge,
+    ];
 
     /**
      * @throws InvalidArgumentException
@@ -59,7 +75,7 @@ trait HasBreakpoint
      */
     public function xs(): static
     {
-        return $this->breakpoint('xs');
+        return $this->breakpoint(self::ExtraSmall);
     }
 
     /**
@@ -67,7 +83,7 @@ trait HasBreakpoint
      */
     public function sm(): static
     {
-        return $this->breakpoint('sm');
+        return $this->breakpoint(self::Small);
     }
 
     /**
@@ -75,7 +91,7 @@ trait HasBreakpoint
      */
     public function md(): static
     {
-        return $this->breakpoint('md');
+        return $this->breakpoint(self::Medium);
     }
 
     /**
@@ -83,7 +99,7 @@ trait HasBreakpoint
      */
     public function lg(): static
     {
-        return $this->breakpoint('lg');
+        return $this->breakpoint(self::Large);
     }
 
     /**
@@ -91,6 +107,6 @@ trait HasBreakpoint
      */
     public function xl(): static
     {
-        return $this->breakpoint('xl');
+        return $this->breakpoint(self::ExtraLarge);
     }
 }

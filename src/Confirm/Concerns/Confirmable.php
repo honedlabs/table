@@ -28,13 +28,13 @@ trait Confirmable
 
         match (true) {
             $confirm instanceof Confirm => $this->setConfirm($confirm),
-            is_array($confirm) => $this->getConfirm()->assign($confirm),
-            is_callable($confirm) => $this->evaluate($confirm, [
+            \is_array($confirm) => $this->getConfirm()->assign($confirm),
+            \is_callable($confirm) => $this->evaluate($confirm, [
                 'confirm' => $confirmInstance,
             ], [
                 Confirm::class => $confirmInstance,
             ]),
-            is_string($confirm) => $this->getConfirm()->setDescription($confirm),
+            default => $this->getConfirm()->setDescription($confirm), // string case
         };
 
         return $this;

@@ -97,7 +97,7 @@ abstract class BaseFilter extends Primitive implements Filters
             'name' => $this->getParameterName(),
             'label' => $this->getLabel(),
             'type' => $this->getType(),
-            'active' => $this->isActive(),
+            'isActive' => $this->isActive(),
             'value' => $this->getValue(),
             'meta' => $this->getMeta(),
         ];

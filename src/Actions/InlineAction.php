@@ -29,15 +29,6 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
         $this->setType('inline');
     }
 
-    public function toArray(): array
-    {
-        return array_merge(parent::toArray(), [
-            'action' => $this->hasAction(),
-            'confirm' => $this->getConfirm()?->toArray(),
-            ...$this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
-        ]);
-    }
-
     /**
      * Dynamically forward calls to the proxies.
      * 
@@ -52,5 +43,14 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
             'url' => new HigherOrderUrl($this),
             default => throw new \Exception("Property [{$property}] does not exist on ".self::class),
         };
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'hasAction' => $this->hasAction(),
+            'confirm' => $this->getConfirm()?->toArray(),
+            ...$this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
+        ]);
     }
 }

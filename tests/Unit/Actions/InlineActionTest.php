@@ -16,7 +16,7 @@ it('has an array form', function () {
         'name' => 'test',
         'label' => 'Test',
         'confirm' => null,
-        'action' => null,
+        'hasAction' => false,
         'meta' => []
     ]);
 });
@@ -28,7 +28,7 @@ it('forwards calls to url', function () {
             'name' => 'test',
             'label' => 'Test',
             'confirm' => null,
-            'action' => false,
+            'hasAction' => false,
             'meta' => [],
             'url' => '/products',
             'method' => 'get'
@@ -41,13 +41,13 @@ it('forwards calls to confirm', function () {
             'type' => 'inline',
             'name' => 'test',
             'label' => 'Test',
-            'action' => false,
+            'hasAction' => false,
             'meta' => [],
             'confirm' => [
                 'title' => null,
                 'description' => 'Are you sure?',
                 'cancel' => null,
-                'submit' => null,
+                'success' => null,
                 'intent' => null
             ]
         ]);

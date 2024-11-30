@@ -21,13 +21,6 @@ class PageAction extends BaseAction implements ProxiesHigherOrder
         $this->setType('page');
     }
 
-    public function toArray(): array
-    {
-        return array_merge(parent::toArray(), 
-            $this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
-        );
-    }
-
     /**
      * Dynamically forward calls to the proxies.
      * 
@@ -41,5 +34,12 @@ class PageAction extends BaseAction implements ProxiesHigherOrder
             'url' => new HigherOrderUrl($this),
             default => throw new \Exception("Property [{$property}] does not exist on ".self::class),
         };
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), 
+            $this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
+        );
     }
 }

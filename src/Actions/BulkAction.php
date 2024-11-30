@@ -21,6 +21,7 @@ class BulkAction extends BaseAction
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
+            'hasAction' => $this->hasAction(),
             'confirm' => $this->getConfirm()?->toArray(),
             'deselect' => $this->deselectsOnEnd(),
         ]);

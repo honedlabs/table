@@ -1,5 +1,6 @@
 <?php
 
+use Workbench\App\Models\Product;
 use Honed\Table\Actions\InlineAction;
 
 beforeEach(function () {
@@ -43,4 +44,10 @@ class Invokable
 it('accepts invokable class actions', function () {
     expect($this->action->action(Invokable::class))->toBeInstanceOf(InlineAction::class)
         ->hasAction()->toBeTrue();
+});
+
+it('can be applied', function () {
+    $this->action->action(fn (Product $product) => $product->update(['name' => 'Updated']));
+    $this->action->applyAction(Product::find(1), Product::class);
+    expect(Product::find(1)->name)->toBe('Updated');
 });

@@ -17,7 +17,7 @@ trait HasTooltip
     /**
      * Set the tooltip, chainable.
      *
-     * @param  string|\Closure():string  $tooltip
+     * @param  string|\Closure(mixed...):string  $tooltip
      * @return $this
      */
     public function tooltip(string|\Closure $tooltip): static
@@ -30,26 +30,44 @@ trait HasTooltip
     /**
      * Set the tooltip quietly.
      *
-     * @param  string|(\Closure():string)|null  $tooltip
+     * @param  string|(\Closure(mixed...):string)|null  $tooltip
      */
     public function setTooltip(string|\Closure|null $tooltip): void
     {
-        if (is_null($tooltip)) {
+        if (\is_null($tooltip)) {
             return;
         }
         $this->tooltip = $tooltip;
     }
 
     /**
-     * Get the tooltip.
+     * Get the tooltip using the given closure dependencies.
+     *
+     * @param  array<string, mixed>  $named
+     * @param  array<string, mixed>  $typed
      */
-    public function getTooltip(): ?string
+    public function getTooltip(array $named = [], array $typed = []): ?string
     {
-        return $this->evaluate($this->tooltip);
+        return $this->evaluate($this->tooltip, $named, $typed);
+    }
+
+    /**
+     * Resolve the tooltip using the given closure dependencies.
+     *
+     * @param  array<string, mixed>  $named
+     * @param  array<string, mixed>  $typed
+     */
+    public function resolveTooltip(array $named = [], array $typed = []): ?string
+    {
+        $this->setTooltip($this->getTooltip($named, $typed));
+
+        return $this->tooltip;
     }
 
     /**
      * Determine if the column does not have a tooltip.
+     *
+     * @return bool
      */
     public function missingTooltip(): bool
     {
@@ -58,6 +76,8 @@ trait HasTooltip
 
     /**
      * Determine if the column has a tooltip.
+     *
+     * @return bool
      */
     public function hasTooltip(): bool
     {

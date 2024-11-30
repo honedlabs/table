@@ -13,6 +13,7 @@ use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\IsHidden;
 use Honed\Core\Concerns\Authorizable;
+use Honed\Core\Concerns\HasPlaceholder;
 use Honed\Core\Concerns\Transformable;
 
 abstract class BaseColumn extends Primitive
@@ -22,6 +23,7 @@ abstract class BaseColumn extends Primitive
     use HasName;
     use HasType;
     use HasLabel;
+    use HasPlaceholder;
     use IsActive;
     use IsHidden;
     use Authorizable;
@@ -29,7 +31,6 @@ abstract class BaseColumn extends Primitive
     use Concerns\IsSrOnly;
     use Concerns\HasTooltip;
     use Concerns\IsSortable;
-    use Concerns\HasFallback;
     use Concerns\IsSearchable;
     use Concerns\IsToggleable;
     use Concerns\HasBreakpoint;
@@ -59,30 +60,6 @@ abstract class BaseColumn extends Primitive
     }
 
     /**
-     * Get the column state as an array
-     * 
-     * @return array<string,mixed>
-     */
-    public function toArray(): array
-    {
-        return [
-            'name' => $this->getName(),
-            'label' => $this->getLabel(),
-            'type' => $this->getType(),
-            'hidden' => $this->isHidden(),
-            'tooltip' => $this->getTooltip(),
-            'breakpoint' => $this->getBreakpoint(),
-            'sr' => $this->isSrOnly(),
-            'toggle' => $this->isToggleable(),
-            'active' => $this->isActive(),
-            'sortable' => $this->isSortable(),
-            'sorting' => $this->isSorting(),
-            'direction' => $this->getSort()?->getDirection(),
-            'meta' => $this->getMeta(),
-        ];
-    }
-
-    /**
      * Modify the record value to align it with the column configuration.
      * 
      * @template T
@@ -105,6 +82,30 @@ abstract class BaseColumn extends Primitive
      */
     public function formatValue(mixed $value): mixed
     {
-        return $value ?? $this->getFallback();
+        return $value ?? $this->getPlaceholder();
+    }
+
+    /**
+     * Get the column state as an array
+     * 
+     * @return array<string,mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->getName(),
+            'label' => $this->getLabel(),
+            'type' => $this->getType(),
+            'tooltip' => $this->getTooltip(),
+            'breakpoint' => $this->getBreakpoint(),
+            'isHidden' => $this->isHidden(),
+            'isScreenReader' => $this->isSrOnly(),
+            'isToggleable' => $this->isToggleable(),
+            'isActive' => $this->isActive(),
+            'isSortable' => $this->isSortable(),
+            'isSorting' => $this->isSorting(),
+            'direction' => $this->getSort()?->getDirection(),
+            'meta' => $this->getMeta(),
+        ];
     }
 }

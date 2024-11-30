@@ -13,6 +13,7 @@ it('has a type of bulk', function () {
 it('has an array form', function () {
     expect($this->action->toArray())->toEqual([
         'type' => 'bulk',
+        'hasAction' => false,
         'name' => 'test',
         'label' => 'Test',
         'confirm' => null,
