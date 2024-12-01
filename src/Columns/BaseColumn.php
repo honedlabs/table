@@ -87,6 +87,8 @@ abstract class BaseColumn extends Primitive
         return $this->format($value) ?? $this->getPlaceholder();
     }
 
+    // Proxy methods to formatter, exporter
+
     /**
      * Get the column state as an array
      * 

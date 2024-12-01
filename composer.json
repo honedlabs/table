@@ -17,7 +17,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Honed\\Table\\": "src/"
+            "Honed\\Table\\": "src/",
+            "Honed\\Table\\Tests\\": "tests/"
         }
     },
     "autoload-dev": {
@@ -47,7 +48,8 @@
         "phpstan/phpstan-deprecation-rules": "^2.0.1",
         "phpstan/phpstan-phpunit": "^2.0.3",
         "inertiajs/inertia-laravel": "^1.2||^2.0",
-        "worksome/request-factories": "^3.3"
+        "worksome/request-factories": "^3.3",
+        "pestphp/pest-plugin-laravel": "^3.0"
     },
     "scripts": {
         "post-autoload-dump": [

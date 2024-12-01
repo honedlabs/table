@@ -51,7 +51,7 @@ trait HasActions
     public function getInlineActions(): Collection
     {
         return $this->getActions()
-            ->filter(static fn (BaseAction $action): bool => $action instanceof InlineAction || ($action instanceof BulkAction && $action->isInline()))
+            ->filter(static fn (BaseAction $action): bool => $action instanceof InlineAction)
             ->values();
     }
 
@@ -63,7 +63,7 @@ trait HasActions
     public function getBulkActions(): Collection
     {
         return $this->getActions()
-            ->filter(static fn (BaseAction $action): bool => $action instanceof BulkAction || ($action instanceof InlineAction && $action->isBulk()))
+            ->filter(static fn (BaseAction $action): bool => $action instanceof BulkAction)
             ->values();
     }
 

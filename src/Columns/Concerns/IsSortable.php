@@ -19,7 +19,7 @@ trait IsSortable
     /**
      * Set the sortable property, chainable.
      * 
-     * @param string|\Closure $sortable
+     * @param bool|(\Closure():bool) $sortable
      * @return $this
      */
     public function sortable(bool|\Closure $sortable = true): static
