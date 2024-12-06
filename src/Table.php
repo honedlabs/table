@@ -43,13 +43,14 @@ class Table extends Primitive
     use Concerns\Resourceful;
     use Concerns\HasActions;
     use Concerns\HasColumns;
+    use Concerns\HasEndpoint;
     use Concerns\HasFilters;
+    use Concerns\IsAutomaticSelecting;
     use Concerns\FormatsAndPaginates;
     use Concerns\Sortable;
     use Concerns\Toggleable;
     use Concerns\Searchable;
     use Concerns\Selectable;
-    use Concerns\IsAutomaticSelecting;
 
     /**
      * @var class-string<\Honed\Table\Table>
@@ -145,8 +146,6 @@ class Table extends Primitive
             'sorts' => $this->getSorts(),
             /* The pagination data for the records */
             'paginator' => $this->getPaginator(),
-            /* The pagination counter */
-            // 'paginator' => $this->getPaginationCounts($this->getPageCount()), -> merge with paginator
             /* The query parameter term for sorting */
             'sortName' => $this->getSortAs(),
             /* The query parameter term for ordering */
@@ -156,9 +155,9 @@ class Table extends Primitive
             /* The query parameter term for searching */
             'searchName' => $this->getSearchAs(),
             /* The query parameter term for toggling column visibility */
-            'toggleName' => $this->getToggleAs(),
+            'toggleName' => $this->getToggleName(),
             /* The route used to handle actions, it is required to be a 'post' route */
-            // 'route' => $this->getActionRoute(),
+            'endpoint' => $this->getEndpoint(),
         ];
     }
 
@@ -204,6 +203,7 @@ class Table extends Primitive
             'columns' => $this->setColumns(...$parameters),
             'filters' => $this->setFilters(...$parameters),
             'sorts' => $this->setSorts(...$parameters),
+            'resource' => $this->setResource(...$parameters),
             default => parent::__call($method, $parameters)
         };
 
@@ -212,6 +212,8 @@ class Table extends Primitive
 
     /**
      * Global handler for piping the request to the correct table action handler.
+     * 
+     * @param \Honed\Table\Http\Requests\TableActionRequest $request
      */
     public function handleAction(TableActionRequest $request)
     {

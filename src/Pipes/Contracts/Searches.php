@@ -4,4 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipes\Contracts;
 
-interface Searches extends PipelinesTable {}
+interface Searches extends PipelinesTable 
+{
+    
+}

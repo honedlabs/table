@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipes;
 
-use Honed\Table\Pipes\Contracts\SelectsOptimal;
+use Honed\Table\Pipes\Contracts\SelectsRecords;
 use Honed\Table\Table;
 
 /**

@@ -21,27 +21,27 @@ trait Toggleable
     /**
      * @var int
      */
-    protected static $globalDuration = 60 * 24 * 30 * 365; // 1 year
+    protected static $useDuration = 60 * 24 * 30 * 365; // 1 year
 
     /**
      * @var string
      */
-    protected $toggleAs;
+    protected $toggleName;
 
     /**
      * @var string
      */
-    protected static $globalToggleAs = 'cols';
+    protected static $useToggleName = 'cols';
 
     /**
      * @var bool
      */
-    protected $toggleable;
+    protected $toggle;
 
     /**
      * @var bool
      */
-    protected static $globalToggleable = false;
+    protected static $enableToggleable = false;
 
     /**
      * Configure the default duration of the cookie to use for all tables.
@@ -49,31 +49,31 @@ trait Toggleable
      * @param int $duration
      * @return void
      */
-    public static function setDuration(int $duration)
+    public static function useDuration(int $duration)
     {
-        static::$globalDuration = $duration;
+        static::$useDuration = $duration;
     }
 
     /**
      * Configure the default query parameter to use for toggling columns.
      * 
-     * @param string $toggleAs
+     * @param string $toggleName
      * @return void
      */
-    public static function setToggleAs(string $toggleAs)
+    public static function useToggleName(string $toggleName)
     {
-        static::$globalToggleAs = $toggleAs;
+        static::$useToggleName = $toggleName;
     }
 
     /**
      * Configure whether to enable toggling of columns for all tables by default.
      * 
-     * @param bool $toggleable
+     * @param bool $toggle
      * @return void
      */
-    public static function enableToggleable(bool $toggleable = true)
+    public static function enableToggleable(bool $toggle = true)
     {
-        static::$globalToggleable = $toggleable;
+        static::$enableToggleable = $toggle;
     }
 
     /**
@@ -106,7 +106,7 @@ trait Toggleable
      */
     public function getDuration()
     {
-        return $this->inspect('duration', static::$globalDuration);
+        return $this->inspect('duration', static::$useDuration);
     }
 
     /**
@@ -114,9 +114,9 @@ trait Toggleable
      * 
      * @return string
      */
-    public function getToggleAs()
+    public function getToggleName()
     {
-        return $this->inspect('toggleAs', static::$globalToggleAs);
+        return $this->inspect('toggleName', static::$useToggleName);
     }
 
     /**
@@ -126,7 +126,7 @@ trait Toggleable
      */
     public function isToggleable()
     {
-        return $this->inspect('toggleable', static::$globalToggleable);
+        return $this->inspect('toggle', static::$enableToggleable);
     }
 
     /**
@@ -136,7 +136,7 @@ trait Toggleable
      */
     public function getToggledColumnsTerm()
     {
-        $value = request()->input($this->getToggleAs());
+        $value = request()->input($this->getToggleName());
         
         if (is_null($value)) {
             return null;
