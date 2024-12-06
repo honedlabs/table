@@ -24,7 +24,7 @@ use Honed\Core\Concerns\Inspectable;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
 use Honed\Table\Pipes\FormatRecords;
-use Honed\Table\Pipes\OptimalSelect;
+use Honed\Table\Pipes\SelectRecords;
 use Honed\Table\Actions\InlineAction;
 use Illuminate\Database\Eloquent\Model;
 use Honed\Table\Http\DTOs\BulkActionData;
@@ -38,20 +38,18 @@ class Table extends Primitive
 {
     use Inspectable;
     use Encodable;
-    use RequiresKey {
-        getKey as protected getTableKey;
-    }
+    use RequiresKey;
     use IsAnonymous;
     use Concerns\Resourceful;
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasFilters;
-    use Concerns\Pageable;
+    use Concerns\FormatsAndPaginates;
     use Concerns\Sortable;
     use Concerns\Toggleable;
     use Concerns\Searchable;
     use Concerns\Selectable;
-    use Concerns\EnforceableColumns;
+    use Concerns\IsAutomaticSelecting;
 
     /**
      * @var class-string<\Honed\Table\Table>
@@ -100,15 +98,15 @@ class Table extends Primitive
     }
 
     /**
-     * Get the key for the table records.
+     * Get the key name for the table records.
      *
      * @throws MissingRequiredAttributeException
      * @return string
      */
-    public function getKey()
+    public function getKeyName()
     {
         try {
-            return $this->getTableKey();
+            return $this->getKey();
         } catch (MissingRequiredAttributeException $e) {
             return $this->getKeyColumn()?->getName() ?? throw $e;
         }
@@ -124,16 +122,6 @@ class Table extends Primitive
         return ! \is_null($this->records);
     }
 
-    /**
-     * Get the meta data for the table.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMeta()
-    {
-        return $this->meta;
-    }
-
     public function toArray()
     {
         $this->pipeline();
@@ -142,7 +130,7 @@ class Table extends Primitive
             /* The ID of this table, used to deserialize it for actions */
             'id' => $this->encodeClass(),
             /* The column attribute used to identify a record */
-            'keyName' => $this->getKey(),
+            'keyName' => $this->getKeyName(),
             /* The records of the table */
             'records' => $this->getRecords(),
             /* The available column options */
@@ -191,7 +179,7 @@ class Table extends Primitive
                 ApplyFilters::class,
                 ApplySearch::class,
                 ApplySorts::class,
-                OptimalSelect::class,
+                SelectRecords::class,
                 ApplyBeforeRetrieval::class,
                 Paginate::class,
                 FormatRecords::class,

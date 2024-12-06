@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Honed\Table\Columns\BaseColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 
-trait Pageable
+trait FormatsAndPaginates
 {
     /**
      * @var int
@@ -61,11 +62,6 @@ trait Pageable
      * @var string
      */
     protected static $useCountName = 'show';
-
-    /**
-     * @var array<string, mixed>
-     */
-    protected array $meta = [];
 
     /**
      * @var \Illuminate\Support\Collection<array-key, array<array-key, mixed>>|null
@@ -178,16 +174,6 @@ trait Pageable
     }
 
     /**
-     * Get the number of items to show per page from the request query parameters.
-     * 
-     * @return int|null
-     */
-    public function getCountAsTerm()
-    {
-        return request()->input($this->getCountAs(), null);
-    }
-
-    /**
      * Get the pagination options for the number of items to show per page.
      * 
      * @param int|null $active
@@ -247,33 +233,5 @@ trait Pageable
         };
 
         return $paginator->withQueryString();
-    }
-
-    public function getRecords()
-    {
-        return $this->records ??= $this->formatPaginatedRecords()->toArray();
-    }
-
-    /**
-     * 
-     */
-    public function formatPaginatedRecords()
-    {
-        $paginatedRecords = $this->paginateRecords($this->getQuery());
-
-        // Get the columns
-        $columns = 
-    }
-
-    /**
-     * 
-     */
-    public function getPaginator()
-    {
-        // Run the formatter
-        
-        /**
-         * Needs to be of form links, meta, options
-         */
     }
 }
