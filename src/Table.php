@@ -54,16 +54,6 @@ class Table extends Primitive
     use Concerns\EnforceableColumns;
 
     /**
-     * @var \Illuminate\Support\Collection<array-key, array<array-key, mixed>>|null
-     */
-    protected $records = null;
-
-    /**
-     * @var array<string, mixed>
-     */
-    protected array $meta = [];
-
-    /**
      * @var class-string<\Honed\Table\Table>
      */
     protected $anonymous = self::class;
@@ -73,7 +63,7 @@ class Table extends Primitive
      * 
      * @param array<string, mixed> $assignments
      */
-    final public function __construct($assignments = [])
+    public function __construct($assignments = [])
     {
         $this->setAssignments($assignments);
     }
@@ -90,7 +80,7 @@ class Table extends Primitive
      * @param array|int|null $pagination
      * @return static
      */
-    final public static function make($resource = null,
+    public static function make($resource = null,
         $columns = null,
         $actions = null,
         $filters = null,
@@ -107,29 +97,6 @@ class Table extends Primitive
             'search',
             'pagination',
         ));
-    }
-
-    /**
-     * Set the records for the table.
-     * 
-     * @param \Illuminate\Support\Collection<array-key, array<array-key, mixed>> $records
-     */
-    public function setRecords($records): void
-    {
-        $this->records = $records;
-    }
-
-    /**
-     * Set the meta data for the table.
-     *
-     * @param array<string, mixed>|null $meta
-     */
-    public function setMeta($meta)
-    {
-        if (empty($meta)) {
-            return;
-        }
-        $this->meta = $meta;
     }
 
     /**
@@ -154,7 +121,7 @@ class Table extends Primitive
 
     public function hasRecords(): bool
     {
-        return !\is_null($this->records);
+        return ! \is_null($this->records);
     }
 
     /**
@@ -172,36 +139,36 @@ class Table extends Primitive
         $this->pipeline();
 
         return [
-            /* The table id used to deserialize it for actions */
+            /* The ID of this table, used to deserialize it for actions */
             'id' => $this->encodeClass(),
+            /* The column attribute used to identify a record */
+            'keyName' => $this->getKey(),
             /* The records of the table */
             'records' => $this->getRecords(),
-            /* The pagination data for the records */
-            'meta' => $this->getMeta(),
-            /* The available sort options */
-            'sorts' => $this->getSorts(),
-            /* The available filter options */
-            'filters' => $this->getFilters(),
             /* The available column options */
             'columns' => $this->getColumns(),
-            /* The pagination counter */
-            'pagination' => $this->getPaginationCounts($this->getPageCount()),
             /* The available bulk action options */
-            'bulk_actions' => $this->getBulkActions(),
+            'bulkActions' => $this->getBulkActions(),
             /* The available page action options, generally page links */
-            'page_actions' => $this->getPageActions(),
-            /* The column attribute used to identify a record */
-            'record_id' => $this->getKey(),
+            'pageActions' => $this->getPageActions(),
+            /* The available filter options */
+            'filters' => $this->getFilters(),
+            /* The available sort options */
+            'sorts' => $this->getSorts(),
+            /* The pagination data for the records */
+            'paginator' => $this->getPaginator(),
+            /* The pagination counter */
+            // 'paginator' => $this->getPaginationCounts($this->getPageCount()), -> merge with paginator
             /* The query parameter term for sorting */
-            'sort_as' => $this->getSortAs(),
+            'sortName' => $this->getSortAs(),
             /* The query parameter term for ordering */
-            'order_as' => $this->getOrderAs(),
+            'orderName' => $this->getOrderAs(),
             /* The query parameter term for changing the number of records per page */
-            'count_as' => $this->getCountAs(),
+            'countName' => $this->getCountAs(),
             /* The query parameter term for searching */
-            'search_as' => $this->getSearchAs(),
+            'searchName' => $this->getSearchAs(),
             /* The query parameter term for toggling column visibility */
-            'toggle_as' => $this->getToggleAs(),
+            'toggleName' => $this->getToggleAs(),
             /* The route used to handle actions, it is required to be a 'post' route */
             // 'route' => $this->getActionRoute(),
         ];

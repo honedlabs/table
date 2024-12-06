@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Enums\Paginator;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 trait Pageable
 {
@@ -16,7 +20,7 @@ trait Pageable
     /**
      * @var int
      */
-    protected static $globalDefaultPerPage = 10;
+    protected static $useDefaultPerPage = 10;
 
     /**
      * @var int|array<int,int>
@@ -26,37 +30,47 @@ trait Pageable
     /**
      * @var int|array<int,int>
      */
-    protected static $globalPerPage = 10;
-
-    /**
-     * @var string|\Honed\Table\Enums\Paginator
-     */
-    protected $paginator;
-
-    /**
-     * @var string|\Honed\Table\Enums\Paginator
-     */
-    protected static $globalPaginator = Paginator::Default;
+    protected static $usePerPage = 10;
 
     /**
      * @var string
      */
-    protected $pageAs;
+    protected $paginatorType;
 
     /**
      * @var string
      */
-    protected static $globalPageAs = 'page';
+    protected static $usePaginatorType = LengthAwarePaginator::class;
 
     /**
      * @var string
      */
-    protected $countAs;
+    protected $pageName;
 
     /**
      * @var string
      */
-    protected static $globalCountAs = 'show';
+    protected static $usePageName = 'page';
+
+    /**
+     * @var string
+     */
+    protected $countName;
+
+    /**
+     * @var string
+     */
+    protected static $useCountName = 'show';
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected array $meta = [];
+
+    /**
+     * @var \Illuminate\Support\Collection<array-key, array<array-key, mixed>>|null
+     */
+    protected $records = null;
 
     /**
      * Configure the default number of items to show per page.
@@ -64,9 +78,9 @@ trait Pageable
      * @param int $defaultPerPage
      * @return void
      */
-    public static function setDefaultPerPage(int $defaultPerPage)
+    public static function useDefaultPerPage(int $defaultPerPage)
     {
-        static::$globalDefaultPerPage = $defaultPerPage;
+        static::$useDefaultPerPage = $defaultPerPage;
     }
 
     /**
@@ -75,9 +89,9 @@ trait Pageable
      * @param int|array<int,int> $perPage
      * @return void
      */
-    public static function setPerPage(int|array $perPage)
+    public static function usePerPage(int|array $perPage)
     {
-        static::$globalPerPage = $perPage;
+        static::$usePerPage = $perPage;
     }
 
     /**
@@ -86,31 +100,31 @@ trait Pageable
      * @param string|\Honed\Table\Enums\Paginator $paginator
      * @return void
      */
-    public static function sePaginator(string|Paginator $paginator)
+    public static function usePaginator(string|Paginator $paginator)
     {
-        static::$globalPaginator = $paginator;
+        static::$usePaginatorType = $paginator;
     }
 
     /**
      * Configure the query parameter to use for the page number.
      * 
-     * @param string $pageAs
+     * @param string $pageName
      * @return void
      */
-    public static function setPageAs(string $pageAs)
+    public static function usePageName(string $pageName)
     {
-        static::$globalPageAs = $pageAs;
+        static::$usePageName = $pageName;
     }
 
     /**
      * Configure the query parameter to use for the number of items to show.
      * 
-     * @param string $countAs
+     * @param string $countName
      * @return void
      */
-    public static function setCountAs(string $countAs)
+    public static function useCountName(string $countName)
     {
-        static::$globalCountAs = $countAs;
+        static::$useCountName = $countName;
     }
 
     /**
@@ -118,9 +132,9 @@ trait Pageable
      * 
      * @return int
      */
-    public function getDefaultPerPage()
+    public function getDefaultRecordsPerPage()
     {
-        return $this->inspect('defaultPerPage', static::$globalDefaultPerPage);
+        return $this->inspect('defaultPerPage', static::$useDefaultPerPage);
     }
 
     /**
@@ -128,9 +142,9 @@ trait Pageable
      * 
      * @return int|array<int,int>
      */
-    public function getPerPage()
+    public function getRecordsPerPage()
     {
-        return $this->inspect('perPage', static::$globalPerPage);
+        return $this->inspect('perPage', static::$usePerPage);
     }
 
     /**
@@ -138,9 +152,9 @@ trait Pageable
      * 
      * @return string|\Honed\Table\Enums\Paginator
      */
-    public function getPaginator()
+    public function getPaginatorType()
     {
-        return $this->inspect('paginator', static::$globalPaginator);
+        return $this->inspect('paginatorType', static::$usePaginatorType);
     }
 
     /**
@@ -148,9 +162,9 @@ trait Pageable
      * 
      * @return string
      */
-    public function getPageAs()
+    public function getPageName()
     {
-        return $this->inspect('pageAs', static::$globalPageAs);
+        return $this->inspect('pageName', static::$usePageName);
     }
 
     /**
@@ -158,9 +172,9 @@ trait Pageable
      * 
      * @return string
      */
-    public function getCountAs()
+    public function getCountName()
     {
-        return $this->inspect('countAs', static::$globalCountAs);
+        return $this->inspect('countName', static::$useCountName);
     }
 
     /**
@@ -181,7 +195,7 @@ trait Pageable
      */
     public function getPaginationCounts(?int $active = null): array
     {
-        $perPage = $this->getPerPage();
+        $perPage = $this->getRecordsPerPage();
 
         return is_array($perPage)
             ? array_map(fn ($count) => ['value' => $count, 'active' => $count === $active], $perPage)
@@ -195,7 +209,7 @@ trait Pageable
      */
     public function getPageCount(): int
     {
-        $count = $this->getPerPage();
+        $count = $this->getRecordsPerPage();
 
         if (is_int($count)) {
             return $count;
@@ -204,6 +218,62 @@ trait Pageable
             return $term;
         }
 
-        return $this->getDefaultPerPage();
+        return $this->getDefaultRecordsPerPage();
+    }
+
+    /**
+     * Execute the query and paginate the results.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Contracts\Pagination\Paginator|\Illuminate\Contracts\Pagination\CursorPaginator|\Illuminate\Database\Eloquent\Collection
+     */
+    public function paginateRecords(Builder $query): Paginator|CursorPaginator|Collection
+    {
+        $paginator = match ($this->getPaginatorType()) {
+            LengthAwarePaginator::class => $query->paginate(
+                perPage: $this->getRecordsPerPage(),
+                pageName: $this->getPageName(),
+            ),
+            Paginator::class => $query->simplePaginate(
+                perPage: $this->getRecordsPerPage(),
+                pageName: $this->getPageName(),
+            ),
+            CursorPaginator::class => $query->cursorPaginate(
+                perPage: $this->getRecordsPerPage(),
+                cursorName: $this->getPageName(),
+            ),
+            'none' => $query->get(),
+            default => throw new \Exception("Invalid paginator type provided [{$this->getPaginatorType()}]"),
+        };
+
+        return $paginator->withQueryString();
+    }
+
+    public function getRecords()
+    {
+        return $this->records ??= $this->formatPaginatedRecords()->toArray();
+    }
+
+    /**
+     * 
+     */
+    public function formatPaginatedRecords()
+    {
+        $paginatedRecords = $this->paginateRecords($this->getQuery());
+
+        // Get the columns
+        $columns = 
+    }
+
+    /**
+     * 
+     */
+    public function getPaginator()
+    {
+        // Run the formatter
+        
+        /**
+         * Needs to be of form links, meta, options
+         */
     }
 }

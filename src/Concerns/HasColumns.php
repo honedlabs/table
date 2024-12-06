@@ -63,4 +63,14 @@ trait HasColumns
     {
         return $this->getColumns()->first(static fn (BaseColumn $column): bool => $column->isKey());
     }
+
+    /**
+     * Retrieve the column attributes.
+     * 
+     * @return array<string, mixed>
+     */
+    public function getAttributedColumns(): array
+    {
+        return $this->getColumns()->mapWithKeys(fn (BaseColumn $column) => [$column->getName() => $column])->toArray();
+    }
 }

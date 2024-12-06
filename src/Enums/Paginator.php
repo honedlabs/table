@@ -9,7 +9,7 @@ use Honed\Table\Table;
 enum Paginator: string
 {
     case None = 'none';
-    case Default = 'default';
+    case Simple = 'simple';
     case Cursor = 'cursor';
 
     /**
