@@ -16,7 +16,7 @@ class DateFilter extends BaseFilter
     public function setUp(): void
     {
         $this->setType('filter:date');
-        $this->setDateClause(DateClause::Date);
+        $this->setClause(DateClause::Date);
         $this->setOperator(Operator::Equal);
     }
 
@@ -34,7 +34,7 @@ class DateFilter extends BaseFilter
 
     public function handle(Builder $builder): void
     {
-        $this->getDateClause()
+        $this->getClause()
             ->apply($builder,
                 $this->getAttribute(),
                 $this->getOperator(),

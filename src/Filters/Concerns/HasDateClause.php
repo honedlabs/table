@@ -8,29 +8,57 @@ use Honed\Table\Filters\Enums\DateClause;
 
 trait HasDateClause
 {
-    /** Default to be exact */
-    protected ?DateClause $dateClause = null;
+    /**
+     * @var \Honed\Table\Filters\Enums\DateClause|null
+     */
+    protected $clause = null;
 
     /**
-     * Set the clause to be used.
+     * Set the clause, chainable.
+     *
+     * @param \Honed\Table\Filters\Enums\DateClause|string $clause
+     *
+     * @return $this
+     *
+     * @throws \ValueError
      */
-    public function dateClause(string|DateClause $dateClause): static
+    public function clause(string|DateClause $clause): static
     {
-        $this->setDateClause($dateClause);
+        $this->setDateClause($clause);
 
         return $this;
     }
 
     /**
-     * Check if the clause is not set.
+     * Set the clause quietly.
+     *
+     * @param \Honed\Table\Filters\Enums\DateClause|string|null $clause
+     *
+     * @throws \ValueError
      */
-    public function missingDateClause(): bool
+    public function setDateClause(string|DateClause|null $clause): void
     {
-        return is_null($this->dateClause);
+        if (\is_null($clause)) {
+            return;
+        }
+
+        $this->clause = $clause instanceof DateClause ? $clause : DateClause::from($clause);
     }
 
     /**
-     * Check if the clause is set.
+     * Determine if the class has a date clause.
+     *
+     * @return bool
+     */
+    public function missingDateClause(): bool
+    {
+        return \is_null($this->clause);
+    }
+
+    /**
+     * Determine if the class has a date clause.
+     *
+     * @return bool
      */
     public function hasDateClause(): bool
     {
@@ -38,64 +66,62 @@ trait HasDateClause
     }
 
     /**
-     * Set the clause to be used quietly.
+     * Get the date clause.
      *
-     * @throws ValueError
+     * @return \Honed\Table\Filters\Enums\DateClause|null
      */
-    public function setDateClause(string|DateClause|null $dateClause): void
+    public function getClause(): ?DateClause
     {
-        if (is_null($dateClause)) {
-            return;
-        }
-
-        $this->dateClause = $dateClause instanceof DateClause ? $dateClause : DateClause::from($dateClause);
+        return $this->clause;
     }
 
     /**
-     * Retrieve the clause property.
-     */
-    public function getDateClause(): ?DateClause
-    {
-        return $this->dateClause;
-    }
-
-    /**
-     * Set the clause to be 'exact'.
+     * Set the clause to use the entire date.
+     *
+     * @return $this
      */
     public function date(): static
     {
-        return $this->dateClause(DateClause::Date);
+        return $this->clause(DateClause::Date);
     }
 
     /**
-     * Set the clause to be 'day'.
+     * Set the clause to use the day.
+     *
+     * @return $this
      */
     public function day(): static
     {
-        return $this->dateClause(DateClause::Day);
+        return $this->clause(DateClause::Day);
     }
 
     /**
-     * Set the clause to be 'month'.
+     * Set the clause to use the month.
+     *
+     * @return $this
      */
     public function month(): static
     {
-        return $this->dateClause(DateClause::Month);
+        return $this->clause(DateClause::Month);
     }
 
     /**
-     * Set the clause to be 'year'.
+     * Set the clause to use the year.
+     *
+     * @return $this
      */
     public function year(): static
     {
-        return $this->dateClause(DateClause::Year);
+        return $this->clause(DateClause::Year);
     }
 
     /**
-     * Set the clause to be 'time'.
+     * Set the clause to use the time.
+     *
+     * @return $this
      */
     public function time(): static
     {
-        return $this->dateClause(DateClause::Time);
+        return $this->clause(DateClause::Time);
     }
 }
