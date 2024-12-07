@@ -19,11 +19,8 @@ class FormatRecords implements FormatsRecords
 {
     public function handle(Table $table, Closure $next)
     {
-        // All columns
         $columns = $table->getColumns();
-        // Whether to reduce the records to only the columns that are defined
         $enforceColumns = $table->enforcesColumns();
-        // All inline actions
         $actions = $table->getInlineActions();
         
         $table->setRecords(
@@ -31,9 +28,9 @@ class FormatRecords implements FormatsRecords
                 $formattedRecord = $enforceColumns ? [] : $record->toArray();
                 
                 // $this->applySelectable($record, $formattedRecord, $table);
-                $this->applyColumns($record, $formattedRecord, $columns);
-                $this->applyActions($record, $formattedRecord, $actions);
-                
+                $this->configureColumns($record, $formattedRecord, $columns);
+                $this->configureActions($record, $formattedRecord, $actions);
+                // $this->configureSelectable();
                 return $formattedRecord;
             })
         );
@@ -46,18 +43,18 @@ class FormatRecords implements FormatsRecords
      * 
      * @param Collection<BaseColumn> $columns
      */
-    protected function applyColumns($originalRecord, &$formattedRecord, Collection $columns)
+    protected function configureColumns($originalRecord, &$formattedRecord, Collection $columns)
     {
-        foreach ($columns as $column) {
+        $columns->each(function (BaseColumn $column) use ($originalRecord, &$formattedRecord) {
             $columnName = $column->getName();
             $formattedRecord[$columnName] = $column->apply($originalRecord[$columnName] ?? null);
-        }
+        });
     }
 
     /**
      * Set and authorize the available inline-actions for this record.
      */
-    protected function applyActions($originalRecord, &$formattedRecord, Collection $actions)
+    protected function configureActions($originalRecord, &$formattedRecord, Collection $actions)
     {
         $actions->each(function (InlineAction $action) use ($originalRecord, &$formattedRecord) {
             if ($action->isNotAuthorized()) {

@@ -70,7 +70,7 @@ abstract class BaseFilter extends Primitive implements Filters
      * @param mixed $value
      * @return bool
      */
-    public function filtering(mixed $value): bool
+    public function isFiltering(mixed $value): bool
     {
         return ! \is_null($value);
     }

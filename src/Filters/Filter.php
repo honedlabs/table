@@ -18,6 +18,7 @@ class Filter extends BaseFilter
 
     public function setUp(): void
     {
+        $this->setType('filter');
         $this->setClause(Clause::Is);
         $this->setOperator(Operator::Equal);
     }
@@ -26,7 +27,7 @@ class Filter extends BaseFilter
     {
         $value = $this->applyTransform($this->getValueFromRequest());
         $this->setValue($value);
-        $this->setActive($this->filtering($value));
+        $this->setActive($this->isFiltering($value));
 
         $builder->when(
             $this->isActive() && $this->applyValidation($value),

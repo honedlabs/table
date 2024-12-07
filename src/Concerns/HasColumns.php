@@ -91,4 +91,16 @@ trait HasColumns
             ->mapWithKeys(fn (BaseColumn $column) => [$column->getName() => $column])
             ->toArray();
     }
+
+    /**
+     * Get the columns that are active.
+     * 
+     * @return Collection<BaseColumn>
+     */
+    public function getActiveColumns(): Collection
+    {
+        return $this->getColumns()
+            ->filter(fn (BaseColumn $column): bool => $column->isActive())
+            ->values();
+    }
 }

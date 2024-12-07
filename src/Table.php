@@ -146,14 +146,16 @@ class Table extends Primitive
             'sorts' => $this->getSorts(),
             /* The pagination data for the records */
             'paginator' => $this->getPaginator(),
+            /* Whether the table has toggling enabled */
+            'toggleable' => $this->isToggleable(),
             /* The query parameter term for sorting */
-            'sortName' => $this->getSortAs(),
+            'sortName' => $this->getSortName(),
             /* The query parameter term for ordering */
-            'orderName' => $this->getOrderAs(),
+            'orderName' => $this->getOrderName(),
             /* The query parameter term for changing the number of records per page */
-            'countName' => $this->getCountAs(),
+            'countName' => $this->getCountName(),
             /* The query parameter term for searching */
-            'searchName' => $this->getSearchAs(),
+            'searchName' => $this->getSearchName(),
             /* The query parameter term for toggling column visibility */
             'toggleName' => $this->getToggleName(),
             /* The route used to handle actions, it is required to be a 'post' route */

@@ -36,12 +36,12 @@ trait Toggleable
     /**
      * @var bool
      */
-    protected $toggle;
+    protected $toggleable;
 
     /**
      * @var bool
      */
-    protected static $enableToggleable = false;
+    protected static $useColumnToggle = false;
 
     /**
      * Configure the default duration of the cookie to use for all tables.
@@ -71,9 +71,9 @@ trait Toggleable
      * @param bool $toggle
      * @return void
      */
-    public static function enableToggleable(bool $toggle = true)
+    public static function useColumnToggle(bool $toggle = true)
     {
-        static::$enableToggleable = $toggle;
+        static::$useColumnToggle = $toggle;
     }
 
     /**
@@ -95,7 +95,7 @@ trait Toggleable
     {
         return str(class_basename($this))
             ->slug()
-            ->append('_toggle')
+            ->append('_cols')
             ->toString();
     }
 
@@ -126,7 +126,17 @@ trait Toggleable
      */
     public function isToggleable()
     {
-        return $this->inspect('toggle', static::$enableToggleable);
+        return (bool) $this->inspect('toggleable', static::$useColumnToggle);
+    }
+
+    /**
+     * Determine whether this table has toggling of the columns disabled.
+     * 
+     * @return bool
+     */
+    public function isNotToggleable()
+    {
+        return ! $this->isToggleable();
     }
 
     /**
@@ -142,7 +152,7 @@ trait Toggleable
             return null;
         }
 
-        return array_filter(explode(',', (string) $value));
+        return \array_filter(\explode(',', (string) $value));
     }
 
     /**

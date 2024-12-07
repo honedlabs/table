@@ -16,7 +16,7 @@ class SelectRecords implements SelectsRecords
     {
         if ($table->isAutomaticSelecting()) {
             $keyColumn = $table->getKeyColumn();
-            $columnsToSelect = [$keyColumn->getName(), ...$table->getColumns()->pluck('name')];
+            $columnsToSelect = [$keyColumn->getName(), ...$table->getActiveColumns()->pluck('name')];
             $table->getResource()->select(...$columnsToSelect);
         }
 

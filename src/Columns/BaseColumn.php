@@ -100,7 +100,6 @@ abstract class BaseColumn extends Primitive
             'name' => $this->getName(),
             'label' => $this->getLabel(),
             'type' => $this->getType(),
-            'tooltip' => $this->getTooltip(),
             'breakpoint' => $this->getBreakpoint(),
             'isHidden' => $this->isHidden(),
             'isScreenReader' => $this->isSrOnly(),

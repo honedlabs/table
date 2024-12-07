@@ -14,22 +14,22 @@ trait Sortable
     /**
      * @var string
      */
-    protected $sortAs;
+    protected $sortName;
 
     /**
      * @var string
      */
-    protected static $globalSortAs = 'sort';
+    protected static $useSortName = 'sort';
 
     /**
      * @var string
      */
-    protected $orderAs;
+    protected $orderName;
 
     /**
      * @var string
      */
-    protected static $globalOrderAs = 'order';
+    protected static $useOrderName = 'order';
 
     /**
      * @var string
@@ -39,17 +39,7 @@ trait Sortable
     /**
      * @var string
      */
-    protected static $globalDefaultOrder = 'asc';
-
-    /**
-     * @var bool
-     */
-    protected $signed;
-
-    /**
-     * @var bool
-     */
-    protected static $globalSigned = true;
+    protected static $useDefaultOrder = 'asc';
 
     /**
      * Set the list of sorts to apply to the table.
@@ -69,23 +59,23 @@ trait Sortable
     /**
      * Configure the default query parameter to use for sorting.
      * 
-     * @param string $sortAs
+     * @param string $sortName
      * @return void
      */
-    public static function setSortAs(string $sortAs)
+    public static function useSortName(string $sortName)
     {
-        static::$globalSortAs = $sortAs;
+        static::$useSortName = $sortName;
     }
 
     /**
      * Configure the default query parameter to use for ordering.
      * 
-     * @param string $orderAs
+     * @param string $orderName
      * @return void
      */
-    public static function setOrderAs(string $orderAs)
+    public static function useOrderName(string $orderName)
     {
-        static::$globalOrderAs = $orderAs;
+        static::$useOrderName = $orderName;
     }
 
     /**
@@ -94,31 +84,9 @@ trait Sortable
      * @param string $defaultOrder
      * @return void
      */
-    public static function setDefaultOrder(string $defaultOrder)
+    public static function useDefaultOrder(string $defaultOrder)
     {
-        static::$globalDefaultOrder = $defaultOrder;
-    }
-
-    /**
-     * Configure whether to enable signed sorting for all tables by default.
-     * 
-     * @param bool $signed
-     * @return void
-     */
-    public static function enableSigned(bool $signed = true)
-    {
-        static::$globalSigned = $signed;
-    }
-
-    /**
-     * Configure whether to disable signed sorting for all tables by default.
-     * 
-     * @param bool $signed
-     * @return void
-     */
-    public static function disableSigned(bool $signed = false)
-    {
-        static::$globalSigned = $signed;
+        static::$useDefaultOrder = $defaultOrder;
     }
 
     /**
@@ -126,9 +94,9 @@ trait Sortable
      * 
      * @return string
      */
-    public function getSortAs()
+    public function getSortName()
     {
-        return $this->inspect('sortAs', static::$globalSortAs);
+        return $this->inspect('sortName', static::$useSortName);
     }
 
     /**
@@ -136,9 +104,9 @@ trait Sortable
      * 
      * @return string
      */
-    public function getOrderAs()
+    public function getOrderName()
     {
-        return $this->inspect('orderAs', static::$globalOrderAs);
+        return $this->inspect('orderName', static::$useOrderName);
     }
 
     /**
@@ -148,17 +116,7 @@ trait Sortable
      */
     public function getDefaultOrder()
     {
-        return $this->inspect('defaultOrder', static::$globalDefaultOrder);
-    }
-
-    /**
-     * Determine whether to enable signed sorting.
-     * 
-     * @return bool
-     */
-    public function isSigned()
-    {
-        return $this->inspect('signed', static::$globalSigned);
+        return $this->inspect('defaultOrder', static::$useDefaultOrder);
     }
 
     /**
@@ -168,9 +126,9 @@ trait Sortable
      */
     public function getSortTerm()
     {
-        $value = request()->input($this->getSortAs());
+        $value = request()->input($this->getSortName());
         
-        if (is_null($value)) {
+        if (\is_null($value)) {
             return null;
         }
 
@@ -184,28 +142,13 @@ trait Sortable
      */
     public function getOrderTerm()
     {
-        $direction = request()->input($this->getOrderAs());
+        $direction = request()->input($this->getOrderName());
 
         if (\is_null($direction) || ! \in_array($direction, ['asc', 'desc'])) {
             return null;
         }
 
         return $direction;
-    }
-
-    /**
-     * Get the direction to use from a term if signed sorting is enabled.
-     * 
-     * @param string $term
-     * @return string
-     */
-    public function getSignedTerm(string $term)
-    {
-        if (! $this->isSigned()) {
-            return $term;
-        }
-
-        return $term === 'asc' ? 'desc' : 'asc';
     }
 
     /**

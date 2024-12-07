@@ -11,7 +11,7 @@ interface Filters
 
     public function handle(Builder $builder): void;
 
-    public function filtering(Request $request): bool;
+    public function isFiltering(Request $request): bool;
 
     public function getValueFromRequest(): mixed;
 }
