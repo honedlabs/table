@@ -1,8 +1,6 @@
 <?php
 
 use Honed\Table\Filters\Filter;
-use Illuminate\Support\Facades\Http;
-use Honed\Table\Tests\RequestFactories\FilterRequest;
 use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
