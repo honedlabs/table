@@ -8,10 +8,15 @@ use Honed\Table\Filters\Enums\Operator;
 
 trait HasOperator
 {
-    protected ?Operator $operator = null;
+    /**
+     * @var \Honed\Table\Filters\Enums\Operator|null
+     */
+    protected $operator = null;
 
     /**
      * Set the operator to be used, chainable.
+     *
+     * @return $this
      */
     public function operator(string|Operator $operator): static
     {
@@ -21,7 +26,9 @@ trait HasOperator
     }
 
     /**
-     * Set the operator to be used quietly.
+     * Set the operator quietly.
+     * 
+     * @param \Honed\Table\Filters\Enums\Operator|string|null $operator
      */
     public function setOperator(string|Operator|null $operator): void
     {
@@ -33,17 +40,29 @@ trait HasOperator
 
     /**
      * Get the operator to be used.
+     *
+     * @return \Honed\Table\Filters\Enums\Operator|null
      */
     public function getOperator(): ?Operator
     {
         return $this->operator;
     }
 
+    /**
+     * Determine if the class has an operator.
+     * 
+     * @return bool
+     */
     public function missingOperator(): bool
     {
-        return is_null($this->operator);
+        return \is_null($this->operator);
     }
 
+    /**
+     * Determine if the class has an operator.
+     * 
+     * @return bool
+     */
     public function hasOperator(): bool
     {
         return ! $this->missingOperator();
@@ -51,66 +70,68 @@ trait HasOperator
 
     /**
      * Set the operator to be '>'.
+     *
+     * @return $this
      */
     public function gt(): static
     {
-        $this->setOperator(Operator::GreaterThan);
-
-        return $this;
+        return $this->operator(Operator::GreaterThan);
     }
 
     /**
      * Set the operator to be '>='.
+     *
+     * @return $this
      */
     public function gte(): static
     {
-        $this->setOperator(Operator::GreaterThanOrEqual);
-
-        return $this;
+        return $this->operator(Operator::GreaterThanOrEqual);
     }
 
     /**
      * Set the operator to be '<'.
+     *
+     * @return $this
      */
     public function lt(): static
     {
-        $this->setOperator(Operator::LessThan);
-
-        return $this;
+        return $this->operator(Operator::LessThan);
     }
 
     /**
      * Set the operator to be '<='.
+     *
+     * @return $this
      */
     public function lte(): static
     {
-        $this->setOperator(Operator::LessThanOrEqual);
-
-        return $this;
+        return $this->operator(Operator::LessThanOrEqual);
     }
 
     /**
      * Set the operator to be '='.
+     *
+     * @return $this
      */
     public function eq(): static
     {
-        $this->setOperator(Operator::Equal);
-
-        return $this;
+        return $this->operator(Operator::Equal);
     }
 
     /**
      * Set the operator to be '!='.
+     *
+     * @return $this
      */
     public function neq(): static
     {
-        $this->setOperator(Operator::NotEqual);
-
-        return $this;
+        return $this->operator(Operator::NotEqual);
     }
 
     /**
      * Alias for eq().
+     *
+     * @return $this
      */
     public function equals(): static
     {
@@ -119,6 +140,8 @@ trait HasOperator
 
     /**
      * Alias for eq().
+     *
+     * @return $this
      */
     public function equal(): static
     {
@@ -127,6 +150,8 @@ trait HasOperator
 
     /**
      * Alias for neq().
+     *
+     * @return $this
      */
     public function notEqual(): static
     {
@@ -135,6 +160,8 @@ trait HasOperator
 
     /**
      * Alias for gt().
+     *
+     * @return $this
      */
     public function greaterThan(): static
     {
@@ -143,6 +170,8 @@ trait HasOperator
 
     /**
      * Alias for gte().
+     *
+     * @return $this
      */
     public function greaterThanOrEqual(): static
     {
@@ -151,6 +180,8 @@ trait HasOperator
 
     /**
      * Alias for lt().
+     *
+     * @return $this
      */
     public function lessThan(): static
     {
@@ -159,6 +190,8 @@ trait HasOperator
 
     /**
      * Alias for lte().
+     *
+     * @return $this
      */
     public function lessThanOrEqual(): static
     {
@@ -167,27 +200,11 @@ trait HasOperator
 
     /**
      * Set the operator to be 'like'.
+     *
+     * @return $this
      */
-    public function fuzzy(): static
+    public function search(): static
     {
-        $this->setOperator(Operator::Like);
-
-        return $this;
-    }
-
-    /**
-     * Alias for gt().
-     */
-    public function greater(): static
-    {
-        return $this->gt();
-    }
-
-    /**
-     * Alias for lt().
-     */
-    public function lesser(): static
-    {
-        return $this->lt();
+        return $this->operator(Operator::Like);
     }
 }
