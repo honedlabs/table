@@ -105,3 +105,8 @@ it('has a `time` clause', function () {
             ],
         ]);
 });
+
+it('short circuits if the value is not a valid date', function () {
+    DateClause::Date->apply($this->builder, $this->attribute, $this->operator, 'not a date');
+    expect($this->builder->getQuery()->wheres)->toHaveCount(0);
+});

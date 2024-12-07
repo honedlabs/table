@@ -15,6 +15,7 @@ beforeEach(function () {
 
 it('has a default clause and operator', function () {
     expect($this->filter)
+        ->getType()->toBe('filter')
         ->getClause()->toBe(Clause::Is)
         ->getOperator()->toBe(Operator::Equal);
 });

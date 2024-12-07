@@ -44,7 +44,7 @@ trait HasClause
     }
 
     /**
-     * Determine if the class has a clause.
+     * Determine if the class does not have a clause.
      * 
      * @return bool
      */

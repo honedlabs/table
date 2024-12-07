@@ -9,8 +9,17 @@ use Honed\Table\Exceptions\QueryNotDefined;
 
 trait HasQuery
 {
-    protected Closure $query;
+    /**
+     * @var (\Closure(mixed...):void)|null
+     */
+    protected $query = null;
 
+    /**
+     * Set the query, chainable.
+     * 
+     * @param  \Closure(mixed...):void  $query
+     * @return $this
+     */
     public function query(Closure $query): static
     {
         $this->setQuery($query);
@@ -18,25 +27,53 @@ trait HasQuery
         return $this;
     }
 
+    /**
+     * Alias for `query`
+     *
+     * @param  \Closure(mixed...):void  $query
+     * @return $this
+     */
     public function using(Closure $query): static
     {
         return $this->query($query);
     }
 
-    protected function setQuery(?Closure $query): void
+    /**
+     * Set the query quietly
+     *
+     * @param  \Closure(mixed...):void|null  $query
+     */
+    public function setQuery(?Closure $query): void
     {
-        if (is_null($query)) {
+        if (\is_null($query)) {
             return;
         }
         $this->query = $query;
     }
 
-    public function getQuery(): Closure
+    /**
+     * Determine if the class does not have a query.
+     */
+    public function missingQuery(): bool
     {
-        if (! isset($this->query)) {
-            throw new QueryNotDefined;
-        }
+        return \is_null($this->query);
+    }
 
+    /**
+     * Determine if the class has a query.
+     */
+    public function hasQuery(): bool
+    {
+        return ! $this->missingQuery();
+    }
+
+    /**
+     * Get the query.
+     * 
+     * @return (\Closure(mixed...):void)|null
+     */
+    public function getQuery(): ?Closure
+    {
         return $this->query;
     }
 }

@@ -24,7 +24,7 @@ trait HasDateClause
      */
     public function clause(string|DateClause $clause): static
     {
-        $this->setDateClause($clause);
+        $this->setClause($clause);
 
         return $this;
     }
@@ -36,7 +36,7 @@ trait HasDateClause
      *
      * @throws \ValueError
      */
-    public function setDateClause(string|DateClause|null $clause): void
+    public function setClause(string|DateClause|null $clause): void
     {
         if (\is_null($clause)) {
             return;
@@ -50,7 +50,7 @@ trait HasDateClause
      *
      * @return bool
      */
-    public function missingDateClause(): bool
+    public function missingClause(): bool
     {
         return \is_null($this->clause);
     }
@@ -60,9 +60,9 @@ trait HasDateClause
      *
      * @return bool
      */
-    public function hasDateClause(): bool
+    public function hasClause(): bool
     {
-        return ! $this->missingDateClause();
+        return ! $this->missingClause();
     }
 
     /**

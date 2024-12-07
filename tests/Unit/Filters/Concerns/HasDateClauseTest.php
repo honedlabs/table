@@ -9,7 +9,7 @@ beforeEach(function () {
 
 it('can set a date clause', function () {
     expect($this->filter->clause(DateClause::Day))->toBeInstanceOf(DateFilter::class)
-        ->getDateClause()->toBe(DateClause::Day);
+        ->getClause()->toBe(DateClause::Day);
 });
 
 it('can be set using setter', function () {
