@@ -14,7 +14,7 @@ enum Operator: string
 
     public function invalid(mixed $value)
     {
-        return is_null($value) && ! in_array($this, [self::Equal, self::NotEqual]);
+        return \is_null($value) && ! \in_array($this, [self::Equal, self::NotEqual]);
     }
 
     public function label(): string

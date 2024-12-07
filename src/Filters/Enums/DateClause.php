@@ -24,8 +24,10 @@ enum DateClause: string
         };
     }
 
-    public function formatValue(Carbon $value): string
+    public function formatValue(Carbon|string $value): string
     {
+        $value = $value instanceof Carbon ? $value : Carbon::parse($value);
+
         return match ($this) {
             self::Date => $value->toDateString(),
             self::Day => $value->day,
@@ -35,7 +37,7 @@ enum DateClause: string
         };
     }
 
-    public function apply(Builder $builder, string $property, Operator $operator, Carbon $value): void
+    public function apply(Builder $builder, string $property, Operator $operator, Carbon|string $value): void
     {
         $builder->{$this->statement()}(
             $property,
