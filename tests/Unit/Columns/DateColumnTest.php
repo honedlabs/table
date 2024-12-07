@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Columns\DateColumn;
 use Honed\Core\Formatters\DateFormatter;
+use Honed\Table\Columns\DateColumn;
 
 beforeEach(function () {
     $this->column = DateColumn::make('name');

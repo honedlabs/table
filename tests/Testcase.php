@@ -2,9 +2,9 @@
 
 namespace Honed\Table\Tests;
 
+use Honed\Table\TableServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Honed\Table\TableServiceProvider;
 
 class TestCase extends Orchestra
 {

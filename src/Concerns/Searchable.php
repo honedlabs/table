@@ -38,8 +38,8 @@ trait Searchable
 
     /**
      * Configure the default search query parameter to use for all tables.
-     * 
-     * @param string|array<int,string> $searchAs
+     *
+     * @param  string|array<int,string>  $searchAs
      * @return void
      */
     public static function setSearchAs($searchAs)
@@ -49,8 +49,7 @@ trait Searchable
 
     /**
      * Configure whether to enable Laravel Scout for searching of all tables by default.
-     * 
-     * @param bool $scout
+     *
      * @return void
      */
     public static function enableScout(bool $scout = true)
@@ -60,7 +59,7 @@ trait Searchable
 
     /**
      * Get the columns to use for searching.
-     * 
+     *
      * @return string|array<int,string>|null
      */
     public function getSearch()
@@ -70,7 +69,7 @@ trait Searchable
 
     /**
      * Get the query parameter needed to identify the search term.
-     * 
+     *
      * @return string
      */
     public function getSearchAs()
@@ -80,7 +79,7 @@ trait Searchable
 
     /**
      * Determine whether to use Laravel Scout for searching.
-     * 
+     *
      * @return bool
      */
     public function isScoutSearch()
@@ -90,7 +89,7 @@ trait Searchable
 
     /**
      * Get the search term from the request query parameters.
-     * 
+     *
      * @return string|null
      */
     public function getSearchTerm()
@@ -100,7 +99,7 @@ trait Searchable
 
     /**
      * Determine whether to apply searching if available.
-     * 
+     *
      * @return bool
      */
     public function searching()
@@ -110,8 +109,7 @@ trait Searchable
 
     /**
      * Apply the search to the builder.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder $builder
+     *
      * @return void
      */
     protected function applySearch(Builder $builder)
@@ -123,8 +121,9 @@ trait Searchable
         if ($this->isScoutSearch()) {
             // @phpstan-ignore-next-line
             $builder->search($this->getSearchTerm());
+
             return;
-        } 
+        }
 
         $builder->whereAny(
             $this->getSearch(),

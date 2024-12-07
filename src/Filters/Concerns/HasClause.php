@@ -15,10 +15,10 @@ trait HasClause
 
     /**
      * Set the clause, chainable.
-     * 
-     * @param  string|\Honed\Table\Filters\Enums\Clause  $clause
-     * @throws \ValueError
+     *
      * @return $this
+     *
+     * @throws \ValueError
      */
     public function clause(string|Clause $clause): static
     {
@@ -29,8 +29,7 @@ trait HasClause
 
     /**
      * Set the clause quietly.
-     * 
-     * @param  string|\Honed\Table\Filters\Enums\Clause|null  $clause
+     *
      * @throws \ValueError
      */
     public function setClause(string|Clause|null $clause): void
@@ -44,8 +43,6 @@ trait HasClause
 
     /**
      * Determine if the class has a clause.
-     * 
-     * @return bool
      */
     public function missingClause(): bool
     {
@@ -54,8 +51,6 @@ trait HasClause
 
     /**
      * Determine if the class has a clause.
-     * 
-     * @return bool
      */
     public function hasClause(): bool
     {
@@ -64,8 +59,6 @@ trait HasClause
 
     /**
      * Get the clause.
-     * 
-     * @return \Honed\Table\Filters\Enums\Clause|null
      */
     public function getClause(): ?Clause
     {
@@ -74,7 +67,7 @@ trait HasClause
 
     /**
      * Set the clause to be `where`.
-     * 
+     *
      * @return $this
      */
     public function is(): static
@@ -84,7 +77,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereNot`.
-     * 
+     *
      * @return $this
      */
     public function isNot(): static
@@ -94,7 +87,7 @@ trait HasClause
 
     /**
      * Set the clause to be `where`, with a `%` prefix.
-     * 
+     *
      * @return $this
      */
     public function startsWith(): static
@@ -104,7 +97,7 @@ trait HasClause
 
     /**
      * Alias for `startsWith`.
-     * 
+     *
      * @return $this
      */
     public function beginsWith(): static
@@ -114,7 +107,7 @@ trait HasClause
 
     /**
      * Set the clause to be `where`, with a `%` suffix.
-     * 
+     *
      * @return $this
      */
     public function endsWith(): static
@@ -124,7 +117,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereIn`.
-     * 
+     *
      * @return $this
      */
     public function contains(): static
@@ -134,7 +127,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereNotIn`.
-     * 
+     *
      * @return $this
      */
     public function doesNotContain(): static
@@ -144,7 +137,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereJsonContains`.
-     * 
+     *
      * @return $this
      */
     public function json(): static
@@ -154,7 +147,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereJsonDoesntContain`.
-     * 
+     *
      * @return $this
      */
     public function notJson(): static
@@ -164,7 +157,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereJsonLength`.
-     * 
+     *
      * @return $this
      */
     public function jsonLength(): static
@@ -174,7 +167,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereFullText`.
-     * 
+     *
      * @return $this
      */
     public function fullText(): static
@@ -184,7 +177,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereJsonContainsKey`.
-     * 
+     *
      * @return $this
      */
     public function jsonKey(): static
@@ -194,7 +187,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereJsonDoesntContainKey`.
-     * 
+     *
      * @return $this
      */
     public function notJsonKey(): static
@@ -204,7 +197,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereJsonOverlaps`.
-     * 
+     *
      * @return $this
      */
     public function jsonOverlap(): static
@@ -214,7 +207,7 @@ trait HasClause
 
     /**
      * Alias for `jsonOverlap`.
-     * 
+     *
      * @return $this
      */
     public function jsonOverlaps(): static
@@ -224,7 +217,7 @@ trait HasClause
 
     /**
      * Set the clause to be `whereJsonDoesntOverlap`.
-     * 
+     *
      * @return $this
      */
     public function jsonDoesNotOverlap(): static
@@ -234,7 +227,7 @@ trait HasClause
 
     /**
      * Set the clause to be `where`, with a like operator.
-     * 
+     *
      * @return $this
      */
     public function like(): static

@@ -23,7 +23,7 @@ it('can set a url using a URL instance', function () {
     expect($this->urlable->url(Url::make('product.show')))
         ->toBeInstanceOf(InlineAction::class)
         ->isUrlable()->toBeTrue();
-    
+
     expect($this->urlable->getUrl())
         ->getUrl()->toBe('product.show')
         ->isNamed()->toBeTrue();
@@ -47,7 +47,7 @@ it('can be set using a closure', function () {
     expect($this->urlable->url(fn (Url $url) => $url->url('https://example.com')->download()))
         ->toBeInstanceOf(InlineAction::class)
         ->isUrlable()->toBeTrue();
-    
+
     expect($this->urlable->getUrl())
         ->getUrl()->toBe('https://example.com')
         ->isDownload()->toBeTrue();

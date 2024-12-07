@@ -10,7 +10,9 @@ namespace Honed\Table\Confirm\Concerns;
 trait HasIntent
 {
     public const Constructive = 'constructive';
+
     public const Destructive = 'destructive';
+
     public const Informative = 'informative';
 
     /**

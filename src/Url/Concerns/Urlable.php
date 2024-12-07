@@ -18,8 +18,8 @@ trait Urlable
 
     /**
      * Set the properties of the url
-     * 
-     * @param \Honed\Table\Url\Url|(\Closure(\Honed\Table\Url\Url):void)|array<string,mixed>|string|\Closure(mixed...):string $url
+     *
+     * @param  \Honed\Table\Url\Url|(\Closure(\Honed\Table\Url\Url):void)|array<string,mixed>|string|\Closure(mixed...):string  $url
      * @return $this
      */
     public function url(mixed $url): static
@@ -45,8 +45,7 @@ trait Urlable
 
     /**
      * Set the url to a named route.
-     * 
-     * @param string $route
+     *
      * @return $this
      */
     public function route(string $route): static
@@ -56,8 +55,7 @@ trait Urlable
 
     /**
      * Set the url to a named route.
-     * 
-     * @param string $url
+     *
      * @return $this
      */
     public function to(string $url): static
@@ -67,9 +65,8 @@ trait Urlable
 
     /**
      * Create a new url instance if one is not already set.
-     * 
+     *
      * @internal
-     * @return \Honed\Table\Url\Url
      */
     public function makeUrl(): Url
     {
@@ -78,10 +75,8 @@ trait Urlable
 
     /**
      * Override the url instance.
-     * 
-     * @param \Honed\Table\Url\Url|null $url
      */
-    public function setUrl(Url|null $url)
+    public function setUrl(?Url $url)
     {
         if (\is_null($url)) {
             return;

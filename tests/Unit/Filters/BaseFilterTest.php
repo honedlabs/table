@@ -48,4 +48,3 @@ it('has an array form', function () {
         'meta' => [],
     ]);
 });
-

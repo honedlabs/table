@@ -9,12 +9,11 @@ use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Database\Eloquent\Builder;
 
-
 class Filter extends BaseFilter
 {
-    use HasValue;
     use Concerns\HasClause;
     use Concerns\HasOperator;
+    use HasValue;
 
     public function setUp(): void
     {

@@ -45,8 +45,7 @@ trait Toggleable
 
     /**
      * Configure the default duration of the cookie to use for all tables.
-     * 
-     * @param int $duration
+     *
      * @return void
      */
     public static function useDuration(int $duration)
@@ -56,8 +55,7 @@ trait Toggleable
 
     /**
      * Configure the default query parameter to use for toggling columns.
-     * 
-     * @param string $toggleName
+     *
      * @return void
      */
     public static function useToggleName(string $toggleName)
@@ -67,8 +65,7 @@ trait Toggleable
 
     /**
      * Configure whether to enable toggling of columns for all tables by default.
-     * 
-     * @param bool $toggle
+     *
      * @return void
      */
     public static function useColumnToggle(bool $toggle = true)
@@ -78,7 +75,7 @@ trait Toggleable
 
     /**
      * Get the cookie name to use for the table toggle.
-     * 
+     *
      * @return string
      */
     public function getCookie()
@@ -88,7 +85,7 @@ trait Toggleable
 
     /**
      * Get the default cookie name to use for the table.
-     * 
+     *
      * @return string
      */
     protected function getDefaultCookie()
@@ -101,7 +98,7 @@ trait Toggleable
 
     /**
      * Get the default duration of the cookie to use for the table toggle.
-     * 
+     *
      * @return int
      */
     public function getDuration()
@@ -111,7 +108,7 @@ trait Toggleable
 
     /**
      * Get the query parameter to use for toggling columns.
-     * 
+     *
      * @return string
      */
     public function getToggleName()
@@ -121,7 +118,7 @@ trait Toggleable
 
     /**
      * Determine whether this table has toggling of the columns enabled.
-     * 
+     *
      * @return bool
      */
     public function isToggleable()
@@ -131,7 +128,7 @@ trait Toggleable
 
     /**
      * Determine whether this table has toggling of the columns disabled.
-     * 
+     *
      * @return bool
      */
     public function isNotToggleable()
@@ -141,13 +138,13 @@ trait Toggleable
 
     /**
      * Get the query parameter to use for toggling columns from the request query parameters.
-     * 
+     *
      * @return array<int,string>|null
      */
     public function getToggledColumnsTerm()
     {
         $value = request()->input($this->getToggleName());
-        
+
         if (is_null($value)) {
             return null;
         }
@@ -157,9 +154,8 @@ trait Toggleable
 
     /**
      * Encode the data to be stored in the cookie.
-     * 
-     * @param array<int,string> $data
-     * @return void
+     *
+     * @param  array<int,string>  $data
      */
     public function encodeCookie(array $data): void
     {
@@ -168,7 +164,7 @@ trait Toggleable
 
     /**
      * Decode the data stored in the cookie.
-     * 
+     *
      * @return array<int,string>|null
      */
     public function decodeCookie(): ?array
@@ -178,7 +174,7 @@ trait Toggleable
 
     /**
      * Get the columns which need to be toggled, and set if needed.
-     * 
+     *
      * @return array<int,string>|null
      */
     public function getToggledColumns()

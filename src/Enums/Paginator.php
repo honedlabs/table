@@ -46,7 +46,7 @@ enum Paginator: string
     /**
      * Get metadata based on the current pagination type.
      *
-     * @param  \Illuminate\Support\Collection|\Illuminate\Pagination\CursorPaginator|\Illuminate\Pagination\LengthAwarePaginator $data
+     * @param  \Illuminate\Support\Collection|\Illuminate\Pagination\CursorPaginator|\Illuminate\Pagination\LengthAwarePaginator  $data
      * @return array<string, int|string|bool>
      */
     public function getMeta($data): array

@@ -15,7 +15,7 @@ it('has an array form', function () {
         'type' => 'page',
         'name' => 'test',
         'label' => 'Test',
-        'meta' => []
+        'meta' => [],
     ]);
 });
 
@@ -27,6 +27,6 @@ it('forwards calls to url', function () {
             'label' => 'Test',
             'meta' => [],
             'url' => '/products',
-            'method' => 'get'
+            'method' => 'get',
         ]);
 });

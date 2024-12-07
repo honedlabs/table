@@ -1,8 +1,7 @@
 <?php
 
-use Honed\Table\Url\Url;
-use Honed\Table\Confirm\Confirm;
 use Honed\Table\Actions\InlineAction;
+use Honed\Table\Confirm\Confirm;
 
 beforeEach(function () {
     $this->confirmable = InlineAction::make('test');
@@ -24,7 +23,7 @@ it('can set a confirm using a Confirm instance', function () {
     expect($this->confirmable->confirm(Confirm::make()->description('The description goes heres')))
         ->toBeInstanceOf(InlineAction::class)
         ->isConfirmable()->toBeTrue();
-    
+
     expect($this->confirmable->getConfirm()->getDescription())->toBe('The description goes heres');
 });
 
@@ -46,7 +45,7 @@ it('can be set using a closure', function () {
     expect($this->confirmable->confirm(fn (Confirm $confirm) => $confirm->title('The title goes heres')->description('The description goes heres')->success('Success')))
         ->toBeInstanceOf(InlineAction::class)
         ->isConfirmable()->toBeTrue();
-    
+
     expect($this->confirmable->getConfirm())
         ->getTitle()->toBe('The title goes heres')
         ->getDescription()->toBe('The description goes heres')

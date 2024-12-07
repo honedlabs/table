@@ -8,10 +8,10 @@ use Honed\Table\Confirm\Concerns\Confirmable;
 
 class BulkAction extends BaseAction
 {
-    use Concerns\IsInline;
     use Concerns\Actionable;
-    use Confirmable;
     use Concerns\DeselectsOnEnd;
+    use Concerns\IsInline;
+    use Confirmable;
 
     public function setUp(): void
     {

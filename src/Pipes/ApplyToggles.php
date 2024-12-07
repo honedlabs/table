@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Closure;
-use Honed\Table\Table;
 use Honed\Table\Columns\BaseColumn;
 use Honed\Table\Pipes\Contracts\Toggles;
+use Honed\Table\Table;
 
 /**
  * @internal

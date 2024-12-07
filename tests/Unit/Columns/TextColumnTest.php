@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Columns\TextColumn;
 use Honed\Core\Formatters\StringFormatter;
+use Honed\Table\Columns\TextColumn;
 
 beforeEach(function () {
     $this->column = TextColumn::make('name');

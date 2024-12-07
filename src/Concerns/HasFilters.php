@@ -13,7 +13,7 @@ trait HasFilters
     protected array $filters;
 
     /**
-     * @param array<int, BaseFilter>|null $filters
+     * @param  array<int, BaseFilter>|null  $filters
      */
     protected function setFilters(?array $filters): void
     {
@@ -23,9 +23,9 @@ trait HasFilters
         $this->filters = $filters;
     }
 
-
     /**
      * @internal
+     *
      * @return array<int, BaseFilter>
      */
     protected function definedFilters(): array
@@ -43,7 +43,7 @@ trait HasFilters
 
     /**
      * Get the authorized filters.
-     * 
+     *
      * @return array<int, BaseFilter>
      */
     public function getFilters(): array
@@ -53,8 +53,6 @@ trait HasFilters
 
     /**
      * Apply the authorized filters to the builder.
-     * 
-     * @param Builder $builder
      */
     protected function applyFilters(Builder $builder): void
     {

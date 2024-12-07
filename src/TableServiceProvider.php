@@ -42,13 +42,13 @@ class TableServiceProvider extends ServiceProvider
         Route::bind('honedTable', function (string $value) {
             try {
                 $class = Table::decodeClass($value);
-                
-                if (!class_exists($class)) {
+
+                if (! class_exists($class)) {
                     abort(404);
                 }
 
-                if (!is_subclass_of($class, Table::class)) {
-                    abort(404); 
+                if (! is_subclass_of($class, Table::class)) {
+                    abort(404);
                 }
 
                 return $class::make();

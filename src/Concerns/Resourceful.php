@@ -2,9 +2,9 @@
 
 namespace Honed\Table\Concerns;
 
-use RuntimeException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use RuntimeException;
 
 /**
  * @mixin \Honed\Core\Concerns\Inspectable
@@ -23,8 +23,8 @@ trait Resourceful
 
     /**
      * Define the database resource to use for the table.
-     * 
-     * @param \Illuminate\Contracts\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model>|string $resource
+     *
+     * @param  \Illuminate\Contracts\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model>|string  $resource
      * @return $this
      */
     public function resource($resource): static
@@ -36,8 +36,8 @@ trait Resourceful
 
     /**
      * Set the model resolver to use for the table.
-     * 
-     * @param \Closure(class-string, string|int): \Illuminate\Database\Eloquent\Model $modelResolver
+     *
+     * @param  \Closure(class-string, string|int): \Illuminate\Database\Eloquent\Model  $modelResolver
      * @return $this
      */
     public function modelResolver(\Closure $modelResolver): static
@@ -49,8 +49,8 @@ trait Resourceful
 
     /**
      * Set the resource to use for the table.
-     * 
-     * @param \Illuminate\Contracts\Database\Eloquent\Builder|class-string|null $resource
+     *
+     * @param  \Illuminate\Contracts\Database\Eloquent\Builder|class-string|null  $resource
      */
     public function setResource($resource)
     {
@@ -63,10 +63,10 @@ trait Resourceful
 
     /**
      * Set the resolver to use for the table.
-     * 
-     * @param (\Closure(class-string,string|int):\Illuminate\Database\Eloquent\Model)|null $modelResolver
+     *
+     * @param  (\Closure(class-string,string|int):\Illuminate\Database\Eloquent\Model)|null  $modelResolver
      */
-    public function setResolver(\Closure|null $modelResolver)
+    public function setResolver(?\Closure $modelResolver)
     {
         if (\is_null($modelResolver)) {
             return;
@@ -77,9 +77,10 @@ trait Resourceful
 
     /**
      * Get the resource to use for the table as an Eloquent query builder.
-     * 
-     * @throws \RuntimeException
+     *
      * @return \Illuminate\Database\Eloquent\Builder
+     *
+     * @throws \RuntimeException
      */
     public function getResource()
     {
@@ -96,9 +97,6 @@ trait Resourceful
 
     /**
      * Resolve a model instance from the given key.
-     * 
-     * @param int|string $key
-     * @return \Illuminate\Database\Eloquent\Model
      */
     public function resolveModel(int|string $key): Model
     {
@@ -110,8 +108,6 @@ trait Resourceful
 
     /**
      * Get the model class used by the resource.
-     * 
-     * @return \Illuminate\Database\Eloquent\Model
      */
     public function getModelClass(): Model
     {
@@ -120,8 +116,6 @@ trait Resourceful
 
     /**
      * Get the model class as a name.
-     * 
-     * @return string
      */
     public function getModelClassName(): string
     {

@@ -30,7 +30,7 @@ trait IsToggleable
     /**
      * Set the toggleable property quietly.
      *
-     * @param  bool|(\Closure():bool)|null $toggleable
+     * @param  bool|(\Closure():bool)|null  $toggleable
      */
     public function setToggleable(bool|\Closure|null $toggleable): void
     {
@@ -42,8 +42,6 @@ trait IsToggleable
 
     /**
      * Determine if the column is toggleable.
-     * 
-     * @return bool
      */
     public function isToggleable(): bool
     {
@@ -52,8 +50,6 @@ trait IsToggleable
 
     /**
      * Determine if the column is not toggleable.
-     * 
-     * @return bool
      */
     public function isNotToggleable(): bool
     {

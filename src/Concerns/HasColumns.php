@@ -22,7 +22,7 @@ trait HasColumns
 
     /**
      * Set the columns for the table.
-     * 
+     *
      * @param  array<BaseColumn>|null  $columns
      */
     protected function setColumns(?array $columns): void
@@ -36,7 +36,7 @@ trait HasColumns
 
     /**
      * Get the columns for the table.
-     * 
+     *
      * @return Collection<BaseColumn>
      */
     public function getColumns(): Collection
@@ -47,7 +47,7 @@ trait HasColumns
 
     /**
      * Get the sortable columns for the table.
-     * 
+     *
      * @return Collection<BaseColumn>
      */
     public function getSortableColumns(): Collection
@@ -59,7 +59,7 @@ trait HasColumns
 
     /**
      * Get the searchable attributes for the table.
-     * 
+     *
      * @return Collection<string>
      */
     public function getSearchableColumns(): Collection
@@ -71,8 +71,6 @@ trait HasColumns
 
     /**
      * Get the key column for the table.
-     * 
-     * @return BaseColumn|null
      */
     public function getKeyColumn(): ?BaseColumn
     {
@@ -82,7 +80,7 @@ trait HasColumns
 
     /**
      * Retrieve the column attributes.
-     * 
+     *
      * @return array<string, mixed>
      */
     public function getAttributedColumns(): array
@@ -94,7 +92,7 @@ trait HasColumns
 
     /**
      * Get the columns that are active.
-     * 
+     *
      * @return Collection<BaseColumn>
      */
     public function getActiveColumns(): Collection

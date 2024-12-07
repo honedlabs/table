@@ -17,7 +17,6 @@ trait HasDuration
     /**
      * Set the duration, chainable.
      *
-     * @param  int|\Carbon\Carbon|\Closure|null $duration
      * @return $this
      */
     public function duration(int|\Carbon\Carbon|\Closure|null $duration): static
@@ -29,8 +28,6 @@ trait HasDuration
 
     /**
      * Set the duration quietly.
-     *
-     * @param  int|\Carbon\Carbon|\Closure|null $duration
      */
     public function setDuration(int|\Carbon\Carbon|\Closure|null $duration): void
     {
@@ -63,5 +60,4 @@ trait HasDuration
     {
         return ! $this->isTemporary();
     }
-
 }

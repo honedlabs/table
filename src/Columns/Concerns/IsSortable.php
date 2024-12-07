@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Honed\Table\Sorts\ToggleSort;
-
 /**
  * Assymetric definition
  */
@@ -18,8 +16,8 @@ trait IsSortable
 
     /**
      * Set the sortable property, chainable.
-     * 
-     * @param bool|(\Closure():bool) $sortable
+     *
+     * @param  bool|(\Closure():bool)  $sortable
      * @return $this
      */
     public function sortable(bool|\Closure $sortable = true): static
@@ -31,8 +29,6 @@ trait IsSortable
 
     /**
      * Set the sortable property quietly.
-     * 
-     * @param bool|\Closure|null $sortable
      */
     public function setSortable(bool|\Closure|null $sortable): void
     {
@@ -44,8 +40,6 @@ trait IsSortable
 
     /**
      * Determine if the column is sortable.
-     * 
-     * @return bool
      */
     public function isSortable(): bool
     {
@@ -54,8 +48,6 @@ trait IsSortable
 
     /**
      * Determine if the column is not sortable.
-     * 
-     * @return bool
      */
     public function isNotSortable(): bool
     {

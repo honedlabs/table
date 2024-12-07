@@ -22,7 +22,6 @@ trait HasActions
      * Set the actions for the table.
      *
      * @param  array<int,\Honed\Table\Actions\BaseAction>|null  $actions
-     * @return void
      */
     public function setActions($actions): void
     {
@@ -34,6 +33,29 @@ trait HasActions
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Get the actions for the table.
+     *
+     * @internal
+     *
+     * @return array<int, Conquest\Table\Actions\BaseAction>
+     */
+    public function definedActions(): array
+    {
+        if (isset($this->actions)) {
+            return $this->actions;
+        }
+
+        if (method_exists($this, 'actions')) {
+            return $this->actions();
+        }
+
+        return [];
+    }
+
+    /**
+>>>>>>> 273ec095ac1a6c447503fb3d57a814c10354ca4c
      * Get all available actions.
      *
      * @return Collection<int,\Honed\Table\Actions\BaseAction>

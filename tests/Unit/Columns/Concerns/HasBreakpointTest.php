@@ -1,7 +1,6 @@
 <?php
 
 use Honed\Table\Columns\Column;
-use Symfony\Component\HttpFoundation\Request;
 
 beforeEach(function () {
     $this->column = Column::make('name');

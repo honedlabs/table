@@ -6,11 +6,11 @@ namespace Honed\Table\Actions;
 
 use Honed\Core\Concerns\IsDefault;
 use Honed\Core\Contracts\HigherOrder;
-use Honed\Table\Url\Concerns\Urlable;
-use Honed\Table\Url\Proxies\HigherOrderUrl;
 use Honed\Core\Contracts\ProxiesHigherOrder;
 use Honed\Table\Confirm\Concerns\Confirmable;
 use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
+use Honed\Table\Url\Concerns\Urlable;
+use Honed\Table\Url\Proxies\HigherOrderUrl;
 
 /**
  * @property-read \Honed\Table\Confirm\Confirm $confirm
@@ -18,11 +18,11 @@ use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
  */
 class InlineAction extends BaseAction implements ProxiesHigherOrder
 {
-    use Urlable;
-    use IsDefault;
-    use Confirmable;
-    use Concerns\IsBulk;
     use Concerns\Actionable;
+    use Concerns\IsBulk;
+    use Confirmable;
+    use IsDefault;
+    use Urlable;
 
     public function setUp(): void
     {
@@ -31,9 +31,7 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
 
     /**
      * Dynamically forward calls to the proxies.
-     * 
-     * @param string $property
-     * @return \Honed\Core\Contracts\HigherOrder
+     *
      * @throws \Exception
      */
     public function __get(string $property): HigherOrder

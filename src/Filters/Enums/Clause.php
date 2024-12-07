@@ -9,13 +9,10 @@ enum Clause: string
 {
     case Is = 'is';
     case IsNot = 'is_not';
-    case Search = 'search';
     case StartsWith = 'starts_with';
     case EndsWith = 'ends_with';
     case Contains = 'contains';
     case DoesNotContain = 'does_not_contain';
-    case All = 'all';
-    case Any = 'any';
     case Json = 'json_contains';
     case NotJson = 'json_does_not_contain';
     case JsonLength = 'json_length';
@@ -31,13 +28,10 @@ enum Clause: string
         return match ($this) {
             self::Is => 'where',
             self::IsNot => 'whereNot',
-            self::Search => 'search',
             self::StartsWith => 'where',
             self::EndsWith => 'where',
             self::Contains => 'whereIn',
             self::DoesNotContain => 'whereNotIn',
-            self::All => 'whereAll',
-            self::Any => 'whereAny',
             self::Json => 'whereJsonContains',
             self::NotJson => 'whereJsonDoesntContain',
             self::JsonLength => 'whereJsonLength',
@@ -76,7 +70,7 @@ enum Clause: string
     public function overrideOperator(Operator $operator): Operator
     {
         return match ($this) {
-            self::StartsWith, self::EndsWith, self::Search, self::Like => Operator::Like,
+            self::StartsWith, self::EndsWith, self::Like => Operator::Like,
             default => $operator,
         };
     }
@@ -90,17 +84,8 @@ enum Clause: string
         return match ($this) {
             self::StartsWith => "$value%",
             self::EndsWith => "%$value",
-            self::Search, self::Like => '%'.strtolower($value).'%',
+            self::Like => '%'.strtolower($value).'%',
             default => $value,
-        };
-    }
-
-    public function formatProperty(string|array $attribute)
-    {
-        return match ($this) {
-            self::All, self::Any => is_array($attribute) ? $attribute : [$attribute],
-            self::Search, self::Like => DB::raw("lower($attribute)"),
-            default => $attribute,
         };
     }
 
@@ -113,8 +98,8 @@ enum Clause: string
         }
 
         if ($this->needsOperator()) {
-            $builder->{$this->statement()} (
-                $this->formatProperty($attribute),
+            $builder->{$this->statement()}(
+                $attribute,
                 $operator->value(),
                 $this->formatValue($value)
             );
@@ -123,7 +108,7 @@ enum Clause: string
         }
 
         $builder->{$this->statement()}(
-            $this->formatProperty($attribute),
+            $attribute,
             $this->formatValue($value)
         );
     }

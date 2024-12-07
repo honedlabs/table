@@ -4,37 +4,37 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Honed\Core\Primitive;
+use Honed\Core\Concerns\Authorizable;
+use Honed\Core\Concerns\HasAlias;
+use Honed\Core\Concerns\HasAttribute;
+use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasType;
-use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
-use Honed\Core\Concerns\HasAlias;
-use Honed\Table\Contracts\Filters;
-use Honed\Core\Concerns\Validatable;
-use Honed\Core\Concerns\Authorizable;
-use Honed\Core\Concerns\HasAttribute;
 use Honed\Core\Concerns\Transformable;
+use Honed\Core\Concerns\Validatable;
+use Honed\Core\Primitive;
+use Honed\Table\Contracts\Filters;
 
 abstract class BaseFilter extends Primitive implements Filters
 {
+    use Authorizable;
+    use HasAlias;
+    use HasAttribute;
     use HasLabel;
     use HasMeta;
-    use HasAttribute;
     use HasType;
     use HasValue;
     use IsActive;
-    use Authorizable;
     use Transformable;
-    use HasAlias;
     use Validatable;
 
     /**
      * Create a new filter instance specifying the database column, and optionally the display label.
-     * 
-     * @param string|(\Closure():string) $attribute
-     * @param string|(\Closure():string)|null $label
+     *
+     * @param  string|(\Closure():string)  $attribute
+     * @param  string|(\Closure():string)|null  $label
      */
     final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
@@ -45,9 +45,9 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Make a filter specifying the database column, and optionally the display label.
-     * 
-     * @param string|(\Closure():string) $attribute
-     * @param string|(\Closure():string)|null $label
+     *
+     * @param  string|(\Closure():string)  $attribute
+     * @param  string|(\Closure():string)|null  $label
      */
     final public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
     {
@@ -56,7 +56,7 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Retrieve the value of the filter name from the current request.
-     * 
+     *
      * @return int|string|array<int,int|string>|null
      */
     public function getValueFromRequest(): mixed
@@ -66,9 +66,6 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Determine if the filter should be applied.
-     * 
-     * @param mixed $value
-     * @return bool
      */
     public function isFiltering(mixed $value): bool
     {
@@ -77,9 +74,8 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Retrieve the query parameter name of the filter
-     * 
+     *
      * @internal
-     * @return string
      */
     protected function getParameterName(): string
     {
@@ -88,7 +84,7 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Get the filter state as an array
-     * 
+     *
      * @return array<string,mixed>
      */
     public function toArray(): array

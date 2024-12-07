@@ -5,52 +5,49 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Exception;
-use Honed\Core\Primitive;
-use BadMethodCallException;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Honed\Table\Pipes\Paginate;
-use Honed\Table\Concerns\HasMeta;
-use Honed\Table\Pipes\ApplySorts;
-use Illuminate\Pipeline\Pipeline;
 use Honed\Core\Concerns\Encodable;
-use Honed\Table\Pipes\ApplySearch;
-use Illuminate\Support\Collection;
-use Honed\Table\Actions\BaseAction;
-use Honed\Table\Actions\BulkAction;
-use Honed\Table\Pipes\ApplyFilters;
-use Honed\Table\Pipes\ApplyToggles;
 use Honed\Core\Concerns\Inspectable;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
-use Honed\Table\Pipes\FormatRecords;
-use Honed\Table\Pipes\SelectRecords;
-use Honed\Table\Actions\InlineAction;
-use Illuminate\Database\Eloquent\Model;
-use Honed\Table\Http\DTOs\BulkActionData;
-use Illuminate\Database\Eloquent\Builder;
-use Honed\Table\Http\DTOs\InlineActionData;
-use Honed\Table\Pipes\ApplyBeforeRetrieval;
-use Honed\Table\Http\Requests\TableActionRequest;
 use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Honed\Core\Primitive;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Actions\InlineAction;
+use Honed\Table\Http\DTOs\BulkActionData;
+use Honed\Table\Http\DTOs\InlineActionData;
+use Honed\Table\Http\Requests\TableActionRequest;
+use Honed\Table\Pipes\ApplyBeforeRetrieval;
+use Honed\Table\Pipes\ApplyFilters;
+use Honed\Table\Pipes\ApplySearch;
+use Honed\Table\Pipes\ApplySorts;
+use Honed\Table\Pipes\ApplyToggles;
+use Honed\Table\Pipes\FormatRecords;
+use Honed\Table\Pipes\Paginate;
+use Honed\Table\Pipes\SelectRecords;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Collection;
 
 class Table extends Primitive
 {
-    use Inspectable;
-    use Encodable;
-    use RequiresKey;
-    use IsAnonymous;
-    use Concerns\Resourceful;
+    use Concerns\FormatsAndPaginates;
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasEndpoint;
     use Concerns\HasFilters;
     use Concerns\IsAutomaticSelecting;
-    use Concerns\FormatsAndPaginates;
-    use Concerns\Sortable;
-    use Concerns\Toggleable;
+    use Concerns\Resourceful;
     use Concerns\Searchable;
     use Concerns\Selectable;
+    use Concerns\Sortable;
+    use Concerns\Toggleable;
+    use Encodable;
+    use Inspectable;
+    use IsAnonymous;
+    use RequiresKey;
 
     /**
      * @var class-string<\Honed\Table\Table>
@@ -59,8 +56,8 @@ class Table extends Primitive
 
     /**
      * Build the table with the given assignments.
-     * 
-     * @param array<string, mixed> $assignments
+     *
+     * @param  array<string, mixed>  $assignments
      */
     public function __construct($assignments = [])
     {
@@ -69,14 +66,14 @@ class Table extends Primitive
 
     /**
      * Create a new table instance.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string $resource
-     * @param array<\Honed\Table\Columns\BaseColumn> $columns
-     * @param array<\Honed\Table\Actions\BaseAction> $actions
-     * @param array<\Honed\Table\Filters\BaseFilter> $filters
-     * @param array<\Honed\Table\Sorts\BaseSort> $sorts
-     * @param string|null $search
-     * @param array|int|null $pagination
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string  $resource
+     * @param  array<\Honed\Table\Columns\BaseColumn>  $columns
+     * @param  array<\Honed\Table\Actions\BaseAction>  $actions
+     * @param  array<\Honed\Table\Filters\BaseFilter>  $filters
+     * @param  array<\Honed\Table\Sorts\BaseSort>  $sorts
+     * @param  string|null  $search
+     * @param  array|int|null  $pagination
      * @return static
      */
     public static function make($resource = null,
@@ -101,8 +98,9 @@ class Table extends Primitive
     /**
      * Get the key name for the table records.
      *
-     * @throws MissingRequiredAttributeException
      * @return string
+     *
+     * @throws MissingRequiredAttributeException
      */
     public function getKeyName()
     {
@@ -214,8 +212,6 @@ class Table extends Primitive
 
     /**
      * Global handler for piping the request to the correct table action handler.
-     * 
-     * @param \Honed\Table\Http\Requests\TableActionRequest $request
      */
     public function handleAction(TableActionRequest $request)
     {
@@ -234,9 +230,9 @@ class Table extends Primitive
 
     /**
      * Execute a given inline action of the table.
-     * 
-     * @param \Honed\Table\Http\DTOs\InlineActionData $data
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     protected function executeInlineAction(InlineActionData $data)
@@ -250,7 +246,7 @@ class Table extends Primitive
         $record = $this->resolveModel($data->id);
 
         // Ensure that the user is authorized to perform the action on this model
-        if (!$action->isAuthorized([
+        if (! $action->isAuthorized([
             'record' => $record,
             $this->getModelClassName() => $record,
         ], [
@@ -276,9 +272,9 @@ class Table extends Primitive
 
     /**
      * Execute a given bulk action of the table.
-     * 
-     * @param \Honed\Table\Http\DTOs\BulkActionData $data
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     protected function executeBulkAction(BulkActionData $data)
@@ -289,7 +285,7 @@ class Table extends Primitive
             throw new Exception('Invalid action');
         }
 
-        if (!$action->isAuthorized()) {
+        if (! $action->isAuthorized()) {
             throw new Exception('Unauthorized');
         }
 
@@ -303,7 +299,7 @@ class Table extends Primitive
 
         $reflection = new \ReflectionFunction($action->getAction());
         $hasRecordsParameter = collect($reflection->getParameters())
-            ->some(fn (\ReflectionParameter $parameter) => 'records' === $parameter->getName() 
+            ->some(fn (\ReflectionParameter $parameter) => $parameter->getName() === 'records'
                 || ($parameter->getType() instanceof \ReflectionNamedType && $parameter->getType()->getName() === Collection::class)
             );
 

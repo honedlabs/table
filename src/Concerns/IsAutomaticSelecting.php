@@ -18,8 +18,6 @@ trait IsAutomaticSelecting
 
     /**
      * Set the automatic select flag.
-     * 
-     * @param bool $select
      */
     public static function automaticallySelect(bool $select = true): void
     {

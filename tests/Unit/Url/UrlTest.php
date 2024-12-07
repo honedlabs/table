@@ -10,7 +10,7 @@ beforeEach(function () {
 it('has an array form', function () {
     expect($this->url->toArray())->toEqual([
         'url' => null,
-        'method' => 'get'
+        'method' => 'get',
     ]);
 });
 
@@ -18,7 +18,7 @@ it('can be made', function () {
     expect(Url::make('https://example.com'))->toBeInstanceOf(Url::class)
         ->toArray()->toEqual([
             'url' => 'https://example.com',
-            'method' => 'get'
+            'method' => 'get',
         ]);
 });
 

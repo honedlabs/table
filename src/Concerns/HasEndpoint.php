@@ -20,8 +20,6 @@ trait HasEndpoint
 
     /**
      * Set the endpoint to be used for all tables.
-     * 
-     * @param string|null $endpoint
      */
     public static function useEndpoint(?string $endpoint = null): void
     {
@@ -30,8 +28,6 @@ trait HasEndpoint
 
     /**
      * Get the endpoint to be used for the table.
-     * 
-     * @return string
      */
     public function getEndpoint(): string
     {

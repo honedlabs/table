@@ -43,11 +43,11 @@ trait Sortable
 
     /**
      * Set the list of sorts to apply to the table.
-     * 
-     * @param array<int, \Honed\Table\Sorts\BaseSort>|null $sorts
+     *
+     * @param  array<int, \Honed\Table\Sorts\BaseSort>|null  $sorts
      * @return void
      */
-    public function setSorts(array|null $sorts)
+    public function setSorts(?array $sorts)
     {
         if (is_null($sorts)) {
             return;
@@ -58,8 +58,7 @@ trait Sortable
 
     /**
      * Configure the default query parameter to use for sorting.
-     * 
-     * @param string $sortName
+     *
      * @return void
      */
     public static function useSortName(string $sortName)
@@ -69,8 +68,7 @@ trait Sortable
 
     /**
      * Configure the default query parameter to use for ordering.
-     * 
-     * @param string $orderName
+     *
      * @return void
      */
     public static function useOrderName(string $orderName)
@@ -80,8 +78,7 @@ trait Sortable
 
     /**
      * Configure the default order to use for sorting.
-     * 
-     * @param string $defaultOrder
+     *
      * @return void
      */
     public static function useDefaultOrder(string $defaultOrder)
@@ -91,7 +88,7 @@ trait Sortable
 
     /**
      * Get the query parameter to use for sorting.
-     * 
+     *
      * @return string
      */
     public function getSortName()
@@ -101,7 +98,7 @@ trait Sortable
 
     /**
      * Get the query parameter to use for ordering.
-     * 
+     *
      * @return string
      */
     public function getOrderName()
@@ -111,7 +108,7 @@ trait Sortable
 
     /**
      * Get the default order to use for sorting if one is not supplied.
-     * 
+     *
      * @return string
      */
     public function getDefaultOrder()
@@ -121,13 +118,13 @@ trait Sortable
 
     /**
      * Get the sorting field to use from the request query parameters.
-     * 
+     *
      * @return string|null
      */
     public function getSortTerm()
     {
         $value = request()->input($this->getSortName());
-        
+
         if (\is_null($value)) {
             return null;
         }
@@ -137,7 +134,7 @@ trait Sortable
 
     /**
      * Get the sorting direction to use from the request query parameters.
-     * 
+     *
      * @return string|null
      */
     public function getOrderTerm()
@@ -153,7 +150,7 @@ trait Sortable
 
     /**
      * Get the sorts to apply to the resource.
-     * 
+     *
      * @return array<int, \Honed\Table\Sorts\BaseSort>
      */
     public function getSorts()
@@ -163,7 +160,7 @@ trait Sortable
 
     /**
      * Get the sort name to use, and direction for the current request.
-     * 
+     *
      * @return array{string,string}
      */
     public function getSortBy()

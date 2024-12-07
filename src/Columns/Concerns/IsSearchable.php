@@ -30,7 +30,7 @@ trait IsSearchable
     /**
      * Set the searchable property quietly.
      *
-     * @param  bool|(\Closure():bool)|null $searchable
+     * @param  bool|(\Closure():bool)|null  $searchable
      */
     public function setSearchable(bool|\Closure|null $searchable): void
     {

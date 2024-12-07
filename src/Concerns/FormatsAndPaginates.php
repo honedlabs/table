@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Columns\BaseColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 trait FormatsAndPaginates
 {
@@ -70,8 +69,7 @@ trait FormatsAndPaginates
 
     /**
      * Configure the default number of items to show per page.
-     * 
-     * @param int $defaultPerPage
+     *
      * @return void
      */
     public static function useDefaultPerPage(int $defaultPerPage)
@@ -81,8 +79,8 @@ trait FormatsAndPaginates
 
     /**
      * Configure the options for the number of items to show per page.
-     * 
-     * @param int|array<int,int> $perPage
+     *
+     * @param  int|array<int,int>  $perPage
      * @return void
      */
     public static function usePerPage(int|array $perPage)
@@ -92,8 +90,8 @@ trait FormatsAndPaginates
 
     /**
      * Configure the default paginator to use.
-     * 
-     * @param string|\Honed\Table\Enums\Paginator $paginator
+     *
+     * @param  string|\Honed\Table\Enums\Paginator  $paginator
      * @return void
      */
     public static function usePaginator(string|Paginator $paginator)
@@ -103,8 +101,7 @@ trait FormatsAndPaginates
 
     /**
      * Configure the query parameter to use for the page number.
-     * 
-     * @param string $pageName
+     *
      * @return void
      */
     public static function usePageName(string $pageName)
@@ -114,8 +111,7 @@ trait FormatsAndPaginates
 
     /**
      * Configure the query parameter to use for the number of items to show.
-     * 
-     * @param string $countName
+     *
      * @return void
      */
     public static function useCountName(string $countName)
@@ -125,7 +121,7 @@ trait FormatsAndPaginates
 
     /**
      * Get the default number of items to show per page.
-     * 
+     *
      * @return int
      */
     public function getDefaultRecordsPerPage()
@@ -135,7 +131,7 @@ trait FormatsAndPaginates
 
     /**
      * Get the options for the number of items to show per page.
-     * 
+     *
      * @return int|array<int,int>
      */
     public function getRecordsPerPage()
@@ -145,7 +141,7 @@ trait FormatsAndPaginates
 
     /**
      * Get the default paginator to use.
-     * 
+     *
      * @return string|\Honed\Table\Enums\Paginator
      */
     public function getPaginatorType()
@@ -155,7 +151,7 @@ trait FormatsAndPaginates
 
     /**
      * Get the query parameter to use for the page number.
-     * 
+     *
      * @return string
      */
     public function getPageName()
@@ -165,7 +161,7 @@ trait FormatsAndPaginates
 
     /**
      * Get the query parameter to use for the number of items to show.
-     * 
+     *
      * @return string
      */
     public function getCountName()
@@ -175,8 +171,7 @@ trait FormatsAndPaginates
 
     /**
      * Get the pagination options for the number of items to show per page.
-     * 
-     * @param int|null $active
+     *
      * @return array<int, array{value: int, active: bool}>
      */
     public function getPaginationCounts(?int $active = null): array
@@ -190,8 +185,6 @@ trait FormatsAndPaginates
 
     /**
      * Get the number of items to show per page from the request query parameters.
-     * 
-     * @return int
      */
     public function getPageCount(): int
     {
@@ -209,9 +202,6 @@ trait FormatsAndPaginates
 
     /**
      * Execute the query and paginate the results.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Contracts\Pagination\Paginator|\Illuminate\Contracts\Pagination\CursorPaginator|\Illuminate\Database\Eloquent\Collection
      */
     public function paginateRecords(Builder $query): Paginator|CursorPaginator|Collection
     {

@@ -30,7 +30,7 @@ trait IsSrOnly
     /**
      * Set the screen reader only property quietly.
      *
-     * @param  bool|(\Closure():bool)|null $srOnly
+     * @param  bool|(\Closure():bool)|null  $srOnly
      */
     public function setSrOnly(bool|\Closure|null $srOnly): void
     {

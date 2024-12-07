@@ -12,7 +12,7 @@ it('has an array form', function () {
         'description' => null,
         'cancel' => null,
         'success' => null,
-        'intent' => null
+        'intent' => null,
     ]);
 });
 
@@ -23,7 +23,6 @@ it('can be made', function () {
             'description' => 'This action cannot be undone.',
             'cancel' => 'Cancel',
             'success' => 'Submit',
-            'intent' => Confirm::Destructive
+            'intent' => Confirm::Destructive,
         ]);
 });
-

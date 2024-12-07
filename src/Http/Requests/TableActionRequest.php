@@ -22,7 +22,7 @@ class TableActionRequest extends FormRequest
                 'only' => ['sometimes', 'array'],
                 'except' => ['sometimes', 'array'],
                 'all' => ['required', 'boolean'],
-                'only.*' => ['sometimes', 'string', 'integer'], 
+                'only.*' => ['sometimes', 'string', 'integer'],
                 'except.*' => ['sometimes', 'string', 'integer'],
             ],
             default => [

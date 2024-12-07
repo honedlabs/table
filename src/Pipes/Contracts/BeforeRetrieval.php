@@ -4,7 +4,4 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipes\Contracts;
 
-interface BeforeRetrieval extends PipelinesTable 
-{
-    
-}
+interface BeforeRetrieval extends PipelinesTable {}

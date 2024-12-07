@@ -43,7 +43,7 @@ trait HasUrl
     /**
      * Get the url using the given closure dependencies.
      *
-     * @param  array<string, mixed> $named
+     * @param  array<string, mixed>  $named
      * @param  array<string, mixed>  $typed
      */
     public function getUrl(array $named = [], array $typed = []): ?string
@@ -53,8 +53,6 @@ trait HasUrl
 
     /**
      * Determine if the class does not have a url.
-     * 
-     * @return bool
      */
     public function missingUrl(): bool
     {
@@ -63,8 +61,6 @@ trait HasUrl
 
     /**
      * Determine if the class has a url.
-     * 
-     * @return bool
      */
     public function hasUrl(): bool
     {

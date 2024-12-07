@@ -59,7 +59,7 @@ trait HasMethod
 
     /**
      * Use the get method for the route, chainable.
-     * 
+     *
      * @return $this
      */
     public function get(): static
@@ -69,7 +69,7 @@ trait HasMethod
 
     /**
      * Use the post method for the route, chainable.
-     * 
+     *
      * @return $this
      */
     public function post(): static
@@ -79,7 +79,7 @@ trait HasMethod
 
     /**
      * Use the put method for the route, chainable.
-     * 
+     *
      * @return $this
      */
     public function put(): static
@@ -89,7 +89,7 @@ trait HasMethod
 
     /**
      * Use the patch method for the route, chainable.
-     * 
+     *
      * @return $this
      */
     public function patch(): static
@@ -99,12 +99,11 @@ trait HasMethod
 
     /**
      * Use the delete method for the route, chainable.
-     * 
+     *
      * @return $this
      */
     public function delete(): static
     {
         return $this->method(Request::METHOD_DELETE);
     }
-
 }

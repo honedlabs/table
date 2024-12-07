@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Filters\Filter;
 use Honed\Table\Filters\Enums\Clause;
+use Honed\Table\Filters\Filter;
 
 beforeEach(function () {
     $this->filter = Filter::make('name');

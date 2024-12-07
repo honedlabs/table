@@ -4,33 +4,33 @@ declare(strict_types=1);
 
 namespace Honed\Table\Confirm;
 
-use Honed\Core\Primitive;
-use Honed\Core\Concerns\HasTitle;
 use Honed\Core\Concerns\HasDescription;
+use Honed\Core\Concerns\HasTitle;
+use Honed\Core\Primitive;
 
 class Confirm extends Primitive
 {
-    use HasTitle;
-    use HasDescription;
     use Concerns\HasCancel;
     use Concerns\HasIntent;
     use Concerns\HasSuccess;
+    use HasDescription;
+    use HasTitle;
 
     /**
      * Create a confirm instance.
-     * 
-     * @param string|(\Closure(mixed...):string)|null $title
-     * @param string|(\Closure(mixed...):string)|null $description
-     * @param string|(\Closure():string)|null $cancel
-     * @param string|(\Closure():string)|null $success
-     * @param string|(\Closure():string)|null $intent
+     *
+     * @param  string|(\Closure(mixed...):string)|null  $title
+     * @param  string|(\Closure(mixed...):string)|null  $description
+     * @param  string|(\Closure():string)|null  $cancel
+     * @param  string|(\Closure():string)|null  $success
+     * @param  string|(\Closure():string)|null  $intent
      */
     public function __construct(
-        string|\Closure $title = null,
-        string|\Closure $description = null,
-        string|\Closure $cancel = null,
-        string|\Closure $success = null,
-        string|\Closure $intent = null,
+        string|\Closure|null $title = null,
+        string|\Closure|null $description = null,
+        string|\Closure|null $cancel = null,
+        string|\Closure|null $success = null,
+        string|\Closure|null $intent = null,
     ) {
         parent::__construct();
         $this->setTitle($title);
@@ -42,19 +42,19 @@ class Confirm extends Primitive
 
     /**
      * Make a confirm instance.
-     * 
-     * @param string|(\Closure(mixed...):string)|null $title
-     * @param string|(\Closure(mixed...):string)|null $description
-     * @param string|(\Closure():string)|null $cancel
-     * @param string|(\Closure():string)|null $success
-     * @param string|(\Closure():string)|null $intent
+     *
+     * @param  string|(\Closure(mixed...):string)|null  $title
+     * @param  string|(\Closure(mixed...):string)|null  $description
+     * @param  string|(\Closure():string)|null  $cancel
+     * @param  string|(\Closure():string)|null  $success
+     * @param  string|(\Closure():string)|null  $intent
      */
     public static function make(
-        string|\Closure $title = null,
-        string|\Closure $description = null,
-        string|\Closure $cancel = null,
-        string|\Closure $success = null,
-        string|\Closure $intent = null,
+        string|\Closure|null $title = null,
+        string|\Closure|null $description = null,
+        string|\Closure|null $cancel = null,
+        string|\Closure|null $success = null,
+        string|\Closure|null $intent = null,
     ): static {
         return resolve(static::class, compact('title', 'description', 'cancel', 'success', 'intent'));
     }

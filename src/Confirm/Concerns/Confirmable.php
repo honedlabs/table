@@ -18,8 +18,8 @@ trait Confirmable
 
     /**
      * Set the properties of the confirm
-     * 
-     * @param string|\Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void)|array<string,mixed> $confirm
+     *
+     * @param  string|\Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void)|array<string,mixed>  $confirm
      * @return $this
      */
     public function confirm(mixed $confirm): static
@@ -42,21 +42,20 @@ trait Confirmable
 
     /**
      * Create a new confirm instance if one is not already set.
-     * 
+     *
      * @internal
-     * @return \Honed\Table\Confirm\Confirm
      */
     public function makeConfirm(): Confirm
     {
         return $this->confirm ??= Confirm::make();
     }
 
-
     /**
      * Override the confirm instance.
      *
      * @internal
-     * @param \Honed\Table\Confirm\Confirm|bool|null $confirm
+     *
+     * @param  \Honed\Table\Confirm\Confirm|bool|null  $confirm
      */
     public function setConfirm($confirm)
     {
@@ -77,7 +76,6 @@ trait Confirmable
         return $this->confirm;
     }
 
-    
     /**
      * Determine if the action is not confirmable.
      *

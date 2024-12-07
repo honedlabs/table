@@ -4,7 +4,6 @@ namespace Workbench\App\Tables;
 
 use Honed\Core\Options\Option;
 use Honed\Table\Actions\BulkAction;
-use Honed\Table\Confirm\Confirm;
 use Honed\Table\Actions\InlineAction;
 use Honed\Table\Actions\PageAction;
 use Honed\Table\Columns\BooleanColumn;
@@ -12,6 +11,7 @@ use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
 use Honed\Table\Columns\NumericColumn;
 use Honed\Table\Columns\TextColumn;
+use Honed\Table\Confirm\Confirm;
 use Honed\Table\Filters\BooleanFilter;
 use Honed\Table\Filters\DateFilter;
 use Honed\Table\Filters\Filter;
@@ -73,7 +73,7 @@ final class ProductTable extends Table
         return [
             InlineAction::make('edit')
                 ->action(fn (Product $product) => $product->update(['name' => 'Inline'])),
-                
+
             InlineAction::make('delete')
                 ->authorize(fn (Product $product) => true)
                 ->action(fn (Product $product) => $product->delete())

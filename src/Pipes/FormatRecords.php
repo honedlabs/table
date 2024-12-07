@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Closure;
-use ArrayAccess;
+use Honed\Table\Actions\InlineAction;
+use Honed\Table\Columns\BaseColumn;
+use Honed\Table\Pipes\Contracts\FormatsRecords;
 use Honed\Table\Table;
 use Illuminate\Support\Collection;
-use Honed\Table\Columns\BaseColumn;
-use Honed\Table\Actions\InlineAction;
-use Honed\Table\Pipes\Contracts\FormatsRecords;
 
 /**
  * @internal
@@ -22,14 +21,15 @@ class FormatRecords implements FormatsRecords
         $columns = $table->getColumns();
         $enforceColumns = $table->enforcesColumns();
         $actions = $table->getInlineActions();
-        
+
         $table->setRecords(
             $table->getRecords()->map(function ($record) use ($columns, $enforceColumns, $actions) {
                 $formattedRecord = $enforceColumns ? [] : $record->toArray();
-                
+
                 // $this->applySelectable($record, $formattedRecord, $table);
                 $this->configureColumns($record, $formattedRecord, $columns);
                 $this->configureActions($record, $formattedRecord, $actions);
+
                 // $this->configureSelectable();
                 return $formattedRecord;
             })
@@ -40,8 +40,8 @@ class FormatRecords implements FormatsRecords
 
     /**
      * Apply the column formatter to this record.
-     * 
-     * @param Collection<BaseColumn> $columns
+     *
+     * @param  Collection<BaseColumn>  $columns
      */
     protected function configureColumns($originalRecord, &$formattedRecord, Collection $columns)
     {

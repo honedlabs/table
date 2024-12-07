@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Columns\BooleanColumn;
 use Honed\Core\Formatters\BooleanFormatter;
+use Honed\Table\Columns\BooleanColumn;
 
 beforeEach(function () {
     $this->column = BooleanColumn::make('name');

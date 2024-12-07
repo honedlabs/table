@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Columns\NumberColumn;
 use Honed\Core\Formatters\NumberFormatter;
+use Honed\Table\Columns\NumberColumn;
 
 beforeEach(function () {
     $this->column = NumberColumn::make('name');

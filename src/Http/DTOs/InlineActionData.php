@@ -8,10 +8,8 @@ final class InlineActionData
 {
     /**
      * Create a transfer object for a bulk action.
-     * 
-     * @param string $table
-     * @param string $name
-     * @param string|int $id
+     *
+     * @param  string  $table
      */
     public function __construct(
         public readonly string|int $table,
@@ -21,13 +19,10 @@ final class InlineActionData
 
     /**
      * Create the transfer object from the request.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @return static
      */
     public static function from(Request $request): static
     {
-        return resolve(static::class, [
+        return resolve(self::class, [
             'table' => $request->string('table'),
             'id' => $request->input('id'),
             'name' => $request->string('name'),

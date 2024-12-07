@@ -8,12 +8,9 @@ final class BulkActionData
 {
     /**
      * Create a transfer object for a bulk action.
-     * 
-     * @param string $table
-     * @param string $name
-     * @param bool $all
-     * @param array<array-key, string|int> $except
-     * @param array<array-key, string|int> $only
+     *
+     * @param  array<array-key, string|int>  $except
+     * @param  array<array-key, string|int>  $only
      */
     public function __construct(
         public readonly string $table,
@@ -25,13 +22,10 @@ final class BulkActionData
 
     /**
      * Create the transfer object from the request.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @return static
      */
     public static function from(Request $request): static
     {
-        return resolve(static::class, [
+        return resolve(self::class, [
             'table' => $request->string('table'),
             'name' => $request->string('name'),
             'only' => $request->input('only', []),

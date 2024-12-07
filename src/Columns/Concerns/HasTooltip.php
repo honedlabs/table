@@ -66,8 +66,6 @@ trait HasTooltip
 
     /**
      * Determine if the column does not have a tooltip.
-     *
-     * @return bool
      */
     public function missingTooltip(): bool
     {
@@ -76,8 +74,6 @@ trait HasTooltip
 
     /**
      * Determine if the column has a tooltip.
-     *
-     * @return bool
      */
     public function hasTooltip(): bool
     {

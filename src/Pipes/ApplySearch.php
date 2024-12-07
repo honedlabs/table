@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipes;
 
-use Closure;
 use Honed\Table\Pipes\Contracts\Searches;
 use Honed\Table\Table;
 

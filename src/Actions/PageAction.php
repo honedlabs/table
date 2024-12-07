@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Honed\Table\Actions;
 
 use Honed\Core\Contracts\HigherOrder;
+use Honed\Core\Contracts\ProxiesHigherOrder;
 use Honed\Table\Url\Concerns\Urlable;
 use Honed\Table\Url\Proxies\HigherOrderUrl;
-use Honed\Core\Contracts\ProxiesHigherOrder;
 
 /**
  * @property-read \Honed\Table\Url\Url $url
@@ -23,9 +23,8 @@ class PageAction extends BaseAction implements ProxiesHigherOrder
 
     /**
      * Dynamically forward calls to the proxies.
-     * 
-     * @param string $property
-     * 
+     *
+     *
      * @throws \Exception
      */
     public function __get(string $property): HigherOrder
@@ -38,7 +37,7 @@ class PageAction extends BaseAction implements ProxiesHigherOrder
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), 
+        return array_merge(parent::toArray(),
             $this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
         );
     }

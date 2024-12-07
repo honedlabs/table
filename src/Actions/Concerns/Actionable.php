@@ -18,8 +18,8 @@ trait Actionable
 
     /**
      * Set the action to apply.
-     * 
-     * @param \Closure|string $action
+     *
+     * @param  \Closure|string  $action
      * @return $this
      */
     public function action($action)
@@ -30,9 +30,16 @@ trait Actionable
     }
 
     /**
+<<<<<<< HEAD
      * Determine whether there is not an action to apply.
-     * 
+     *
+     *
+     * @param  \Closure|string  $action
      * @return bool
+=======
+     * Alias for action
+     * @return $this
+>>>>>>> 273ec095ac1a6c447503fb3d57a814c10354ca4c
      */
     public function missingAction(): bool
     {
@@ -40,9 +47,13 @@ trait Actionable
     }
 
     /**
+<<<<<<< HEAD
      * Determine whether there is an action to apply.
-     * 
-     * @return bool
+     *
+=======
+     * Check whether an action has been set.
+     *
+>>>>>>> 273ec095ac1a6c447503fb3d57a814c10354ca4c
      */
     public function hasAction(): bool
     {
@@ -51,9 +62,8 @@ trait Actionable
 
     /**
      * Set the action to apply.
-     * 
-     * @param \Closure|string|null $action
-     * @return void
+     *
+     * @param  \Closure|string|null  $action
      */
     public function setAction($action): void
     {
@@ -70,7 +80,7 @@ trait Actionable
 
     /**
      * Get the action to apply.
-     * 
+     *
      * @return \Closure|null
      */
     public function getAction()
@@ -80,9 +90,8 @@ trait Actionable
 
     /**
      * Apply the action to the record.
-     * 
-     * @param \Illuminate\Database\Eloquent\Model $record
-     * @return void
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      */
     public function applyAction($record, $modelClass): void
     {

@@ -18,6 +18,6 @@ it('has an array form', function () {
         'label' => 'Test',
         'confirm' => null,
         'deselect' => false,
-        'meta' => []
+        'meta' => [],
     ]);
 });
