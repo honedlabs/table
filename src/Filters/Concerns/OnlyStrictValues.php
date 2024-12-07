@@ -9,17 +9,17 @@ trait OnlyStrictValues
     /**
      * @var bool|(\Closure():bool)
      */
-    protected $onlyStrictValues = false;
+    protected $strict = false;
 
     /**
      * Allow only strict values, chainable.
      *
-     * @param  bool|(\Closure():bool)  $onlyStrictValues
+     * @param  bool|(\Closure():bool)  $strict
      * @return $this
      */
-    public function onlyStrictValues(bool|\Closure $onlyStrictValues = true): static
+    public function strict(bool|\Closure $strict = true): static
     {
-        $this->setOnlyStrictValues($onlyStrictValues);
+        $this->setStrict($strict);
 
         return $this;
     }
@@ -27,22 +27,22 @@ trait OnlyStrictValues
     /**
      * Allow only strict values quietly.
      *
-     * @param  bool|(\Closure():bool)|null  $onlyStrictValues
+     * @param  bool|(\Closure():bool)|null  $strict
      */
-    public function setOnlyStrictValues(bool|\Closure|null $onlyStrictValues): void
+    public function setStrict(bool|\Closure|null $strict): void
     {
-        if (\is_null($onlyStrictValues)) {
+        if (\is_null($strict)) {
             return;
         }
-        $this->onlyStrictValues = $onlyStrictValues;
+        $this->strict = $strict;
     }
 
     /**
      * Determine if the class allows only strict values.
      */
-    public function allowsOnlyStrictValues(): bool
+    public function onlyStrictValues(): bool
     {
-        return (bool) value($this->onlyStrictValues);
+        return (bool) value($this->strict);
     }
 
     /**
@@ -50,6 +50,6 @@ trait OnlyStrictValues
      */
     public function allowsAllValues(): bool
     {
-        return ! $this->allowsOnlyStrictValues();
+        return ! $this->onlyStrictValues();
     }
 }

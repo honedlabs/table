@@ -7,25 +7,25 @@ beforeEach(function () {
 });
 
 it('is not strict by default', function () {
-    expect($this->filter->allowsOnlyStrictValues())->toBeFalse();
+    expect($this->filter->onlyStrictValues())->toBeFalse();
     expect($this->filter->allowsAllValues())->toBeTrue();
 });
 
 it('does not accept null values', function () {
-    $this->filter->setOnlyStrictValues(null);
-    expect($this->filter->allowsOnlyStrictValues())->toBeFalse();
+    $this->filter->setStrict(null);
+    expect($this->filter->onlyStrictValues())->toBeFalse();
     expect($this->filter->allowsAllValues())->toBeTrue();
 });
 
 it('can be set to allow all values', function () {
-    expect($this->filter->onlyStrictValues(true))->toBeInstanceOf(SetFilter::class)
-        ->allowsOnlyStrictValues()->toBeTrue()
+    expect($this->filter->strict(true))->toBeInstanceOf(SetFilter::class)
+        ->onlyStrictValues()->toBeTrue()
         ->allowsAllValues()->toBeFalse();
 });
 
 it('can be set using setter', function () {
-    $this->filter->setOnlyStrictValues(true);
-    expect($this->filter->allowsOnlyStrictValues())->toBeTrue();
+    $this->filter->setStrict(true);
+    expect($this->filter->onlyStrictValues())->toBeTrue();
     expect($this->filter->allowsAllValues())->toBeFalse();
 });
 
