@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Tests;
 
 use Honed\Table\TableServiceProvider;
