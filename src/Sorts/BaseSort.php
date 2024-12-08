@@ -32,7 +32,7 @@ abstract class BaseSort extends Primitive implements Sorts
      * @param  string|\Closure():string  $attribute
      * @param  string|(\Closure():string)|null  $label
      */
-    final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
+    public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
         parent::__construct();
         $this->setAttribute($attribute);
@@ -45,14 +45,11 @@ abstract class BaseSort extends Primitive implements Sorts
      * @param  string|(\Closure():string)  $attribute
      * @param  string|(\Closure():string)|null  $label
      */
-    final public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
+    public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
     {
         return resolve(static::class, compact('attribute', 'label'));
     }
 
-    /**
-     * Apply the sort to the builder based on the current request.
-     */
     public function apply(Builder $builder, ?string $sortBy = null, ?string $direction = null): void
     {
         $this->setActive($this->sorting($sortBy, $direction));
@@ -63,28 +60,43 @@ abstract class BaseSort extends Primitive implements Sorts
         );
     }
 
-    /**
-     * Handle the sort by applying the direction to the builder.
-     */
     public function handle(Builder $builder, ?string $direction = null): void
     {
-        $builder->orderBy($builder->qualifyColumn($this->getAttribute()), $direction);
+        $builder->orderBy($this->getAttribute(), $direction);
     }
 
-    /**
-     * Determine if the sort should be applied.
-     */
-    public function sorting(?string $sortBy, ?string $direction): bool
+    public function getValueFromRequest(string $sortName, string $directionName): array
+    {
+        // Get the raw sort value, ensuring null if empty
+        $sortBy = request()->string($sortName)->toString();
+        $sortBy = $sortBy === '' ? null : $sortBy;
+
+        $sortDirection = null;
+
+        // Extract direction prefix if present
+        if (! \is_null($sortBy) && str($sortBy)->startsWith(['+', '-'])) {
+            $sortDirection = str($sortBy)->startsWith('+') ? 'asc' : 'desc';
+            $sortBy = str($sortBy)->substr(1)->toString();
+            $sortBy = $sortBy === '' ? null : $sortBy;
+        }
+
+        // Get direction from query param or use the one from prefix
+        $direction = request()->string($directionName)->toString();
+        $direction = match (strtolower($direction ?: $sortDirection ?: '')) {
+            'asc' => 'asc',
+            'desc' => 'desc',
+            default => null,
+        };
+
+        return [$sortBy, $direction];
+    }
+
+    public function isSorting(?string $sortBy, ?string $direction): bool
     {
         return $sortBy === $this->getParameterName();
     }
 
-    /**
-     * Retrieve the query parameter name of the sort
-     *
-     * @internal
-     */
-    protected function getParameterName(): string
+    public function getParameterName(): string
     {
         return $this->getAlias() ?? str($this->getAttribute())->afterLast('.')->toString();
     }

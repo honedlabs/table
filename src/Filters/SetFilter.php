@@ -86,4 +86,11 @@ class SetFilter extends BaseFilter
             false => $this->getClause()->apply($builder, $this->getAttribute(), $this->getOperator(), $this->getValue()),
         };
     }
+
+    public function toArray(): array
+    {
+        return \array_merge(parent::toArray(), [
+            'options' => $this->getOptions()
+        ]);
+    }
 }

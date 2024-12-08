@@ -37,7 +37,7 @@ abstract class BaseFilter extends Primitive implements Filters
      * @param  string|(\Closure():string)  $attribute
      * @param  string|(\Closure():string)|null  $label
      */
-    final public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
+    public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
     {
         parent::__construct();
         $this->setAttribute($attribute);
@@ -50,35 +50,22 @@ abstract class BaseFilter extends Primitive implements Filters
      * @param  string|(\Closure():string)  $attribute
      * @param  string|(\Closure():string)|null  $label
      */
-    final public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
+    public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
     {
         return resolve(static::class, compact('attribute', 'label'));
     }
 
-    /**
-     * Retrieve the value of the filter name from the current request.
-     *
-     * @return int|string|array<int,int|string>|null
-     */
     public function getValueFromRequest(): mixed
     {
         return request()->input($this->getParameterName(), null);
     }
 
-    /**
-     * Determine if the filter should be applied.
-     */
     public function isFiltering(mixed $value): bool
     {
         return ! \is_null($value);
     }
 
-    /**
-     * Retrieve the query parameter name of the filter
-     *
-     * @internal
-     */
-    protected function getParameterName(): string
+    public function getParameterName(): string
     {
         return $this->getAlias() ?? str($this->getAttribute())->afterLast('.')->toString();
     }

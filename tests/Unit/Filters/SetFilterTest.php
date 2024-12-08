@@ -113,3 +113,15 @@ it('can be strict about the values', function () {
     $this->filter->setStrict(false);
     expect($this->filter->isFiltering('test3'))->toBeTrue();
 });
+
+it('has an array form', function () {
+    expect($this->filter->toArray())->toEqual([
+        'name' => 'name',
+        'label' => 'Name',
+        'type' => 'filter:set',
+        'isActive' => false,
+        'value' => null,
+        'meta' => [],
+        'options' => [],
+    ]);
+});
