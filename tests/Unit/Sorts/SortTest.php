@@ -1,8 +1,8 @@
 <?php
 
 use Honed\Table\Sorts\Sort;
-use Illuminate\Support\Facades\Request;
 use Honed\Table\Tests\Stubs\Product;
+use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
     $this->sortName = 'sort';
@@ -14,7 +14,6 @@ beforeEach(function () {
     $this->sort = Sort::make($this->sortKey);
     Request::swap(Request::create('/', 'GET', [$this->sortName => $this->sortKey, $this->orderName => $this->order]));
 });
-
 
 it('has a type', function () {
     expect(Sort::make('name'))->toBeInstanceOf(Sort::class)
@@ -32,7 +31,7 @@ it('uses the default direction if none is specified', function () {
                 'direction' => Sort::Descending,
             ],
         ]);
-        
+
     expect($this->sort)
         ->isActive()->toBeTrue()
         ->getActiveDirection()->toBeNull();

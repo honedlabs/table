@@ -11,21 +11,21 @@ use Illuminate\Support\Collection;
 trait HasColumns
 {
     /**
-     * @var Collection<BaseColumn>
+     * @var Collection<\Honed\Table\Columns\BaseColumn>
      */
-    protected Collection $cachedColumns;
+    protected $cachedColumns;
 
     /**
-     * @var array<int, BaseColumn>
+     * @var array<int,\Honed\Table\Columns\BaseColumn>
      */
-    protected array $columns;
+    protected $columns;
 
     /**
      * Set the columns for the table.
      *
-     * @param  array<BaseColumn>|null  $columns
+     * @param  array<int,\Honed\Table\Columns\BaseColumn>|null  $columns
      */
-    protected function setColumns(?array $columns): void
+    public function setColumns(?array $columns): void
     {
         if (\is_null($columns)) {
             return;
@@ -35,9 +35,25 @@ trait HasColumns
     }
 
     /**
+     * Determine if the table has no columns.
+     */
+    public function missingColumns(): bool
+    {
+        return $this->getColumns()->isEmpty();
+    }
+
+    /**
+     * Determine if the table has columns.
+     */
+    public function hasColumns(): bool
+    {
+        return ! $this->missingColumns();
+    }
+
+    /**
      * Get the columns for the table.
      *
-     * @return Collection<BaseColumn>
+     * @return Collection<\Honed\Table\Columns\BaseColumn>
      */
     public function getColumns(): Collection
     {
@@ -48,7 +64,7 @@ trait HasColumns
     /**
      * Get the sortable columns for the table.
      *
-     * @return Collection<BaseColumn>
+     * @return Collection<\Honed\Table\Columns\BaseColumn>
      */
     public function getSortableColumns(): Collection
     {

@@ -35,5 +35,3 @@ it('has alias for `using` as `query`', function () {
         ->toBeInstanceOf(CustomFilter::class)
         ->getQuery()->toBeInstanceOf(Closure::class);
 });
-
-

@@ -16,7 +16,6 @@ trait HasDateClause
     /**
      * Set the clause, chainable.
      *
-     * @param \Honed\Table\Filters\Enums\DateClause|string $clause
      *
      * @return $this
      *
@@ -32,7 +31,6 @@ trait HasDateClause
     /**
      * Set the clause quietly.
      *
-     * @param \Honed\Table\Filters\Enums\DateClause|string|null $clause
      *
      * @throws \ValueError
      */
@@ -47,8 +45,6 @@ trait HasDateClause
 
     /**
      * Determine if the class has a date clause.
-     *
-     * @return bool
      */
     public function missingClause(): bool
     {
@@ -57,8 +53,6 @@ trait HasDateClause
 
     /**
      * Determine if the class has a date clause.
-     *
-     * @return bool
      */
     public function hasClause(): bool
     {
@@ -67,8 +61,6 @@ trait HasDateClause
 
     /**
      * Get the date clause.
-     *
-     * @return \Honed\Table\Filters\Enums\DateClause|null
      */
     public function getClause(): ?DateClause
     {

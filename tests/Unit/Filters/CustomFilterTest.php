@@ -1,9 +1,9 @@
 <?php
 
-use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Filters\CustomFilter;
-use Illuminate\Support\Facades\Request;
+use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
     $request = Request::create('/', 'GET', ['name' => 'something']);
@@ -57,4 +57,3 @@ it('does not apply the filter if there is no query', function () {
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(0);
 });
-

@@ -19,7 +19,7 @@ it('has an `is` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -41,7 +41,7 @@ it('has an `is not` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -63,7 +63,7 @@ it('has an `starts with` clause', function () {
         ->overrideOperator($this->operator)->toBe(Operator::Like)
         ->formatValue(1)->toBe('1%')
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -71,7 +71,7 @@ it('has an `starts with` clause', function () {
                 'type' => 'Basic',
                 'column' => $this->attribute,
                 'operator' => Operator::Like->value,
-                'value' => $this->value . '%',
+                'value' => $this->value.'%',
                 'boolean' => 'and',
             ],
         ]);
@@ -85,7 +85,7 @@ it('has an `ends with` clause', function () {
         ->overrideOperator($this->operator)->toBe(Operator::Like)
         ->formatValue(1)->toBe('%1')
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -93,7 +93,7 @@ it('has an `ends with` clause', function () {
                 'type' => 'Basic',
                 'column' => $this->attribute,
                 'operator' => Operator::Like->value,
-                'value' => '%' . $this->value,
+                'value' => '%'.$this->value,
                 'boolean' => 'and',
             ],
         ]);
@@ -107,7 +107,7 @@ it('has a `contains` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe([1])
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -128,7 +128,7 @@ it('has a `does not contain` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe([1])
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -141,7 +141,6 @@ it('has a `does not contain` clause', function () {
         ]);
 });
 
-
 it('has a `json contains` clause', function () {
     expect(Clause::Json)
         ->statement()->toBe('whereJsonContains')
@@ -150,7 +149,7 @@ it('has a `json contains` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe([1])
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -172,7 +171,7 @@ it('has a `json does not contain` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe([1])
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -194,7 +193,7 @@ it('has a `json length` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -216,7 +215,7 @@ it('has a `json key` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -237,7 +236,7 @@ it('has a `json not key` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -258,7 +257,7 @@ it('has a `json overlaps` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -280,7 +279,7 @@ it('has a `json does not overlap` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -302,7 +301,7 @@ it('has a `full text` clause', function () {
         ->overrideOperator($this->operator)->toBe($this->operator)
         ->formatValue(1)->toBe(1)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -311,7 +310,7 @@ it('has a `full text` clause', function () {
                 'boolean' => 'and',
                 'value' => $this->value,
                 'columns' => [$this->attribute],
-                'options' => []
+                'options' => [],
 
             ],
         ]);
@@ -325,7 +324,7 @@ it('has a `like` clause', function () {
         ->overrideOperator($this->operator)->toBe(Operator::Like)
         ->formatValue(1)->toBe('%1%')
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -333,7 +332,7 @@ it('has a `like` clause', function () {
                 'type' => 'Basic',
                 'column' => $this->attribute,
                 'operator' => Operator::Like->value,
-                'value' => '%' . $this->value . '%',
+                'value' => '%'.$this->value.'%',
                 'boolean' => 'and',
             ],
         ]);

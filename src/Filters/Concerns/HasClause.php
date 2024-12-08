@@ -30,7 +30,6 @@ trait HasClause
     /**
      * Set the clause quietly.
      *
-     * @param \Honed\Table\Filters\Enums\Clause|string|null $clause
      *
      * @throws \ValueError
      */
@@ -45,8 +44,6 @@ trait HasClause
 
     /**
      * Determine if the class does not have a clause.
-     * 
-     * @return bool
      */
     public function missingClause(): bool
     {

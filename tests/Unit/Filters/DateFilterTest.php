@@ -1,10 +1,10 @@
 <?php
 
+use Honed\Table\Filters\DateFilter;
 use Honed\Table\Filters\Enums\DateClause;
 use Honed\Table\Filters\Enums\Operator;
-use Honed\Table\Filters\DateFilter;
-use Illuminate\Support\Facades\Request;
 use Honed\Table\Tests\Stubs\Product;
+use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
     $request = Request::create('/', 'GET', ['created_at' => '2000-01-01']);

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Honed\Table\Sorts;
 
 use Honed\Core\Concerns\IsDefault;
-use Illuminate\Database\Eloquent\Builder;
 use Honed\Table\Filters\Concerns\HasQuery;
+use Illuminate\Database\Eloquent\Builder;
 
 class CustomSort extends BaseSort
 {
-    use IsDefault;
     use HasQuery;
+    use IsDefault;
 
     public function setUp(): void
     {

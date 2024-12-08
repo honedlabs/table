@@ -1,8 +1,8 @@
 <?php
 
 use Honed\Table\Sorts\Sort;
-use Illuminate\Support\Facades\Request;
 use Honed\Table\Tests\Stubs\Product;
+use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
     $this->sortName = 'sort';
@@ -46,7 +46,7 @@ it('differentiates between dot notation attributes', function () {
         ->getValueFromRequest($this->sortName, $this->orderName)->toEqual([
             $this->sortKey, // resolves as just created_at
             $this->order,
-        ]); 
+        ]);
 });
 
 it('has an array form', function () {

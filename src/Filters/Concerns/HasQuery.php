@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Honed\Table\Filters\Concerns;
 
 use Closure;
-use Honed\Table\Exceptions\QueryNotDefined;
 
 trait HasQuery
 {
@@ -16,7 +15,7 @@ trait HasQuery
 
     /**
      * Set the query, chainable.
-     * 
+     *
      * @param  \Closure(mixed...):void  $query
      * @return $this
      */
@@ -69,7 +68,7 @@ trait HasQuery
 
     /**
      * Get the query.
-     * 
+     *
      * @return (\Closure(mixed...):void)|null
      */
     public function getQuery(): ?Closure

@@ -28,4 +28,3 @@ it('can be set using setter', function () {
     expect($this->filter->onlyStrictValues())->toBeTrue();
     expect($this->filter->allowsAllValues())->toBeFalse();
 });
-

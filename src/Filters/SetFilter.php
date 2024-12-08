@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Honed\Table\Filters;
 
 use Honed\Core\Options\Concerns\HasOptions;
-use Honed\Table\Filters\Concerns\HasOperator;
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Database\Eloquent\Builder;
 
 class SetFilter extends BaseFilter
 {
+    use Concerns\HasClause;
+    use Concerns\HasOperator;
     use Concerns\IsMultiple;
     use Concerns\OnlyStrictValues;
-    use Concerns\HasOperator;
-    use Concerns\HasClause;
     use HasOptions;
 
     public function setUp(): void
@@ -39,8 +38,6 @@ class SetFilter extends BaseFilter
 
     /**
      * Determine if the filter should be applied.
-     * 
-     * @return bool
      */
     public function isFiltering(mixed $value): bool
     {
@@ -72,7 +69,7 @@ class SetFilter extends BaseFilter
     public function getValueFromRequest(): mixed
     {
         $input = request()->input($this->getParameterName(), null);
-        if (!\is_null($input) && $this->isMultiple()) {
+        if (! \is_null($input) && $this->isMultiple()) {
             return \str_getcsv($input);
         }
 
@@ -90,7 +87,7 @@ class SetFilter extends BaseFilter
     public function toArray(): array
     {
         return \array_merge(parent::toArray(), [
-            'options' => $this->getOptions()
+            'options' => $this->getOptions(),
         ]);
     }
 }

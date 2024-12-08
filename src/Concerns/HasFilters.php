@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Builder;
 trait HasFilters
 {
     /**
-     * @var array<int, BaseFilter>
+     * @var array<int,\Honed\Table\Filters\BaseFilter>
      */
-    protected array $filters;
+    protected $filters;
 
     /**
-     * @param  array<int, BaseFilter>|null  $filters
+     * @param  array<int,\Honed\Table\Filters\BaseFilter>|null  $filters
      */
     protected function setFilters(?array $filters): void
     {

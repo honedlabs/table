@@ -26,10 +26,9 @@ trait HasDirection
     /**
      * Configure the default direction to use when one is not supplied.
      *
-     * @param  string|null  $direction
      * @throws \InvalidArgumentException
      */
-    public static function useDefaultDirection(string|null $direction = null): void
+    public static function useDefaultDirection(?string $direction = null): void
     {
         if (! \in_array($direction, [self::Ascending, self::Descending, null])) {
             throw new \InvalidArgumentException('Direction must be either asc, desc, or null');
@@ -60,8 +59,6 @@ trait HasDirection
 
     /**
      * Get the default direction.
-     *
-     * @return string
      */
     public static function getDefaultDirection(): string
     {
@@ -97,8 +94,6 @@ trait HasDirection
 
     /**
      * Get the direction
-     *
-     * @return string|null
      */
     public function getDirection(): ?string
     {
@@ -107,8 +102,6 @@ trait HasDirection
 
     /**
      * Determine if the direction is not set
-     *
-     * @return bool
      */
     public function missingDirection(): bool
     {
@@ -117,8 +110,6 @@ trait HasDirection
 
     /**
      * Determine if the direction is set
-     *
-     * @return bool
      */
     public function hasDirection(): bool
     {
@@ -127,8 +118,6 @@ trait HasDirection
 
     /**
      * Alias for `missingDirection`
-     *
-     * @return bool
      */
     public function isAgnostic(): bool
     {
@@ -137,8 +126,6 @@ trait HasDirection
 
     /**
      * Alias for `hasDirection`
-     *
-     * @return bool
      */
     public function isNotAgnostic(): bool
     {
@@ -179,9 +166,10 @@ trait HasDirection
      * Set the active direction
      *
      * @internal
+     *
      * @param  'asc'|'desc'|null  $direction
      */
-    public function setActiveDirection(string|null $direction): void
+    public function setActiveDirection(?string $direction): void
     {
         if (! \in_array($direction, ['asc', 'desc', null])) {
             throw new \InvalidArgumentException('Direction must be either asc, desc, or null');
@@ -194,6 +182,7 @@ trait HasDirection
      * Get the active direction
      *
      * @internal
+     *
      * @return 'asc'|'desc'|null
      */
     public function getActiveDirection(): ?string

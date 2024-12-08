@@ -1,8 +1,8 @@
 <?php
 
 use Honed\Table\Sorts\CustomSort;
-use Illuminate\Support\Facades\Request;
 use Honed\Table\Tests\Stubs\Product;
+use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
     $this->sortName = 'sort';
@@ -13,7 +13,6 @@ beforeEach(function () {
     $this->sort = CustomSort::make($this->sortKey);
     Request::swap(Request::create('/', 'GET', [$this->sortName => $this->sortKey, $this->orderName => $this->order]));
 });
-
 
 it('has a type', function () {
     expect(CustomSort::make('name'))->toBeInstanceOf(CustomSort::class)
@@ -28,7 +27,7 @@ it('does not execute if the query is missing', function () {
 it('uses a custom query', function () {
     expect($this->sort->query(fn ($query, $direction) => $query->orderBy('other_column', $direction)))
         ->toBeInstanceOf(CustomSort::class);
-    
+
     $this->sort->apply($this->builder, $this->sortName, $this->orderName);
     expect($this->builder->getQuery()->orders)
         ->toHaveCount(1)
@@ -38,7 +37,7 @@ it('uses a custom query', function () {
                 'direction' => CustomSort::Ascending,
             ],
         ]);
-        
+
     expect($this->sort)
         ->isActive()->toBeTrue()
         ->getActiveDirection()->toBe(CustomSort::Ascending);

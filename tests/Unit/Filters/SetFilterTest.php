@@ -1,10 +1,10 @@
 <?php
 
 use Honed\Core\Options\Option;
-use Honed\Table\Tests\Stubs\Product;
-use Honed\Table\Filters\SetFilter;
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\SetFilter;
+use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
@@ -97,7 +97,7 @@ it('can use options', function () {
                 'boolean' => 'and',
             ],
         ]);
-    
+
     expect(collect($this->filter->getOptions())->first(fn ($option) => $option->isActive()))->not->toBeNull();
 });
 

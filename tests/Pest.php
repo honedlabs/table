@@ -1,23 +1,33 @@
 <?php
 
-use Honed\Table\Tests\TestCase;
-use Honed\Table\Tests\Stubs\Product;
-use Honed\Table\Tests\Stubs\Category;
+use Honed\Table\Table;
 use Honed\Table\Tests\Stubs\ExampleTable;
+use Honed\Table\Tests\Stubs\Product;
+use Honed\Table\Tests\Stubs\Status;
+use Honed\Table\Tests\TestCase;
+use Illuminate\Support\Str;
 
 uses(TestCase::class)->in(__DIR__);
 
-function table(): ExampleTable
+function exampleTable(): ExampleTable
 {
     return ExampleTable::make();
 }
 
-function product(): Product
+function blankTable(): Table
 {
-    return Product::factory()->create();
+    return Table::make();
 }
 
-function category(): Category
+function product(?string $name = null): Product
 {
-    return Category::factory()->create();
+    return Product::factory()->create([
+        'public_id' => Str::uuid(),
+        'name' => $name ?? fake()->unique()->word(),
+        'description' => fake()->sentence(),
+        'price' => fake()->randomNumber(4),
+        'best_seller' => fake()->boolean(),
+        'status' => fake()->randomElement(Status::cases()),
+        'created_at' => now()->subDays(fake()->randomNumber(2)),
+    ]);
 }

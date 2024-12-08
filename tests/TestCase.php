@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests;
 
-use Inertia\Inertia;
-use Honed\Table\Tests\Stubs\Status;
-use Illuminate\Support\Facades\View;
 use Honed\Table\TableServiceProvider;
-use Illuminate\Support\Facades\Schema;
+use Honed\Table\Tests\Stubs\Status;
 use Illuminate\Database\Schema\Blueprint;
-use Orchestra\Testbench\TestCase as Orchestra;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
+use Inertia\Inertia;
 use Inertia\ServiceProvider as InertiaServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
@@ -23,7 +23,6 @@ class TestCase extends Orchestra
         config()->set('inertia.testing.ensure_pages_exist', false);
         config()->set('inertia.testing.page_paths', [realpath(__DIR__)]);
     }
-
 
     protected function defineDatabaseMigrations()
     {
@@ -38,6 +37,11 @@ class TestCase extends Orchestra
             $table->boolean('best_seller')->default(false);
             $table->timestamps();
         });
+    }
+
+    protected function defineRoutes($router)
+    {
+        $router->get('/', fn () => 'Hello World');
     }
 
     protected function getPackageProviders($app)

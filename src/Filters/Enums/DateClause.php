@@ -24,7 +24,7 @@ enum DateClause: string
         };
     }
 
-    public function formatValue(Carbon|string $value): string|null
+    public function formatValue(Carbon|string $value): ?string
     {
         try {
             $value = $value instanceof Carbon ? $value : Carbon::parse($value);

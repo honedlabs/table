@@ -11,7 +11,6 @@ interface Filters
 
     public function handle(Builder $builder): void;
 
-
     public function isFiltering(mixed $value): bool;
 
     /**
@@ -25,7 +24,6 @@ interface Filters
      * Retrieve the query parameter name of the filter
      *
      * @internal
-     * @return string
      */
     public function getParameterName(): string;
 }

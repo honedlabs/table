@@ -23,7 +23,7 @@ trait HasActions
      *
      * @param  array<int,\Honed\Table\Actions\BaseAction>|null  $actions
      */
-    public function setActions($actions): void
+    public function setActions(?array $actions): void
     {
         if (\is_null($actions)) {
             return;
@@ -33,29 +33,22 @@ trait HasActions
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * Get the actions for the table.
-     *
-     * @internal
-     *
-     * @return array<int, Conquest\Table\Actions\BaseAction>
+     * Determine if the table has no actions.
      */
-    public function definedActions(): array
+    public function missingActions(): bool
     {
-        if (isset($this->actions)) {
-            return $this->actions;
-        }
-
-        if (method_exists($this, 'actions')) {
-            return $this->actions();
-        }
-
-        return [];
+        return $this->getActions()->isEmpty();
     }
 
     /**
->>>>>>> 273ec095ac1a6c447503fb3d57a814c10354ca4c
+     * Determine if the table has actions.
+     */
+    public function hasActions(): bool
+    {
+        return ! $this->missingActions();
+    }
+
+    /**
      * Get all available actions.
      *
      * @return Collection<int,\Honed\Table\Actions\BaseAction>

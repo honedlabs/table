@@ -3,7 +3,6 @@
 namespace Honed\Table\Filters\Enums;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 enum Clause: string
 {

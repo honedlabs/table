@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Url\Url;
 use Honed\Table\Tests\Stubs\Product;
+use Honed\Table\Url\Url;
 
 beforeEach(function () {
     $this->url = Url::make();

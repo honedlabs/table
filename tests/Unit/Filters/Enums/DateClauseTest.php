@@ -16,7 +16,7 @@ it('has a `date` clause', function () {
         ->statement()->toBe('whereDate')
         ->formatValue($this->value)->toBe($this->value)
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -35,7 +35,7 @@ it('has a `day` clause', function () {
         ->statement()->toBe('whereDay')
         ->formatValue($this->value)->toBe('1')
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -54,7 +54,7 @@ it('has a `month` clause', function () {
         ->statement()->toBe('whereMonth')
         ->formatValue($this->value)->toBe('1')
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -73,7 +73,7 @@ it('has a `year` clause', function () {
         ->statement()->toBe('whereYear')
         ->formatValue($this->value)->toBe('2000')
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
@@ -92,7 +92,7 @@ it('has a `time` clause', function () {
         ->statement()->toBe('whereTime')
         ->formatValue($this->value)->toBe('00:00:00')
         ->apply($this->builder, $this->attribute, $this->operator, $this->value);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([

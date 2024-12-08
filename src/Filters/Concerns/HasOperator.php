@@ -27,8 +27,6 @@ trait HasOperator
 
     /**
      * Set the operator quietly.
-     * 
-     * @param \Honed\Table\Filters\Enums\Operator|string|null $operator
      */
     public function setOperator(string|Operator|null $operator): void
     {
@@ -40,8 +38,6 @@ trait HasOperator
 
     /**
      * Get the operator to be used.
-     *
-     * @return \Honed\Table\Filters\Enums\Operator|null
      */
     public function getOperator(): ?Operator
     {
@@ -50,8 +46,6 @@ trait HasOperator
 
     /**
      * Determine if the class has an operator.
-     * 
-     * @return bool
      */
     public function missingOperator(): bool
     {
@@ -60,8 +54,6 @@ trait HasOperator
 
     /**
      * Determine if the class has an operator.
-     * 
-     * @return bool
      */
     public function hasOperator(): bool
     {

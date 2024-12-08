@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Filters\Filter;
 use Honed\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\Filter;
 
 beforeEach(function () {
     $this->filter = Filter::make('name');
@@ -97,4 +97,3 @@ it('has shorthand for `like` operator as `search`', function () {
     expect($this->filter->search())->toBeInstanceOf(Filter::class)
         ->getOperator()->toBe(Operator::Like);
 });
-

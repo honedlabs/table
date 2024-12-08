@@ -27,4 +27,3 @@ it('can be set using setter', function () {
     expect($this->filter->isMultiple())->toBeTrue();
     expect($this->filter->isSingle())->toBeFalse();
 });
-
