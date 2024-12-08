@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Honed\Modal\Tests\Stubs;
+namespace Honed\Table\Tests\Stubs;
 
 use Honed\Table\Table;
 use Honed\Table\Sorts\Sort;

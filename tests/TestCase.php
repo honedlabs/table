@@ -4,86 +4,47 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests;
 
+use Inertia\Inertia;
+use Honed\Table\Tests\Stubs\Status;
+use Illuminate\Support\Facades\View;
 use Honed\Table\TableServiceProvider;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Workbench\App\Providers\WorkbenchServiceProvider;
-use Workbench\Database\Seeders\DatabaseSeeder;
-
-use function Orchestra\Testbench\workbench_path;
+use Inertia\ServiceProvider as InertiaServiceProvider;
 
 class TestCase extends Orchestra
 {
     protected function setUp(): void
     {
         parent::setUp();
+        View::addLocation(__DIR__.'/Stubs');
+        Inertia::setRootView('app');
+        config()->set('inertia.testing.ensure_pages_exist', false);
+        config()->set('inertia.testing.page_paths', [realpath(__DIR__)]);
+    }
 
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Workbench\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
 
-        $migrator = app('migrator');
-        $migrator->run(workbench_path('database/migrations'));
-
-        $this->seed(DatabaseSeeder::class);
+    protected function defineDatabaseMigrations()
+    {
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('public_id')->unique();
+            // $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->unsignedTinyInteger('status')->default(Status::AVAILABLE->value);
+            $table->unsignedInteger('price')->default(0);
+            $table->boolean('best_seller')->default(false);
+            $table->timestamps();
+        });
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            WorkbenchServiceProvider::class,
+            InertiaServiceProvider::class,
             TableServiceProvider::class,
-
         ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-
-        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
-
-        $app['config']->set('database.default', 'testing');
-        $app['config']->set('database.connections.testing', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
-
-        $app['config']->set('workbench', [
-            'start' => '/',
-            'install' => true,
-            'guard' => 'web',
-            'discovers' => [
-                'web' => true,
-                'api' => false,
-                'commands' => false,
-                'components' => false,
-                'views' => false,
-            ],
-            'build' => [
-                'create-sqlite-db',
-                'migrate:fresh --seed',
-            ],
-            'assets' => [],
-            'sync' => [],
-        ]);
-
-        $app['config']->set('inertia', [
-            'testing' => [
-                'ensure_pages_exist' => false,
-                'page_paths' => [],
-                'page_extensions' => [],
-            ],
-        ]);
-    }
-
-    protected function defineRoutes($router)
-    {
-        return require workbench_path('routes/web.php');
-    }
-
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(workbench_path('database/migrations'));
     }
 }
