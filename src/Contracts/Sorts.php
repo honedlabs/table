@@ -10,11 +10,11 @@ interface Sorts
      * Apply the sort to the builder
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param string|null $sortBy The sorting field
-     * @param string|null $direction The sorting direction
+     * @param string $sortName The sorting field
+     * @param string $directionName The sorting direction
      * @return void
      */
-    public function apply(Builder $builder, ?string $sortBy = null, ?string $direction = null): void;
+    public function apply(Builder $builder, string $sortName, string $directionName): void;
 
     /**
      * Handle the sorting operation

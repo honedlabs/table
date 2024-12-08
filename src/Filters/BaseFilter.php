@@ -14,7 +14,6 @@ use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\Transformable;
 use Honed\Core\Concerns\Validatable;
-use Honed\Core\Options\Concerns\HasOptions;
 use Honed\Core\Primitive;
 use Honed\Table\Contracts\Filters;
 

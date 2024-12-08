@@ -9,7 +9,6 @@ use Honed\Core\Concerns\IsDefault;
 class Sort extends BaseSort
 {
     use IsDefault;
-    use Concerns\IsBound;
 
     public function setUp(): void
     {
@@ -18,6 +17,7 @@ class Sort extends BaseSort
 
     public function isSorting(?string $sortBy, ?string $direction): bool
     {
-        return $sortBy === $this->getParameterName() && ($this->hasDirection() ? $direction === $this->getDirection() : true);
+        return parent::isSorting($sortBy, $direction)
+            && ($this->isAgnostic() ? true : $direction === $this->getDirection());
     }
 }

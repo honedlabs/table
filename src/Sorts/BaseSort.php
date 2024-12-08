@@ -50,9 +50,11 @@ abstract class BaseSort extends Primitive implements Sorts
         return resolve(static::class, compact('attribute', 'label'));
     }
 
-    public function apply(Builder $builder, ?string $sortBy = null, ?string $direction = null): void
+    public function apply(Builder $builder, string $sortName, string $directionName): void
     {
-        $this->setActive($this->sorting($sortBy, $direction));
+        [$sort, $direction] = $this->getValueFromRequest($sortName, $directionName);
+        $this->setActive($this->isSorting($sort, $direction));
+        $this->setActiveDirection($direction);
 
         $builder->when(
             $this->isActive(),
@@ -62,7 +64,7 @@ abstract class BaseSort extends Primitive implements Sorts
 
     public function handle(Builder $builder, ?string $direction = null): void
     {
-        $builder->orderBy($this->getAttribute(), $direction);
+        $builder->orderBy($this->getAttribute(), $direction ?? static::getDefaultDirection());
     }
 
     public function getValueFromRequest(string $sortName, string $directionName): array
@@ -101,20 +103,15 @@ abstract class BaseSort extends Primitive implements Sorts
         return $this->getAlias() ?? str($this->getAttribute())->afterLast('.')->toString();
     }
 
-    /**
-     * Get the sort state as an array
-     *
-     * @return array<string,mixed>
-     */
     public function toArray(): array
     {
         return [
             'name' => $this->getParameterName(),
             'label' => $this->getLabel(),
             'type' => $this->getType(),
+            'isActive' => $this->isActive(),
             'meta' => $this->getMeta(),
-            'active' => $this->isActive(),
-            'direction' => $this->getDirection(),
+            ...($this->isAgnostic() ? ['direction' => $this->getActiveDirection()] : []),
         ];
     }
 }
