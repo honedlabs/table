@@ -4,7 +4,7 @@ use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
 use Honed\Table\Filters\Filter;
 use Illuminate\Support\Facades\Request;
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
     Request::swap(Request::create('/', 'GET', ['name' => 'test']));

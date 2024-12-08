@@ -1,7 +1,7 @@
 <?php
 
 use Honed\Core\Options\Option;
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Filters\SetFilter;
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;

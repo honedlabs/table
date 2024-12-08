@@ -2,7 +2,7 @@
 
 use Honed\Table\Sorts\CustomSort;
 use Illuminate\Support\Facades\Request;
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
     $this->sortName = 'sort';

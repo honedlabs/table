@@ -1,7 +1,7 @@
 <?php
 
 use Honed\Table\Actions\InlineAction;
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
     $this->action = InlineAction::make('test');

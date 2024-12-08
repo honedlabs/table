@@ -11,7 +11,7 @@ use Honed\Table\Filters\Filter;
 use Workbench\App\Enums\Status;
 use Honed\Table\Confirm\Confirm;
 use Honed\Table\Sorts\CustomSort;
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Filters\SetFilter;
 use Honed\Table\Actions\BulkAction;
 use Honed\Table\Actions\PageAction;

@@ -2,7 +2,7 @@
 
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
     $this->operator = Operator::Equal;

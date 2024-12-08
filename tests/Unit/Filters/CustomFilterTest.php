@@ -1,6 +1,6 @@
 <?php
 
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Filters\CustomFilter;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Database\Eloquent\Builder;

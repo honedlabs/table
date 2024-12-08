@@ -4,7 +4,7 @@ use Honed\Table\Filters\Enums\DateClause;
 use Honed\Table\Filters\Enums\Operator;
 use Honed\Table\Filters\DateFilter;
 use Illuminate\Support\Facades\Request;
-use Workbench\App\Models\Product;
+use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
     $request = Request::create('/', 'GET', ['created_at' => '2000-01-01']);
