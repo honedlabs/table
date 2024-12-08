@@ -33,7 +33,7 @@ it('does not accept null actions', function () {
     expect($this->action->hasAction())->toBeFalse();
 });
 
-class Invokable
+class ActionableTestClass
 {
     public function __invoke()
     {
@@ -42,7 +42,7 @@ class Invokable
 }
 
 it('accepts invokable class actions', function () {
-    expect($this->action->action(Invokable::class))->toBeInstanceOf(InlineAction::class)
+    expect($this->action->action(ActionableTestClass::class))->toBeInstanceOf(InlineAction::class)
         ->hasAction()->toBeTrue();
 });
 

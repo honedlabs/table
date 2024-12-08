@@ -2,14 +2,17 @@
 
 use Honed\Table\Sorts\Sort;
 use Illuminate\Support\Facades\Request;
+use Workbench\App\Models\Product;
 
 beforeEach(function () {
     $this->sortName = 'sort';
     $this->orderName = 'order';
     $this->sortKey = 'created_at';
     $this->order = 'asc';
-    Request::swap(Request::create('/', 'GET', [$this->sortName => $this->sortKey, $this->orderName => $this->order]));
+    $this->builder = Product::query();
+    Sort::useDescending();
     $this->sort = Sort::make($this->sortKey);
+    Request::swap(Request::create('/', 'GET', [$this->sortName => $this->sortKey, $this->orderName => $this->order]));
 });
 
 it('can be instantiated', function () {
@@ -56,4 +59,36 @@ it('has an array form', function () {
         'meta' => [],
         'direction' => null, // has a direction field as it is agnostic
     ]);
+});
+
+it('can apply the filter to a query', function () {
+    $this->sort->apply($this->builder, $this->sortName, $this->orderName);
+    expect($this->builder->getQuery()->orders)
+        ->toHaveCount(1)
+        ->toEqual([
+            [
+                'column' => $this->sortKey,
+                'direction' => Sort::Ascending,
+            ],
+        ]);
+    expect($this->sort)
+        ->isActive()->toBeTrue()
+        ->getActiveDirection()->toBe(Sort::Ascending);
+});
+
+it('can extract a direction from the sort name', function () {
+    Request::swap(Request::create('/', 'GET', [$this->sortName => '-'.$this->sortKey]));
+    $this->sort->apply($this->builder, $this->sortName, $this->orderName);
+    expect($this->builder->getQuery()->orders)
+        ->toHaveCount(1)
+        ->toEqual([
+            [
+                'column' => $this->sortKey,
+                'direction' => Sort::Descending,
+            ],
+        ]);
+
+    expect($this->sort)
+        ->isActive()->toBeTrue()
+        ->getActiveDirection()->toBe(Sort::Descending);
 });

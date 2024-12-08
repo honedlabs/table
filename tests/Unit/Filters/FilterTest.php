@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Request;
 use Workbench\App\Models\Product;
 
 beforeEach(function () {
-    $request = Request::create('/', 'GET', ['name' => 'test']);
-    Request::swap($request);
+    Request::swap(Request::create('/', 'GET', ['name' => 'test']));
     $this->filter = Filter::make('name');
     $this->builder = Product::query();
 });
