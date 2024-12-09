@@ -5,31 +5,32 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Exception;
+use Honed\Core\Primitive;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Honed\Table\Pipes\Paginate;
+use Honed\Table\Pipes\ApplySorts;
+use Illuminate\Pipeline\Pipeline;
 use Honed\Core\Concerns\Encodable;
+use Honed\Table\Pipes\ApplySearch;
+use Illuminate\Support\Collection;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Columns\BaseColumn;
+use Honed\Table\Pipes\ApplyFilters;
+use Honed\Table\Pipes\ApplyToggles;
 use Honed\Core\Concerns\Inspectable;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
-use Honed\Core\Exceptions\MissingRequiredAttributeException;
-use Honed\Core\Primitive;
-use Honed\Table\Actions\BulkAction;
-use Honed\Table\Actions\InlineAction;
-use Honed\Table\Http\DTOs\BulkActionData;
-use Honed\Table\Http\DTOs\InlineActionData;
-use Honed\Table\Http\Requests\TableActionRequest;
-use Honed\Table\Pipes\ApplyBeforeRetrieval;
-use Honed\Table\Pipes\ApplyFilters;
-use Honed\Table\Pipes\ApplySearch;
-use Honed\Table\Pipes\ApplySorts;
-use Honed\Table\Pipes\ApplyToggles;
 use Honed\Table\Pipes\FormatRecords;
-use Honed\Table\Pipes\Paginate;
 use Honed\Table\Pipes\SelectRecords;
-use Illuminate\Database\Eloquent\Builder;
+use Honed\Table\Actions\InlineAction;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Collection;
+use Honed\Table\Http\DTOs\BulkActionData;
+use Illuminate\Database\Eloquent\Builder;
+use Honed\Table\Http\DTOs\InlineActionData;
+use Honed\Table\Pipes\ApplyBeforeRetrieval;
+use Honed\Table\Http\Requests\TableActionRequest;
+use Honed\Core\Exceptions\MissingRequiredAttributeException;
 
 class Table extends Primitive
 {
@@ -37,8 +38,8 @@ class Table extends Primitive
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasEndpoint;
-    use Concerns\HasFilters;
-    use Concerns\IsAutomaticSelecting;
+    use Concerns\Filterable;
+    use Concerns\Extractable;
     use Concerns\Resourceful;
     use Concerns\Searchable;
     use Concerns\Selectable;
@@ -46,7 +47,7 @@ class Table extends Primitive
     use Concerns\Toggleable;
     use Encodable;
     use Inspectable;
-    use IsAnonymous;
+    use IsAnonymous; // Anonymize
     use RequiresKey;
 
     /**
@@ -123,7 +124,7 @@ class Table extends Primitive
 
     public function toArray()
     {
-        $this->pipeline();
+        $this->configureTableForCurrentRequest();
 
         return [
             /* The ID of this table, used to deserialize it for actions */
@@ -166,25 +167,52 @@ class Table extends Primitive
      *
      * @internal
      */
-    protected function pipeline(): void
+    protected function configureTableForCurrentRequest(): void
     {
         if ($this->hasRecords()) {
             return;
         }
 
-        app(Pipeline::class)->send($this)
-            ->through([
-                ApplyToggles::class,
-                ApplyFilters::class,
-                ApplySearch::class,
-                ApplySorts::class,
-                SelectRecords::class,
-                ApplyBeforeRetrieval::class,
-                Paginate::class,
-                FormatRecords::class,
-            ])
-            ->via('handle')
-            ->thenReturn();
+        $this->configureSearchColumns();
+        $this->configureToggleableColumns();
+        // $this->filterQuery($this->getQuery());
+        // $this->sortQuery($this->getQuery());
+        // $this->searchQuery($this->getQuery());
+        // $this->selectQuery($this->getQuery());
+        // $this->beforeRetrievingRecords($this->getQuery());
+        // $this->formatAndPaginateRecords();
+
+        // app(Pipeline::class)->send($this)
+        //     ->through([
+        //         ApplyToggles::class,
+        //         ApplyFilters::class,
+        //         ApplySearch::class,
+        //         ApplySorts::class,
+        //         SelectRecords::class,
+        //         ApplyBeforeRetrieval::class,
+        //         Paginate::class,
+        //         FormatRecords::class,
+        //     ])
+        //     ->via('handle')
+        //     ->thenReturn();
+    }
+
+    protected function configureSearchColumns(): void
+    {
+        $searchProperty = (array) $this->getSearch();
+
+        $searchColumns = $this->getColumns()
+            ->filter(static fn (BaseColumn $column): bool => $column->isSearchable())
+            ->pluck('name')
+            ->all();
+
+        // Override the search property with the unique combination of the property and columns
+        $this->setSearch(\array_unique([...$searchProperty, ...$searchColumns]));
+    }
+
+    protected function configureToggleableColumns(): void
+    {
+
     }
 
     /**

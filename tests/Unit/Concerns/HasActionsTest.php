@@ -22,7 +22,9 @@ it('can set actions', function () {
         InlineAction::make('test'),
     ]);
 
-    expect($this->blank->getActions())->toHaveCount(1);
+    expect($this->blank->getActions())
+        ->toBeCollection()
+        ->toHaveCount(1);
 });
 
 it('rejects null actions', function () {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
+use Honed\Core\Concerns\IsStrict;
 use Honed\Core\Options\Concerns\HasOptions;
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
@@ -14,7 +15,7 @@ class SetFilter extends BaseFilter
     use Concerns\HasClause;
     use Concerns\HasOperator;
     use Concerns\IsMultiple;
-    use Concerns\OnlyStrictValues;
+    use IsStrict;
     use HasOptions;
 
     public function setUp(): void
@@ -58,7 +59,7 @@ class SetFilter extends BaseFilter
         }
 
         // If it not strict about the values, then filtering is true
-        return $isFiltering || $this->allowsAllValues();
+        return $isFiltering || $this->isNotStrict();
     }
 
     /**

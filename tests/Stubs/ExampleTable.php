@@ -21,7 +21,7 @@ use Honed\Table\Sorts\CustomSort;
 use Honed\Table\Sorts\Sort;
 use Honed\Table\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Workbench\App\Enums\Status;
+use Honed\Table\Tests\Stubs\Status;
 
 class ExampleTable extends Table
 {
@@ -53,8 +53,9 @@ class ExampleTable extends Table
     public function filters()
     {
         return [
-            Filter::make('price')->gt(),
-            SetFilter::make('status')->options(Status::cases())->strict(),
+            Filter::make('price', 'Max')->alias('max')->lte(),
+            Filter::make('price', 'Min')->alias('min')->gt(),
+            // SetFilter::make('status')->options(Status::cases())->strict(),
             CustomFilter::make('soon')->using(fn (Builder $query, $value) => $query->where('status', Status::COMING_SOON)),
             DateFilter::make('created_at', 'Year')->alias('year')->year(),
         ];

@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Honed\Table\Sorts\BaseSort;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+
 trait Sortable
 {
     /**
@@ -42,7 +47,7 @@ trait Sortable
     protected static $useDefaultOrder = 'asc';
 
     /**
-     * Set the list of sorts to apply to the table.
+     * Set the list of sorts to apply to a query.
      *
      * @param  array<int, \Honed\Table\Sorts\BaseSort>|null  $sorts
      * @return void
@@ -151,11 +156,11 @@ trait Sortable
     /**
      * Get the sorts to apply to the resource.
      *
-     * @return array<int, \Honed\Table\Sorts\BaseSort>
+     * @return Collection<\Honed\Table\Sorts\BaseSort>
      */
-    public function getSorts()
+    public function getSorts(): Collection
     {
-        return $this->inspect('sorts', []);
+        return collect($this->inspect('sorts', []));
     }
 
     /**
@@ -168,4 +173,54 @@ trait Sortable
         // Check if signed, and remove the +- terms from it -> TODO
         return [$this->getSortTerm(), $this->getOrderTerm()];
     }
+
+    /**
+     * Retrieve the sort value and direction from the current request.
+     *
+     * @param  \Illuminate\Http\Request|null  $request
+     * @return array{string|null,'asc'|'desc'|null} [sort field, direction]
+     */
+    public function getValueFromRequest(Request $request = null): array
+    {
+        $request = $request ?? request();
+
+        // Get the raw sort value, ensuring null if empty
+        $sortBy = $request->string($this->getSortName())->toString();
+        $sortBy = $sortBy === '' ? null : $sortBy;
+
+        $sortDirection = null;
+
+        // Extract direction prefix if present
+        if (! \is_null($sortBy) && str($sortBy)->startsWith(['+', '-'])) {
+            $sortDirection = str($sortBy)->startsWith('+') ? 'asc' : 'desc';
+            $sortBy = str($sortBy)->substr(1)->toString();
+            $sortBy = $sortBy === '' ? null : $sortBy;
+        }
+
+        // Get direction from query param or use the one from prefix
+        $direction = $request->string($this->getOrderName())->toString();
+        $direction = match (strtolower($direction ?: $sortDirection ?: '')) {
+            'asc' => 'asc',
+            'desc' => 'desc',
+            default => null,
+        };
+
+        return [$sortBy, $direction];
+    }
+
+    /**
+     * Apply the filters to a query using the current request
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $builder
+     * @return void
+     */
+    public function sortQuery(Builder $builder): void
+    {
+        [$sortBy, $direction] = $this->getValueFromRequest();
+        // Get the column sorts as well as column
+        
+        $this->getSorts()
+            ->each(static fn (BaseSort $sort) => $sort->apply($builder, $sortBy, $direction));
+    }
+
 }

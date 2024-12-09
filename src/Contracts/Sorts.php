@@ -30,15 +30,6 @@ interface Sorts
     public function isSorting(?string $sortBy, ?string $direction): bool;
 
     /**
-     * Retrieve the sort value and direction from the current request.
-     *
-     * @param  string  $sortName  The query parameter name for the sort field.
-     * @param  string  $directionName  The query parameter name for the sort direction.
-     * @return array{string|null,'asc'|'desc'|null} [sort field, direction]
-     */
-    public function getValueFromRequest(string $sortName, string $directionName): array;
-
-    /**
      * Retrieve the query parameter name of the sort
      *
      * @internal

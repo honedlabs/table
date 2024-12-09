@@ -12,19 +12,19 @@ use Illuminate\Database\Eloquent\Builder;
 trait Searchable
 {
     /**
-     * @var string|array
+     * @var string|array<int,string>
      */
     protected $search;
 
     /**
      * @var string
      */
-    protected $searchAs;
+    protected $searchName;
 
     /**
      * @var string
      */
-    protected static $globalSearchAs = 'search';
+    protected static $useSearchName = 'search';
 
     /**
      * @var bool
@@ -34,17 +34,27 @@ trait Searchable
     /**
      * @var bool
      */
-    protected static $globalScout = false;
+    protected static $useScout = false;
 
     /**
      * Configure the default search query parameter to use for all tables.
      *
-     * @param  string|array<int,string>  $searchAs
+     * @param  string  $search
      * @return void
      */
-    public static function setSearchAs($searchAs)
+    public static function useSearchName(string $search)
     {
-        static::$globalSearchAs = $searchAs;
+        static::$useSearchName = $search;
+    }
+
+    /**
+     * Get the default search query parameter name.
+     *
+     * @return string
+     */
+    public static function getDefaultSearchName(): string
+    {
+        return static::$useSearchName;
     }
 
     /**
@@ -52,19 +62,29 @@ trait Searchable
      *
      * @return void
      */
-    public static function enableScout(bool $scout = true)
+    public static function useScout(bool $scout = true)
     {
-        static::$globalScout = $scout;
+        static::$useScout = $scout;
+    }
+
+    /**
+     * Determine whether to use Laravel Scout for searching.
+     *
+     * @return bool
+     */
+    public static function usesScout(): bool
+    {
+        return static::$useScout;
     }
 
     /**
      * Get the columns to use for searching.
      *
-     * @return string|array<int,string>|null
+     * @return string|array<int,string>
      */
-    public function getSearch()
+    public function getSearch(): string|array
     {
-        return $this->inspect('search', null);
+        return $this->inspect('search', []);
     }
 
     /**
@@ -72,9 +92,9 @@ trait Searchable
      *
      * @return string
      */
-    public function getSearchAs()
+    public function getSearchName()
     {
-        return $this->inspect('searchAs', static::$globalSearchAs);
+        return $this->inspect('searchName', static::getDefaultSearchName());
     }
 
     /**
@@ -84,7 +104,7 @@ trait Searchable
      */
     public function isScoutSearch()
     {
-        return $this->inspect('scout', static::$globalScout);
+        return $this->inspect('scout', static::usesScout());
     }
 
     /**
@@ -102,7 +122,7 @@ trait Searchable
      *
      * @return bool
      */
-    public function searching()
+    public function isSearching()
     {
         return filled($this->getSearch()) && (bool) $this->getSearchTerm();
     }
@@ -112,9 +132,9 @@ trait Searchable
      *
      * @return void
      */
-    protected function applySearch(Builder $builder)
+    protected function searchQuery(Builder $builder)
     {
-        if (! $this->searching()) {
+        if (! $this->isSearching()) {
             return;
         }
 

@@ -50,10 +50,9 @@ abstract class BaseSort extends Primitive implements Sorts
         return resolve(static::class, compact('attribute', 'label'));
     }
 
-    public function apply(Builder $builder, string $sortName, string $orderName): void
+    public function apply(Builder $builder, string $sortBy, string $direction): void
     {
-        [$sort, $direction] = $this->getValueFromRequest($sortName, $orderName);
-        $this->setActive($this->isSorting($sort, $direction));
+        $this->setActive($this->isSorting($sortBy, $direction));
         $this->setActiveDirection($direction);
 
         $builder->when(
@@ -65,32 +64,6 @@ abstract class BaseSort extends Primitive implements Sorts
     public function handle(Builder $builder, ?string $direction = null): void
     {
         $builder->orderBy($this->getAttribute(), $direction ?? static::getDefaultDirection());
-    }
-
-    public function getValueFromRequest(string $sortName, string $orderName): array
-    {
-        // Get the raw sort value, ensuring null if empty
-        $sortBy = request()->string($sortName)->toString();
-        $sortBy = $sortBy === '' ? null : $sortBy;
-
-        $sortDirection = null;
-
-        // Extract direction prefix if present
-        if (! \is_null($sortBy) && str($sortBy)->startsWith(['+', '-'])) {
-            $sortDirection = str($sortBy)->startsWith('+') ? 'asc' : 'desc';
-            $sortBy = str($sortBy)->substr(1)->toString();
-            $sortBy = $sortBy === '' ? null : $sortBy;
-        }
-
-        // Get direction from query param or use the one from prefix
-        $direction = request()->string($orderName)->toString();
-        $direction = match (strtolower($direction ?: $sortDirection ?: '')) {
-            'asc' => 'asc',
-            'desc' => 'desc',
-            default => null,
-        };
-
-        return [$sortBy, $direction];
     }
 
     public function isSorting(?string $sortBy, ?string $direction): bool
