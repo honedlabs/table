@@ -1,5 +1,5 @@
-# Honed\Core
-Honed\Core is a fullstack datatable and search query builder package for Laravel, with a companion Vue frontend composable using the InertiaJS HTTP protocol specification. It provides an elegant API to define tables, columns, actions and refiners for your data.
+# Table
+Honed is a fullstack datatable and search query builder package for Laravel, with a companion Vue frontend composable using the InertiaJS HTTP protocol specification. It provides an elegant API to define tables, columns, actions and refiners for your data.
 
 ## Table of Contents
 - [Installation](#installation)
