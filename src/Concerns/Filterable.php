@@ -16,12 +16,12 @@ trait Filterable
     protected $filters;
 
     /**
-     * Set the list of filters to apply a query.
+     * Set the list of filters to apply to a query.
      *
      * @param  array<int, \Honed\Table\Filters\BaseFilter>|null  $filters
      * @return void
      */
-    public function setFilters(?array $filters)
+    public function setFilters(?array $filters): void
     {
         if (\is_null($filters)) {
             return;

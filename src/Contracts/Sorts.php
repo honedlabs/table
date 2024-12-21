@@ -9,10 +9,10 @@ interface Sorts
     /**
      * Apply the sort to the builder
      *
-     * @param  string  $sortName  The sorting field
-     * @param  string  $directionName  The sorting direction
+     * @param  string|null  $sortBy  The sorting field
+     * @param  string|null  $direction  The sorting direction
      */
-    public function apply(Builder $builder, string $sortName, string $directionName): void;
+    public function apply(Builder $builder, string $sortBy, string $direction = 'asc'): void;
 
     /**
      * Handle the sorting operation

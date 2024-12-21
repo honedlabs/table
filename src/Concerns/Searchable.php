@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -110,11 +111,14 @@ trait Searchable
     /**
      * Get the search term from the request query parameters.
      *
+     * @param  \Illuminate\Http\Request|null  $request
      * @return string|null
      */
-    public function getSearchTerm()
+    public function getSearchParameters(Request $request = null)
     {
-        return request()->input($this->getSearchAs(), null);
+        $request = $request ?? request();
+
+        return $request->input($this->getSearchAs(), null);
     }
 
     /**
@@ -124,7 +128,7 @@ trait Searchable
      */
     public function isSearching()
     {
-        return filled($this->getSearch()) && (bool) $this->getSearchTerm();
+        return filled($this->getSearch()) && (bool) $this->getSearchParameters();
     }
 
     /**
@@ -138,9 +142,11 @@ trait Searchable
             return;
         }
 
+        $term = $this->getSearchParameters();
+
         if ($this->isScoutSearch()) {
             // @phpstan-ignore-next-line
-            $builder->search($this->getSearchTerm());
+            $builder->search($term);
 
             return;
         }
@@ -148,7 +154,7 @@ trait Searchable
         $builder->whereAny(
             $this->getSearch(),
             'LIKE',
-            "%{$this->getSearchTerm()}%"
+            "%{$term}%"
         );
     }
 }

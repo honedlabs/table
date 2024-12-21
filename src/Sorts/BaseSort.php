@@ -50,7 +50,7 @@ abstract class BaseSort extends Primitive implements Sorts
         return resolve(static::class, compact('attribute', 'label'));
     }
 
-    public function apply(Builder $builder, string $sortBy, string $direction): void
+    public function apply(Builder $builder, string|null $sortBy, string|null $direction = 'asc'): void
     {
         $this->setActive($this->isSorting($sortBy, $direction));
         $this->setActiveDirection($direction);

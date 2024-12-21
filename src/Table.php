@@ -175,26 +175,12 @@ class Table extends Primitive
 
         $this->configureSearchColumns();
         $this->configureToggleableColumns();
-        // $this->filterQuery($this->getQuery());
-        // $this->sortQuery($this->getQuery());
-        // $this->searchQuery($this->getQuery());
+        $this->filterQuery($this->getQuery());
+        $this->sortQuery($this->getQuery());
+        $this->searchQuery($this->getQuery());
         // $this->selectQuery($this->getQuery());
         // $this->beforeRetrievingRecords($this->getQuery());
         // $this->formatAndPaginateRecords();
-
-        // app(Pipeline::class)->send($this)
-        //     ->through([
-        //         ApplyToggles::class,
-        //         ApplyFilters::class,
-        //         ApplySearch::class,
-        //         ApplySorts::class,
-        //         SelectRecords::class,
-        //         ApplyBeforeRetrieval::class,
-        //         Paginate::class,
-        //         FormatRecords::class,
-        //     ])
-        //     ->via('handle')
-        //     ->thenReturn();
     }
 
     protected function configureSearchColumns(): void
@@ -212,7 +198,19 @@ class Table extends Primitive
 
     protected function configureToggleableColumns(): void
     {
+        $cols = $this->getToggledColumns(); // names
+        
+        if (empty($cols)) {
+            return;
+        }
 
+        $this->getColumns()->each(function (BaseColumn $column) use ($cols) {
+            if (\in_array($column->getName(), $cols)) {
+                $column->setActive(true);
+            } else {
+                $column->setActive(false);
+            }
+        });
     }
 
     /**

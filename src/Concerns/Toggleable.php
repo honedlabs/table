@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Honed\Table\Columns\BaseColumn;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Cookie;
 
 trait Toggleable
@@ -21,56 +23,59 @@ trait Toggleable
     /**
      * @var int
      */
-    protected static $useDuration = 60 * 24 * 30 * 365; // 1 year
+    protected static $cookieDuration = 60 * 24 * 30 * 365; // 1 year
 
     /**
      * @var string
      */
-    protected $toggleName;
+    protected $toggled;
 
     /**
      * @var string
      */
-    protected static $useToggleName = 'cols';
+    protected static $toggledName = 'cols';
 
     /**
      * @var bool
      */
-    protected $toggleable;
+    protected $toggle;
 
     /**
      * @var bool
      */
-    protected static $useColumnToggle = false;
+    protected static $defaultToggle = false;
 
     /**
      * Configure the default duration of the cookie to use for all tables.
      *
+     * @param  int  $seconds The duration in seconds
      * @return void
      */
-    public static function useDuration(int $duration)
+    public static function cookieDuration(int $seconds): void
     {
-        static::$useDuration = $duration;
+        static::$cookieDuration = $seconds;
     }
 
     /**
-     * Configure the default query parameter to use for toggling columns.
+     * Configure the name of the query parameter to use for toggling columns.
      *
+     * @param  string  $name The name of the query parameter
      * @return void
      */
-    public static function useToggleName(string $toggleName)
+    public static function toggledName(string $name): void
     {
-        static::$useToggleName = $toggleName;
+        static::$toggledName = $name;
     }
 
     /**
      * Configure whether to enable toggling of columns for all tables by default.
      *
+     * @param  bool  $toggle Whether to enable toggling of columns
      * @return void
      */
-    public static function useColumnToggle(bool $toggle = true)
+    public static function alwaysToggleable(bool $toggle = true): void
     {
-        static::$useColumnToggle = $toggle;
+        static::$defaultToggle = $toggle;
     }
 
     /**
@@ -78,7 +83,7 @@ trait Toggleable
      *
      * @return string
      */
-    public function getCookie()
+    public function getCookieName(): string
     {
         return $this->inspect('cookie', $this->getDefaultCookie());
     }
@@ -88,11 +93,11 @@ trait Toggleable
      *
      * @return string
      */
-    protected function getDefaultCookie()
+    public function getDefaultCookie(): string
     {
         return str(class_basename($this))
-            ->slug()
-            ->append('_cols')
+            ->lower()
+            ->kebab()
             ->toString();
     }
 
@@ -103,7 +108,7 @@ trait Toggleable
      */
     public function getDuration()
     {
-        return $this->inspect('duration', static::$useDuration);
+        return $this->inspect('duration', static::$cookieDuration);
     }
 
     /**
@@ -111,9 +116,9 @@ trait Toggleable
      *
      * @return string
      */
-    public function getToggleName()
+    public function getToggleName(): string
     {
-        return $this->inspect('toggleName', static::$useToggleName);
+        return $this->inspect('toggle', static::$toggledName);
     }
 
     /**
@@ -121,9 +126,9 @@ trait Toggleable
      *
      * @return bool
      */
-    public function isToggleable()
+    public function isToggleable(): bool
     {
-        return (bool) $this->inspect('toggleable', static::$useColumnToggle);
+        return (bool) $this->inspect('toggle', static::$defaultToggle);
     }
 
     /**
@@ -131,62 +136,58 @@ trait Toggleable
      *
      * @return bool
      */
-    public function isNotToggleable()
+    public function isNotToggleable(): bool
     {
         return ! $this->isToggleable();
     }
 
     /**
-     * Get the query parameter to use for toggling columns from the request query parameters.
-     *
-     * @return array<int,string>|null
-     */
-    public function getToggledColumnsTerm()
-    {
-        $value = request()->input($this->getToggleName());
-
-        if (is_null($value)) {
-            return null;
-        }
-
-        return \array_filter(\explode(',', (string) $value));
-    }
-
-    /**
-     * Encode the data to be stored in the cookie.
+     * Update the cookie with the new data.
      *
      * @param  array<int,string>  $data
      */
-    public function encodeCookie(array $data): void
+    public function setCookie(array $data): void
     {
-        Cookie::queue($this->getCookie(), json_encode($data), $this->getDuration());
+        Cookie::queue($this->getCookieName(), \json_encode($data), $this->getDuration());
     }
 
     /**
-     * Decode the data stored in the cookie.
+     * Get the data stored in the cookie.
      *
      * @return array<int,string>|null
      */
-    public function decodeCookie(): ?array
+    public function getCookie(): ?array
     {
-        return json_decode(request()->cookie($this->getCookie(), null), true);
+        return \json_decode(request()->cookie($this->getCookieName(), null), true);
     }
 
     /**
-     * Get the columns which need to be toggled, and set if needed.
+     * Get the columns to show from the request.
      *
-     * @return array<int,string>|null
+     * @param  \Illuminate\Http\Request|null  $request
+     * @return array<int,string>
      */
-    public function getToggledColumns()
+    public function getToggleParameters(Request $request = null): array
     {
-        $live = $this->getToggledColumnsTerm();
+        $request = $request ?? request();
 
-        if (empty($live)) {
-            return $this->decodeCookie();
-        }
+        return $request->string($this->getToggleName())
+            ->trim()
+            ->remove(' ')
+            ->explode(',')
+            ->toArray();
+    }
 
-        $this->encodeCookie($live);
-
-        return $live;
+    /**
+     * Apply the toggleability to determine which columns to show.
+     *
+     * @return void
+     */
+    public function toggleColumns(): void
+    {
+        $activeColumns = $this->getToggleParameters();
+        // TODO
+        $this->getColumns()
+            ->each(fn (BaseColumn $column) => $column->setActive(true));
     }
 }

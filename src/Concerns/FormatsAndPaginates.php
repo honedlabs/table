@@ -13,16 +13,6 @@ use Illuminate\Database\Eloquent\Collection;
 trait FormatsAndPaginates
 {
     /**
-     * @var int
-     */
-    protected $defaultPerPage;
-
-    /**
-     * @var int
-     */
-    protected static $useDefaultPerPage = 10;
-
-    /**
      * @var int|array<int,int>
      */
     protected $perPage;
@@ -45,37 +35,27 @@ trait FormatsAndPaginates
     /**
      * @var string
      */
-    protected $pageName;
+    protected $page;
 
     /**
      * @var string
      */
-    protected static $usePageName = 'page';
+    protected static $pageName = 'page';
 
     /**
      * @var string
      */
-    protected $countName;
+    protected $show;
 
     /**
      * @var string
      */
-    protected static $useCountName = 'show';
+    protected static $showName = 'show';
 
     /**
      * @var \Illuminate\Support\Collection<array-key, array<array-key, mixed>>|null
      */
     protected $records = null;
-
-    /**
-     * Configure the default number of items to show per page.
-     *
-     * @return void
-     */
-    public static function useDefaultPerPage(int $defaultPerPage)
-    {
-        static::$useDefaultPerPage = $defaultPerPage;
-    }
 
     /**
      * Configure the options for the number of items to show per page.
@@ -102,31 +82,23 @@ trait FormatsAndPaginates
     /**
      * Configure the query parameter to use for the page number.
      *
+     * @param  string  $name
      * @return void
      */
-    public static function usePageName(string $pageName)
+    public static function pageName(string $name)
     {
-        static::$usePageName = $pageName;
+        static::$pageName = $name;
     }
 
     /**
      * Configure the query parameter to use for the number of items to show.
      *
+     * @param  string  $name
      * @return void
      */
-    public static function useCountName(string $countName)
+    public static function showName(string $name)
     {
-        static::$useCountName = $countName;
-    }
-
-    /**
-     * Get the default number of items to show per page.
-     *
-     * @return int
-     */
-    public function getDefaultRecordsPerPage()
-    {
-        return $this->inspect('defaultPerPage', static::$useDefaultPerPage);
+        static::$showName = $name;
     }
 
     /**
@@ -134,7 +106,7 @@ trait FormatsAndPaginates
      *
      * @return int|array<int,int>
      */
-    public function getRecordsPerPage()
+    public function getPerPage()
     {
         return $this->inspect('perPage', static::$usePerPage);
     }
@@ -156,7 +128,7 @@ trait FormatsAndPaginates
      */
     public function getPageName()
     {
-        return $this->inspect('pageName', static::$usePageName);
+        return $this->inspect('page', static::$pageName);
     }
 
     /**
@@ -164,9 +136,9 @@ trait FormatsAndPaginates
      *
      * @return string
      */
-    public function getCountName()
+    public function getShowName()
     {
-        return $this->inspect('countName', static::$useCountName);
+        return $this->inspect('show', static::$showName);
     }
 
     /**
@@ -183,22 +155,37 @@ trait FormatsAndPaginates
             : [['value' => $perPage, 'active' => true]];
     }
 
-    /**
-     * Get the number of items to show per page from the request query parameters.
-     */
-    public function getPageCount(): int
+    public function getRecordsPerPage(): int|false
     {
-        $count = $this->getRecordsPerPage();
-
-        if (is_int($count)) {
-            return $count;
-        }
-        if (in_array($term = $this->getCountAsTerm(), $count)) {
-            return $term;
+        $request = request();
+    
+        if ($this->getPaginatorType() === 'none') {
+            return false;
         }
 
-        return $this->getDefaultRecordsPerPage();
+        // Only an array can have pagination options, so short circuit if not an array
+        if (! \is_array($this->getPerPage())) {
+            return $this->getPerPage();
+        }
+
+        // Force integer
+        $fromRequest = $request->integer($this->getPerPageName());
+
+        // Loop over the options to create a serializable array
+
+        // Must ensure the query param is in the array to prevent abuse of 1000s of records
+
+        // 0 indicates no term is provided, so use the first option
+        if ($fromRequest === 0) {
+            return $this->getPerPage()[0];
+        }
+
+
+
+
+        return $this->getPerPage();
     }
+
 
     /**
      * Execute the query and paginate the results.

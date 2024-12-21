@@ -29,13 +29,13 @@ class ExampleTable extends Table
 
     public $search = ['description'];
 
-    public $toggleable = true;
+    public $toggle = true;
 
     public $perPage = [10, 25, 50];
 
     public $defaultPerPage = 10;
 
-    public $cookieName = 'example-table';
+    public $cookie = 'example-table';
 
     public function columns()
     {
@@ -55,7 +55,7 @@ class ExampleTable extends Table
         return [
             Filter::make('price', 'Max')->alias('max')->lte(),
             Filter::make('price', 'Min')->alias('min')->gt(),
-            // SetFilter::make('status')->options(Status::cases())->strict(),
+            SetFilter::make('status')->options(Status::class)->strict(),
             CustomFilter::make('soon')->using(fn (Builder $query, $value) => $query->where('status', Status::COMING_SOON)),
             DateFilter::make('created_at', 'Year')->alias('year')->year(),
         ];
