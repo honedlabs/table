@@ -42,8 +42,6 @@ trait IsSearchable
 
     /**
      * Determine if the column is searchable.
-     *
-     * @return bool
      */
     public function isSearchable(): bool
     {
@@ -52,8 +50,6 @@ trait IsSearchable
 
     /**
      * Determine if the column is not searchable.
-     *
-     * @return bool
      */
     public function isNotSearchable(): bool
     {

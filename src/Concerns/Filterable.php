@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Honed\Table\Concerns;
 
 use Honed\Table\Filters\BaseFilter;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 trait Filterable
 {
@@ -19,7 +19,6 @@ trait Filterable
      * Set the list of filters to apply to a query.
      *
      * @param  array<int, \Honed\Table\Filters\BaseFilter>|null  $filters
-     * @return void
      */
     public function setFilters(?array $filters): void
     {
@@ -32,8 +31,6 @@ trait Filterable
 
     /**
      * Determine if the class has no filters.
-     *
-     * @return bool
      */
     public function missingFilters(): bool
     {
@@ -42,8 +39,6 @@ trait Filterable
 
     /**
      * Determine if the class has filters.
-     *
-     * @return bool
      */
     public function hasFilters(): bool
     {
@@ -62,9 +57,6 @@ trait Filterable
 
     /**
      * Apply the filters to a query using the current request
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @return void
      */
     public function filterQuery(Builder $builder): void
     {

@@ -82,7 +82,6 @@ trait FormatsAndPaginates
     /**
      * Configure the query parameter to use for the page number.
      *
-     * @param  string  $name
      * @return void
      */
     public static function pageName(string $name)
@@ -93,7 +92,6 @@ trait FormatsAndPaginates
     /**
      * Configure the query parameter to use for the number of items to show.
      *
-     * @param  string  $name
      * @return void
      */
     public static function showName(string $name)
@@ -158,7 +156,7 @@ trait FormatsAndPaginates
     public function getRecordsPerPage(): int|false
     {
         $request = request();
-    
+
         if ($this->getPaginatorType() === 'none') {
             return false;
         }
@@ -180,12 +178,8 @@ trait FormatsAndPaginates
             return $this->getPerPage()[0];
         }
 
-
-
-
         return $this->getPerPage();
     }
-
 
     /**
      * Execute the query and paginate the results.

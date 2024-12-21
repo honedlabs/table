@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Honed\Table\Sorts\Sort;
 use Honed\Table\Sorts\BaseSort;
+use Honed\Table\Sorts\Sort;
 
 /**
  * @method string|null getName()
@@ -37,9 +37,8 @@ trait IsSortable
 
     /**
      * Set the sortable property quietly.
-     * 
+     *
      * @param  bool|(\Closure():bool)|null  $sortable
-     * @return void
      */
     public function setSortable(bool|\Closure|null $sortable): void
     {
@@ -53,8 +52,6 @@ trait IsSortable
 
     /**
      * Determine if the column is sortable.
-     * 
-     * @return bool
      */
     public function isSortable(): bool
     {
@@ -63,8 +60,6 @@ trait IsSortable
 
     /**
      * Determine if the column is not sortable.
-     *
-     * @return bool
      */
     public function isNotSortable(): bool
     {
@@ -73,8 +68,6 @@ trait IsSortable
 
     /**
      * Get the sort instance.
-     * 
-     * @return \Honed\Table\Sorts\BaseSort
      */
     public function getSort(): ?BaseSort
     {

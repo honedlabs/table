@@ -21,7 +21,6 @@ use Honed\Table\Sorts\CustomSort;
 use Honed\Table\Sorts\Sort;
 use Honed\Table\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Honed\Table\Tests\Stubs\Status;
 
 class ExampleTable extends Table
 {

@@ -18,9 +18,6 @@ trait Extractable
 
     /**
      * Configure all classes to use extraction by default.
-     *
-     * @param  bool  $extract
-     * @return void
      */
     public static function useExtraction(bool $extract = true): void
     {
@@ -29,8 +26,6 @@ trait Extractable
 
     /**
      * Determine if all classes should use extraction by default.
-     *
-     * @return bool
      */
     public static function usesExtraction(): bool
     {
@@ -39,9 +34,6 @@ trait Extractable
 
     /**
      * Set the extraction flag.
-     *
-     * @param  bool  $extract
-     * @return void
      */
     public function setExtract(bool $extract = true): void
     {
@@ -50,8 +42,6 @@ trait Extractable
 
     /**
      * Determine if the table should use extraction.
-     *
-     * @return bool
      */
     public function isExtractable(): bool
     {
@@ -60,8 +50,6 @@ trait Extractable
 
     /**
      * Determine if the table should not use extraction.
-     *
-     * @return bool
      */
     public function isNotExtractable(): bool
     {

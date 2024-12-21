@@ -1,7 +1,6 @@
 <?php
 
 use Honed\Table\Table;
-use Honed\Table\Filters\Filter;
 
 beforeEach(function () {
     $this->table = exampleTable();

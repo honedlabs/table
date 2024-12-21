@@ -5,41 +5,32 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Exception;
-use Honed\Core\Primitive;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Honed\Table\Pipes\Paginate;
-use Honed\Table\Pipes\ApplySorts;
-use Illuminate\Pipeline\Pipeline;
 use Honed\Core\Concerns\Encodable;
-use Honed\Table\Pipes\ApplySearch;
-use Illuminate\Support\Collection;
-use Honed\Table\Actions\BulkAction;
-use Honed\Table\Columns\BaseColumn;
-use Honed\Table\Pipes\ApplyFilters;
-use Honed\Table\Pipes\ApplyToggles;
 use Honed\Core\Concerns\Inspectable;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
-use Honed\Table\Pipes\FormatRecords;
-use Honed\Table\Pipes\SelectRecords;
-use Honed\Table\Actions\InlineAction;
-use Illuminate\Database\Eloquent\Model;
-use Honed\Table\Http\DTOs\BulkActionData;
-use Illuminate\Database\Eloquent\Builder;
-use Honed\Table\Http\DTOs\InlineActionData;
-use Honed\Table\Pipes\ApplyBeforeRetrieval;
-use Honed\Table\Http\Requests\TableActionRequest;
 use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Honed\Core\Primitive;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Actions\InlineAction;
+use Honed\Table\Columns\BaseColumn;
+use Honed\Table\Http\DTOs\BulkActionData;
+use Honed\Table\Http\DTOs\InlineActionData;
+use Honed\Table\Http\Requests\TableActionRequest;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class Table extends Primitive
 {
+    use Concerns\Extractable;
+    use Concerns\Filterable;
     use Concerns\FormatsAndPaginates;
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasEndpoint;
-    use Concerns\Filterable;
-    use Concerns\Extractable;
     use Concerns\Resourceful;
     use Concerns\Searchable;
     use Concerns\Selectable;
@@ -199,7 +190,7 @@ class Table extends Primitive
     protected function configureToggleableColumns(): void
     {
         $cols = $this->getToggledColumns(); // names
-        
+
         if (empty($cols)) {
             return;
         }

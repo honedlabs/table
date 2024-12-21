@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Http\Request;
-use Honed\Table\Sorts\BaseSort;
-use Illuminate\Support\Collection;
 use Honed\Table\Columns\BaseColumn;
+use Honed\Table\Sorts\BaseSort;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 trait Sortable
 {
     public const DefaultSortKey = 'sort';
 
     public const DefaultOrderKey = 'order';
+
     /**
      * @var array<int,\Honed\Table\Sorts\BaseSort>
      */
@@ -44,7 +45,6 @@ trait Sortable
      * Set the list of sorts to apply to a query.
      *
      * @param  array<int, \Honed\Table\Sorts\BaseSort>|null  $sorts
-     * @return void
      */
     public function setSorts(?array $sorts): void
     {
@@ -57,8 +57,6 @@ trait Sortable
 
     /**
      * Determine if the class has no sorts.
-     *
-     * @return bool
      */
     public function missingSorts(): bool
     {
@@ -67,8 +65,6 @@ trait Sortable
 
     /**
      * Determine if the class has sorts.
-     *
-     * @return bool
      */
     public function hasSorts(): bool
     {
@@ -125,15 +121,12 @@ trait Sortable
         return $this->inspect('order', static::$orderName);
     }
 
-    
-
     /**
      * Retrieve the sort value and direction from the current request.
      *
-     * @param  \Illuminate\Http\Request|null  $request
      * @return array{string|null,'asc'|'desc'|null} [sort field, direction]
      */
-    public function getSortParameters(Request $request = null): array
+    public function getSortParameters(?Request $request = null): array
     {
         $request = $request ?? request();
 
@@ -163,9 +156,6 @@ trait Sortable
 
     /**
      * Apply the sorts to a query using the current request
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @return void
      */
     public function sortQuery(Builder $builder): void
     {
@@ -179,5 +169,4 @@ trait Sortable
         // Need to handle defaults case
         $sorts->each(static fn (BaseSort $sort) => $sort->apply($builder, $sortBy, $direction));
     }
-
 }

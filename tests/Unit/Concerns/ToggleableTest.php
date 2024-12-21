@@ -59,7 +59,7 @@ it('can apply sorts', function () {
                 'direction' => 'asc',
             ],
         ]);
-    
+
     expect($this->table->getSorts())
         ->first(fn (BaseSort $sort) => $sort->isActive())
         ->toBeInstanceOf(Sort::class)

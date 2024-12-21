@@ -15,8 +15,8 @@ class SetFilter extends BaseFilter
     use Concerns\HasClause;
     use Concerns\HasOperator;
     use Concerns\IsMultiple;
-    use IsStrict;
     use HasOptions;
+    use IsStrict;
 
     public function setUp(): void
     {

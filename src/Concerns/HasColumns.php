@@ -36,8 +36,6 @@ trait HasColumns
 
     /**
      * Determine if the table has no columns.
-     *
-     * @return bool
      */
     public function missingColumns(): bool
     {
@@ -46,8 +44,6 @@ trait HasColumns
 
     /**
      * Determine if the table has columns.
-     *
-     * @return bool
      */
     public function hasColumns(): bool
     {

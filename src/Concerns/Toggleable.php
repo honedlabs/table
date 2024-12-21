@@ -48,8 +48,7 @@ trait Toggleable
     /**
      * Configure the default duration of the cookie to use for all tables.
      *
-     * @param  int  $seconds The duration in seconds
-     * @return void
+     * @param  int  $seconds  The duration in seconds
      */
     public static function cookieDuration(int $seconds): void
     {
@@ -59,8 +58,7 @@ trait Toggleable
     /**
      * Configure the name of the query parameter to use for toggling columns.
      *
-     * @param  string  $name The name of the query parameter
-     * @return void
+     * @param  string  $name  The name of the query parameter
      */
     public static function toggledName(string $name): void
     {
@@ -70,8 +68,7 @@ trait Toggleable
     /**
      * Configure whether to enable toggling of columns for all tables by default.
      *
-     * @param  bool  $toggle Whether to enable toggling of columns
-     * @return void
+     * @param  bool  $toggle  Whether to enable toggling of columns
      */
     public static function alwaysToggleable(bool $toggle = true): void
     {
@@ -80,8 +77,6 @@ trait Toggleable
 
     /**
      * Get the cookie name to use for the table toggle.
-     *
-     * @return string
      */
     public function getCookieName(): string
     {
@@ -90,8 +85,6 @@ trait Toggleable
 
     /**
      * Get the default cookie name to use for the table.
-     *
-     * @return string
      */
     public function getDefaultCookie(): string
     {
@@ -113,8 +106,6 @@ trait Toggleable
 
     /**
      * Get the query parameter to use for toggling columns.
-     *
-     * @return string
      */
     public function getToggleName(): string
     {
@@ -123,8 +114,6 @@ trait Toggleable
 
     /**
      * Determine whether this table has toggling of the columns enabled.
-     *
-     * @return bool
      */
     public function isToggleable(): bool
     {
@@ -133,8 +122,6 @@ trait Toggleable
 
     /**
      * Determine whether this table has toggling of the columns disabled.
-     *
-     * @return bool
      */
     public function isNotToggleable(): bool
     {
@@ -167,7 +154,7 @@ trait Toggleable
      * @param  \Illuminate\Http\Request|null  $request
      * @return array<int,string>
      */
-    public function getToggleParameters(Request $request = null): array
+    public function getToggleParameters(?Request $request = null): array
     {
         $request = $request ?? request();
 
@@ -180,8 +167,6 @@ trait Toggleable
 
     /**
      * Apply the toggleability to determine which columns to show.
-     *
-     * @return void
      */
     public function toggleColumns(): void
     {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 /**
  * @mixin \Honed\Core\Concerns\Inspectable
@@ -40,7 +40,6 @@ trait Searchable
     /**
      * Configure the default search query parameter to use for all tables.
      *
-     * @param  string  $search
      * @return void
      */
     public static function useSearchName(string $search)
@@ -50,8 +49,6 @@ trait Searchable
 
     /**
      * Get the default search query parameter name.
-     *
-     * @return string
      */
     public static function getDefaultSearchName(): string
     {
@@ -70,8 +67,6 @@ trait Searchable
 
     /**
      * Determine whether to use Laravel Scout for searching.
-     *
-     * @return bool
      */
     public static function usesScout(): bool
     {
@@ -111,10 +106,9 @@ trait Searchable
     /**
      * Get the search term from the request query parameters.
      *
-     * @param  \Illuminate\Http\Request|null  $request
      * @return string|null
      */
-    public function getSearchParameters(Request $request = null)
+    public function getSearchParameters(?Request $request = null)
     {
         $request = $request ?? request();
 
