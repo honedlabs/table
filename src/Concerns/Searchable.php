@@ -11,35 +11,35 @@ trait Searchable
 {
     /**
      * The column names to use for searching.
-     * 
+     *
      * @var string|array<int,string>
      */
     // protected $search;
 
     /**
      * The name of the query parameter to use for searching.
-     * 
+     *
      * @var string
      */
     // protected $term;
 
     /**
      * The name of the query parameter to use for searching for all tables.
-     * 
+     *
      * @var string
      */
     protected static $useTerm = 'search';
 
     /**
      * Whether the table should use Laravel Scout for searching.
-     * 
+     *
      * @var bool
      */
     // protected $scout;
 
     /**
      * Whether the table should use Laravel Scout for searching for all tables.
-     * 
+     *
      * @var bool
      */
     protected static $useScout = false;
@@ -105,7 +105,7 @@ trait Searchable
     /**
      * Get the search term from the request query parameters.
      */
-    public function getSearchParameters(Request $request = null): ?string
+    public function getSearchParameters(?Request $request = null): ?string
     {
         $request = $request ?? request();
 

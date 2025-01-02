@@ -8,7 +8,7 @@ trait IsOptimizable
 {
     /**
      * Whether to optimize the query `select` statement.
-     * 
+     *
      * @var bool
      */
     protected $optimize;

@@ -6,27 +6,22 @@ namespace Honed\Table;
 
 use Closure;
 use Exception;
-use RuntimeException;
-use Honed\Core\Primitive;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Honed\Core\Concerns\Encodable;
-use Illuminate\Support\Collection;
-use Honed\Table\Actions\BulkAction;
-use Honed\Table\Columns\BaseColumn;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
+use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Honed\Core\Primitive;
+use Honed\Table\Actions\BulkAction;
 use Honed\Table\Actions\InlineAction;
-use Illuminate\Database\Eloquent\Model;
+use Honed\Table\Columns\BaseColumn;
 use Honed\Table\Http\DTOs\BulkActionData;
-use Illuminate\Database\Eloquent\Builder;
 use Honed\Table\Http\DTOs\InlineActionData;
 use Honed\Table\Http\Requests\TableActionRequest;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Honed\Core\Exceptions\MissingRequiredAttributeException;
-use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Support\Stringable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 /**
  * @method static static build((\Closure(\Illuminate\Database\Eloquent\Builder):(\Illuminate\Database\Eloquent\Builder)|null) $resource = null) Build the table records and metadata using the current request.
@@ -35,23 +30,23 @@ use Illuminate\Support\Stringable;
 class Table extends Primitive
 {
     use Concerns\Filterable;
-    use Concerns\HasRecords;
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasEndpoint;
+    use Concerns\HasRecords;
+    use Concerns\HasResource;
+    use Concerns\IsOptimizable;
     use Concerns\Searchable;
     use Concerns\Selectable;
     use Concerns\Sortable;
-    use Concerns\HasResource;
     use Concerns\Toggleable;
-    use Concerns\IsOptimizable;
     use Encodable;
     use IsAnonymous;
     use RequiresKey;
 
     /**
      * The parent class-string of the table.
-     * 
+     *
      * @var class-string<\Honed\Table\Table>
      */
     protected $anonymous = self::class;
@@ -59,7 +54,7 @@ class Table extends Primitive
     /**
      * The request instance to use for the table.
      * Defaults to the current request object.
-     * 
+     *
      * @var \Illuminate\Http\Request|null
      */
     protected $request = null;
@@ -69,7 +64,7 @@ class Table extends Primitive
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|\Closure(\Illuminate\Database\Eloquent\Builder):(\Illuminate\Database\Eloquent\Builder)  $resource
      */
-    public function __construct(Model|Builder|Closure|string $resource = null)
+    public function __construct(Model|Builder|Closure|string|null $resource = null)
     {
         match (true) {
             \is_null($resource) => null,
@@ -127,7 +122,7 @@ class Table extends Primitive
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|\Closure(\Illuminate\Database\Eloquent\Builder):(\Illuminate\Database\Eloquent\Builder)  $resource
      */
-    public static function make(Model|Builder|Closure|string $resource = null): static
+    public static function make(Model|Builder|Closure|string|null $resource = null): static
     {
         return resolve(static::class, compact('resource'));
     }
@@ -148,7 +143,7 @@ class Table extends Primitive
 
     /**
      * Get the table as an array.
-     * 
+     *
      * @return array<string,mixed>
      */
     public function toArray(): array

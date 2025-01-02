@@ -41,8 +41,8 @@ class ExampleTable extends Table
         return [
             Column::make('id')->key(),
             TextColumn::make('name')->searchable(),
-            TextColumn::make('description')->placeholder('-'), //->truncate(100)
-            BooleanColumn::make('best_seller', 'Favourite'), //->labels('Favourite', 'Not Favourite'),
+            TextColumn::make('description')->placeholder('-'), // ->truncate(100)
+            BooleanColumn::make('best_seller', 'Favourite'), // ->labels('Favourite', 'Not Favourite'),
             Column::make('status')->meta(['badge' => true]),
             NumberColumn::make('price')->currency(),
             DateColumn::make('created_at')->sortable(),

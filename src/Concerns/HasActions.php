@@ -44,7 +44,7 @@ trait HasActions
      */
     public function getActions(): Collection
     {
-        return collect(match(true) {
+        return collect(match (true) {
             \property_exists($this, 'actions') => $this->actions,
             \method_exists($this, 'actions') => $this->actions(),
             default => [],

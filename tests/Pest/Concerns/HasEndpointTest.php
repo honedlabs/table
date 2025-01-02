@@ -1,11 +1,8 @@
 <?php
 
-use Honed\Table\Table;
-
 beforeEach(function () {
     $this->table = exampleTable();
 });
-
 
 it('can get the endpoint', function () {
     expect($this->table->getEndpoint())->toBe(config('table.endpoint'));

@@ -65,7 +65,7 @@ trait Sortable
      */
     public function getSorts(): Collection
     {
-        return collect(match(true) {
+        return collect(match (true) {
             \property_exists($this, 'sorts') => $this->sorts,
             \method_exists($this, 'sorts') => $this->sorts(),
             default => [],
