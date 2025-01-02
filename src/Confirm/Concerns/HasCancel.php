@@ -49,18 +49,10 @@ trait HasCancel
     }
 
     /**
-     * Determine if the class does not have a cancel.
-     */
-    public function missingCancel(): bool
-    {
-        return \is_null($this->cancel);
-    }
-
-    /**
      * Determine if the class has a cancel.
      */
     public function hasCancel(): bool
     {
-        return ! $this->missingCancel();
+        return ! \is_null($this->cancel);
     }
 }

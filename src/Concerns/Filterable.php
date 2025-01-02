@@ -11,11 +11,6 @@ use Illuminate\Support\Collection;
 trait Filterable
 {
     /**
-     * @var array<int,\Honed\Table\Filters\BaseFilter>
-     */
-    protected $filters;
-
-    /**
      * Set the list of filters to apply to a query.
      *
      * @param  array<int, \Honed\Table\Filters\BaseFilter>|null  $filters
@@ -30,19 +25,11 @@ trait Filterable
     }
 
     /**
-     * Determine if the class has no filters.
-     */
-    public function missingFilters(): bool
-    {
-        return $this->getFilters()->isEmpty();
-    }
-
-    /**
      * Determine if the class has filters.
      */
     public function hasFilters(): bool
     {
-        return ! $this->missingFilters();
+        return $this->getFilters()->isNotEmpty();
     }
 
     /**
@@ -52,7 +39,9 @@ trait Filterable
      */
     public function getFilters(): Collection
     {
-        return collect($this->inspect('filters', []));
+        return collect(\method_exists($this, 'filters')
+            ? $this->filters()
+            : []);
     }
 
     /**

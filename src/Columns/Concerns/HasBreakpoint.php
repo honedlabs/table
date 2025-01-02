@@ -62,12 +62,7 @@ trait HasBreakpoint
 
     public function hasBreakpoint(): bool
     {
-        return ! $this->missingBreakpoint();
-    }
-
-    public function missingBreakpoint(): bool
-    {
-        return is_null($this->breakpoint);
+        return ! \is_null($this->breakpoint);
     }
 
     /**

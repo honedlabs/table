@@ -8,7 +8,6 @@ beforeEach(function () {
 
 it('does not have a cancel message by default', function () {
     expect($this->confirm->getCancel())->toBeNull();
-    expect($this->confirm->missingCancel())->toBeTrue();
     expect($this->confirm->hasCancel())->toBeFalse();
 });
 

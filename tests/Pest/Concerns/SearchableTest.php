@@ -3,7 +3,7 @@
 use Honed\Table\Table;
 
 beforeEach(function () {
-    Table::useSearchName('search');
+    Table::useSearchTerm('search');
     Table::useScout(false);
 
     $this->table = exampleTable();
@@ -11,9 +11,8 @@ beforeEach(function () {
 });
 
 it('can configure a search name globally', function () {
-    Table::useSearchName('test');
-    expect(Table::getDefaultSearchName())->toBe('test');
-    expect($this->table->getSearchName())->toBe('test');
+    Table::useSearchTerm('test');
+    expect($this->table->getSearchTerm())->toBe('test');
 });
 
 it('can configure whether to use scout globally', function () {

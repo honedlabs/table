@@ -9,7 +9,6 @@ beforeEach(function () {
 
 it('has no action by default', function () {
     expect($this->action->hasAction())->toBeFalse();
-    expect($this->action->missingAction())->toBeTrue();
 });
 
 it('can be set to have an action', function () {

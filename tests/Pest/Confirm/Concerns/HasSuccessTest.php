@@ -8,7 +8,6 @@ beforeEach(function () {
 
 it('does not have a success message by default', function () {
     expect($this->confirm->getSuccess())->toBeNull();
-    expect($this->confirm->missingSuccess())->toBeTrue();
     expect($this->confirm->hasSuccess())->toBeFalse();
 });
 

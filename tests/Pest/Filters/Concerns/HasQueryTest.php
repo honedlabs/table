@@ -27,7 +27,6 @@ it('does not accept null values', function () {
 
 it('checks if it has a query', function () {
     expect($this->filter->hasQuery())->toBeFalse();
-    expect($this->filter->missingQuery())->toBeTrue();
 });
 
 it('has alias for `using` as `query`', function () {

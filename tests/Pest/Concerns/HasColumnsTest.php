@@ -8,10 +8,7 @@ beforeEach(function () {
 });
 
 it('can determine if the table has no columns', function () {
-    expect($this->blank->missingColumns())->toBeTrue();
     expect($this->blank->hasColumns())->toBeFalse();
-
-    expect($this->table->missingColumns())->toBeFalse();
     expect($this->table->hasColumns())->toBeTrue();
 });
 

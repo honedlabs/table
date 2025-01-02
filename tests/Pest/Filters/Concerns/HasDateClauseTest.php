@@ -25,7 +25,6 @@ it('does not accept null values', function () {
 
 it('checks if it has a clause', function () {
     expect($this->filter->hasClause())->toBeTrue();
-    expect($this->filter->missingClause())->toBeFalse();
 });
 
 it('has shorthand for `date`', function () {

@@ -4,97 +4,140 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
+use Closure;
 use Exception;
-use Honed\Core\Concerns\Encodable;
-use Honed\Core\Concerns\Inspectable;
-use Honed\Core\Concerns\IsAnonymous;
-use Honed\Core\Concerns\RequiresKey;
-use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use RuntimeException;
 use Honed\Core\Primitive;
-use Honed\Table\Actions\BulkAction;
-use Honed\Table\Actions\InlineAction;
-use Honed\Table\Columns\BaseColumn;
-use Honed\Table\Http\DTOs\BulkActionData;
-use Honed\Table\Http\DTOs\InlineActionData;
-use Honed\Table\Http\Requests\TableActionRequest;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Honed\Core\Concerns\Encodable;
 use Illuminate\Support\Collection;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Columns\BaseColumn;
+use Honed\Core\Concerns\IsAnonymous;
+use Honed\Core\Concerns\RequiresKey;
+use Honed\Table\Actions\InlineAction;
+use Illuminate\Database\Eloquent\Model;
+use Honed\Table\Http\DTOs\BulkActionData;
+use Illuminate\Database\Eloquent\Builder;
+use Honed\Table\Http\DTOs\InlineActionData;
+use Honed\Table\Http\Requests\TableActionRequest;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Support\Stringable;
 
+/**
+ * @method static static build((\Closure(\Illuminate\Database\Eloquent\Builder):(\Illuminate\Database\Eloquent\Builder)|null) $resource = null) Build the table records and metadata using the current request.
+ * @method $this build() Build the table records and metadata using the current request.
+ */
 class Table extends Primitive
 {
-    use Concerns\Extractable;
     use Concerns\Filterable;
-    use Concerns\FormatsAndPaginates;
+    use Concerns\HasRecords;
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasEndpoint;
-    use Concerns\Resourceful;
     use Concerns\Searchable;
     use Concerns\Selectable;
     use Concerns\Sortable;
+    use Concerns\HasResource;
     use Concerns\Toggleable;
+    use Concerns\IsOptimizable;
     use Encodable;
-    use Inspectable;
-    use IsAnonymous; // Anonymize
+    use IsAnonymous;
     use RequiresKey;
 
     /**
+     * The parent class-string of the table.
+     * 
      * @var class-string<\Honed\Table\Table>
      */
     protected $anonymous = self::class;
 
     /**
+     * The request instance to use for the table.
+     * Defaults to the current request object.
+     * 
+     * @var \Illuminate\Http\Request|null
+     */
+    protected $request = null;
+
+    /**
      * Build the table with the given assignments.
      *
-     * @param  array<string, mixed>  $assignments
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|\Closure(\Illuminate\Database\Eloquent\Builder):(\Illuminate\Database\Eloquent\Builder)  $resource
      */
-    public function __construct($assignments = [])
+    public function __construct(Model|Builder|Closure|string $resource = null)
     {
-        $this->setAssignments($assignments);
+        match (true) {
+            \is_null($resource) => null,
+            $resource instanceof Closure => $this->setResourceModifier($resource),
+            default => $this->setResource($resource),
+        };
+    }
+
+    /**
+     * Dynamically handle calls to the class for enabling anonymous table methods.
+     *
+     * @param  string  $method
+     * @param  array<mixed>  $parameters
+     * @return mixed
+     *
+     * @throws \BadMethodCallException
+     */
+    public function __call($method, $parameters)
+    {
+        match ($method) {
+            'actions' => $this->setActions(...$parameters),
+            'build' => $this->configureTableForCurrentRequest(),
+            'columns' => $this->setColumns(...$parameters),
+            'filters' => $this->setFilters(...$parameters),
+            'resource' => $this->setResource(...$parameters),
+            'sorts' => $this->setSorts(...$parameters),
+            // 'pages'
+            // 'optimize'
+            // 'reduce'
+            default => parent::__call($method, $parameters)
+        };
+
+        return $this;
+    }
+
+    /**
+     * Dynamically handle calls to the class for enabling static methods.
+     *
+     * @param  string  $method
+     * @param  array<mixed>  $parameters
+     * @return mixed
+     *
+     * @throws \BadMethodCallException
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        return match ($method) {
+            'build' => static::make(...$parameters)->build(),
+            default => parent::__callStatic($method, $parameters)
+        };
     }
 
     /**
      * Create a new table instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string  $resource
-     * @param  array<\Honed\Table\Columns\BaseColumn>  $columns
-     * @param  array<\Honed\Table\Actions\BaseAction>  $actions
-     * @param  array<\Honed\Table\Filters\BaseFilter>  $filters
-     * @param  array<\Honed\Table\Sorts\BaseSort>  $sorts
-     * @param  string|null  $search
-     * @param  array|int|null  $pagination
-     * @return static
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|class-string|\Closure(\Illuminate\Database\Eloquent\Builder):(\Illuminate\Database\Eloquent\Builder)  $resource
      */
-    public static function make($resource = null,
-        $columns = null,
-        $actions = null,
-        $filters = null,
-        $sorts = null,
-        $search = null,
-        $pagination = null,
-    ) {
-        return resolve(static::class, compact(
-            'resource',
-            'columns',
-            'actions',
-            'filters',
-            'sorts',
-            'search',
-            'pagination',
-        ));
+    public static function make(Model|Builder|Closure|string $resource = null): static
+    {
+        return resolve(static::class, compact('resource'));
     }
 
     /**
      * Get the key name for the table records.
      *
-     * @return string
-     *
-     * @throws MissingRequiredAttributeException
+     * @throws \Honed\Core\Exceptions\MissingRequiredAttributeException
      */
-    public function getKeyName()
+    public function getKeyName(): string
     {
         try {
             return $this->getKey();
@@ -103,17 +146,12 @@ class Table extends Primitive
         }
     }
 
-    public function getRecords(): ?Collection
-    {
-        return $this->records;
-    }
-
-    public function hasRecords(): bool
-    {
-        return ! \is_null($this->records);
-    }
-
-    public function toArray()
+    /**
+     * Get the table as an array.
+     * 
+     * @return array<string,mixed>
+     */
+    public function toArray(): array
     {
         $this->configureTableForCurrentRequest();
 
@@ -121,7 +159,7 @@ class Table extends Primitive
             /* The ID of this table, used to deserialize it for actions */
             'id' => $this->encodeClass(),
             /* The column attribute used to identify a record */
-            'keyName' => $this->getKeyName(),
+            'key' => $this->getKeyName(),
             /* The records of the table */
             'records' => $this->getRecords(),
             /* The available column options */
@@ -139,15 +177,15 @@ class Table extends Primitive
             /* Whether the table has toggling enabled */
             'toggleable' => $this->isToggleable(),
             /* The query parameter term for sorting */
-            'sortName' => $this->getSortName(),
+            'sort' => $this->getSortKey(),
             /* The query parameter term for ordering */
-            'orderName' => $this->getOrderName(),
+            'order' => $this->getOrderKey(),
             /* The query parameter term for changing the number of records per page */
-            'countName' => $this->getCountName(),
+            'count' => $this->getCountKey(),
             /* The query parameter term for searching */
-            'searchName' => $this->getSearchName(),
+            'search' => $this->getSearchKey(),
             /* The query parameter term for toggling column visibility */
-            'toggleName' => $this->getToggleName(),
+            'toggle' => $this->getToggleKey(),
             /* The route used to handle actions, it is required to be a 'post' route */
             'endpoint' => $this->getEndpoint(),
         ];
@@ -155,8 +193,6 @@ class Table extends Primitive
 
     /**
      * Build the table records and metadata using the current request.
-     *
-     * @internal
      */
     protected function configureTableForCurrentRequest(): void
     {
@@ -164,17 +200,33 @@ class Table extends Primitive
             return;
         }
 
-        $this->configureSearchColumns();
-        $this->configureToggleableColumns();
-        $this->filterQuery($this->getQuery());
-        $this->sortQuery($this->getQuery());
-        $this->searchQuery($this->getQuery());
+        $this->modifyResource();
+        $this->setSearchColumns();
+        $this->toggleColumns();
+        $this->filterQuery($this->getResource());
+        $this->sortQuery($this->getResource());
+        $this->searchQuery($this->getResource());
         // $this->selectQuery($this->getQuery());
-        // $this->beforeRetrievingRecords($this->getQuery());
-        // $this->formatAndPaginateRecords();
+        $this->beforeRetrieval();
+        // $this->formatRecords();
+        // $this->paginateRecords();
     }
 
-    protected function configureSearchColumns(): void
+    protected function modifyResource(): void
+    {
+        if ($this->hasResourceModifier()) {
+            $this->getResourceModifier()($this->resource);
+        }
+    }
+
+    protected function beforeRetrieval(): void
+    {
+        if (\method_exists($this, 'before')) {
+            $this->before($this->resource);
+        }
+    }
+
+    protected function setSearchColumns(): void
     {
         $searchProperty = (array) $this->getSearch();
 
@@ -187,7 +239,7 @@ class Table extends Primitive
         $this->setSearch(\array_unique([...$searchProperty, ...$searchColumns]));
     }
 
-    protected function configureToggleableColumns(): void
+    protected function toggleColumns(): void
     {
         $cols = $this->getToggledColumns(); // names
 
@@ -202,29 +254,6 @@ class Table extends Primitive
                 $column->setActive(false);
             }
         });
-    }
-
-    /**
-     * Dynamically handle calls to the class for enabling anonymous table methods.
-     *
-     * @param  string  $method
-     * @param  array  $parameters
-     * @return mixed
-     *
-     * @throws \BadMethodCallException
-     */
-    public function __call($method, $parameters)
-    {
-        match ($method) {
-            'actions' => $this->setActions(...$parameters),
-            'columns' => $this->setColumns(...$parameters),
-            'filters' => $this->setFilters(...$parameters),
-            'sorts' => $this->setSorts(...$parameters),
-            'resource' => $this->setResource(...$parameters),
-            default => parent::__call($method, $parameters)
-        };
-
-        return $this;
     }
 
     /**

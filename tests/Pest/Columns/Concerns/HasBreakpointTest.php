@@ -8,7 +8,6 @@ beforeEach(function () {
 
 it('has no breakpoint by default', function () {
     expect($this->column->hasBreakpoint())->toBeFalse();
-    expect($this->column->missingBreakpoint())->toBeTrue();
 });
 
 it('can set the breakpoint', function () {

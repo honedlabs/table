@@ -11,10 +11,7 @@ beforeEach(function () {
 });
 
 it('can determine if the table has no filters', function () {
-    expect($this->blank->missingFilters())->toBeTrue();
     expect($this->blank->hasFilters())->toBeFalse();
-
-    expect($this->table->missingFilters())->toBeFalse();
     expect($this->table->hasFilters())->toBeTrue();
 });
 

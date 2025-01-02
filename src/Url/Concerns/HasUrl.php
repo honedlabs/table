@@ -52,18 +52,10 @@ trait HasUrl
     }
 
     /**
-     * Determine if the class does not have a url.
-     */
-    public function missingUrl(): bool
-    {
-        return \is_null($this->url);
-    }
-
-    /**
      * Determine if the class has a url.
      */
     public function hasUrl(): bool
     {
-        return ! $this->missingUrl();
+        return ! \is_null($this->url);
     }
 }

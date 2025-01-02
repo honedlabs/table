@@ -35,19 +35,19 @@ class TableServiceProvider extends ServiceProvider
             __DIR__.'/../config/table.php' => $this->app['path.config'].DIRECTORY_SEPARATOR.'table.php',
         ]);
 
-        Route::macro('honedTable', function () {
-            Route::post(config('table.endpoint', '/actions'), [Table::class, 'actionHandler']);
+        Route::macro('table', function () {
+            Route::post(config('table.endpoint', '/actions'), [Table::class, 'handleAction']);
         });
 
-        Route::bind('honedTable', function (string $value) {
+        Route::bind('table', function (string $value) {
             try {
                 $class = Table::decodeClass($value);
 
-                if (! class_exists($class)) {
+                if (! \class_exists($class)) {
                     abort(404);
                 }
 
-                if (! is_subclass_of($class, Table::class)) {
+                if (! \is_subclass_of($class, Table::class)) {
                     abort(404);
                 }
 

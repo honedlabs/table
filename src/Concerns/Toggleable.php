@@ -11,36 +11,48 @@ use Illuminate\Support\Facades\Cookie;
 trait Toggleable
 {
     /**
+     * The name of this table's cookie for remembering column visibility
      * @var string
      */
-    protected $cookie;
+    // protected $cookie;
 
     /**
-     * @var int
+     * The duration that this table's cookie should be remembered for
+     * 
+     * @var int|null
      */
-    protected $duration;
+    // protected $duration;
 
     /**
-     * @var int
+     * The duration of the cookie to use for all tables.
+     * @var int|null
      */
-    protected static $cookieDuration = 60 * 24 * 30 * 365; // 1 year
+    protected static $cookieRemember = 60 * 24 * 30 * 365; // 1 year
 
     /**
+     * The name of the query parameter to use for toggling columns.
+     * 
      * @var string
      */
-    protected $toggled;
+    // protected $remember;
 
     /**
+     * The name to use for the query parameter to toggle visibility for all tables.
+     * 
      * @var string
      */
-    protected static $toggledName = 'cols';
+    protected static $rememberName = 'cols';
 
     /**
+     * Whether to enable toggling of column visibility for this table.
+     * 
      * @var bool
      */
-    protected $toggle;
+    // protected $toggle;
 
     /**
+     * Whether to enable toggling of column visibility for all tables.
+     * 
      * @var bool
      */
     protected static $defaultToggle = false;
@@ -48,11 +60,11 @@ trait Toggleable
     /**
      * Configure the default duration of the cookie to use for all tables.
      *
-     * @param  int  $seconds  The duration in seconds
+     * @param  int|null  $seconds  The duration in seconds
      */
-    public static function cookieDuration(int $seconds): void
+    public static function rememberCookieFor(int|null $seconds): void
     {
-        static::$cookieDuration = $seconds;
+        static::$cookieRemember = $seconds;
     }
 
     /**
@@ -60,9 +72,9 @@ trait Toggleable
      *
      * @param  string  $name  The name of the query parameter
      */
-    public static function toggledName(string $name): void
+    public static function rememberCookieAs(string $name): void
     {
-        static::$toggledName = $name;
+        static::$rememberName = $name;
     }
 
     /**
@@ -80,7 +92,9 @@ trait Toggleable
      */
     public function getCookieName(): string
     {
-        return $this->inspect('cookie', $this->getDefaultCookie());
+        return \property_exists($this, 'cookie')
+            ? $this->cookie
+            : $this->getDefaultCookie();
     }
 
     /**
@@ -88,7 +102,7 @@ trait Toggleable
      */
     public function getDefaultCookie(): string
     {
-        return str(class_basename($this))
+        return str(\class_basename($this))
             ->lower()
             ->kebab()
             ->toString();
@@ -99,17 +113,21 @@ trait Toggleable
      *
      * @return int
      */
-    public function getDuration()
+    public function getRememberDuration()
     {
-        return $this->inspect('duration', static::$cookieDuration);
+        return \property_exists($this, 'duration')
+            ? $this->duration
+            : static::$cookieRemember;
     }
 
     /**
      * Get the query parameter to use for toggling columns.
      */
-    public function getToggleName(): string
+    public function getRememberName(): string
     {
-        return $this->inspect('toggle', static::$toggledName);
+        return \property_exists($this, 'remember')
+            ? $this->remember
+            : static::$rememberName;
     }
 
     /**
@@ -117,33 +135,27 @@ trait Toggleable
      */
     public function isToggleable(): bool
     {
-        return (bool) $this->inspect('toggle', static::$defaultToggle);
-    }
-
-    /**
-     * Determine whether this table has toggling of the columns disabled.
-     */
-    public function isNotToggleable(): bool
-    {
-        return ! $this->isToggleable();
+        return (bool) \property_exists($this, 'toggle')
+            ? $this->toggle
+            : static::$defaultToggle;
     }
 
     /**
      * Update the cookie with the new data.
      *
-     * @param  array<int,string>  $data
+     * @param  mixed  $data
      */
-    public function setCookie(array $data): void
+    public function setCookie(mixed $data): void
     {
-        Cookie::queue($this->getCookieName(), \json_encode($data), $this->getDuration());
+        Cookie::queue($this->getCookieName(), \json_encode($data), $this->getRememberDuration());
     }
 
     /**
      * Get the data stored in the cookie.
      *
-     * @return array<int,string>|null
+     * @return mixed
      */
-    public function getCookie(): ?array
+    public function getCookie(): mixed
     {
         return \json_decode(request()->cookie($this->getCookieName(), null), true);
     }

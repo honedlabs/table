@@ -27,8 +27,6 @@ it('does not accept null values', function () {
 
 it('checks if it has a url', function () {
     expect($this->url->hasUrl())->toBeFalse();
-    expect($this->url->missingUrl())->toBeTrue();
     $this->url->setUrl('https://example.com');
     expect($this->url->hasUrl())->toBeTrue();
-    expect($this->url->missingUrl())->toBeFalse();
 });

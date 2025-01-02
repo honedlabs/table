@@ -43,19 +43,11 @@ trait HasClause
     }
 
     /**
-     * Determine if the class does not have a clause.
-     */
-    public function missingClause(): bool
-    {
-        return \is_null($this->clause);
-    }
-
-    /**
      * Determine if the class has a clause.
      */
     public function hasClause(): bool
     {
-        return ! $this->missingClause();
+        return ! \is_null($this->clause);
     }
 
     /**

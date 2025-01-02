@@ -9,6 +9,6 @@ class NumberColumn extends BaseColumn
     public function setUp(): void
     {
         $this->setType('number');
-        $this->asNumeric();
+        $this->number();
     }
 }

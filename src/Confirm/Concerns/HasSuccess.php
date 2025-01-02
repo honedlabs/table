@@ -49,18 +49,10 @@ trait HasSuccess
     }
 
     /**
-     * Determine if the class does not have a success message.
-     */
-    public function missingSuccess(): bool
-    {
-        return \is_null($this->success);
-    }
-
-    /**
      * Determine if the class has a success message.
      */
     public function hasSuccess(): bool
     {
-        return ! $this->missingSuccess();
+        return ! \is_null($this->success);
     }
 }

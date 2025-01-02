@@ -5,20 +5,21 @@ namespace Honed\Table\Concerns;
 use Honed\Table\Columns\BaseColumn;
 use Illuminate\Support\Collection;
 
-/**
- * @mixin Honed\Core\Concerns\Inspectable
- */
 trait HasColumns
 {
     /**
+     * Retrieved columns with authorization applied.
+     * 
      * @var Collection<\Honed\Table\Columns\BaseColumn>
      */
     protected $cachedColumns;
 
     /**
+     * The columns to be used for the table.
+     * 
      * @var array<int,\Honed\Table\Columns\BaseColumn>
      */
-    protected $columns;
+    // protected $columns;
 
     /**
      * Set the columns for the table.
@@ -33,32 +34,28 @@ trait HasColumns
 
         $this->columns = $columns;
     }
-
-    /**
-     * Determine if the table has no columns.
-     */
-    public function missingColumns(): bool
-    {
-        return $this->getColumns()->isEmpty();
-    }
-
+    
     /**
      * Determine if the table has columns.
      */
     public function hasColumns(): bool
     {
-        return ! $this->missingColumns();
+        return $this->getColumns()->isNotEmpty();
     }
 
     /**
      * Get the columns for the table.
+     * Authorization is applied at this level.
      *
      * @return Collection<\Honed\Table\Columns\BaseColumn>
      */
     public function getColumns(): Collection
     {
-        return $this->cachedColumns ??= collect($this->inspect('columns', []))
-            ->filter(static fn (BaseColumn $column): bool => $column->isAuthorized());
+        return $this->cachedColumns ??= collect(match(true) {
+            \method_exists($this, 'columns') => $this->columns(),
+            \property_exists($this, 'columns') => $this->columns,
+            default => [],
+        })->filter(static fn (BaseColumn $column): bool => $column->isAuthorized());
     }
 
     /**
@@ -88,7 +85,7 @@ trait HasColumns
     /**
      * Get the key column for the table.
      */
-    public function getKeyColumn(): ?BaseColumn
+    public function getKeyColumn(): BaseColumn|null
     {
         return $this->getColumns()
             ->first(static fn (BaseColumn $column): bool => $column->isKey());
@@ -97,7 +94,7 @@ trait HasColumns
     /**
      * Retrieve the column attributes.
      *
-     * @return array<string, mixed>
+     * @return array<string,mixed>
      */
     public function getAttributedColumns(): array
     {
@@ -109,7 +106,7 @@ trait HasColumns
     /**
      * Get the columns that are active.
      *
-     * @return Collection<BaseColumn>
+     * @return Collection<\Honed\Table\Columns\BaseColumn>
      */
     public function getActiveColumns(): Collection
     {

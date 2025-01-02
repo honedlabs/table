@@ -51,19 +51,11 @@ trait HasQuery
     }
 
     /**
-     * Determine if the class does not have a query.
-     */
-    public function missingQuery(): bool
-    {
-        return \is_null($this->query);
-    }
-
-    /**
      * Determine if the class has a query.
      */
     public function hasQuery(): bool
     {
-        return ! $this->missingQuery();
+        return ! \is_null($this->query);
     }
 
     /**

@@ -46,7 +46,7 @@ trait IsSortable
             return;
         }
 
-        $this->sort = Sort::make($this->getName())->agnostic();
+        $this->sort = Sort::make($this->getName())->direction(null);
         $this->sortable = $sortable;
     }
 

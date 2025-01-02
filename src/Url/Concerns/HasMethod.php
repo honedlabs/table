@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace Honed\Table\Url\Concerns;
 
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @mixin \Honed\Core\Concerns\Evaluable
- */
 trait HasMethod
 {
     /**
-     * @var string|(\Closure():string)|null
+     * The HTTP method to use for routing.
+     * 
+     * @var string
      */
     protected $method = 'get';
 
     /**
      * Set the method, chainable.
      *
-     * @param  string|\Closure():string  $method
+     * @param  string  $method
      * @return $this
      */
-    public function method(string|\Closure $method): static
+    public function method(string $method): static
     {
         $this->setMethod($method);
 
@@ -32,15 +32,16 @@ trait HasMethod
     /**
      * Set the method quietly.
      *
-     * @param  string|(\Closure():string)|null  $method
+     * @param  string|null  $method
+     * @throws \InvalidArgumentException
      */
-    public function setMethod(string|\Closure|null $method): void
+    public function setMethod(string|null $method): void
     {
         if (\is_null($method)) {
             return;
         }
 
-        $method = strtolower($method);
+        $method = Str::lower($method);
 
         if (! \in_array($method, ['get', 'post', 'put', 'patch', 'delete'])) {
             throw new \InvalidArgumentException("Invalid HTTP method [{$method}] provided for url.");
@@ -54,7 +55,7 @@ trait HasMethod
      */
     public function getMethod(): string
     {
-        return $this->evaluate($this->method);
+        return $this->method;
     }
 
     /**

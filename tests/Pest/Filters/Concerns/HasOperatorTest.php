@@ -25,7 +25,6 @@ it('does not accept null values', function () {
 
 it('checks if it has a operator', function () {
     expect($this->filter->hasOperator())->toBeTrue();
-    expect($this->filter->missingOperator())->toBeFalse();
 });
 
 it('has shorthand for `gt`', function () {

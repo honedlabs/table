@@ -101,35 +101,11 @@ trait HasDirection
     }
 
     /**
-     * Determine if the direction is not set
-     */
-    public function missingDirection(): bool
-    {
-        return \is_null($this->direction);
-    }
-
-    /**
      * Determine if the direction is set
      */
     public function hasDirection(): bool
     {
-        return ! $this->isAgnostic();
-    }
-
-    /**
-     * Alias for `missingDirection`
-     */
-    public function isAgnostic(): bool
-    {
-        return $this->missingDirection();
-    }
-
-    /**
-     * Alias for `hasDirection`
-     */
-    public function isNotAgnostic(): bool
-    {
-        return $this->hasDirection();
+        return ! \is_null($this->direction);
     }
 
     /**
@@ -150,16 +126,6 @@ trait HasDirection
     public function asc(): static
     {
         return $this->direction(self::Ascending);
-    }
-
-    /**
-     * Allow for the query parameters to determine the direction.
-     *
-     * @return $this
-     */
-    public function agnostic(): static
-    {
-        return $this->direction(null);
     }
 
     /**

@@ -10,10 +10,7 @@ beforeEach(function () {
 });
 
 it('can determine if the table has no actions', function () {
-    expect($this->blank->missingActions())->toBeTrue();
     expect($this->blank->hasActions())->toBeFalse();
-
-    expect($this->table->missingActions())->toBeFalse();
     expect($this->table->hasActions())->toBeTrue();
 });
 

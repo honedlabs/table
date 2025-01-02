@@ -7,60 +7,55 @@ namespace Honed\Table\Concerns;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-/**
- * @mixin \Honed\Core\Concerns\Inspectable
- */
 trait Searchable
 {
     /**
+     * The column names to use for searching.
+     * 
      * @var string|array<int,string>
      */
-    protected $search;
+    // protected $search;
 
     /**
+     * The name of the query parameter to use for searching.
+     * 
      * @var string
      */
-    protected $searchName;
+    // protected $term;
 
     /**
+     * The name of the query parameter to use for searching for all tables.
+     * 
      * @var string
      */
-    protected static $useSearchName = 'search';
+    protected static $useTerm = 'search';
 
     /**
+     * Whether the table should use Laravel Scout for searching.
+     * 
      * @var bool
      */
-    protected $scout;
+    // protected $scout;
 
     /**
+     * Whether the table should use Laravel Scout for searching for all tables.
+     * 
      * @var bool
      */
     protected static $useScout = false;
 
     /**
      * Configure the default search query parameter to use for all tables.
-     *
-     * @return void
      */
-    public static function useSearchName(string $search)
+    public static function useSearchTerm(string $term): void
     {
-        static::$useSearchName = $search;
-    }
-
-    /**
-     * Get the default search query parameter name.
-     */
-    public static function getDefaultSearchName(): string
-    {
-        return static::$useSearchName;
+        static::$useTerm = $term;
     }
 
     /**
      * Configure whether to enable Laravel Scout for searching of all tables by default.
-     *
-     * @return void
      */
-    public static function useScout(bool $scout = true)
+    public static function useScout(bool $scout = true): void
     {
         static::$useScout = $scout;
     }
@@ -80,57 +75,55 @@ trait Searchable
      */
     public function getSearch(): string|array
     {
-        return $this->inspect('search', []);
+        return match (true) {
+            \property_exists($this, 'search') => $this->search,
+            \method_exists($this, 'search') => $this->search(),
+            default => [],
+        };
     }
 
     /**
      * Get the query parameter needed to identify the search term.
-     *
-     * @return string
      */
-    public function getSearchName()
+    public function getSearchTerm(): string
     {
-        return $this->inspect('searchName', static::getDefaultSearchName());
+        return \property_exists($this, 'term')
+            ? $this->term
+            : static::$useTerm;
     }
 
     /**
      * Determine whether to use Laravel Scout for searching.
-     *
-     * @return bool
      */
-    public function isScoutSearch()
+    public function isScoutSearch(): bool
     {
-        return $this->inspect('scout', static::usesScout());
+        return (bool) (\property_exists($this, 'scout')
+            ? $this->scout
+            : static::$useScout);
     }
 
     /**
      * Get the search term from the request query parameters.
-     *
-     * @return string|null
      */
-    public function getSearchParameters(?Request $request = null)
+    public function getSearchParameters(Request $request = null): ?string
     {
         $request = $request ?? request();
 
-        return $request->input($this->getSearchAs(), null);
+        return $request->input($this->getSearchTerm(), null);
     }
 
     /**
      * Determine whether to apply searching if available.
-     *
-     * @return bool
      */
-    public function isSearching()
+    public function isSearching(): bool
     {
         return filled($this->getSearch()) && (bool) $this->getSearchParameters();
     }
 
     /**
      * Apply the search to the builder.
-     *
-     * @return void
      */
-    protected function searchQuery(Builder $builder)
+    protected function searchQuery(Builder $builder): void
     {
         if (! $this->isSearching()) {
             return;
@@ -146,7 +139,7 @@ trait Searchable
         }
 
         $builder->whereAny(
-            $this->getSearch(),
+            (array) $this->getSearch(),
             'LIKE',
             "%{$term}%"
         );

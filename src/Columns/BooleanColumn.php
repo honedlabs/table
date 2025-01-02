@@ -9,6 +9,6 @@ class BooleanColumn extends BaseColumn
     public function setUp(): void
     {
         $this->setType('boolean');
-        $this->asBoolean();
+        $this->boolean();
     }
 }

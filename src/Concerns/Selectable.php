@@ -10,9 +10,11 @@ namespace Honed\Table\Concerns;
 trait Selectable
 {
     /**
+     * Whether the records are selectable for bulk actions.
+     * 
      * @var bool|(\Closure():bool)
      */
-    protected $selectable;
+    // protected $selectable;
 
     /**
      * @var bool|(\Closure():bool)

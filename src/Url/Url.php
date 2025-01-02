@@ -113,7 +113,7 @@ class Url extends Primitive
      */
     public function getResolvedUrl(array $parameters = [], array $typed = []): ?string
     {
-        if ($this->missingUrl()) {
+        if (! $this->hasUrl()) {
             return null;
         }
 

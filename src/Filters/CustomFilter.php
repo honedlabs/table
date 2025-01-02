@@ -29,7 +29,7 @@ class CustomFilter extends BaseFilter
 
     public function handle(Builder $builder): void
     {
-        if ($this->missingQuery()) {
+        if (! $this->hasQuery()) {
             return;
         }
 

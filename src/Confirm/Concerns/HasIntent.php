@@ -55,19 +55,11 @@ trait HasIntent
     }
 
     /**
-     * Determine if the class does not have a intent.
-     */
-    public function missingIntent(): bool
-    {
-        return \is_null($this->intent);
-    }
-
-    /**
      * Determine if the class has a intent.
      */
     public function hasIntent(): bool
     {
-        return ! $this->missingIntent();
+        return ! \is_null($this->intent);
     }
 
     /**

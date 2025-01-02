@@ -30,34 +30,11 @@ trait Actionable
     }
 
     /**
-<<<<<<< HEAD
-     * Determine whether there is not an action to apply.
-     *
-     *
-     * @param  \Closure|string  $action
-     * @return bool
-=======
-     * Alias for action
-     * @return $this
->>>>>>> 273ec095ac1a6c447503fb3d57a814c10354ca4c
-     */
-    public function missingAction(): bool
-    {
-        return \is_null($this->action);
-    }
-
-    /**
-<<<<<<< HEAD
      * Determine whether there is an action to apply.
-     *
-=======
-     * Check whether an action has been set.
-     *
->>>>>>> 273ec095ac1a6c447503fb3d57a814c10354ca4c
      */
     public function hasAction(): bool
     {
-        return ! $this->missingAction();
+        return ! \is_null($this->action);
     }
 
     /**

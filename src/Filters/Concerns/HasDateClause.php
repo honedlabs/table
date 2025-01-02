@@ -46,17 +46,9 @@ trait HasDateClause
     /**
      * Determine if the class has a date clause.
      */
-    public function missingClause(): bool
-    {
-        return \is_null($this->clause);
-    }
-
-    /**
-     * Determine if the class has a date clause.
-     */
     public function hasClause(): bool
     {
-        return ! $this->missingClause();
+        return ! \is_null($this->clause);
     }
 
     /**

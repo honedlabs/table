@@ -12,34 +12,29 @@ use Illuminate\Support\Collection;
 
 trait Sortable
 {
-    public const DefaultSortKey = 'sort';
+    public const SortKey = 'sort';
 
-    public const DefaultOrderKey = 'order';
-
-    /**
-     * @var array<int,\Honed\Table\Sorts\BaseSort>
-     */
-    protected $sorts;
+    public const OrderKey = 'order';
 
     /**
      * @var string
      */
-    protected $sort;
+    // protected $sort;
 
     /**
      * @var string
      */
-    protected static $sortName = self::DefaultSortKey;
+    protected static $sortKey = self::SortKey;
 
     /**
      * @var string
      */
-    protected $order;
+    // protected $order;
 
     /**
      * @var string
      */
-    protected static $orderName = self::DefaultOrderKey;
+    protected static $orderKey = self::OrderKey;
 
     /**
      * Set the list of sorts to apply to a query.
@@ -56,19 +51,11 @@ trait Sortable
     }
 
     /**
-     * Determine if the class has no sorts.
-     */
-    public function missingSorts(): bool
-    {
-        return $this->getSorts()->isEmpty();
-    }
-
-    /**
      * Determine if the class has sorts.
      */
     public function hasSorts(): bool
     {
-        return ! $this->missingSorts();
+        return $this->getSorts()->isNotEmpty();
     }
 
     /**
@@ -78,7 +65,11 @@ trait Sortable
      */
     public function getSorts(): Collection
     {
-        return collect($this->inspect('sorts', []));
+        return collect(match(true) {
+            \property_exists($this, 'sorts') => $this->sorts,
+            \method_exists($this, 'sorts') => $this->sorts(),
+            default => [],
+        });
     }
 
     /**
@@ -86,9 +77,9 @@ trait Sortable
      *
      * @return void
      */
-    public static function sortName(string $sortName)
+    public static function useSortKey(string $sortKey)
     {
-        static::$sortName = $sortName;
+        static::$sortKey = $sortKey;
     }
 
     /**
@@ -96,9 +87,9 @@ trait Sortable
      *
      * @return void
      */
-    public static function orderName(string $orderName)
+    public static function useOrderKey(string $orderKey)
     {
-        static::$orderName = $orderName;
+        static::$orderKey = $orderKey;
     }
 
     /**
@@ -106,9 +97,11 @@ trait Sortable
      *
      * @return string
      */
-    public function getSortName()
+    public function getSortKey()
     {
-        return $this->inspect('sort', static::$sortName);
+        return \property_exists($this, 'sort')
+            ? $this->sort
+            : static::$sortKey;
     }
 
     /**
@@ -116,9 +109,11 @@ trait Sortable
      *
      * @return string
      */
-    public function getOrderName()
+    public function getOrderKey()
     {
-        return $this->inspect('order', static::$orderName);
+        return \property_exists($this, 'order')
+            ? $this->order
+            : static::$orderKey;
     }
 
     /**
@@ -131,7 +126,7 @@ trait Sortable
         $request = $request ?? request();
 
         // Get the raw sort value, ensuring null if empty
-        $sortBy = $request->string($this->getSortName())->toString();
+        $sortBy = $request->string($this->getSortKey())->toString();
         $sortBy = $sortBy === '' ? null : $sortBy;
 
         $sortDirection = null;
@@ -144,7 +139,7 @@ trait Sortable
         }
 
         // Get direction from query param or use the one from prefix
-        $direction = $request->string($this->getOrderName())->toString();
+        $direction = $request->string($this->getOrderKey())->toString();
         $direction = match (strtolower($direction ?: $sortDirection ?: '')) {
             'asc' => 'asc',
             'desc' => 'desc',

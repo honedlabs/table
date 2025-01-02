@@ -9,6 +9,6 @@ class DateColumn extends BaseColumn
     public function setUp(): void
     {
         $this->setType('date');
-        $this->asDate();
+        $this->date();
     }
 }

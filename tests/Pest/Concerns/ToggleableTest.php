@@ -9,15 +9,12 @@ use Illuminate\Support\Facades\Request;
 beforeEach(function () {
     $this->table = exampleTable();
     $this->blank = blankTable();
-    Request::swap(Request::create('/', 'GET', [Table::DefaultSortKey => 'name', Table::DefaultOrderKey => 'asc']));
+    Request::swap(Request::create('/', 'GET', [Table::SortKey => 'name', Table::OrderKey => 'asc']));
 });
 
 it('can determine if the table is toggleable', function () {
     expect($this->blank->isToggleable())->toBeFalse();
-    expect($this->blank->isNotToggleable())->toBeTrue();
-
     expect($this->table->isToggleable())->toBeTrue();
-    expect($this->table->isNotToggleable())->toBeFalse();
 });
 
 it('can set sorts', function () {
@@ -68,7 +65,7 @@ it('can apply sorts', function () {
 });
 
 it('does not apply sort if the order is not active for a strict sort', function () {
-    Request::swap(Request::create('/', 'GET', [Table::DefaultSortKey => 'name']));
+    Request::swap(Request::create('/', 'GET', [Table::SortKey => 'name']));
     $query = Product::query();
 
     $this->table->sortQuery($query);

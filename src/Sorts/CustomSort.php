@@ -20,7 +20,7 @@ class CustomSort extends BaseSort
 
     public function handle(Builder $builder, ?string $direction = null): void
     {
-        if ($this->missingQuery()) {
+        if (! $this->hasQuery()) {
             return;
         }
 

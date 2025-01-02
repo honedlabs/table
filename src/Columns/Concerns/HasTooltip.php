@@ -63,20 +63,12 @@ trait HasTooltip
 
         return $this->tooltip;
     }
-
-    /**
-     * Determine if the column does not have a tooltip.
-     */
-    public function missingTooltip(): bool
-    {
-        return \is_null($this->tooltip);
-    }
-
+    
     /**
      * Determine if the column has a tooltip.
      */
     public function hasTooltip(): bool
     {
-        return ! $this->missingTooltip();
+        return ! \is_null($this->tooltip);
     }
 }

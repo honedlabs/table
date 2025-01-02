@@ -18,7 +18,6 @@ it('can set a closure tooltip', function () {
 
 it('prevents null values', function () {
     $this->column->setTooltip(null);
-    expect($this->column->missingTooltip())->toBeTrue();
 });
 
 it('can chain tooltip', function () {
@@ -30,12 +29,6 @@ it('checks for tooltip', function () {
     expect($this->column->hasTooltip())->toBeFalse();
     $this->column->setTooltip('Tooltip');
     expect($this->column->hasTooltip())->toBeTrue();
-});
-
-it('checks for no tooltip', function () {
-    expect($this->column->missingTooltip())->toBeTrue();
-    $this->column->setTooltip('Tooltip');
-    expect($this->column->missingTooltip())->toBeFalse();
 });
 
 it('resolves a tooltip', function () {

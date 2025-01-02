@@ -9,6 +9,6 @@ class TextColumn extends BaseColumn
     public function setUp(): void
     {
         $this->setType('text');
-        $this->asString();
+        $this->string();
     }
 }

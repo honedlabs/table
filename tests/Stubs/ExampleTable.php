@@ -44,7 +44,7 @@ class ExampleTable extends Table
             TextColumn::make('description')->placeholder('-'), //->truncate(100)
             BooleanColumn::make('best_seller', 'Favourite'), //->labels('Favourite', 'Not Favourite'),
             Column::make('status')->meta(['badge' => true]),
-            NumberColumn::make('price')->asCurrency(),
+            NumberColumn::make('price')->currency(),
             DateColumn::make('created_at')->sortable(),
         ];
     }
@@ -89,5 +89,10 @@ class ExampleTable extends Table
             PageAction::make('create')->url->to('/products/create'),
 
         ];
+    }
+
+    public function count()
+    {
+        dd('Instance');
     }
 }

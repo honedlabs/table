@@ -47,17 +47,9 @@ trait HasOperator
     /**
      * Determine if the class has an operator.
      */
-    public function missingOperator(): bool
-    {
-        return \is_null($this->operator);
-    }
-
-    /**
-     * Determine if the class has an operator.
-     */
     public function hasOperator(): bool
     {
-        return ! $this->missingOperator();
+        return ! \is_null($this->operator);
     }
 
     /**

@@ -8,7 +8,6 @@ beforeEach(function () {
 
 it('does not have a intent type by default', function () {
     expect($this->confirm->getIntent())->toBeNull();
-    expect($this->confirm->missingIntent())->toBeTrue();
     expect($this->confirm->hasIntent())->toBeFalse();
 });
 
