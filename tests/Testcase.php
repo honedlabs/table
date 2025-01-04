@@ -2,11 +2,12 @@
 
 namespace Honed\Table\Tests;
 
-use Honed\Table\TableServiceProvider;
-use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
-use Inertia\ServiceProvider as InertiaServiceProvider;
+use Illuminate\Support\Facades\View;
+use Honed\Table\TableServiceProvider;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Inertia\ServiceProvider as InertiaServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -29,7 +30,7 @@ class TestCase extends Orchestra
 
     protected function defineRoutes($router)
     {
-        $router->middleware('web')->group(function ($router) {
+        $router->middleware(SubstituteBindings::class)->group(function ($router) {
             $router->get('/', fn () => Inertia::render('Home'))->name('home.index');
             $router->get('/products', fn () => Inertia::render('Products/Index'))->name('product.index');
             $router->get('/products/{product}', fn () => Inertia::render('Products/Show'))->name('product.show');
@@ -37,5 +38,5 @@ class TestCase extends Orchestra
         });
     }
 
-    public function getEnvironmentSetUp($app) {}
+    public function getEnvironmentSetUp($app) { }
 }

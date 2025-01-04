@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Exceptions\InvalidPaginatorException;
-use Illuminate\Contracts\Pagination\CursorPaginator;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Contracts\Pagination\CursorPaginator;
+use Honed\Table\Exceptions\InvalidPaginatorException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 trait HasRecords
 {
     /**
      * The records of the table retrieved from the resource.
-     *
+     * 
      * @var \Illuminate\Support\Collection<array-key,array<array-key,mixed>>|null
      */
     protected $records = null;
 
-    /**
-     * The number of records to show per page.
+        /**
+     * The number of records to show per page. 
      * An array provides options allowing users to change the number of records shown to themper page.
-     *
+     * 
      * @var int|array<int,int>
      */
     protected $perPage;
@@ -32,56 +32,56 @@ trait HasRecords
      * The default number of records to show per page.
      * If $perPage is an array, this should be one of the values.
      * If not supplied, the lowest value in $perPage will be used.
-     *
+     * 
      * @var int
      */
     protected $defaultPerPage;
 
     /**
      * The number of records to use per page for all tables.
-     *
+     * 
      * @var int|array<int,int>
      */
     protected static $defaultPerPageAmount = 10;
 
     /**
      * The paginator instance to use for the table.
-     *
+     * 
      * @var class-string|null
      */
     protected $paginator;
 
     /**
      * The paginator type to use for all tables.
-     *
+     * 
      * @var class-string|null
      */
     protected static $defaultPaginator = LengthAwarePaginator::class;
 
     /**
      * The name to use for the page query parameter.
-     *
+     * 
      * @var string
      */
     protected $page;
 
     /**
      * The name to use for the page query parameter for all tables.
-     *
+     * 
      * @var string|null
      */
     protected static $pageKey = null;
 
     /**
      * The name to use for changing the number of records per page.
-     *
+     * 
      * @var string
      */
     protected $count;
 
     /**
      * The name to use for changing the number of records per page for all tables.
-     *
+     * 
      * @var string
      */
     protected static $countKey = 'show';
@@ -138,13 +138,13 @@ trait HasRecords
 
     /**
      * Set the records of the table.
-     *
+     * 
      * @param  \Illuminate\Support\Collection<int,array<string,mixed>>  $records
      */
     public function setRecords(Collection $records): void
     {
         $this->records = $records;
-    }
+    } 
 
     /**
      * Get the options for the number of items to show per page.
@@ -165,7 +165,7 @@ trait HasRecords
      *
      * @return class-string|null
      */
-    public function getPaginator(): ?string
+    public function getPaginator(): string|null
     {
         return match (true) {
             \property_exists($this, 'paginator') => $this->paginator,
@@ -202,7 +202,7 @@ trait HasRecords
      *
      * @return array<int,array{value:int,active:bool}>
      */
-    public function getPaginationCounts(?int $active = null): array
+    public function getPaginationCounts(int|null $active = null): array
     {
         $perPage = $this->getRecordsPerPage();
 

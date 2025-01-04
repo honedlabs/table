@@ -23,10 +23,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Honed\\Table\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
-            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+            "Honed\\Table\\Tests\\": "tests/"
         }
     },
     "require": {
@@ -35,7 +32,8 @@
         "illuminate/console": "^11.0",
         "illuminate/database": "^11.0",
         "illuminate/contracts": "^11.0",
-        "honed/core": "^0.1.0"
+        "honed/core": "^0.2.0",
+        "maatwebsite/excel": "^3.1"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",

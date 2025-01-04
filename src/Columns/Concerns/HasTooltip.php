@@ -63,7 +63,7 @@ trait HasTooltip
 
         return $this->tooltip;
     }
-
+    
     /**
      * Determine if the column has a tooltip.
      */

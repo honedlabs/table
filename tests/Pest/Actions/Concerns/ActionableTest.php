@@ -46,7 +46,8 @@ it('accepts invokable class actions', function () {
 });
 
 it('can be applied', function () {
+    $product = product();
     $this->action->action(fn (Product $product) => $product->update(['name' => 'Updated']));
-    $this->action->applyAction(Product::find(1), Product::class);
-    expect(Product::find(1)->name)->toBe('Updated');
+    $this->action->applyAction($product, Product::class);
+    expect($product->name)->toBe('Updated');
 });

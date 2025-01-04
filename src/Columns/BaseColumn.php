@@ -39,11 +39,8 @@ abstract class BaseColumn extends Primitive
 
     /**
      * Create a new column instance specifying the related database attribute, and optionally the display label.
-     *
-     * @param  string|(\Closure():string)  $name
-     * @param  string|(\Closure():string)|null  $label
      */
-    final public function __construct(string|\Closure $name, string|\Closure|null $label = null)
+    final public function __construct(string $name, string $label = null)
     {
         parent::__construct();
         $this->setName($name);
@@ -52,11 +49,8 @@ abstract class BaseColumn extends Primitive
 
     /**
      * Make a column specifying the related database attribute, and optionally the display label.
-     *
-     * @param  string|(\Closure():string)  $name
-     * @param  string|(\Closure():string)|null  $label
      */
-    public static function make(string|\Closure $name, string|\Closure|null $label = null): static
+    public static function make(string $name, string $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }
@@ -71,7 +65,7 @@ abstract class BaseColumn extends Primitive
      */
     public function apply(mixed $value): mixed
     {
-        $value = $this->applyTransform($value);
+        $value = $this->transform($value);
 
         return $this->formatValue($value);
     }

@@ -9,7 +9,7 @@ trait HasDirection
     public const Descending = 'desc';
 
     /**
-     * @var string|(\Closure():string)|null
+     * @var string|null
      */
     protected $direction = null;
 
@@ -24,37 +24,19 @@ trait HasDirection
     protected static $defaultDirection = self::Ascending;
 
     /**
-     * Configure the default direction to use when one is not supplied.
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function useDefaultDirection(?string $direction = null): void
-    {
-        if (! \in_array($direction, [self::Ascending, self::Descending, null])) {
-            throw new \InvalidArgumentException('Direction must be either asc, desc, or null');
-        }
-
-        if (\is_null($direction)) {
-            static::$defaultDirection = self::Ascending;
-        } else {
-            static::$defaultDirection = $direction;
-        }
-    }
-
-    /**
      * Set the default direction to ascending.
      */
-    public static function useAscending(): void
+    public static function sortByAscending(): void
     {
-        static::useDefaultDirection(self::Ascending);
+        static::$defaultDirection = self::Ascending;
     }
 
     /**
      * Set the default direction to descending.
      */
-    public static function useDescending(): void
+    public static function sortByDescending(): void
     {
-        static::useDefaultDirection(self::Descending);
+        static::$defaultDirection = self::Descending;
     }
 
     /**
@@ -68,10 +50,9 @@ trait HasDirection
     /**
      * Set the direction, chainable.
      *
-     * @param  string|(\Closure():string|null)|null  $direction
      * @return $this
      */
-    public function direction(string|\Closure|null $direction): static
+    public function direction(string|null $direction): static
     {
         $this->setDirection($direction);
 
@@ -79,11 +60,21 @@ trait HasDirection
     }
 
     /**
+     * Allow for the query parameters to determine the direction.
+     *
+     * @return $this
+     */
+    public function agnostic(): static
+    {
+        return $this->direction(null);
+    }
+
+    /**
      * Set the direction quietly.
      *
-     * @param  string|\Closure():string|null  $direction
+     * @param  string|null  $direction
      */
-    public function setDirection(string|\Closure|null $direction): void
+    public function setDirection(string|null $direction): void
     {
         if (\is_string($direction) && ! \in_array($direction, [self::Ascending, self::Descending])) {
             throw new \InvalidArgumentException('Direction must be either asc, desc, or null');
@@ -95,9 +86,9 @@ trait HasDirection
     /**
      * Get the direction
      */
-    public function getDirection(): ?string
+    public function getDirection(): string|null
     {
-        return value($this->direction);
+        return $this->direction;
     }
 
     /**
@@ -106,6 +97,14 @@ trait HasDirection
     public function hasDirection(): bool
     {
         return ! \is_null($this->direction);
+    }
+
+    /**
+     * Determine if the direction is agnostic (not set).
+     */
+    public function isAgnostic(): bool
+    {
+        return ! $this->hasDirection();
     }
 
     /**
@@ -129,13 +128,11 @@ trait HasDirection
     }
 
     /**
-     * Set the active direction
-     *
-     * @internal
+     * Set the active direction.
      *
      * @param  'asc'|'desc'|null  $direction
      */
-    public function setActiveDirection(?string $direction): void
+    public function setActiveDirection(string|null $direction): void
     {
         if (! \in_array($direction, ['asc', 'desc', null])) {
             throw new \InvalidArgumentException('Direction must be either asc, desc, or null');
@@ -147,11 +144,9 @@ trait HasDirection
     /**
      * Get the active direction
      *
-     * @internal
-     *
      * @return 'asc'|'desc'|null
      */
-    public function getActiveDirection(): ?string
+    public function getActiveDirection(): string|null
     {
         return $this->activeDirection;
     }

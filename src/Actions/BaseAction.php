@@ -22,10 +22,9 @@ abstract class BaseAction extends Primitive
     /**
      * Create a new action instance with a unique name, optionally specifying a display label.
      *
-     * @param  string|(\Closure():string)  $name
      * @param  string|(\Closure():string)|null  $label
      */
-    final public function __construct(string|\Closure $name, string|\Closure|null $label = null)
+    final public function __construct(string $name, string|\Closure|null $label = null)
     {
         parent::__construct();
         $this->setName($name);
@@ -35,11 +34,10 @@ abstract class BaseAction extends Primitive
     /**
      * Make an action with a unique name, optionally the display label.
      *
-     * @param  string|(\Closure():string)  $name
      * @param  string|(\Closure():string)|null  $label
      * @return $this
      */
-    final public static function make(string|\Closure $name, string|\Closure|null $label = null): static
+    final public static function make(string $name, string|\Closure|null $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }

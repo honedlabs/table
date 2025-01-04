@@ -70,7 +70,7 @@ trait Actionable
      *
      * @param  \Illuminate\Database\Eloquent\Model  $record
      */
-    public function applyAction($record, $modelClass): void
+    public function applyAction($record, $model): void
     {
         $this->evaluate(
             value: $this->getAction(),
@@ -81,7 +81,7 @@ trait Actionable
             ],
             typed: [
                 Model::class => $record,
-                $modelClass => $record,
+                $model => $record,
             ],
         );
     }

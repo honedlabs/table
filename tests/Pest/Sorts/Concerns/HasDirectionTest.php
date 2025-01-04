@@ -3,11 +3,11 @@
 use Honed\Table\Sorts\Sort;
 
 beforeEach(function () {
-    Sort::useAscending();
+    Sort::sortByAscending();
     $this->sort = Sort::make('created_at');
 });
 
-it('does not have a direction by default', function () {
+it('has no direction by default', function () {
     expect($this->sort->getDirection())->toBeNull();
     expect($this->sort->hasDirection())->toBeFalse();
 });
@@ -33,6 +33,7 @@ it('checks if it has a direction', function () {
     expect($this->sort->hasDirection())->toBeTrue();
 });
 
+
 it('has shorthand for setting direction as descending', function () {
     expect($this->sort->desc())->toBeInstanceOf(Sort::class)
         ->getDirection()->toBe(Sort::Descending);
@@ -44,28 +45,9 @@ it('has shorthand for setting direction as ascending', function () {
 });
 
 it('can be globally configured for default direction', function () {
-    Sort::useDefaultDirection(Sort::Descending);
+    Sort::sortByDescending();
     expect($this->sort->getDefaultDirection())->toBe(Sort::Descending);
 });
-
-it('has shorthand for setting default direction as ascending', function () {
-    Sort::useAscending();
-    expect($this->sort->getDefaultDirection())->toBe(Sort::Ascending);
-});
-
-it('has shorthand for setting default direction as descending', function () {
-    Sort::useDescending();
-    expect($this->sort->getDefaultDirection())->toBe(Sort::Descending);
-});
-
-it('clears the default direction', function () {
-    Sort::useDefaultDirection(null);
-    expect($this->sort->getDefaultDirection())->toBe(Sort::Ascending);
-});
-
-it('prevents the default direction from being set to an invalid value', function () {
-    Sort::useDefaultDirection('invalid');
-})->throws(\InvalidArgumentException::class);
 
 it('prevents the direction from being set to an invalid value', function () {
     $this->sort->setDirection('invalid');

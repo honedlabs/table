@@ -18,6 +18,7 @@ it('can set a closure tooltip', function () {
 
 it('prevents null values', function () {
     $this->column->setTooltip(null);
+    expect($this->column->getTooltip())->toBeNull();
 });
 
 it('can chain tooltip', function () {

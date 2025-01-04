@@ -17,12 +17,12 @@ class CustomFilter extends BaseFilter
 
     public function apply(Builder $builder): void
     {
-        $value = $this->applyTransform($this->getValueFromRequest());
+        $value = $this->transform($this->getValueFromRequest());
         $this->setValue($value);
         $this->setActive($this->isFiltering($value));
 
         $builder->when(
-            $this->isActive() && $this->applyValidation($value),
+            $this->isActive() && $this->validate($value),
             fn (Builder $builder) => $this->handle($builder),
         );
     }

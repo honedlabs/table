@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Honed\Core\Concerns\Authorizable;
-use Honed\Core\Concerns\HasAlias;
-use Honed\Core\Concerns\HasAttribute;
-use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Primitive;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasType;
+use Honed\Core\Concerns\HasAlias;
+use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
-use Honed\Core\Concerns\Transformable;
-use Honed\Core\Concerns\Validatable;
-use Honed\Core\Primitive;
 use Honed\Table\Contracts\Filters;
+use Illuminate\Support\Stringable;
+use Honed\Core\Concerns\Validatable;
+use Honed\Core\Concerns\Authorizable;
+use Honed\Core\Concerns\HasAttribute;
+use Honed\Core\Concerns\Transformable;
 
 abstract class BaseFilter extends Primitive implements Filters
 {
@@ -32,11 +33,8 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Create a new filter instance specifying the database column, and optionally the display label.
-     *
-     * @param  string|(\Closure():string)  $attribute
-     * @param  string|(\Closure():string)|null  $label
      */
-    public function __construct(string|\Closure $attribute, string|\Closure|null $label = null)
+    public function __construct(string $attribute, string $label = null)
     {
         parent::__construct();
         $this->setAttribute($attribute);
@@ -45,11 +43,8 @@ abstract class BaseFilter extends Primitive implements Filters
 
     /**
      * Make a filter specifying the database column, and optionally the display label.
-     *
-     * @param  string|(\Closure():string)  $attribute
-     * @param  string|(\Closure():string)|null  $label
      */
-    public static function make(string|\Closure $attribute, string|\Closure|null $label = null): static
+    public static function make(string $attribute, string $label = null): static
     {
         return resolve(static::class, compact('attribute', 'label'));
     }
@@ -66,14 +61,9 @@ abstract class BaseFilter extends Primitive implements Filters
 
     public function getParameterName(): string
     {
-        return $this->getAlias() ?? str($this->getAttribute())->afterLast('.')->toString();
+        return $this->getAlias() ?? (new Stringable($this->getAttribute()))->afterLast('.')->value();
     }
 
-    /**
-     * Get the filter state as an array
-     *
-     * @return array<string,mixed>
-     */
     public function toArray(): array
     {
         return [

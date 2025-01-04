@@ -21,7 +21,7 @@ function blankTable(): Table
 
 function product(?string $name = null): Product
 {
-    return Product::factory()->create([
+    return Product::create([
         'public_id' => Str::uuid(),
         'name' => $name ?? fake()->unique()->word(),
         'description' => fake()->sentence(),

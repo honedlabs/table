@@ -12,49 +12,47 @@ trait Toggleable
 {
     /**
      * The name of this table's cookie for remembering column visibility
-     *
      * @var string
      */
     // protected $cookie;
 
     /**
      * The duration that this table's cookie should be remembered for
-     *
+     * 
      * @var int|null
      */
     // protected $duration;
 
     /**
      * The duration of the cookie to use for all tables.
-     *
      * @var int|null
      */
     protected static $cookieRemember = 60 * 24 * 30 * 365; // 1 year
 
     /**
      * The name of the query parameter to use for toggling columns.
-     *
+     * 
      * @var string
      */
     // protected $remember;
 
     /**
      * The name to use for the query parameter to toggle visibility for all tables.
-     *
+     * 
      * @var string
      */
     protected static $rememberName = 'cols';
 
     /**
      * Whether to enable toggling of column visibility for this table.
-     *
+     * 
      * @var bool
      */
     // protected $toggle;
 
     /**
      * Whether to enable toggling of column visibility for all tables.
-     *
+     * 
      * @var bool
      */
     protected static $defaultToggle = false;
@@ -64,7 +62,7 @@ trait Toggleable
      *
      * @param  int|null  $seconds  The duration in seconds
      */
-    public static function rememberCookieFor(?int $seconds): void
+    public static function rememberCookieFor(int|null $seconds): void
     {
         static::$cookieRemember = $seconds;
     }
@@ -144,6 +142,8 @@ trait Toggleable
 
     /**
      * Update the cookie with the new data.
+     *
+     * @param  mixed  $data
      */
     public function setCookie(mixed $data): void
     {
@@ -152,6 +152,8 @@ trait Toggleable
 
     /**
      * Get the data stored in the cookie.
+     *
+     * @return mixed
      */
     public function getCookie(): mixed
     {

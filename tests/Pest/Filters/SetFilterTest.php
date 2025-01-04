@@ -21,7 +21,7 @@ it('has defaults', function () {
         ->getOperator()->toBe(Operator::Equal)
         ->hasOptions()->toBeFalse()
         ->isMultiple()->toBeFalse()
-        ->allowsAllValues()->toBeTrue();
+        ->isStrict()->toBeTrue();
 });
 
 it('can apply the filter', function () {

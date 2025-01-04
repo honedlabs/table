@@ -10,7 +10,7 @@ beforeEach(function () {
     $this->sortKey = 'created_at';
     $this->order = 'asc';
     $this->builder = Product::query();
-    Sort::useDescending();
+    Sort::sortByDescending();
     $this->sort = Sort::make($this->sortKey);
     Request::swap(Request::create('/', 'GET', [$this->sortName => $this->sortKey, $this->orderName => $this->order]));
 });

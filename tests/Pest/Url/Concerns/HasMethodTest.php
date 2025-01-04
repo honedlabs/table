@@ -1,56 +1,63 @@
 <?php
 
+use Honed\Table\Url\Concerns\HasMethod;
 use Honed\Table\Url\Url;
 use Symfony\Component\HttpFoundation\Request;
 
+class HasMethodTest
+{
+    use HasMethod;
+}
+
 beforeEach(function () {
-    $this->url = Url::make();
+    $this->test = new HasMethodTest();
 });
 
-it('uses the get method by default', function () {
-    expect($this->url->getMethod())->toBe('get');
+it('is get method by default', function () {
+    expect($this->test->getMethod())->toBe(Request::METHOD_GET);
 });
 
-it('can set a method', function () {
-    expect($this->url->method(Request::METHOD_POST))->toBeInstanceOf(Url::class)
-        ->getMethod()->toBe('post');
+it('sets method', function () {
+    $this->test->setMethod(Request::METHOD_POST);
+    expect($this->test->getMethod())->toBe(Request::METHOD_POST);
 });
 
-it('can be set using setter', function () {
-    $this->url->setMethod(Request::METHOD_POST);
-    expect($this->url->getMethod())->toBe('post');
+it('chains method', function () {
+    expect($this->test->method(Request::METHOD_POST))->toBeInstanceOf(HasMethodTest::class)
+        ->getMethod()->toBe(Request::METHOD_POST);
 });
 
-it('does not accept null values', function () {
-    $this->url->setMethod(null);
-    expect($this->url->getMethod())->toBe('get');
+it('rejects null values', function () {
+    $this->test->method(Request::METHOD_POST);
+    $this->test->setMethod(null);
+    expect($this->test->getMethod())->toBe(Request::METHOD_POST);
 });
 
-it('has shorthand for get method', function () {
-    expect($this->url->get())->toBeInstanceOf(Url::class)
-        ->getMethod()->toBe('get');
+it('has shorthand `asGet`', function () {
+    expect($this->test->asGet())->toBeInstanceOf(HasMethodTest::class)
+        ->getMethod()->toBe(Request::METHOD_GET);
 });
 
-it('has shorthand for post method', function () {
-    expect($this->url->post())->toBeInstanceOf(Url::class)
-        ->getMethod()->toBe('post');
+it('has shorthand `asPost`', function () {
+    expect($this->test->asPost())->toBeInstanceOf(HasMethodTest::class)
+        ->getMethod()->toBe(Request::METHOD_POST);
 });
 
-it('has shorthand for put method', function () {
-    expect($this->url->put())->toBeInstanceOf(Url::class)
-        ->getMethod()->toBe('put');
+it('has shorthand `asPut`', function () {
+    expect($this->test->asPut())->toBeInstanceOf(HasMethodTest::class)
+        ->getMethod()->toBe(Request::METHOD_PUT);
 });
 
-it('has shorthand for patch method', function () {
-    expect($this->url->patch())->toBeInstanceOf(Url::class)
-        ->getMethod()->toBe('patch');
+it('has shorthand `asPatch`', function () {
+    expect($this->test->asPatch())->toBeInstanceOf(HasMethodTest::class)
+        ->getMethod()->toBe(Request::METHOD_PATCH);
 });
 
-it('has shorthand for delete method', function () {
-    expect($this->url->delete())->toBeInstanceOf(Url::class)
-        ->getMethod()->toBe('delete');
+it('has shorthand `asDelete`', function () {
+    expect($this->test->asDelete())->toBeInstanceOf(HasMethodTest::class)
+        ->getMethod()->toBe(Request::METHOD_DELETE);
 });
 
 it('does not accept invalid methods', function () {
-    expect(fn () => $this->url->method('invalid'))->toThrow(\InvalidArgumentException::class);
+    expect(fn () => $this->test->method('invalid'))->toThrow(\InvalidArgumentException::class);
 });

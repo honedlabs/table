@@ -24,7 +24,6 @@ class PageAction extends BaseAction implements ProxiesHigherOrder
     /**
      * Dynamically forward calls to the proxies.
      *
-     *
      * @throws \Exception
      */
     public function __get(string $property): HigherOrder

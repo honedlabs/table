@@ -27,12 +27,12 @@ class SetFilter extends BaseFilter
 
     public function apply(Builder $builder): void
     {
-        $value = $this->applyTransform($this->getValueFromRequest());
+        $value = $this->transform($this->getValueFromRequest());
         $this->setValue($value);
         $this->setActive($this->isFiltering($value));
 
         $builder->when(
-            $this->isActive() && $this->applyValidation($value),
+            $this->isActive() && $this->validate($value),
             fn (Builder $builder) => $this->handle($builder),
         );
     }
@@ -59,7 +59,7 @@ class SetFilter extends BaseFilter
         }
 
         // If it not strict about the values, then filtering is true
-        return $isFiltering || $this->isNotStrict();
+        return $isFiltering || ! $this->isStrict();
     }
 
     /**

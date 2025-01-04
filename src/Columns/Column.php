@@ -6,7 +6,7 @@ namespace Honed\Table\Columns;
 
 class Column extends BaseColumn
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->setType('default');
     }
