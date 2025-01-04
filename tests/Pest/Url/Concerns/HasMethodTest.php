@@ -1,7 +1,6 @@
 <?php
 
 use Honed\Table\Url\Concerns\HasMethod;
-use Honed\Table\Url\Url;
 use Symfony\Component\HttpFoundation\Request;
 
 class HasMethodTest
@@ -10,7 +9,7 @@ class HasMethodTest
 }
 
 beforeEach(function () {
-    $this->test = new HasMethodTest();
+    $this->test = new HasMethodTest;
 });
 
 it('is get method by default', function () {

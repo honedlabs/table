@@ -33,7 +33,6 @@ it('checks if it has a direction', function () {
     expect($this->sort->hasDirection())->toBeTrue();
 });
 
-
 it('has shorthand for setting direction as descending', function () {
     expect($this->sort->desc())->toBeInstanceOf(Sort::class)
         ->getDirection()->toBe(Sort::Descending);

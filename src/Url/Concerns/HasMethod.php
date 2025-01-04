@@ -11,7 +11,7 @@ trait HasMethod
 {
     /**
      * The HTTP method to use for routing.
-     * 
+     *
      * @var string
      */
     protected $method = Request::METHOD_GET;
@@ -19,7 +19,6 @@ trait HasMethod
     /**
      * Set the method, chainable.
      *
-     * @param  string  $method
      * @return $this
      */
     public function method(string $method): static
@@ -32,10 +31,9 @@ trait HasMethod
     /**
      * Set the method quietly.
      *
-     * @param  string|null  $method
      * @throws \InvalidArgumentException
      */
-    public function setMethod(string|null $method): void
+    public function setMethod(?string $method): void
     {
         if (\is_null($method)) {
             return;

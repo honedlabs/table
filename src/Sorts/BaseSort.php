@@ -30,7 +30,7 @@ abstract class BaseSort extends Primitive implements Sorts
     /**
      * Create a new sort instance specifying the database column, and optionally the display label.
      */
-    public function __construct(string $attribute, string $label = null)
+    public function __construct(string $attribute, ?string $label = null)
     {
         parent::__construct();
         $this->setAttribute($attribute);
@@ -40,12 +40,12 @@ abstract class BaseSort extends Primitive implements Sorts
     /**
      * Make a sort specifying the database column, and optionally the display label.
      */
-    public static function make(string $attribute, string $label = null): static
+    public static function make(string $attribute, ?string $label = null): static
     {
         return resolve(static::class, compact('attribute', 'label'));
     }
 
-    public function apply(Builder $builder, string|null $sortBy, string|null $direction = 'asc'): void
+    public function apply(Builder $builder, ?string $sortBy, ?string $direction = 'asc'): void
     {
         $this->setActive($this->isSorting($sortBy, $direction));
         $this->setActiveDirection($direction);
@@ -56,12 +56,12 @@ abstract class BaseSort extends Primitive implements Sorts
         );
     }
 
-    public function handle(Builder $builder, string|null $direction = null): void
+    public function handle(Builder $builder, ?string $direction = null): void
     {
         $builder->orderBy($this->getAttribute(), $direction ?? static::getDefaultDirection());
     }
 
-    public function isSorting(string|null $sortBy, string|null $direction): bool
+    public function isSorting(?string $sortBy, ?string $direction): bool
     {
         return $sortBy === $this->getParameterName();
     }

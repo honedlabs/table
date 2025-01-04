@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Honed\Core\Primitive;
+use Honed\Core\Concerns\Authorizable;
+use Honed\Core\Concerns\HasAlias;
+use Honed\Core\Concerns\HasAttribute;
+use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasType;
-use Honed\Core\Concerns\HasAlias;
-use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
+use Honed\Core\Concerns\Transformable;
+use Honed\Core\Concerns\Validatable;
+use Honed\Core\Primitive;
 use Honed\Table\Contracts\Filters;
 use Illuminate\Support\Stringable;
-use Honed\Core\Concerns\Validatable;
-use Honed\Core\Concerns\Authorizable;
-use Honed\Core\Concerns\HasAttribute;
-use Honed\Core\Concerns\Transformable;
 
 abstract class BaseFilter extends Primitive implements Filters
 {
@@ -34,7 +34,7 @@ abstract class BaseFilter extends Primitive implements Filters
     /**
      * Create a new filter instance specifying the database column, and optionally the display label.
      */
-    public function __construct(string $attribute, string $label = null)
+    public function __construct(string $attribute, ?string $label = null)
     {
         parent::__construct();
         $this->setAttribute($attribute);
@@ -44,7 +44,7 @@ abstract class BaseFilter extends Primitive implements Filters
     /**
      * Make a filter specifying the database column, and optionally the display label.
      */
-    public static function make(string $attribute, string $label = null): static
+    public static function make(string $attribute, ?string $label = null): static
     {
         return resolve(static::class, compact('attribute', 'label'));
     }
