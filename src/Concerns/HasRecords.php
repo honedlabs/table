@@ -4,118 +4,40 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Exceptions\InvalidPaginatorException;
-use Illuminate\Contracts\Pagination\CursorPaginator;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Honed\Table\Actions\InlineAction;
+use Honed\Table\Tests\Stubs\Product;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 trait HasRecords
 {
     /**
      * The records of the table retrieved from the resource.
-     *
+     * 
      * @var \Illuminate\Support\Collection<array-key,array<array-key,mixed>>|null
      */
     protected $records = null;
 
     /**
-     * The number of records to show per page.
-     * An array provides options allowing users to change the number of records shown to themper page.
-     *
-     * @var int|array<int,int>
+     * Whether to reduce the records to only contain properties present in the columns.
+     * 
+     * @var bool
      */
-    protected $perPage;
+    protected $reduce;
 
     /**
-     * The default number of records to show per page.
-     * If $perPage is an array, this should be one of the values.
-     * If not supplied, the lowest value in $perPage will be used.
-     *
-     * @var int
+     * Whether to reduce the records to only contain properties present in the columns by default.
+     * 
+     * @var bool
      */
-    protected $defaultPerPage;
+    protected static $defaultReduce = false;
 
     /**
-     * The number of records to use per page for all tables.
-     *
-     * @var int|array<int,int>
+     * Configure whether to reduce the records to only contain properties present in the columns by default.
      */
-    protected static $defaultPerPageAmount = 10;
-
-    /**
-     * The paginator instance to use for the table.
-     *
-     * @var class-string|null
-     */
-    protected $paginator;
-
-    /**
-     * The paginator type to use for all tables.
-     *
-     * @var class-string|null
-     */
-    protected static $defaultPaginator = LengthAwarePaginator::class;
-
-    /**
-     * The name to use for the page query parameter.
-     *
-     * @var string
-     */
-    protected $page;
-
-    /**
-     * The name to use for the page query parameter for all tables.
-     *
-     * @var string|null
-     */
-    protected static $pageKey = null;
-
-    /**
-     * The name to use for changing the number of records per page.
-     *
-     * @var string
-     */
-    protected $count;
-
-    /**
-     * The name to use for changing the number of records per page for all tables.
-     *
-     * @var string
-     */
-    protected static $countKey = 'show';
-
-    /**
-     * Configure the options for the number of items to show per page.
-     *
-     * @param  int|array<int,int>  $perPage
-     * @return void
-     */
-    public static function recordsPerPage(int|array $perPage)
+    public static function reduceRecords(bool $reduce = false): void
     {
-        static::$defaultPerPageAmount = $perPage;
-    }
-
-    /**
-     * Configure the default paginator to use.
-     *
-     * @param  string|\Honed\Table\Enums\Paginator  $paginator
-     * @return void
-     */
-    public static function usePaginator(string|Paginator $paginator)
-    {
-        static::$defaultPaginator = $paginator;
-    }
-
-    /**
-     * Configure the query parameter to use for the page number.
-     *
-     * @return void
-     */
-    public static function usePageKey(string $name)
-    {
-        static::$pageKey = $name;
+        self::$defaultReduce = $reduce;
     }
 
     /**
@@ -138,7 +60,7 @@ trait HasRecords
 
     /**
      * Set the records of the table.
-     *
+     * 
      * @param  \Illuminate\Support\Collection<int,array<string,mixed>>  $records
      */
     public function setRecords(Collection $records): void
@@ -147,120 +69,77 @@ trait HasRecords
     }
 
     /**
-     * Get the options for the number of items to show per page.
-     *
-     * @return int|array<int,int>
+     * Determine if the records should be reduced.
      */
-    public function getPerPage(): int|array
+    public function isReducing(): bool
     {
         return match (true) {
-            \property_exists($this, 'perPage') => $this->perPage,
-            \method_exists($this, 'perPage') => $this->perPage(),
-            default => static::$defaultPerPageAmount
+            \property_exists($this, 'reduce') && !\is_null($this->reduce) => (bool) $this->reduce,
+            \method_exists($this, 'reduce') => (bool) $this->reduce(),
+            default => static::$defaultReduce,
         };
     }
 
     /**
-     * Get the default paginator to use.
-     *
-     * @return class-string|null
+     * Format the records using the provided columns.
+     * 
+     * @param \Illuminate\Support\Collection<int,\Honed\Table\Columns\BaseColumn> $activeColumns
+     * @param \Illuminate\Support\Collection<int,\Honed\Table\Actions\InlineAction> $inlineActions
      */
-    public function getPaginator(): ?string
+    public function formatRecords(Collection $records, Collection $activeColumns, Collection $inlineActions = null, mixed $selectableEvaluation = null)
     {
-        return match (true) {
-            \property_exists($this, 'paginator') => $this->paginator,
-            \method_exists($this, 'paginator') => $this->paginator(),
-            default => static::$defaultPaginator
-        };
-    }
-
-    /**
-     * Get the query parameter to use for the page number.
-     */
-    public function getPageKey(): string
-    {
-        return match (true) {
-            \property_exists($this, 'page') => $this->page,
-            default => static::$pageKey
-        };
-    }
-
-    /**
-     * Get the query parameter to use for the number of items to show.
-     */
-    public function getCountKey(): string
-    {
-        return match (true) {
-            \property_exists($this, 'count') => $this->count,
-            \method_exists($this, 'count') => $this->count(),
-            default => static::$countKey
-        };
-    }
-
-    /**
-     * Get the pagination options for the number of items to show per page.
-     *
-     * @return array<int,array{value:int,active:bool}>
-     */
-    public function getPaginationCounts(?int $active = null): array
-    {
-        $perPage = $this->getRecordsPerPage();
-
-        return is_array($perPage)
-            ? array_map(fn ($count) => ['value' => $count, 'active' => $count === $active], $perPage)
-            : [['value' => $perPage, 'active' => true]];
-    }
-
-    public function getRecordsPerPage(): int|false
-    {
-        $request = request();
-
-        if (\is_null($this->getPaginator())) {
-            return false;
+        if ($records->isEmpty()) {
+            return $records;
         }
 
-        // Only an array can have pagination options, so short circuit if not an array
-        if (! \is_array($this->getPerPage())) {
-            return $this->getPerPage();
-        }
+        $columnsMap = $activeColumns->keyBy(fn ($column) => $column->getName());
+        $reducing = $this->isReducing();
 
-        // Force integer
-        $fromRequest = $request->integer($this->getPerPageName());
+        return $records->map(function ($record) use ($inlineActions, $selectableEvaluation, $columnsMap, $reducing) {
+            $formattedRecord = $reducing ? [] : (\is_array($record) ? $record : $record->toArray());
 
-        // Loop over the options to create a serializable array
+            if (! \is_null($inlineActions) && $inlineActions->isNotEmpty()) {
+                $formattedRecord['actions'] = $inlineActions
+                    ->filter(fn ($action) => $action->isAuthorized([
+                        'record' => $record,
+                        'model' => $record,
+                        'product' => $record,
+                    ], [
+                        Product::class => $record,
+                        Model::class => $record,
+                    ]))
+                    ->values();
+            }
 
-        // Must ensure the query param is in the array to prevent abuse of 1000s of records
+            $formattedRecord['selectable'] = $selectableEvaluation ? (bool) $selectableEvaluation($record) : false;
 
-        // 0 indicates no term is provided, so use the first option
-        if ($fromRequest === 0) {
-            return $this->getPerPage()[0];
-        }
+            // Format columns
+            foreach ($columnsMap as $name => $column) {
+                $value = $this->accessRecord($record, $name);
+                $formattedRecord[$name] = $column->format($value, $record);
+            }
 
-        return $this->getPerPage();
+            return $formattedRecord;
+        });
     }
 
-    /**
-     * Execute the query and paginate the results.
-     */
-    public function paginateRecords(Builder $query): Paginator|CursorPaginator|Collection
+    protected function accessRecord(mixed $record, string $property): mixed
     {
-        $paginator = match ($this->getPaginator()) {
-            LengthAwarePaginator::class => $query->paginate(
-                perPage: $this->getRecordsPerPage(),
-                pageName: $this->getPageKey(),
-            ),
-            Paginator::class => $query->simplePaginate(
-                perPage: $this->getRecordsPerPage(),
-                pageName: $this->getPageKey(),
-            ),
-            CursorPaginator::class => $query->cursorPaginate(
-                perPage: $this->getRecordsPerPage(),
-                cursorName: $this->getPageKey(),
-            ),
-            null => $query->get(),
-            default => throw new InvalidPaginatorException($this->getPaginator()),
+        return match (true) {
+            is_array($record) => $record[$property] ?? null,
+            default => $record->{$property} ?? null,
         };
+    }
 
-        return $paginator->withQueryString();
+    protected function resolveActions(Collection $actions, mixed $record): Collection
+    {
+        return $actions
+            ->filter(fn (InlineAction $action) => $action->isAuthorized($record))
+            ->each(fn (InlineAction $action) => $action->link->resolveLink([
+                'record' => $record,
+            ], [
+                
+            ]))
+            ->values();
     }
 }

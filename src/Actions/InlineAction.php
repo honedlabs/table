@@ -6,15 +6,15 @@ namespace Honed\Table\Actions;
 
 use Honed\Core\Concerns\IsDefault;
 use Honed\Core\Contracts\HigherOrder;
+use Honed\Core\Link\Concerns\Linkable;
 use Honed\Core\Contracts\ProxiesHigherOrder;
+use Honed\Core\Link\Proxies\HigherOrderLink;
 use Honed\Table\Confirm\Concerns\Confirmable;
 use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
-use Honed\Table\Url\Concerns\Urlable;
-use Honed\Table\Url\Proxies\HigherOrderUrl;
 
 /**
  * @property-read \Honed\Table\Confirm\Confirm $confirm
- * @property-read \Honed\Table\Url\Url $url
+ * @property-read \Honed\Core\Link\Link $link
  */
 class InlineAction extends BaseAction implements ProxiesHigherOrder
 {
@@ -22,33 +22,28 @@ class InlineAction extends BaseAction implements ProxiesHigherOrder
     use Concerns\IsBulk;
     use Confirmable;
     use IsDefault;
-    use Urlable;
+    use Linkable;
 
     public function setUp(): void
     {
-        $this->setType('inline');
+        $this->setType('action:inline');
     }
 
-    /**
-     * Dynamically forward calls to the proxies.
-     *
-     * @throws \Exception
-     */
     public function __get(string $property): HigherOrder
     {
         return match ($property) {
             'confirm' => new HigherOrderConfirm($this),
-            'url' => new HigherOrderUrl($this),
-            default => throw new \Exception("Property [{$property}] does not exist on ".self::class),
+            'link' => new HigherOrderLink($this),
+            default => parent::__get($property),
         };
     }
 
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'hasAction' => $this->hasAction(),
+            'action' => $this->hasAction(),
             'confirm' => $this->getConfirm()?->toArray(),
-            ...$this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
+            ...$this->isLinkable() ? [...$this->getLink()?->toArray()] : [],
         ]);
     }
 }

@@ -1,42 +1,63 @@
 <?php
 
+use Honed\Table\Confirm\Concerns\HasIntent;
 use Honed\Table\Confirm\Confirm;
+use Honed\Table\Tests\Stubs\Product;
+
+class HasIntentTest
+{
+    use HasIntent;
+}
 
 beforeEach(function () {
     $this->confirm = Confirm::make();
 });
 
-it('does not have a intent type by default', function () {
-    expect($this->confirm->getIntent())->toBeNull();
-    expect($this->confirm->hasIntent())->toBeFalse();
+beforeEach(function () {
+    $this->test = new HasIntentTest;
 });
 
-it('can set a intent type', function () {
-    expect($this->confirm->intent('Updated'))->toBeInstanceOf(Confirm::class)
-        ->getIntent()->toBe('Updated');
+it('has no intent by default', function () {
+    expect($this->test)
+        ->getIntent()->toBeNull()
+        ->hasIntent()->toBeFalse();
 });
 
-it('can be set using setter', function () {
-    $this->confirm->setIntent('Update');
-    expect($this->confirm->getIntent())->toBe('Update');
+it('sets intent', function () {
+    $this->test->setIntent('Intent');
+    expect($this->test)
+        ->getIntent()->toBe('Intent')
+        ->hasIntent()->toBeTrue();
 });
 
-it('does not accept null values', function () {
-    $this->confirm->setIntent(null);
-    expect($this->confirm->getIntent())->toBeNull();
+it('rejects null values', function () {
+    $this->test->setIntent('Intent');
+    $this->test->setIntent(null);
+    expect($this->test)
+        ->getIntent()->toBe('Intent')
+        ->hasIntent()->toBeTrue();
 });
 
-it('can be set as constructive', function () {
-    expect($this->confirm->constructive())->toBeInstanceOf(Confirm::class)
-        ->getIntent()->toBe(Confirm::Constructive);
+it('chains intent', function () {
+    expect($this->test->intent('Intent'))->toBeInstanceOf(HasIntentTest::class)
+        ->getIntent()->toBe('Intent')
+        ->hasIntent()->toBeTrue();
 });
 
-it('can be set as destructive', function () {
-    expect($this->confirm->destructive())->toBeInstanceOf(Confirm::class)
-        ->getIntent()->toBe(Confirm::Destructive);
+it('has shorthand `constructive`', function () {
+    expect($this->test->constructive())->toBeInstanceOf(HasIntentTest::class)
+        ->getIntent()->toBe(HasIntentTest::Constructive)
+        ->hasIntent()->toBeTrue();
 });
 
-it('can be set as informative', function () {
-    expect($this->confirm->informative())->toBeInstanceOf(Confirm::class)
-        ->getIntent()->toBe(Confirm::Informative);
+it('has shorthand `destructive`', function () {
+    expect($this->test->destructive())->toBeInstanceOf(HasIntentTest::class)
+        ->getIntent()->toBe(HasIntentTest::Destructive)
+        ->hasIntent()->toBeTrue();
+});
+
+it('has shorthand `informative`', function () {
+    expect($this->test->informative())->toBeInstanceOf(HasIntentTest::class)
+        ->getIntent()->toBe(HasIntentTest::Informative)
+        ->hasIntent()->toBeTrue();
 });

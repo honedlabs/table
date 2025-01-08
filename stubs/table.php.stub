@@ -11,7 +11,7 @@ use Honed\Table\Actions\PageAction;
 use Honed\Table\Actions\InlineAction;
 use Illuminate\Contracts\Database\Query\Builder;
 
-final class {{ class }} extends Table
+class {{ class }} extends Table
 {
     /* The database column(s) to use for searching */
     public $search = [];

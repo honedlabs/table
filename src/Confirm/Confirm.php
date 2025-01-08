@@ -21,16 +21,15 @@ class Confirm extends Primitive
      *
      * @param  string|(\Closure(mixed...):string)|null  $title
      * @param  string|(\Closure(mixed...):string)|null  $description
-     * @param  string|(\Closure():string)|null  $cancel
-     * @param  string|(\Closure():string)|null  $success
-     * @param  string|(\Closure():string)|null  $intent
+     * @param  string|(\Closure(mixed...):string)|null  $cancel
+     * @param  string|(\Closure(mixed...):string)|null  $success
      */
     public function __construct(
         string|\Closure|null $title = null,
         string|\Closure|null $description = null,
         string|\Closure|null $cancel = null,
         string|\Closure|null $success = null,
-        string|\Closure|null $intent = null,
+        ?string $intent = null,
     ) {
         parent::__construct();
         $this->setTitle($title);
@@ -45,21 +44,18 @@ class Confirm extends Primitive
      *
      * @param  string|(\Closure(mixed...):string)|null  $title
      * @param  string|(\Closure(mixed...):string)|null  $description
-     * @param  string|(\Closure():string)|null  $cancel
-     * @param  string|(\Closure():string)|null  $success
-     * @param  string|(\Closure():string)|null  $intent
+     * @param  string|(\Closure(mixed...):string)|null  $cancel
+     * @param  string|(\Closure(mixed...):string)|null  $success
      */
     public static function make(
         string|\Closure|null $title = null,
         string|\Closure|null $description = null,
         string|\Closure|null $cancel = null,
         string|\Closure|null $success = null,
-        string|\Closure|null $intent = null,
+        ?string $intent = null,
     ): static {
         return resolve(static::class, compact('title', 'description', 'cancel', 'success', 'intent'));
     }
-
-    // Needs a resolver
 
     public function toArray()
     {

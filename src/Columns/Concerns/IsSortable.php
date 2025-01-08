@@ -4,31 +4,29 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Honed\Table\Sorts\BaseSort;
 use Honed\Table\Sorts\Sort;
 
 /**
- * @method string|null getName()
+ * @mixin \Honed\Core\Concerns\HasName
  */
 trait IsSortable
 {
     /**
-     * @var bool|(\Closure():bool)
+     * @var bool|string
      */
     protected $sortable = false;
 
     /**
-     * @var \Honed\Table\Sorts\BaseSort
+     * @var \Honed\Table\Sorts\Contracts\Sort|null
      */
     protected $sort;
 
     /**
-     * Set the sortable property, chainable.
+     * Set as sortable, chainable.
      *
-     * @param  bool|(\Closure():bool)  $sortable
      * @return $this
      */
-    public function sortable(bool|\Closure $sortable = true): static
+    public function sortable(bool|string|null $sortable = true): static
     {
         $this->setSortable($sortable);
 
@@ -36,45 +34,35 @@ trait IsSortable
     }
 
     /**
-     * Set the sortable property quietly.
-     *
-     * @param  bool|(\Closure():bool)|null  $sortable
+     * Set as sortable quietly.
      */
-    public function setSortable(bool|\Closure|null $sortable): void
+    public function setSortable(bool|string|null $sortable): void
     {
         if (\is_null($sortable)) {
             return;
         }
 
-        $this->sort = Sort::make($this->getName())->direction(null);
-        $this->sortable = $sortable;
+        $sortName = \is_string($sortable) 
+            ? $sortable 
+            : $this->getName();
+
+        $this->sort = Sort::make($sortName)->agnostic();
+        $this->sortable = (bool) $sortable;
     }
 
     /**
-     * Determine if the column is sortable.
+     * Determine if it is sortable.
      */
     public function isSortable(): bool
     {
-        return (bool) value($this->sortable);
-    }
-
-    /**
-     * Determine if the column is not sortable.
-     */
-    public function isNotSortable(): bool
-    {
-        return ! $this->isSortable();
+        return $this->sortable;
     }
 
     /**
      * Get the sort instance.
      */
-    public function getSort(): ?BaseSort
+    public function getSort(): ?Sort
     {
-        if ($this->isNotSortable()) {
-            return null;
-        }
-
         return $this->sort;
     }
 }

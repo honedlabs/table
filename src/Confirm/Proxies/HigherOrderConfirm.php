@@ -32,7 +32,7 @@ class HigherOrderConfirm implements HigherOrder
     {
         $primitive = $this->primitive;
 
-        $primitive->makeConfirm(); // @phpstan-ignore-line
+        $primitive->confirmInstance(); // @phpstan-ignore-line
 
         $confirm = $primitive->getConfirm(); // @phpstan-ignore-line
         if ($confirm && method_exists($confirm, $name)) {

@@ -1,27 +1,56 @@
 <?php
 
+use Honed\Core\Concerns\Evaluable;
+use Honed\Table\Confirm\Concerns\HasCancel;
 use Honed\Table\Confirm\Confirm;
+use Honed\Table\Tests\Stubs\Product;
+
+class HasCancelTest
+{
+    use HasCancel;
+    use Evaluable;
+}
 
 beforeEach(function () {
     $this->confirm = Confirm::make();
 });
 
-it('does not have a cancel message by default', function () {
-    expect($this->confirm->getCancel())->toBeNull();
-    expect($this->confirm->hasCancel())->toBeFalse();
+beforeEach(function () {
+    $this->test = new HasCancelTest;
 });
 
-it('can set a cancel message', function () {
-    expect($this->confirm->cancel('Updated'))->toBeInstanceOf(Confirm::class)
-        ->getCancel()->toBe('Updated');
+it('has no cancel by default', function () {
+    expect($this->test)
+        ->getCancel()->toBeNull()
+        ->hasCancel()->toBeFalse();
 });
 
-it('can be set using setter', function () {
-    $this->confirm->setCancel('Update');
-    expect($this->confirm->getCancel())->toBe('Update');
+it('sets cancel', function () {
+    $this->test->setCancel('Cancel');
+    expect($this->test)
+        ->getCancel()->toBe('Cancel')
+        ->hasCancel()->toBeTrue();
 });
 
-it('does not accept null values', function () {
-    $this->confirm->setCancel(null);
-    expect($this->confirm->getCancel())->toBeNull();
+it('rejects null values', function () {
+    $this->test->setCancel('Cancel');
+    $this->test->setCancel(null);
+    expect($this->test)
+        ->getCancel()->toBe('Cancel')
+        ->hasCancel()->toBeTrue();
+});
+
+it('chains cancel', function () {
+    expect($this->test->cancel('Cancel'))->toBeInstanceOf(HasCancelTest::class)
+        ->getCancel()->toBe('Cancel')
+        ->hasCancel()->toBeTrue();
+});
+
+it('resolves cancel', function () {
+    $product = product();
+
+    expect($this->test->cancel(fn (Product $product) => $product->name))
+        ->toBeInstanceOf(HasCancelTest::class)
+        ->resolveCancel(['product' => $product])->toBe($product->name)
+        ->getCancel()->toBe($product->name);
 });

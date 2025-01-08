@@ -1,27 +1,56 @@
 <?php
 
+use Honed\Core\Concerns\Evaluable;
+use Honed\Table\Confirm\Concerns\HasSuccess;
 use Honed\Table\Confirm\Confirm;
+use Honed\Table\Tests\Stubs\Product;
+
+class HasSuccessTest
+{
+    use HasSuccess;
+    use Evaluable;
+}
 
 beforeEach(function () {
     $this->confirm = Confirm::make();
 });
 
-it('does not have a success message by default', function () {
-    expect($this->confirm->getSuccess())->toBeNull();
-    expect($this->confirm->hasSuccess())->toBeFalse();
+beforeEach(function () {
+    $this->test = new HasSuccessTest;
 });
 
-it('can set a success message', function () {
-    expect($this->confirm->success('Updated'))->toBeInstanceOf(Confirm::class)
-        ->getSuccess()->toBe('Updated');
+it('has no success by default', function () {
+    expect($this->test)
+        ->getSuccess()->toBeNull()
+        ->hasSuccess()->toBeFalse();
 });
 
-it('can be set using setter', function () {
-    $this->confirm->setSuccess('Update');
-    expect($this->confirm->getSuccess())->toBe('Update');
+it('sets success', function () {
+    $this->test->setSuccess('Success');
+    expect($this->test)
+        ->getSuccess()->toBe('Success')
+        ->hasSuccess()->toBeTrue();
 });
 
-it('does not accept null values', function () {
-    $this->confirm->setSuccess(null);
-    expect($this->confirm->getSuccess())->toBeNull();
+it('rejects null values', function () {
+    $this->test->setSuccess('Success');
+    $this->test->setSuccess(null);
+    expect($this->test)
+        ->getSuccess()->toBe('Success')
+        ->hasSuccess()->toBeTrue();
+});
+
+it('chains success', function () {
+    expect($this->test->success('Success'))->toBeInstanceOf(HasSuccessTest::class)
+        ->getSuccess()->toBe('Success')
+        ->hasSuccess()->toBeTrue();
+});
+
+it('resolves success', function () {
+    $product = product();
+
+    expect($this->test->success(fn (Product $product) => $product->name))
+        ->toBeInstanceOf(HasSuccessTest::class)
+        ->resolveSuccess(['product' => $product])->toBe($product->name)
+        ->getSuccess()->toBe($product->name);
 });

@@ -1,94 +1,85 @@
 <?php
 
+use Honed\Table\Table;
 use Honed\Table\Sorts\Sort;
 use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Support\Facades\Request;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 beforeEach(function () {
-    $this->sortName = 'sort';
-    $this->orderName = 'order';
-    $this->sortKey = 'created_at';
-    $this->order = 'asc';
+    $this->name = 'created_at';
+    $this->dir = Sort::Ascending;
+    $this->sort = Sort::make($this->name);
     $this->builder = Product::query();
-    Sort::sortByDescending();
-    $this->sort = Sort::make($this->sortKey);
-    Request::swap(Request::create('/', 'GET', [$this->sortName => $this->sortKey, $this->orderName => $this->order]));
+    Request::swap(Request::create('/', HttpFoundationRequest::METHOD_GET, [Table::SortKey => $this->name, Table::OrderKey => $this->dir]));
 });
 
 it('can be instantiated', function () {
-    expect(new Sort('updated_at'))->toBeInstanceOf(Sort::class)
+    expect(new Sort('updated_at'))
+        ->toBeInstanceOf(Sort::class)
         ->getAttribute()->toBe('updated_at')
-        ->getLabel()->toBe('Updated at');
+        ->getLabel()->toBe('Updated at')
+        ->getDirection()->toBeNull()
+        ->getParameterName()->toBe('updated_at')
+        ->isActive()->toBeFalse();
 });
 
 it('can be made', function () {
-    expect(Sort::make('updated_at', 'Most recent'))->toBeInstanceOf(Sort::class)
+    expect(Sort::make('updated_at', 'Most recent'))
+        ->toBeInstanceOf(Sort::class)
         ->getAttribute()->toBe('updated_at')
-        ->getLabel()->toBe('Most recent');
+        ->getLabel()->toBe('Most recent')
+        ->getParameterName()->toBe('updated_at')
+        ->isActive()->toBeFalse();
 });
 
-it('retrieves the value from the request', function () {
-    expect($this->sort->getValueFromRequest($this->sortName, $this->orderName))->toEqual([
-        $this->sortKey,
-        $this->order,
-    ]);
-});
-
-it('determines if the filter should be applied', function () {
-    expect($this->sort->isSorting($this->sortKey, $this->order))->toBeTrue();
-    expect($this->sort->isSorting('other', $this->order))->toBeFalse();
+it('checks if it is sorting', function () {
+    expect($this->sort->isSorting($this->name, $this->dir))
+        ->toBeTrue();
+    expect($this->sort->isSorting('other', $this->dir))
+        ->toBeFalse();
 });
 
 it('differentiates between dot notation attributes', function () {
-    expect(Sort::make('user.created_at', 'User created at'))
-        ->getAttribute()->toBe('user.created_at')
+    expect(Sort::make('users.created_at'))
+        ->getAttribute()->toBe('users.created_at')
         ->getAlias()->toBeNull()
-        ->getValueFromRequest($this->sortName, $this->orderName)->toEqual([
-            $this->sortKey, // resolves as just created_at
-            $this->order,
-        ]);
+        ->getLabel()->toBe('Created at');
 });
 
-it('has an array form', function () {
-    // The active status is only applied when the sort itself is applied
+it('has array representation', function () {
     expect($this->sort->toArray())->toEqual([
-        'name' => $this->sortKey,
+        'name' => $this->name,
         'label' => 'Created at',
         'type' => 'sort',
-        'isActive' => false,
+        'active' => false,
         'meta' => [],
-        'direction' => null, // has a direction field as it is agnostic
+        'direction' => null,
     ]);
 });
 
-it('can apply the filter to a query', function () {
-    $this->sort->apply($this->builder, $this->sortName, $this->orderName);
+it('can be applied', function () {
+    $this->sort->apply($this->builder, $this->name, $this->dir);
     expect($this->builder->getQuery()->orders)
         ->toHaveCount(1)
         ->toEqual([
             [
-                'column' => $this->sortKey,
-                'direction' => Sort::Ascending,
+                'column' => $this->name,
+                'direction' => $this->dir,
             ],
         ]);
+
     expect($this->sort)
         ->isActive()->toBeTrue()
-        ->getActiveDirection()->toBe(Sort::Ascending);
+        ->getActiveDirection()->toBe($this->dir);
 });
 
-it('can extract a direction from the sort name', function () {
-    Request::swap(Request::create('/', 'GET', [$this->sortName => '-'.$this->sortKey]));
-    $this->sort->apply($this->builder, $this->sortName, $this->orderName);
+it('is not applied if not matching', function () {
+    $this->sort->apply($this->builder, 'other', $this->dir);
     expect($this->builder->getQuery()->orders)
-        ->toHaveCount(1)
-        ->toEqual([
-            [
-                'column' => $this->sortKey,
-                'direction' => Sort::Descending,
-            ],
-        ]);
+        ->toBeNull();
 
     expect($this->sort)
-        ->isActive()->toBeTrue()
-        ->getActiveDirection()->toBe(Sort::Descending);
+        ->isActive()->toBeFalse()
+        ->getActiveDirection()->toBe($this->dir);
 });

@@ -4,91 +4,93 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
+use Illuminate\Http\Request;
+use Honed\Core\Options\Option;
 use Honed\Core\Concerns\IsStrict;
-use Honed\Core\Options\Concerns\HasOptions;
 use Honed\Table\Filters\Enums\Clause;
 use Honed\Table\Filters\Enums\Operator;
 use Illuminate\Database\Eloquent\Builder;
+use Honed\Core\Options\Concerns\HasOptions;
 
-class SetFilter extends BaseFilter
+class SetFilter extends Filter
 {
-    use Concerns\HasClause;
-    use Concerns\HasOperator;
-    use Concerns\IsMultiple;
     use HasOptions;
     use IsStrict;
 
+    /**
+     * @var bool
+     */
+    protected $multiple = false;
+
     public function setUp(): void
     {
+        parent::setUp();
         $this->setType('filter:set');
-        $this->setClause(Clause::Is);
-        $this->setOperator(Operator::Equal);
     }
 
-    public function apply(Builder $builder): void
-    {
-        $value = $this->transform($this->getValueFromRequest());
-        $this->setValue($value);
-        $this->setActive($this->isFiltering($value));
-
-        $builder->when(
-            $this->isActive() && $this->validate($value),
-            fn (Builder $builder) => $this->handle($builder),
-        );
-    }
-
-    /**
-     * Determine if the filter should be applied.
-     */
     public function isFiltering(mixed $value): bool
     {
         if (\is_null($value)) {
             return false;
         }
 
-        // Check if the value is in the options
-        $isFiltering = false;
-
-        foreach ($this->getOptions() as $option) {
-            if ($option->getValue() === $value) {
-                $option->setActive(true);
-                $isFiltering = true;
-            } else {
-                $option->setActive(false);
-            }
+        if (! $this->hasOptions()) {
+            return true;
         }
 
-        // If it not strict about the values, then filtering is true
-        return $isFiltering || ! $this->isStrict();
+        $filtering = $this->collectOptions()->reduce(
+            static fn (bool $filtering, Option $option) => $option
+                ->active(\in_array($option->getValue(), (array) $value))
+                ->isActive() || $filtering
+            , false);
+
+        return ! $this->isStrict() || $filtering;
     }
 
-    /**
-     * Retrieve the value of the filter name from the current request.
-     *
-     * @return int|string|array<int,int|string>|null
-     */
-    public function getValueFromRequest(): mixed
+    public function getValueFromRequest(Request $request = null): mixed
     {
-        $input = request()->input($this->getParameterName(), null);
-        if (! \is_null($input) && $this->isMultiple()) {
-            return \str_getcsv($input);
-        }
+        $input = ($request ?? request())
+            ->input($this->getParameterName(), null);
 
-        return $input;
-    }
-
-    public function handle(Builder $builder): void
-    {
-        match ($this->isMultiple()) {
-            true => $builder->whereIn($this->getAttribute(), $this->getValue()),
-            false => $this->getClause()->apply($builder, $this->getAttribute(), $this->getOperator(), $this->getValue()),
-        };
+        return ! \is_null($input) && $this->isMultiple()
+            ? \str_getcsv((string) $input)
+            : $input;
     }
 
     public function toArray(): array
     {
         return \array_merge(parent::toArray(), [
             'options' => $this->getOptions(),
+            'multiple' => $this->isMultiple(),
         ]);
+    }
+
+    /**
+     * Set as multiple, chainable.
+     */
+    public function multiple(bool $multiple = true): static
+    {
+        $this->setMultiple($multiple);
+
+        return $this;
+    }
+
+    /**
+     * Set as multiple quietly.
+     */
+    public function setMultiple(bool $multiple): void
+    {
+        $this->multiple = $multiple;
+
+        !$this->getClause()?->isMultiple()
+            && $this->setClause(Clause::Contains);
+    }
+
+    /**
+     * Determine if it is multiple.
+     */
+    public function isMultiple(): bool
+    {
+        return $this->multiple;
     }
 }

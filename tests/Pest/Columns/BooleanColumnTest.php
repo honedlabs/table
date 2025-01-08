@@ -8,7 +8,7 @@ beforeEach(function () {
 });
 
 it('has type boolean', function () {
-    expect($this->column->getType())->toBe('boolean');
+    expect($this->column->getType())->toBe('col:bool');
 });
 
 it('has boolean formatter', function () {

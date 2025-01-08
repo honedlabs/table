@@ -10,14 +10,14 @@ namespace Honed\Table\Confirm\Concerns;
 trait HasSuccess
 {
     /**
-     * @var string|(\Closure():string)|null
+     * @var string|(\Closure(mixed...):string)|null
      */
     protected $success = null;
 
     /**
      * Set the success message, chainable.
      *
-     * @param  string|\Closure():string  $success
+     * @param  string|\Closure(mixed...):string  $success
      * @return $this
      */
     public function success(string|\Closure $success): static
@@ -30,7 +30,7 @@ trait HasSuccess
     /**
      * Set the success message quietly.
      *
-     * @param  string|(\Closure():string)|null  $success
+     * @param  string|(\Closure(mixed...):string)|null  $success
      */
     public function setSuccess(string|\Closure|null $success): void
     {
@@ -41,11 +41,28 @@ trait HasSuccess
     }
 
     /**
-     * Get the success message.
+     * Get the success message using the given closure dependencies.
+     *
+     * @param  array<string, mixed>  $named
+     * @param  array<string, mixed>  $typed
      */
-    public function getSuccess(): ?string
+    public function getSuccess(array $named = [], array $typed = []): ?string
     {
-        return $this->evaluate($this->success);
+        return $this->evaluate($this->success, $named, $typed);
+    }
+
+    /**
+     * Resolve the success message using the given closure dependencies.
+     *
+     * @param  array<string, mixed>  $named
+     * @param  array<string, mixed>  $typed
+     */
+    public function resolveSuccess(array $named = [], array $typed = []): ?string
+    {
+        $success = $this->getSuccess($named, $typed);
+        $this->setSuccess($success);
+
+        return $success;
     }
 
     /**

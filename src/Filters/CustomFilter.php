@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
 class CustomFilter extends BaseFilter
@@ -15,24 +16,12 @@ class CustomFilter extends BaseFilter
         $this->setType('filter:custom');
     }
 
-    public function apply(Builder $builder): void
-    {
-        $value = $this->transform($this->getValueFromRequest());
-        $this->setValue($value);
-        $this->setActive($this->isFiltering($value));
-
-        $builder->when(
-            $this->isActive() && $this->validate($value),
-            fn (Builder $builder) => $this->handle($builder),
-        );
-    }
-
     public function handle(Builder $builder): void
     {
         if (! $this->hasQuery()) {
             return;
         }
 
-        $this->getQuery()($builder);
+        \call_user_func($this->getQuery(), $builder);
     }
 }

@@ -1,32 +1,69 @@
 <?php
 
+use Honed\Core\Concerns\Evaluable;
+use Honed\Table\Sorts\Sort;
 use Honed\Table\Columns\Column;
+use Honed\Core\Concerns\HasName;
+use Honed\Table\Columns\Concerns\IsSortable;
+
+class IsSortableTest
+{
+    use IsSortable;
+    use HasName;
+    use Evaluable;
+}
 
 beforeEach(function () {
-    $this->column = Column::make('test');
+    $this->test = new IsSortableTest;
+    $this->test->setName('name');
 });
 
-it('is not sortable by default', function () {
-    expect($this->column->isSortable())->toBeFalse();
-    expect($this->column->isNotSortable())->toBeTrue();
+it('is not `sortable` by default', function () {
+    expect($this->test->isSortable())->toBeFalse();
 });
 
-it('can be set to sortable', function () {
-    expect($this->column->sortable())->toBeInstanceOf(Column::class)
-        ->isSortable()->toBeTrue();
+it('sets sortable', function () {
+    $this->test->setSortable(true);
+    expect($this->test)
+        ->isSortable()->toBeTrue()
+        ->getSort()->scoped(fn ($sort) => $sort
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('name')
+        );
 });
 
-it('can be set to not sortable', function () {
-    expect($this->column->sortable(false))->toBeInstanceOf(Column::class)
-        ->isSortable()->toBeFalse();
+it('chains sortable', function () {
+    expect($this->test->sortable(true))
+        ->toBeInstanceOf(IsSortableTest::class)
+        ->isSortable()->toBeTrue()
+        ->getSort()->scoped(fn ($sort) => $sort
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('name')
+        );
 });
 
 it('can be set using setter', function () {
-    $this->column->setSortable(true);
-    expect($this->column->isSortable())->toBeTrue();
+    $this->test->setSortable(true);
+    expect($this->test->isSortable())->toBeTrue();
 });
 
-it('does not accept null values', function () {
-    $this->column->setSortable(null);
-    expect($this->column->isSortable())->toBeFalse();
+it('rejects null values', function () {
+    $this->test->setSortable(true);
+    $this->test->setSortable(null);
+    expect($this->test)
+        ->isSortable()->toBeTrue()
+        ->getSort()->scoped(fn ($sort) => $sort
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('name')
+        );
+});
+
+it('can change column name', function () {
+    expect($this->test->sortable('created_at'))
+        ->toBeInstanceOf(IsSortableTest::class)
+        ->isSortable()->toBeTrue()
+        ->getSort()->scoped(fn ($sort) => $sort
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('created_at')
+        );
 });

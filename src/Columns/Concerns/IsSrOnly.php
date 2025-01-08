@@ -10,17 +10,16 @@ namespace Honed\Table\Columns\Concerns;
 trait IsSrOnly
 {
     /**
-     * @var bool|(\Closure():bool)
+     * @var bool
      */
     protected $srOnly = false;
 
     /**
-     * Set the screen reader only property, chainable.
+     * Set as screen reader only, chainable.
      *
-     * @param  bool|(\Closure():bool)  $srOnly
      * @return $this
      */
-    public function srOnly(bool|\Closure $srOnly = true): static
+    public function srOnly(bool $srOnly = true): static
     {
         $this->setSrOnly($srOnly);
 
@@ -28,31 +27,18 @@ trait IsSrOnly
     }
 
     /**
-     * Set the screen reader only property quietly.
-     *
-     * @param  bool|(\Closure():bool)|null  $srOnly
+     * Set as screen reader only quietly.
      */
-    public function setSrOnly(bool|\Closure|null $srOnly): void
+    public function setSrOnly(bool $srOnly): void
     {
-        if (\is_null($srOnly)) {
-            return;
-        }
         $this->srOnly = $srOnly;
     }
 
     /**
-     * Determine if the column is only for screen readers.
+     * Determine if it is only for screen readers.
      */
     public function isSrOnly(): bool
     {
-        return (bool) $this->evaluate($this->srOnly);
-    }
-
-    /**
-     * Determine if the column is not only for screen readers.
-     */
-    public function isNotSrOnly(): bool
-    {
-        return ! $this->isSrOnly();
+        return $this->srOnly;
     }
 }

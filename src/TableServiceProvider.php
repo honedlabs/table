@@ -8,17 +8,11 @@ use Illuminate\Support\ServiceProvider;
 
 class TableServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/table.php', 'table');
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {

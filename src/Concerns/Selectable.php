@@ -4,46 +4,54 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-/**
- * @mixin \Honed\Core\Concerns\Evaluable
- */
 trait Selectable
 {
     /**
      * Whether the records are selectable for bulk actions.
-     *
-     * @var bool|(\Closure():bool)
+     * 
+     * @var (\Closure(mixed...):bool)|null
      */
-    // protected $selectable;
+    protected $selectable;
 
     /**
-     * @var bool|(\Closure():bool)
-     */
-    protected static $globalSelectable = true;
-
-    /**
-     * Set the selectable for bulk actions property quietly.
+     * Set the closure for whether a row is selectable quietly quietly.
      *
-     * @param  bool|(\Closure():bool)  $selectable
+     * @param  (\Closure(mixed...):bool)|null  $selectable
      */
-    public static function setSelectable(bool|\Closure $selectable = true): void
+    public function setSelectable(\Closure|null $selectable): void
     {
-        static::$globalSelectable = $selectable;
+        $this->selectable = $selectable;
     }
 
     /**
-     * Determine if the row is selectable for bulk actions.
+     * Retrieve the selectable closure.
+     * 
+     * @return (\Closure(mixed...):bool)|array{0:$this,1:string}|null
      */
-    public function isSelectable(): bool
+    public function getSelector(): \Closure|array|null
     {
-        return (bool) ($this->evaluate($this->inspect('selectable', null)) ?? static::$globalSelectable);
+        return match (true) {
+            \property_exists($this, 'selectable') && ! \is_null($this->selectable) => $this->selectable,
+            \method_exists($this, 'selectable') => [$this, 'selectable'],
+            default => null,
+        };
     }
 
     /**
-     * Determine if the row is not selectable for bulk actions.
+     * Determine if the table has a selectable closure available.
      */
-    public function isNotSelectable(): bool
+    public function hasSelector(): bool
     {
-        return ! $this->isSelectable();
+        return ! \is_null($this->getSelector());
+    }
+
+    /**
+     * Determine if a record is selectable using the provided closure.
+     */
+    public function isSelectable(mixed $record): bool
+    {
+        return ! $this->hasSelector() 
+            ? true 
+            : \call_user_func($this->getSelector(), $record);
     }
 }

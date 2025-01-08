@@ -4,22 +4,27 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Columns\BaseColumn;
-use Honed\Table\Sorts\BaseSort;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Honed\Table\Sorts\Contracts\Sort;
+use Illuminate\Database\Eloquent\Builder;
 
 trait Sortable
 {
-    public const SortKey = 'sort';
+    const SortKey = 'sort';
 
-    public const OrderKey = 'order';
+    const OrderKey = 'order';
+
+    /**
+     * @var array<int,\Honed\Table\Sorts\Contracts\Sort>
+     */
+    protected $sorts;
 
     /**
      * @var string
      */
-    // protected $sort;
+    protected $sort;
 
     /**
      * @var string
@@ -29,7 +34,7 @@ trait Sortable
     /**
      * @var string
      */
-    // protected $order;
+    protected $order;
 
     /**
      * @var string
@@ -37,9 +42,25 @@ trait Sortable
     protected static $orderKey = self::OrderKey;
 
     /**
+     * Configure the default query parameter to use for sorting.
+     */
+    public static function useSortKey(?string $sortKey = null): void
+    {
+        static::$sortKey = $sortKey ?? self::SortKey;
+    }
+
+    /**
+     * Configure the default query parameter to use for ordering.
+     */
+    public static function useOrderKey(?string $orderKey = null): void
+    {
+        static::$orderKey = $orderKey ?? self::OrderKey;
+    }
+
+    /**
      * Set the list of sorts to apply to a query.
      *
-     * @param  array<int, \Honed\Table\Sorts\BaseSort>|null  $sorts
+     * @param  array<int, \Honed\Table\Sorts\Contracts\Sort>|null  $sorts
      */
     public function setSorts(?array $sorts): void
     {
@@ -59,37 +80,17 @@ trait Sortable
     }
 
     /**
-     * Get the sorts to apply to the resource.
+     * Get the sorts to apply to a resource.
      *
-     * @return Collection<\Honed\Table\Sorts\BaseSort>
+     * @return Collection<\Honed\Table\Sorts\Contracts\Sort>
      */
     public function getSorts(): Collection
     {
-        return collect(match (true) {
-            \property_exists($this, 'sorts') => $this->sorts,
+        return collect(match(true) {
+            \property_exists($this, 'sorts') && !\is_null($this->sorts) => $this->sorts,
             \method_exists($this, 'sorts') => $this->sorts(),
             default => [],
         });
-    }
-
-    /**
-     * Configure the default query parameter to use for sorting.
-     *
-     * @return void
-     */
-    public static function useSortKey(string $sortKey)
-    {
-        static::$sortKey = $sortKey;
-    }
-
-    /**
-     * Configure the default query parameter to use for ordering.
-     *
-     * @return void
-     */
-    public static function useOrderKey(string $orderKey)
-    {
-        static::$orderKey = $orderKey;
     }
 
     /**
@@ -99,7 +100,7 @@ trait Sortable
      */
     public function getSortKey()
     {
-        return \property_exists($this, 'sort')
+        return \property_exists($this, 'sort') && !\is_null($this->sort)
             ? $this->sort
             : static::$sortKey;
     }
@@ -111,7 +112,7 @@ trait Sortable
      */
     public function getOrderKey()
     {
-        return \property_exists($this, 'order')
+        return \property_exists($this, 'order') && !\is_null($this->order)
             ? $this->order
             : static::$orderKey;
     }
@@ -119,32 +120,19 @@ trait Sortable
     /**
      * Retrieve the sort value and direction from the current request.
      *
-     * @return array{string|null,'asc'|'desc'|null} [sort field, direction]
+     * @return array{string|null,string|null} [sort field, direction]
      */
     public function getSortParameters(?Request $request = null): array
     {
         $request = $request ?? request();
 
-        // Get the raw sort value, ensuring null if empty
-        $sortBy = $request->string($this->getSortKey())->toString();
-        $sortBy = $sortBy === '' ? null : $sortBy;
-
-        $sortDirection = null;
-
-        // Extract direction prefix if present
-        if (! \is_null($sortBy) && str($sortBy)->startsWith(['+', '-'])) {
-            $sortDirection = str($sortBy)->startsWith('+') ? 'asc' : 'desc';
-            $sortBy = str($sortBy)->substr(1)->toString();
-            $sortBy = $sortBy === '' ? null : $sortBy;
+        $sortBy = $request->input($this->getSortKey(), null);
+        $direction = $request->input($this->getOrderKey(), null);
+        
+        if (Str::startsWith($sortBy, ['+', '-'])) {
+            $direction = Str::startsWith($sortBy, '+') ? 'asc' : 'desc';
+            $sortBy = Str::substr($sortBy, 1);
         }
-
-        // Get direction from query param or use the one from prefix
-        $direction = $request->string($this->getOrderKey())->toString();
-        $direction = match (strtolower($direction ?: $sortDirection ?: '')) {
-            'asc' => 'asc',
-            'desc' => 'desc',
-            default => null,
-        };
 
         return [$sortBy, $direction];
     }
@@ -152,16 +140,17 @@ trait Sortable
     /**
      * Apply the sorts to a query using the current request
      */
-    public function sortQuery(Builder $builder): void
+    public function sortQuery(Builder $builder, Request $request = null): void
     {
-        [$sortBy, $direction] = $this->getSortParameters();
+        [$sortBy, $direction] = $this->getSortParameters($request);
 
         // Get the column sorts as well as column
-        $columnSorts = $this->getColumns()->map(fn (BaseColumn $column) => $column->getSort())->filter();
+        // $columnSorts = $this->getColumns()->map(fn (BaseColumn $column) => $column->getSort())->filter();
 
-        $sorts = $this->getSorts()->merge($columnSorts);
+        // $sorts = $this->getSorts()->merge($columnSorts);
 
+        $sorts = $this->getSorts();
         // Need to handle defaults case
-        $sorts->each(static fn (BaseSort $sort) => $sort->apply($builder, $sortBy, $direction));
+        $sorts->each(static fn (Sort $sort) => $sort->apply($builder, $sortBy, $direction));
     }
 }

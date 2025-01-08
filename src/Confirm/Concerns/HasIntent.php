@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Confirm\Concerns;
 
-/**
- * @mixin \Honed\Core\Concerns\Evaluable
- */
 trait HasIntent
 {
     public const Constructive = 'constructive';
@@ -16,17 +13,16 @@ trait HasIntent
     public const Informative = 'informative';
 
     /**
-     * @var string|(\Closure():string)|null
+     * @var string|null
      */
     protected $intent = null;
 
     /**
      * Set the intent, chainable.
      *
-     * @param  string|\Closure():string  $intent
      * @return $this
      */
-    public function intent(string|\Closure $intent): static
+    public function intent(string $intent): static
     {
         $this->setIntent($intent);
 
@@ -35,10 +31,8 @@ trait HasIntent
 
     /**
      * Set the intent quietly.
-     *
-     * @param  string|(\Closure():string)|null  $intent
      */
-    public function setIntent(string|\Closure|null $intent): void
+    public function setIntent(?string $intent): void
     {
         if (is_null($intent)) {
             return;
@@ -51,7 +45,7 @@ trait HasIntent
      */
     public function getIntent(): ?string
     {
-        return $this->evaluate($this->intent);
+        return $this->intent;
     }
 
     /**

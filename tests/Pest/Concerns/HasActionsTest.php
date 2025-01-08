@@ -1,57 +1,94 @@
 <?php
 
+declare(strict_types=1);
+
 use Honed\Table\Actions\BulkAction;
-use Honed\Table\Actions\InlineAction;
+use Honed\Table\Actions\Contracts\Action;
 use Honed\Table\Actions\PageAction;
+use Honed\Table\Concerns\HasActions;
+use Honed\Table\Actions\InlineAction;
+
+class HasActionsTest
+{
+    use HasActions;
+
+    protected $actions;
+}
+
+class HasActionsMethodTest extends HasActionsTest
+{
+    public function actions(): array
+    {
+        return [
+            InlineAction::make('test'),
+            PageAction::make('test'),
+            BulkAction::make('test'),
+        ];
+    }
+}
 
 beforeEach(function () {
-    $this->table = exampleTable();
-    $this->blank = blankTable();
+    $this->test = new HasActionsTest;
+    $this->method = new HasActionsMethodTest;
 });
 
-it('can determine if the table has no actions', function () {
-    expect($this->blank->hasActions())->toBeFalse();
-    expect($this->table->hasActions())->toBeTrue();
+it('is empty by default', function () {
+    expect($this->test)
+        ->hasActions()->toBeFalse();
+
+    expect($this->method)
+        ->hasActions()->toBeTrue()
+        ->getActions()->toHaveCount(3);
 });
 
-it('can set actions', function () {
-    $this->blank->setActions([
-        InlineAction::make('test'),
-    ]);
+it('sets actions', function () {
+    $this->test->setActions([InlineAction::make('test')]);
 
-    expect($this->blank->getActions())
-        ->toBeCollection()
-        ->toHaveCount(1);
+    expect($this->test)
+        ->hasActions()->toBeTrue()
+        ->getActions()->scoped(fn ($actions) => $actions
+            ->toBeCollection()
+            ->toHaveCount(1)
+            ->first()->scoped(fn ($action) => $action
+                ->toBeInstanceOf(Action::class)
+                ->getName()->toBe('test')
+            )
+        );
 });
 
 it('rejects null actions', function () {
-    $this->table->setActions(null);
+    $this->test->setActions([InlineAction::make('test')]);
+    $this->test->setActions(null);
 
-    expect($this->table->getActions())->not->toBeEmpty();
+    expect($this->test)
+        ->hasActions()->toBeTrue()
+        ->getActions()->toHaveCount(1);
 });
 
-it('can get actions', function () {
-    expect($this->table->getActions())->toBeCollection()
-        ->not->toBeEmpty();
-
-    expect($this->blank->getActions())->toBeCollection()
-        ->toBeEmpty();
+it('gets actions from method', function () {
+    expect($this->method)
+        ->hasActions()->toBeTrue()
+        ->getActions()->scoped(fn ($actions) => $actions
+            ->toBeCollection()
+            ->toHaveCount(3)
+        );
 });
 
-it('can get inline actions', function () {
-    expect($this->table->getInlineActions())->toBeCollection()
-        ->not->toBeEmpty()
-        ->every(fn ($action) => $action instanceof InlineAction)->toBeTrue();
+it('gets inline actions', function () {
+    expect($this->method)
+        ->getInlineActions()->toBeCollection()
+        ->each->toBeInstanceOf(InlineAction::class);
 });
 
-it('can get bulk actions', function () {
-    expect($this->table->getBulkActions())->toBeCollection()
-        ->not->toBeEmpty()
-        ->every(fn ($action) => $action instanceof BulkAction)->toBeTrue();
+it('gets bulk actions', function () {
+    expect($this->method)
+        ->getBulkActions()->toBeCollection()
+        ->each->toBeInstanceOf(BulkAction::class);
 });
 
-it('can get page actions', function () {
-    expect($this->table->getPageActions())->toBeCollection()
-        ->not->toBeEmpty()
-        ->every(fn ($action) => $action instanceof PageAction)->toBeTrue();
+it('gets page actions', function () {
+    expect($this->method)
+        ->getPageActions()->toBeCollection()
+        ->each->toBeInstanceOf(PageAction::class);
 });
+

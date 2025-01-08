@@ -1,32 +1,28 @@
 <?php
 
-use Honed\Table\Columns\Column;
+declare(strict_types=1);
+
+use Honed\Table\Columns\Concerns\IsSrOnly;
+
+class IsSrOnlyTest
+{
+    use IsSrOnly;
+}
 
 beforeEach(function () {
-    $this->column = Column::make('test');
+    $this->test = new IsSrOnlyTest;
 });
 
-it('is not screen reader only by default', function () {
-    expect($this->column->isSrOnly())->toBeFalse();
-    expect($this->column->isNotSrOnly())->toBeTrue();
+it('is not `srOnly` by default', function () {
+    expect($this->test->isSrOnly())->toBeFalse();
 });
 
-it('can be set to screen reader only', function () {
-    expect($this->column->srOnly())->toBeInstanceOf(Column::class)
+it('sets srOnly', function () {
+    $this->test->setSrOnly(true);
+    expect($this->test->isSrOnly())->toBeTrue();
+});
+
+it('chains srOnly', function () {
+    expect($this->test->srOnly())->toBeInstanceOf(IsSrOnlyTest::class)
         ->isSrOnly()->toBeTrue();
-});
-
-it('can be set to not screen reader only', function () {
-    expect($this->column->srOnly(false))->toBeInstanceOf(Column::class)
-        ->isSrOnly()->toBeFalse();
-});
-
-it('can be set using setter', function () {
-    $this->column->setSrOnly(true);
-    expect($this->column->isSrOnly())->toBeTrue();
-});
-
-it('does not accept null values', function () {
-    $this->column->setSrOnly(null);
-    expect($this->column->isSrOnly())->toBeFalse();
 });

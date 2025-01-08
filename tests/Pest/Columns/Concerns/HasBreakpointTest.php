@@ -1,55 +1,78 @@
 <?php
 
 use Honed\Table\Columns\Column;
+use Honed\Table\Columns\Concerns\HasBreakpoint;
+
+class HasBreakpointTest
+{
+    use HasBreakpoint;
+}
 
 beforeEach(function () {
-    $this->column = Column::make('name');
+    $this->test = new HasBreakpointTest;
 });
 
-it('has no breakpoint by default', function () {
-    expect($this->column->hasBreakpoint())->toBeFalse();
+it('has no `breakpoint` by default', function () {
+    expect($this->test)
+        ->getBreakpoint()->toBeNull()
+        ->hasBreakpoint()->toBeFalse();
 });
 
-it('can set the breakpoint', function () {
-    expect($this->column->breakpoint(Column::ExtraSmall))->toBeInstanceOf(Column::class)
-        ->getBreakpoint()->toBe(Column::ExtraSmall);
+it('sets breakpoint', function () {
+    $this->test->setBreakpoint(HasBreakpointTest::ExtraSmall);
+    expect($this->test)
+        ->getBreakpoint()->toBe(HasBreakpointTest::ExtraSmall)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('can be set using setter', function () {
-    $this->column->setBreakpoint(Column::ExtraSmall);
-    expect($this->column->getBreakpoint())->toBe(Column::ExtraSmall);
+it('rejects null values', function () {
+    $this->test->setBreakpoint(HasBreakpointTest::ExtraSmall);
+    $this->test->setBreakpoint(null);
+    expect($this->test)
+        ->getBreakpoint()->toBe(HasBreakpointTest::ExtraSmall)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('does not accept null values', function () {
-    $this->column->setBreakpoint(null);
-    expect($this->column->getBreakpoint())->toBeNull();
+it('chains breakpoint', function () {
+    expect($this->test->breakpoint(HasBreakpointTest::ExtraSmall))->toBeInstanceOf(HasBreakpointTest::class)
+        ->getBreakpoint()->toBe(HasBreakpointTest::ExtraSmall)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('has shorthand for xs breakpoint', function () {
-    expect($this->column->xs())->toBeInstanceOf(Column::class)
-        ->getBreakpoint()->toBe(Column::ExtraSmall);
+it('has shorthand `xs`', function () {
+    expect($this->test->xs())->toBeInstanceOf(HasBreakpointTest::class)
+        ->getBreakpoint()->toBe(HasBreakpointTest::ExtraSmall)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('has shorthand for sm breakpoint', function () {
-    expect($this->column->sm())->toBeInstanceOf(Column::class)
-        ->getBreakpoint()->toBe(Column::Small);
+it('has shorthand `sm`', function () {
+    expect($this->test->sm())->toBeInstanceOf(HasBreakpointTest::class)
+        ->getBreakpoint()->toBe(HasBreakpointTest::Small)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('has shorthand for md breakpoint', function () {
-    expect($this->column->md())->toBeInstanceOf(Column::class)
-        ->getBreakpoint()->toBe(Column::Medium);
+it('has shorthand `md`', function () {
+    expect($this->test->md())->toBeInstanceOf(HasBreakpointTest::class)
+        ->getBreakpoint()->toBe(HasBreakpointTest::Medium)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('has shorthand for lg breakpoint', function () {
-    expect($this->column->lg())->toBeInstanceOf(Column::class)
-        ->getBreakpoint()->toBe(Column::Large);
+it('has shorthand `lg`', function () {
+    expect($this->test->lg())->toBeInstanceOf(HasBreakpointTest::class)
+        ->getBreakpoint()->toBe(HasBreakpointTest::Large)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('has shorthand for xl breakpoint', function () {
-    expect($this->column->xl())->toBeInstanceOf(Column::class)
-        ->getBreakpoint()->toBe(Column::ExtraLarge);
+it('has shorthand `xl`', function () {
+    expect($this->test->xl())->toBeInstanceOf(HasBreakpointTest::class)
+        ->getBreakpoint()->toBe(HasBreakpointTest::ExtraLarge)
+        ->hasBreakpoint()->toBeTrue();
 });
 
-it('does not accept invalid breakpoints', function () {
-    expect(fn () => $this->column->breakpoint('invalid'))->toThrow(\InvalidArgumentException::class);
-});
+it('rejects invalid breakpoints', function () {
+    $this->test->breakpoint('Invalid');
+})->throws(\InvalidArgumentException::class);
+
+
+
+

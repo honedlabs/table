@@ -1,79 +1,158 @@
 <?php
 
-use Honed\Table\Sorts\BaseSort;
 use Honed\Table\Sorts\Sort;
-use Honed\Table\Table;
+use Honed\Table\Concerns\Sortable;
 use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Support\Facades\Request;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
+
+class SortableTest
+{
+    use Sortable;
+
+    protected $sorts;
+}
+
+class SortableMethodTest extends SortableTest
+{
+    protected $sort = 's';
+    protected $order = 'o';
+
+    public function sorts(): array
+    {
+        return [
+            Sort::make('test'),
+        ];
+    }
+}
 
 beforeEach(function () {
-    $this->table = exampleTable();
-    $this->blank = blankTable();
-    Request::swap(Request::create('/', 'GET', [Table::SortKey => 'name', Table::OrderKey => 'asc']));
+    SortableTest::useSortKey();
+    SortableTest::useOrderKey();
+
+    $this->test = new SortableTest;
+    $this->method = new SortableMethodTest;
+    Request::swap(
+        Request::create('/', HttpFoundationRequest::METHOD_GET, [
+            SortableTest::SortKey => 'test',
+            SortableTest::OrderKey => 'asc',
+        ])
+    );
 });
 
-it('can determine if the table has no sorts', function () {
-    expect($this->blank->hasSorts())->toBeFalse();
-    expect($this->table->hasSorts())->toBeTrue();
+it('configures a sort key', function () {
+    SortableTest::useSortKey('example');
+    expect($this->test->getSortKey())->toBe('example');
 });
 
-it('can set sorts', function () {
-    $this->blank->setSorts([
-        Sort::make('test'),
+it('configures a order key', function () {
+    SortableTest::useOrderKey('example');
+    expect($this->test->getOrderKey())->toBe('example');
+});
+
+it('retrieves sort key', function () {
+    expect($this->method->getSortKey())->toBe('s');
+});
+
+it('retrieves order key', function () {
+    expect($this->method->getOrderKey())->toBe('o');
+});
+
+it('is empty by default', function () {
+    expect($this->test)
+        ->hasSorts()->toBeFalse();
+
+    expect($this->method)
+        ->hasSorts()->toBeTrue()
+        ->getSorts()->toHaveCount(1);
+});
+
+it('sets sorts', function () {
+    $this->method->setSorts([Sort::make('test')]);
+
+    expect($this->method)
+        ->hasSorts()->toBeTrue()
+        ->getSorts()->scoped(fn ($sorts) => $sorts
+            ->toBeCollection()
+            ->toHaveCount(1)
+            ->first()->scoped(fn ($sort) => $sort
+                ->toBeInstanceOf(Sort::class)
+                ->getAttribute()->toBe('test')
+            )
+        );
+});
+
+it('rejects null values', function () {
+    $this->method->setSorts([Sort::make('test')]);
+    $this->method->setSorts(null);
+
+    expect($this->method)
+        ->hasSorts()->toBeTrue()
+        ->getSorts()->toHaveCount(1);
+});
+
+it('retrieves sorts from method', function () {
+    expect($this->method)
+        ->hasSorts()->toBeTrue()
+        ->getSorts()->scoped(fn ($sorts) => $sorts
+            ->toBeCollection()
+            ->toHaveCount(1)
+            ->first()->scoped(fn ($sort) => $sort
+                ->toBeInstanceOf(Sort::class)
+                ->getAttribute()->toBe('test')
+            )
+        );
+});
+
+it('applies sorts', function () {
+    $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
+        $this->method->getSortKey() => 'test',
+        $this->method->getOrderKey() => 'asc',
     ]);
 
-    expect($this->blank->getSorts())
-        ->toBeCollection()
-        ->toHaveCount(1);
-});
+    $builder = Product::query();
 
-it('rejects null sorts', function () {
-    $this->table->setSorts(null);
+    $this->method->sortQuery($builder, $request);
 
-    expect($this->table->getSorts())->not->toBeEmpty();
-});
-
-it('can get sorts', function () {
-    expect($this->table->getSorts())
-        ->toBeCollection()
-        ->not->toBeEmpty();
-
-    expect($this->blank->getSorts())
-        ->toBeCollection()
-        ->toBeEmpty();
-});
-
-it('can apply sorts', function () {
-    $query = Product::query();
-
-    $this->table->sortQuery($query);
-
-    expect($query->getQuery()->orders)
+    expect($builder->getQuery()->orders)
         ->toHaveCount(1)
         ->toEqual([
             [
-                'column' => 'name',
+                'column' => 'test',
                 'direction' => 'asc',
             ],
         ]);
-
-    expect($this->table->getSorts())
-        ->first(fn (BaseSort $sort) => $sort->isActive())
-        ->toBeInstanceOf(Sort::class)
-        ->getName()->toBe('name')
-        ->getDirection()->toBe('asc');
 });
 
-it('does not apply sort if the order is not active for a strict sort', function () {
-    Request::swap(Request::create('/', 'GET', [Table::SortKey => 'name']));
-    $query = Product::query();
+it('applies sort with direction on parameter', function () {
+    $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
+        $this->method->getSortKey() => '-test',
+        $this->method->getOrderKey() => 'asc',
+    ]);
 
-    $this->table->sortQuery($query);
+    $builder = Product::query();
 
-    expect($query->getQuery()->orders)
-        ->toBeEmpty();
+    $this->method->sortQuery($builder, $request);
 
-    expect($this->table->getSorts())
-        ->first(fn (BaseSort $sort) => $sort->isActive())
-        ->toBeNull();
-})->skip();
+    expect($builder->getQuery()->orders)
+        ->toHaveCount(1)
+        ->toEqual([
+            [
+                'column' => 'test',
+                'direction' => 'desc',
+            ],
+        ]);
+});
+
+it('does not apply sort if no match', function () {
+    $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
+        $this->method->getSortKey() => 'other',
+        $this->method->getOrderKey() => 'asc',
+    ]);
+
+    $builder = Product::query();
+
+    $this->method->sortQuery($builder, $request);
+
+    expect($builder->getQuery()->orders)->toBeEmpty();
+});

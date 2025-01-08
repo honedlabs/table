@@ -3,13 +3,13 @@
 use Honed\Table\Columns\Column;
 
 beforeEach(function () {
-    $this->column = Column::make('name');
+    $this->test = Column::make('name');
 });
 
-it('has type default', function () {
-    expect($this->column->getType())->toBe('default');
+it('is type default', function () {
+    expect($this->test->getType())->toBe('col:default');
 });
 
 it('has no formatter', function () {
-    expect($this->column->hasFormatter())->toBeFalse();
+    expect($this->test->hasFormatter())->toBeFalse();
 });

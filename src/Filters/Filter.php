@@ -20,18 +20,6 @@ class Filter extends BaseFilter
         $this->setOperator(Operator::Equal);
     }
 
-    public function apply(Builder $builder): void
-    {
-        $value = $this->transform($this->getValueFromRequest());
-        $this->setValue($value);
-        $this->setActive($this->isFiltering($value));
-
-        $builder->when(
-            $this->isActive() && $this->validate($value),
-            fn (Builder $builder) => $this->handle($builder),
-        );
-    }
-
     public function handle(Builder $builder): void
     {
         $this->getClause()

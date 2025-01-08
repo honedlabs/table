@@ -1,32 +1,28 @@
 <?php
 
-use Honed\Table\Columns\Column;
+declare(strict_types=1);
+
+use Honed\Table\Columns\Concerns\IsToggleable;
+
+class IsToggleableTest
+{
+    use IsToggleable;
+}
 
 beforeEach(function () {
-    $this->column = Column::make('test');
+    $this->test = new IsToggleableTest;
 });
 
-it('is not toggleable by default', function () {
-    expect($this->column->isToggleable())->toBeFalse();
-    expect($this->column->isNotToggleable())->toBeTrue();
+it('is not `toggleable` by default', function () {
+    expect($this->test->isToggleable())->toBeFalse();
 });
 
-it('can be set to toggleable', function () {
-    expect($this->column->toggleable())->toBeInstanceOf(Column::class)
+it('sets toggleable', function () {
+    $this->test->setToggleable(true);
+    expect($this->test->isToggleable())->toBeTrue();
+});
+
+it('chains toggleable', function () {
+    expect($this->test->toggleable())->toBeInstanceOf(IsToggleableTest::class)
         ->isToggleable()->toBeTrue();
-});
-
-it('can be set to not toggleable', function () {
-    expect($this->column->toggleable(false))->toBeInstanceOf(Column::class)
-        ->isToggleable()->toBeFalse();
-});
-
-it('can be set using setter', function () {
-    $this->column->setToggleable(true);
-    expect($this->column->isToggleable())->toBeTrue();
-});
-
-it('does not accept null values', function () {
-    $this->column->setToggleable(null);
-    expect($this->column->isToggleable())->toBeFalse();
 });

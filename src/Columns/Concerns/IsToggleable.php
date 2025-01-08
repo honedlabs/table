@@ -10,17 +10,16 @@ namespace Honed\Table\Columns\Concerns;
 trait IsToggleable
 {
     /**
-     * @var bool|(\Closure():bool)
+     * @var bool
      */
     protected $toggleable = false;
 
     /**
-     * Set the toggleable property, chainable.
+     * Set as toggleable, chainable.
      *
-     * @param  bool|(\Closure():bool)  $toggleable
      * @return $this
      */
-    public function toggleable(bool|\Closure $toggleable = true): static
+    public function toggleable(bool $toggleable = true): static
     {
         $this->setToggleable($toggleable);
 
@@ -28,31 +27,18 @@ trait IsToggleable
     }
 
     /**
-     * Set the toggleable property quietly.
-     *
-     * @param  bool|(\Closure():bool)|null  $toggleable
+     * Set as toggleable quietly.
      */
-    public function setToggleable(bool|\Closure|null $toggleable): void
+    public function setToggleable(bool $toggleable): void
     {
-        if (\is_null($toggleable)) {
-            return;
-        }
         $this->toggleable = $toggleable;
     }
 
     /**
-     * Determine if the column is toggleable.
+     * Determine if it is toggleable.
      */
     public function isToggleable(): bool
     {
-        return (bool) $this->evaluate($this->toggleable);
-    }
-
-    /**
-     * Determine if the column is not toggleable.
-     */
-    public function isNotToggleable(): bool
-    {
-        return ! $this->isToggleable();
+        return $this->toggleable;
     }
 }

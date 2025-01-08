@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Confirm\Concerns;
 
+use Illuminate\Support\Str;
 use Honed\Table\Confirm\Confirm;
 
 /**
@@ -19,22 +20,26 @@ trait Confirmable
     /**
      * Set the properties of the confirm
      *
-     * @param  string|\Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void)|array<string,mixed>  $confirm
+     * @param  string|\Honed\Table\Confirm\Confirm|(\Closure(\Honed\Table\Confirm\Confirm):void|\Honed\Table\Confirm\Confirm)|array<string,mixed>  $confirm
      * @return $this
      */
     public function confirm(mixed $confirm): static
     {
-        $confirmInstance = $this->makeConfirm();
+        if (\is_null($confirm)) {
+            return $this;
+        }
+
+        $instance = $this->confirmInstance();
 
         match (true) {
             $confirm instanceof Confirm => $this->setConfirm($confirm),
             \is_array($confirm) => $this->getConfirm()->assign($confirm),
             \is_callable($confirm) => $this->evaluate($confirm, [
-                'confirm' => $confirmInstance,
+                'confirm' => $instance,
             ], [
-                Confirm::class => $confirmInstance,
+                Confirm::class => $instance,
             ]),
-            default => $this->getConfirm()->setDescription($confirm), // string case
+            default => $this->getConfirm()->setTitle($confirm),
         };
 
         return $this;
@@ -42,22 +47,16 @@ trait Confirmable
 
     /**
      * Create a new confirm instance if one is not already set.
-     *
-     * @internal
      */
-    public function makeConfirm(): Confirm
+    public function confirmInstance(): Confirm
     {
         return $this->confirm ??= Confirm::make();
     }
 
     /**
-     * Override the confirm instance.
-     *
-     * @internal
-     *
-     * @param  \Honed\Table\Confirm\Confirm|bool|null  $confirm
+     * Set the confirm instance quietly.
      */
-    public function setConfirm($confirm)
+    public function setConfirm(Confirm|null $confirm)
     {
         if (\is_null($confirm)) {
             return;
@@ -69,31 +68,20 @@ trait Confirmable
     /**
      * Get the confirm instance.
      *
-     * @return \Honed\Table\Confirm\Confirm|null
+     * @param  'title'|'description'|'cancel'|'success'|'intent'|null  $key
      */
-    public function getConfirm()
+    public function getConfirm(?string $key = null): Confirm|string|null
     {
-        return $this->confirm;
-    }
-
-    /**
-     * Determine if the action is not confirmable.
-     *
-     * @return bool
-     */
-    public function isNotConfirmable()
-    {
-        // @phpstan-ignore-next-line
-        return \is_null($this->confirm);
+        return \is_null($key) || ! $this->isConfirmable()
+            ? $this->confirm
+            : $this->confirm->{'get'.Str::studly($key)}();
     }
 
     /**
      * Determine if the action is confirmable.
-     *
-     * @return bool
      */
-    public function isConfirmable()
+    public function isConfirmable(): bool
     {
-        return ! $this->isNotConfirmable();
+        return ! \is_null($this->confirm);
     }
 }

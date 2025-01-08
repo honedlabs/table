@@ -1,49 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 use Honed\Table\Filters\Filter;
 use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
-    $request = Request::create('/', 'GET', ['email' => 'test@example.com']);
-    Request::swap($request);
-    $this->filter = Filter::make('email');
+    $this->name = 'email';
+    $this->value = 'test@example.com';
+    $this->filter = Filter::make($this->name);
+    Request::swap(Request::create('/', 'GET', [$this->name => $this->value]));
 });
 
 it('can be instantiated', function () {
-    expect(new Filter('email'))->toBeInstanceOf(Filter::class)
+    expect(new Filter($this->name))
+        ->toBeInstanceOf(Filter::class)
         ->getAttribute()->toBe('email')
-        ->getLabel()->toBe('Email');
+        ->getLabel()->toBe('Email')
+        ->getParameterName()->toBe('email')
+        ->isActive()->toBeFalse();
 });
 
 it('can be made', function () {
-    expect(Filter::make('email', 'User email'))->toBeInstanceOf(Filter::class)
+    expect(Filter::make('email', 'User email'))
+        ->toBeInstanceOf(Filter::class)
         ->getAttribute()->toBe('email')
-        ->getLabel()->toBe('User email');
+        ->getLabel()->toBe('User email')
+        ->getParameterName()->toBe('email')
+        ->isActive()->toBeFalse();
 });
 
-it('retrieves the value from the request', function () {
-    expect($this->filter->getValueFromRequest())->toBe('test@example.com');
+it('gets value from request', function () {
+    expect($this->filter->getValueFromRequest())
+        ->toBe($this->value);
 });
 
 it('determines if the filter should be applied', function () {
-    expect($this->filter->isFiltering('test@example.com'))->toBeTrue();
-    expect($this->filter->isFiltering(null))->toBeFalse();
+    expect($this->filter->isFiltering($this->value))
+        ->toBeTrue();
+    expect($this->filter->isFiltering(null))
+        ->toBeFalse();
 });
 
 it('differentiates between dot notation attributes', function () {
-    expect(Filter::make('user.email', 'User email'))
+    expect(Filter::make('user.email'))
         ->getAttribute()->toBe('user.email')
         ->getAlias()->toBeNull()
-        ->getValueFromRequest()->toBe('test@example.com'); // resolves as just email
+        ->getValueFromRequest()->toBe($this->value); // resolves as just email
 });
 
-it('has an array form', function () {
+it('has an array representation', function () {
     // The active status is only applied when the filter itself is applied
     expect($this->filter->toArray())->toEqual([
-        'name' => 'email',
+        'name' => $this->name,
         'label' => 'Email',
         'type' => 'filter',
-        'isActive' => false,
+        'active' => false,
         'value' => null,
         'meta' => [],
     ]);

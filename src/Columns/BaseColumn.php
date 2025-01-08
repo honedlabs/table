@@ -16,8 +16,9 @@ use Honed\Core\Concerns\IsKey;
 use Honed\Core\Concerns\Transformable;
 use Honed\Core\Formatters\Concerns\Formattable;
 use Honed\Core\Primitive;
+use Honed\Table\Columns\Contracts\Column;
 
-abstract class BaseColumn extends Primitive
+abstract class BaseColumn extends Primitive implements Column
 {
     use Authorizable;
     use Concerns\HasBreakpoint;
@@ -40,7 +41,7 @@ abstract class BaseColumn extends Primitive
     /**
      * Create a new column instance specifying the related database attribute, and optionally the display label.
      */
-    final public function __construct(string $name, ?string $label = null)
+    final public function __construct(string $name, string $label = null)
     {
         parent::__construct();
         $this->setName($name);
@@ -48,21 +49,21 @@ abstract class BaseColumn extends Primitive
     }
 
     /**
+     * Ensure all columns are active by default.
+     */
+    public function setUp(): void
+    {
+        $this->setActive(true);
+    }
+
+    /**
      * Make a column specifying the related database attribute, and optionally the display label.
      */
-    public static function make(string $name, ?string $label = null): static
+    public static function make(string $name, string $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }
 
-    /**
-     * Modify the record value to align it with the column configuration.
-     *
-     * @template T
-     *
-     * @param  T  $value
-     * @return T|mixed
-     */
     public function apply(mixed $value): mixed
     {
         $value = $this->transform($value);
@@ -70,14 +71,6 @@ abstract class BaseColumn extends Primitive
         return $this->formatValue($value);
     }
 
-    /**
-     * Format how the records' values are displayed in this column.
-     *
-     * @template T
-     *
-     * @param  T  $value
-     * @return T|mixed
-     */
     public function formatValue(mixed $value): mixed
     {
         return $this->format($value) ?? $this->getPlaceholder();
@@ -97,12 +90,12 @@ abstract class BaseColumn extends Primitive
             'label' => $this->getLabel(),
             'type' => $this->getType(),
             'breakpoint' => $this->getBreakpoint(),
-            'isHidden' => $this->isHidden(),
-            'isScreenReader' => $this->isSrOnly(),
-            'isToggleable' => $this->isToggleable(),
-            'isActive' => $this->isActive(),
-            'isSortable' => $this->isSortable(),
-            'isSorting' => $this->isSorting(),
+            'hidden' => $this->isHidden(),
+            'sr_only' => $this->isSrOnly(),
+            'toggleable' => $this->isToggleable(),
+            'active' => $this->isActive(),
+            'sortable' => $this->isSortable(),
+            // 'sorting' => $this->isSorting(),
             'direction' => $this->getSort()?->getDirection(),
             'meta' => $this->getMeta(),
         ];

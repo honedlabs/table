@@ -1,32 +1,28 @@
 <?php
 
-use Honed\Table\Columns\Column;
+declare(strict_types=1);
+
+use Honed\Table\Columns\Concerns\IsSearchable;
+
+class IsSearchableTest
+{
+    use IsSearchable;
+}
 
 beforeEach(function () {
-    $this->column = Column::make('test');
+    $this->test = new IsSearchableTest;
 });
 
-it('is not searchable by default', function () {
-    expect($this->column->isSearchable())->toBeFalse();
-    expect($this->column->isNotSearchable())->toBeTrue();
+it('is not `searchable` by default', function () {
+    expect($this->test->isSearchable())->toBeFalse();
 });
 
-it('can be set to searchable', function () {
-    expect($this->column->searchable())->toBeInstanceOf(Column::class)
+it('sets searchable', function () {
+    $this->test->setSearchable(true);
+    expect($this->test->isSearchable())->toBeTrue();
+});
+
+it('chains searchable', function () {
+    expect($this->test->searchable())->toBeInstanceOf(IsSearchableTest::class)
         ->isSearchable()->toBeTrue();
-});
-
-it('can be set to not searchable', function () {
-    expect($this->column->searchable(false))->toBeInstanceOf(Column::class)
-        ->isSearchable()->toBeFalse();
-});
-
-it('can be set using setter', function () {
-    $this->column->setSearchable(true);
-    expect($this->column->isSearchable())->toBeTrue();
-});
-
-it('does not accept null values', function () {
-    $this->column->setSearchable(null);
-    expect($this->column->isSearchable())->toBeFalse();
 });

@@ -77,7 +77,7 @@ enum Clause: string
     public function formatValue(mixed $value): mixed
     {
         if ($this->isMultiple()) {
-            return is_array($value) ? $value : [$value];
+            return \is_array($value) ? $value : [$value];
         }
 
         return match ($this) {

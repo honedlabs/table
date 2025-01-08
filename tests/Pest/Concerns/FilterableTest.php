@@ -1,57 +1,92 @@
 <?php
 
+use Honed\Table\Concerns\Filterable;
 use Honed\Table\Filters\Filter;
 use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Support\Facades\Request;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
+
+class FilterableTest
+{
+    use Filterable;
+
+    protected $filters;
+}
+
+class FilterableMethodTest extends FilterableTest
+{
+    public function filters(): array
+    {
+        return [
+            Filter::make('test'),
+        ];
+    }
+}
 
 beforeEach(function () {
-    $this->table = exampleTable();
-    $this->blank = blankTable();
-    Request::swap(Request::create('/', 'GET', ['max' => 10]));
+    $this->test = new FilterableTest;
+    $this->method = new FilterableMethodTest;
 });
 
-it('can determine if the table has no filters', function () {
-    expect($this->blank->hasFilters())->toBeFalse();
-    expect($this->table->hasFilters())->toBeTrue();
+it('is empty by default', function () {
+    expect($this->test)
+        ->hasFilters()->toBeFalse();
+
+    expect($this->method)
+        ->hasFilters()->toBeTrue()
+        ->getFilters()->toHaveCount(1);
 });
 
-it('can set filters', function () {
-    $this->blank->setFilters([
-        Filter::make('test'),
-    ]);
+it('sets filters', function () {
+    $this->test->setFilters([Filter::make('test')]);
 
-    expect($this->blank->getFilters())
-        ->toBeCollection()
-        ->toHaveCount(1);
+    expect($this->test)
+        ->hasFilters()->toBeTrue()
+        ->getFilters()->scoped(fn ($filters) => $filters
+            ->toBeCollection()
+            ->toHaveCount(1)
+            ->first()->scoped(fn ($filter) => $filter
+                ->toBeInstanceOf(Filter::class)
+                ->getAttribute()->toBe('test')
+            )
+        );
 });
 
-it('rejects null filters', function () {
-    $this->table->setFilters(null);
+it('rejects null values', function () {
+    $this->test->setFilters([Filter::make('test')]);
+    $this->test->setFilters(null);
 
-    expect($this->table->getFilters())->not->toBeEmpty();
+    expect($this->test)
+        ->hasFilters()->toBeTrue()
+        ->getFilters()->toHaveCount(1);
 });
 
-it('can get filters', function () {
-    expect($this->table->getFilters())
-        ->toBeCollection()
-        ->not->toBeEmpty();
-
-    expect($this->blank->getFilters())
-        ->toBeCollection()
-        ->toBeEmpty();
+it('retrieves filters from method', function () {
+    expect($this->method)
+        ->hasFilters()->toBeTrue()
+        ->getFilters()->scoped(fn ($filters) => $filters
+            ->toBeCollection()
+            ->toHaveCount(1)
+            ->first()->scoped(fn ($filter) => $filter
+                ->toBeInstanceOf(Filter::class)
+                ->getAttribute()->toBe('test')
+            )
+        );
 });
 
-it('can apply filters', function () {
-    $query = Product::query();
-    $this->table->filterQuery($query);
+it('applies filters', function () {
+    $request = Request::create('/', HttpFoundationRequest::METHOD_GET, ['test' => 10]);
+    $builder = Product::query();
 
-    expect($query->getQuery()->wheres)
+    $this->method->filterQuery($builder, $request);
+
+    expect($builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->toEqual([
             [
                 'type' => 'Basic',
-                'column' => 'price',
-                'operator' => '<=',
+                'column' => 'test',
+                'operator' => '=',
                 'value' => 10,
                 'boolean' => 'and',
             ],

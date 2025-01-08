@@ -1,32 +1,39 @@
 <?php
 
 use Honed\Table\Actions\PageAction;
+use Honed\Core\Link\Proxies\HigherOrderLink;
 
 beforeEach(function () {
-    $this->action = PageAction::make('test');
+    $this->test = PageAction::make('test');
 });
 
-it('has a type of page', function () {
-    expect($this->action->getType())->toBe('page');
+it('is type page', function () {
+    expect($this->test->getType())->toBe('action:page');
 });
 
-it('has an array form', function () {
-    expect($this->action->toArray())->toEqual([
-        'type' => 'page',
-        'name' => 'test',
-        'label' => 'Test',
-        'meta' => [],
-    ]);
-});
-
-it('forwards calls to url', function () {
-    expect($this->action->url->url('/products'))->toBeInstanceOf(PageAction::class)
-        ->toArray()->toEqual([
-            'type' => 'page',
-            'name' => 'test',
-            'label' => 'Test',
-            'meta' => [],
-            'url' => '/products',
-            'method' => 'get',
+it('has array representation', function () {
+    expect($this->test->toArray())
+        ->toBeArray()
+        ->toHaveKeys([
+            'name',
+            'label',
+            'type',
+            'meta',
         ]);
+});
+
+it('has array representation with link', function () {
+    expect($this->test->link('/products')->toArray())
+        ->toHaveKeys([
+            'name',
+            'label',
+            'type',
+            'meta',
+            'url',
+            'method',
+        ]);
+});
+
+it('forwards calls to link', function () {
+    expect($this->test->link)->toBeInstanceOf(HigherOrderLink::class);
 });

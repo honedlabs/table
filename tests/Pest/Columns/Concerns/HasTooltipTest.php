@@ -1,39 +1,50 @@
 <?php
 
-use Honed\Table\Columns\Column;
+use Honed\Core\Concerns\Evaluable;
+use Honed\Table\Tests\Stubs\Product;
+use Honed\Table\Columns\Concerns\HasTooltip;
+
+class HasTooltipTest
+{
+    use Evaluable;
+    use HasTooltip;
+}
 
 beforeEach(function () {
-    $this->column = Column::make('name');
+    $this->test = new HasTooltipTest;
 });
 
-it('can set a string tooltip', function () {
-    $this->column->setTooltip($p = 'Tooltip');
-    expect($this->column->getTooltip())->toBe($p);
+it('has no tooltip by default', function () {
+    expect($this->test)
+        ->getTooltip()->toBeNull()
+        ->hasTooltip()->toBeFalse();
 });
 
-it('can set a closure tooltip', function () {
-    $this->column->setTooltip(fn () => 'Tooltip');
-    expect($this->column->getTooltip())->toBe('Tooltip');
+it('sets tooltip', function () {
+    $this->test->setTooltip('Tooltip');
+    expect($this->test)
+        ->getTooltip()->toBe('Tooltip')
+        ->hasTooltip()->toBeTrue();
 });
 
-it('prevents null values', function () {
-    $this->column->setTooltip(null);
-    expect($this->column->getTooltip())->toBeNull();
+it('rejects null values', function () {
+    $this->test->setTooltip('Tooltip');
+    $this->test->setTooltip(null);
+    expect($this->test)
+        ->getTooltip()->toBe('Tooltip')
+        ->hasTooltip()->toBeTrue();
 });
 
-it('can chain tooltip', function () {
-    expect($this->column->tooltip($p = 'Tooltip'))->toBeInstanceOf(Column::class);
-    expect($this->column->getTooltip())->toBe($p);
+it('chains tooltip', function () {
+    expect($this->test->tooltip('Tooltip'))->toBeInstanceOf(HasTooltipTest::class)
+        ->getTooltip()->toBe('Tooltip')
+        ->hasTooltip()->toBeTrue();
 });
 
-it('checks for tooltip', function () {
-    expect($this->column->hasTooltip())->toBeFalse();
-    $this->column->setTooltip('Tooltip');
-    expect($this->column->hasTooltip())->toBeTrue();
-});
-
-it('resolves a tooltip', function () {
-    expect($this->column->tooltip(fn ($record) => $record.'.'))
-        ->toBeInstanceOf(Column::class)
-        ->resolveTooltip(['record' => 'Tooltip'])->toBe('Tooltip.');
+it('resolves tooltip', function () {
+    $product = product();
+    expect($this->test->tooltip(fn (Product $product) => $product->name))
+        ->toBeInstanceOf(HasTooltipTest::class)
+        ->resolveTooltip(['product' => $product])->toBe($product->name)
+        ->getTooltip()->toBe($product->name);
 });

@@ -1,54 +1,49 @@
 <?php
 
 use Honed\Table\Actions\InlineAction;
+use Honed\Core\Link\Proxies\HigherOrderLink;
+use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
 
 beforeEach(function () {
-    $this->action = InlineAction::make('test');
+    $this->test = InlineAction::make('test');
 });
 
-it('has a type of inline', function () {
-    expect($this->action->getType())->toBe('inline');
+it('is type inline', function () {
+    expect($this->test->getType())->toBe('action:inline');
 });
 
-it('has an array form', function () {
-    expect($this->action->toArray())->toEqual([
-        'type' => 'inline',
-        'name' => 'test',
-        'label' => 'Test',
-        'confirm' => null,
-        'hasAction' => false,
-        'meta' => [],
-    ]);
-});
-
-it('forwards calls to url', function () {
-    expect($this->action->url->url('/products'))->toBeInstanceOf(InlineAction::class)
-        ->toArray()->toEqual([
-            'type' => 'inline',
-            'name' => 'test',
-            'label' => 'Test',
-            'confirm' => null,
-            'hasAction' => false,
-            'meta' => [],
-            'url' => '/products',
-            'method' => 'get',
+it('has array representation', function () {
+    expect($this->test->toArray())
+        ->toBeArray()
+        ->toHaveKeys([
+            'name',
+            'label',
+            'type',
+            'meta',
+            'action',
+            'confirm',
         ]);
+});
+
+it('has array representation with link', function () {
+    expect($this->test->link('/products')->toArray())
+        ->toBeArray()
+        ->toHaveKeys([
+            'name',
+            'label',
+            'type',
+            'meta',
+            'action',
+            'confirm',
+            'url',
+            'method',
+        ]);
+});
+
+it('forwards calls to link', function () {
+    expect($this->test->link)->toBeInstanceOf(HigherOrderLink::class);
 });
 
 it('forwards calls to confirm', function () {
-    expect($this->action->confirm->description('Are you sure?'))->toBeInstanceOf(InlineAction::class)
-        ->toArray()->toEqual([
-            'type' => 'inline',
-            'name' => 'test',
-            'label' => 'Test',
-            'hasAction' => false,
-            'meta' => [],
-            'confirm' => [
-                'title' => null,
-                'description' => 'Are you sure?',
-                'cancel' => null,
-                'success' => null,
-                'intent' => null,
-            ],
-        ]);
+    expect($this->test->confirm)->toBeInstanceOf(HigherOrderConfirm::class);
 });

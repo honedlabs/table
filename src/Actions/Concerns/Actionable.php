@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Actions\Concerns;
 
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * @mixin \Honed\Core\Concerns\Evaluable
- */
 trait Actionable
 {
     /**
@@ -19,10 +14,10 @@ trait Actionable
     /**
      * Set the action to apply.
      *
-     * @param  \Closure|string  $action
+     * @param \Closure(mixed...):void|string $action
      * @return $this
      */
-    public function action($action)
+    public function action(\Closure|string $action)
     {
         $this->setAction($action);
 
@@ -39,12 +34,12 @@ trait Actionable
 
     /**
      * Set the action to apply.
-     *
-     * @param  \Closure|string|null  $action
+     * 
+     * @param \Closure(mixed...):void|string|null $action
      */
-    public function setAction($action): void
+    public function setAction(\Closure|string|null $action): void
     {
-        if (is_null($action)) {
+        if (\is_null($action)) {
             return;
         }
 
@@ -58,31 +53,10 @@ trait Actionable
     /**
      * Get the action to apply.
      *
-     * @return \Closure|null
+     * @return \Closure(mixed...):void|null
      */
-    public function getAction()
+    public function getAction(): \Closure|null
     {
         return $this->action;
-    }
-
-    /**
-     * Apply the action to the record.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $record
-     */
-    public function applyAction($record, $model): void
-    {
-        $this->evaluate(
-            value: $this->getAction(),
-            named: [
-                'record' => $record,
-                'model' => $record,
-                // user => $record
-            ],
-            typed: [
-                Model::class => $record,
-                $model => $record,
-            ],
-        );
     }
 }

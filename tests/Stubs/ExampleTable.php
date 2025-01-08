@@ -41,8 +41,8 @@ class ExampleTable extends Table
         return [
             Column::make('id')->key(),
             TextColumn::make('name')->searchable(),
-            TextColumn::make('description')->placeholder('-'), // ->truncate(100)
-            BooleanColumn::make('best_seller', 'Favourite'), // ->labels('Favourite', 'Not Favourite'),
+            TextColumn::make('description')->placeholder('-'), //->truncate(100)
+            BooleanColumn::make('best_seller', 'Favourite'), //->labels('Favourite', 'Not Favourite'),
             Column::make('status')->meta(['badge' => true]),
             NumberColumn::make('price')->currency(),
             DateColumn::make('created_at')->sortable(),
@@ -55,7 +55,7 @@ class ExampleTable extends Table
             Filter::make('price', 'Max')->alias('max')->lte(),
             Filter::make('price', 'Min')->alias('min')->gt(),
             SetFilter::make('status')->options(Status::class)->strict(),
-            CustomFilter::make('soon')->using(fn (Builder $query, $value) => $query->where('status', Status::COMING_SOON)),
+            CustomFilter::make('soon')->using(fn (Builder $query, $value) => $query->where('status', Status::ComingSoon)),
             DateFilter::make('created_at', 'Year')->alias('year')->year(),
         ];
     }

@@ -10,8 +10,9 @@ use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasType;
 use Honed\Core\Primitive;
+use Honed\Table\Actions\Contracts\Action;
 
-abstract class BaseAction extends Primitive
+abstract class BaseAction extends Primitive implements Action
 {
     use Authorizable;
     use HasLabel;

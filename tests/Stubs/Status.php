@@ -4,16 +4,16 @@ namespace Honed\Table\Tests\Stubs;
 
 enum Status: int
 {
-    case AVAILABLE = 0;
-    case UNAVAILABLE = 1;
-    case COMING_SOON = 2;
+    case Available = 0;
+    case Unavailable = 1;
+    case ComingSoon = 2;
 
     public function label(): string
     {
         return match ($this) {
-            self::AVAILABLE => 'Available',
-            self::UNAVAILABLE => 'Unavailable',
-            self::COMING_SOON => 'Coming soon',
+            self::Available => 'Available',
+            self::Unavailable => 'Unavailable',
+            self::ComingSoon => 'Coming soon',
         };
     }
 }

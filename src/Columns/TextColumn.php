@@ -8,7 +8,8 @@ class TextColumn extends BaseColumn
 {
     public function setUp(): void
     {
-        $this->setType('text');
+        parent::setUp();
+        $this->setType('col:text');
         $this->string();
     }
 }

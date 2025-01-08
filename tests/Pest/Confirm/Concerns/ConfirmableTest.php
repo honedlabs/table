@@ -1,68 +1,86 @@
 <?php
 
+declare(strict_types=1);
+
+use Honed\Core\Concerns\Evaluable;
 use Honed\Table\Actions\InlineAction;
+use Honed\Table\Confirm\Concerns\Confirmable;
 use Honed\Table\Confirm\Confirm;
 
+class ConfirmableTest
+{
+    use Confirmable;
+    use Evaluable;
+}
+
 beforeEach(function () {
-    $this->confirmable = InlineAction::make('test');
+    $this->test = new ConfirmableTest();
 });
 
 it('has no confirm by default', function () {
-    expect($this->confirmable->isConfirmable())->toBeFalse();
-    expect($this->confirmable->isNotConfirmable())->toBeTrue();
+    expect($this->test)
+        ->isConfirmable()->toBeFalse()
+        ->getConfirm()->toBeNull();
 });
 
-it('can set a confirm using a string', function () {
-    expect($this->confirmable->confirm('The description goes heres'))->toBeInstanceOf(InlineAction::class)
+it('sets confirm', function () {
+    $this->test->setConfirm(Confirm::make('Title'));
+    expect($this->test)
+        ->getConfirm()->toBeInstanceOf(Confirm::class)
+        ->getConfirm('title')->toBe('Title')
         ->isConfirmable()->toBeTrue();
-
-    expect($this->confirmable->getConfirm()->getDescription())->toBe('The description goes heres');
 });
 
-it('can set a confirm using a Confirm instance', function () {
-    expect($this->confirmable->confirm(Confirm::make()->description('The description goes heres')))
-        ->toBeInstanceOf(InlineAction::class)
+it('rejects null values', function () {
+    $this->test->setConfirm(Confirm::make('Title'));
+    $this->test->setConfirm(null);
+    expect($this->test)
+        ->getConfirm()->toBeInstanceOf(Confirm::class)
+        ->getConfirm('title')->toBe('Title')
         ->isConfirmable()->toBeTrue();
-
-    expect($this->confirmable->getConfirm()->getDescription())->toBe('The description goes heres');
 });
 
-it('can be set using key value pairs', function () {
-    expect($this->confirmable->confirm([
+it('chains confirm', function () {
+    expect($this->test->confirm(Confirm::make('Title')))->toBeInstanceOf(ConfirmableTest::class)
+        ->getConfirm()->toBeInstanceOf(Confirm::class)
+        ->getConfirm('title')->toBe('Title')
+        ->isConfirmable()->toBeTrue();
+});
+
+it('chain rejects null values', function () {
+    expect($this->test->confirm(Confirm::make('Title'))->confirm(null))->toBeInstanceOf(ConfirmableTest::class)
+        ->getConfirm()->toBeInstanceOf(Confirm::class)
+        ->getConfirm('title')->toBe('Title')
+        ->isConfirmable()->toBeTrue();
+});
+
+it('chains confirm with string', function () {
+    expect($this->test->confirm('Title'))->toBeInstanceOf(ConfirmableTest::class)
+        ->isConfirmable()->toBeTrue()
+        ->getConfirm()->toBeInstanceOf(Confirm::class)
+        ->getConfirm('title')->toBe('Title');
+});
+
+it('chains confirm with assignments', function () {
+    expect($this->test->confirm([
         'title' => 'The title goes heres',
         'description' => 'The description goes heres',
         'success' => 'Success',
-    ]))->toBeInstanceOf(InlineAction::class)
-        ->isConfirmable()->toBeTrue();
-
-    expect($this->confirmable->getConfirm())
-        ->getTitle()->toBe('The title goes heres')
-        ->getDescription()->toBe('The description goes heres')
-        ->getSuccess()->toBe('Success');
+    ]))->toBeInstanceOf(ConfirmableTest::class)
+        ->isConfirmable()->toBeTrue()
+        ->getConfirm('title')->toBe('The title goes heres')
+        ->getConfirm('description')->toBe('The description goes heres')
+        ->getConfirm('success')->toBe('Success');
 });
 
-it('can be set using a closure', function () {
-    expect($this->confirmable->confirm(fn (Confirm $confirm) => $confirm->title('The title goes heres')->description('The description goes heres')->success('Success')))
-        ->toBeInstanceOf(InlineAction::class)
-        ->isConfirmable()->toBeTrue();
-
-    expect($this->confirmable->getConfirm())
-        ->getTitle()->toBe('The title goes heres')
-        ->getDescription()->toBe('The description goes heres')
-        ->getSuccess()->toBe('Success');
-});
-
-// it('can resolve a confirm to a record', function () {
-//     expect($this->confirmable->confirm('/products'))
-//         ->toBeInstanceOf(InlineAction::class)
-//         ->isUrlable()->toBeTrue();
-
-//     expect($this->confirmable->getUrl())
-//         ->getUrl()->toBe('/products')
-//         ->isNamed()->toBeFalse();
-// });
-
-it('can make a new confirm instance', function () {
-    expect($this->confirmable->makeConfirm())->toBeInstanceOf(Confirm::class);
-    expect($this->confirmable->isConfirmable())->toBeTrue();
+it('chains confirm with closures', function () {
+    expect($this->test->confirm(fn (Confirm $confirm) => $confirm
+            ->title('The title goes heres')
+            ->description('The description goes heres')
+            ->success('Success'))
+        )->toBeInstanceOf(ConfirmableTest::class)
+        ->isConfirmable()->toBeTrue()
+        ->getConfirm('title')->toBe('The title goes heres')
+        ->getConfirm('description')->toBe('The description goes heres')
+        ->getConfirm('success')->toBe('Success');
 });

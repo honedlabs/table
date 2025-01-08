@@ -6,38 +6,33 @@ namespace Honed\Table\Actions;
 
 use Honed\Core\Contracts\HigherOrder;
 use Honed\Core\Contracts\ProxiesHigherOrder;
-use Honed\Table\Url\Concerns\Urlable;
-use Honed\Table\Url\Proxies\HigherOrderUrl;
+use Honed\Core\Link\Concerns\Linkable;
+use Honed\Core\Link\Proxies\HigherOrderLink;
 
 /**
- * @property-read \Honed\Table\Url\Url $url
+ * @property-read \Honed\Core\Link\Link $link
  */
 class PageAction extends BaseAction implements ProxiesHigherOrder
 {
-    use Urlable;
+    use Linkable;
 
     public function setUp(): void
     {
-        $this->setType('page');
+        $this->setType('action:page');
     }
 
-    /**
-     * Dynamically forward calls to the proxies.
-     *
-     * @throws \Exception
-     */
     public function __get(string $property): HigherOrder
     {
         return match ($property) {
-            'url' => new HigherOrderUrl($this),
-            default => throw new \Exception("Property [{$property}] does not exist on ".self::class),
+            'link' => new HigherOrderLink($this),
+            default => parent::__get($property),
         };
     }
 
     public function toArray(): array
     {
         return array_merge(parent::toArray(),
-            $this->isUrlable() ? [...$this->getUrl()?->toArray()] : [],
+            $this->isLinkable() ? [...$this->getLink()?->toArray()] : [],
         );
     }
 }

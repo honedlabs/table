@@ -6,56 +6,58 @@ namespace Honed\Table;
 
 use Closure;
 use Exception;
+use Honed\Core\Primitive;
+use Illuminate\Http\Response;
 use Honed\Core\Concerns\Encodable;
+use Illuminate\Support\Collection;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Columns\BaseColumn;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
-use Honed\Core\Exceptions\MissingRequiredAttributeException;
-use Honed\Core\Primitive;
-use Honed\Table\Actions\BulkAction;
 use Honed\Table\Actions\InlineAction;
-use Honed\Table\Columns\BaseColumn;
+use Illuminate\Database\Eloquent\Model;
 use Honed\Table\Http\DTOs\BulkActionData;
+use Illuminate\Database\Eloquent\Builder;
 use Honed\Table\Http\DTOs\InlineActionData;
 use Honed\Table\Http\Requests\TableActionRequest;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
+use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Illuminate\Pipeline\Pipeline;
 
 /**
  * @template T of \Illuminate\Database\Eloquent\Model
- *
  * @method static static build((\Closure(\Illuminate\Database\Eloquent\Builder<T>):(\Illuminate\Database\Eloquent\Builder<T>)|null) $resource = null) Build the table records and metadata using the current request.
  * @method $this build() Build the table records and metadata using the current request.
  */
 class Table extends Primitive
 {
     use Concerns\Filterable;
+    use Concerns\HasRecords;
+    use Concerns\HasPages;
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasEndpoint;
-    use Concerns\HasRecords;
-    use Concerns\HasResource;
-    use Concerns\IsOptimizable;
     use Concerns\Searchable;
     use Concerns\Selectable;
     use Concerns\Sortable;
+    use Concerns\HasResource;
     use Concerns\Toggleable;
+    use Concerns\IsOptimizable;
+    use Concerns\ActsBeforeRetrieval;
+    use Concerns\HasResourceModifier;
     use Encodable;
     use IsAnonymous;
     use RequiresKey;
 
     /**
      * The parent class-string of the table.
-     *
-     * @var class-string<\Honed\Table\Table>
+     * 
+     * @var class-string<\Honed\Table\Table<T>>
      */
     protected $anonymous = self::class;
 
     /**
      * The request instance to use for the table.
-     *
+     * 
      * @var \Illuminate\Http\Request|null
      */
     protected $request = null;
@@ -65,7 +67,7 @@ class Table extends Primitive
      *
      * @param  \Illuminate\Database\Eloquent\Builder<T>|T|class-string<T>|\Closure(\Illuminate\Database\Eloquent\Builder<T>):(\Illuminate\Database\Eloquent\Builder<T>)  $resource
      */
-    public function __construct(Model|Builder|Closure|string|null $resource = null)
+    public function __construct(Model|Builder|Closure|string $resource = null)
     {
         match (true) {
             \is_null($resource) => null,
@@ -123,7 +125,7 @@ class Table extends Primitive
      *
      * @param  \Illuminate\Database\Eloquent\Builder<T>|T|class-string<T>|\Closure(\Illuminate\Database\Eloquent\Builder<T>):(\Illuminate\Database\Eloquent\Builder<T>)  $resource
      */
-    public static function make(Model|Builder|Closure|string|null $resource = null): static
+    public static function make(Model|Builder|Closure|string $resource = null): static
     {
         return resolve(static::class, compact('resource'));
     }
@@ -144,7 +146,7 @@ class Table extends Primitive
 
     /**
      * Get the table as an array.
-     *
+     * 
      * @return array<string,mixed>
      */
     public function toArray(): array
@@ -152,38 +154,26 @@ class Table extends Primitive
         $this->configureTableForCurrentRequest();
 
         return [
-            /* The ID of this table, used to deserialize it for actions */
             'id' => $this->encodeClass(),
-            /* The column attribute used to identify a record */
-            'key' => $this->getKeyName(),
-            /* The records of the table */
-            'records' => $this->getRecords(),
-            /* The available column options */
-            'columns' => $this->getColumns(),
-            /* The available bulk action options */
-            'bulkActions' => $this->getBulkActions(),
-            /* The available page action options, generally page links */
-            'pageActions' => $this->getPageActions(),
-            /* The available filter options */
-            'filters' => $this->getFilters(),
-            /* The available sort options */
-            'sorts' => $this->getSorts(),
-            /* The pagination data for the records */
-            'paginator' => $this->getPaginator(),
-            /* Whether the table has toggling enabled */
+            'endpoint' => $this->isAnonymous() ? null : $this->getEndpoint(),
             'toggleable' => $this->isToggleable(),
-            /* The query parameter term for sorting */
-            'sort' => $this->getSortKey(),
-            /* The query parameter term for ordering */
-            'order' => $this->getOrderKey(),
-            /* The query parameter term for changing the number of records per page */
-            'count' => $this->getCountKey(),
-            /* The query parameter term for searching */
-            'search' => $this->getSearchKey(),
-            /* The query parameter term for toggling column visibility */
-            'toggle' => $this->getToggleKey(),
-            /* The route used to handle actions, it is required to be a 'post' route */
-            'endpoint' => $this->getEndpoint(),
+            'keys' => [
+                'records' => $this->getKeyName(),
+                'sorts' => $this->getSortKey(),
+                'order' => $this->getOrderKey(),
+                'search' => $this->getSearchKey(),
+                'toggle' => $this->getToggleKey(),
+                'shown' => $this->getShownKey(),
+            ],
+            'records' => $this->getRecords(),
+            'columns' => $this->getColumns(),
+            'actions' => [
+                'bulk' => $this->getBulkActions(),
+                'page' => $this->getPageActions(),
+            ],
+            'filters' => $this->getFilters(),
+            'sorts' => $this->getSorts(),
+            'pages' => $this->getPages(),
         ];
     }
 
@@ -196,30 +186,20 @@ class Table extends Primitive
             return;
         }
 
-        $this->modifyResource();
-        $this->setSearchColumns();
-        $this->toggleColumns();
-        $this->filterQuery($this->getResource());
-        $this->sortQuery($this->getResource());
-        $this->searchQuery($this->getResource());
-        // $this->selectQuery($this->getQuery());
-        $this->beforeRetrieval();
-        // $this->formatRecords();
-        // $this->paginateRecords();
-    }
+        $columns = $this->getColumns();
+        $activeColumns = $this->toggleColumns($columns);
+        $resource = $this->getResource();
+        
+        $this->modifyResource($resource);
+        $this->filterQuery($resource);
+        $this->sortQuery($resource);
+        $this->searchQuery($resource, $columns);
+        $this->optimizeQuery($resource, $activeColumns);
+        $this->beforeRetrieval($resource);
 
-    protected function modifyResource(): void
-    {
-        if ($this->hasResourceModifier()) {
-            \call_user_func($this->getResourceModifier(), $this->resource);
-        }
-    }
-
-    protected function beforeRetrieval(): void
-    {
-        if (\method_exists($this, 'before')) {
-            \call_user_func($this->getResourceModifier(), $this->resource);
-        }
+        $records = $this->paginateRecords($resource);
+        $formatted = $this->formatRecords($records, $activeColumns, $this->getInlineActions(), $this->getSelector());
+        $this->setRecords($formatted);
     }
 
     protected function setSearchColumns(): void
@@ -233,23 +213,6 @@ class Table extends Primitive
 
         // Override the search property with the unique combination of the property and columns
         $this->setSearch(\array_unique([...$searchProperty, ...$searchColumns]));
-    }
-
-    protected function toggleColumns(): void
-    {
-        $cols = $this->getToggledColumns(); // names
-
-        if (empty($cols)) {
-            return;
-        }
-
-        $this->getColumns()->each(function (BaseColumn $column) use ($cols) {
-            if (\in_array($column->getName(), $cols)) {
-                $column->setActive(true);
-            } else {
-                $column->setActive(false);
-            }
-        });
     }
 
     /**
@@ -290,9 +253,9 @@ class Table extends Primitive
         // Ensure that the user is authorized to perform the action on this model
         if (! $action->isAuthorized([
             'record' => $record,
-            $this->getModelClassName() => $record,
+            $this->getModelName() => $record,
         ], [
-            (string) $this->getModelClass() => $record,
+            (string) $this->getModel() => $record,
             Model::class => $record,
         ])) {
             throw new \Exception('Unauthorized');
@@ -303,11 +266,11 @@ class Table extends Primitive
             named: [
                 'record' => $record,
                 'model' => $record,
-                $this->getModelClassName() => $record,
+                strtolower($this->getModelName()) => $record,
             ],
             typed: [
-                (string) $this->getModelClass() => $record,
-                // Model::class => $record,
+                (string) $this->getModel() => $record,
+                Model::class => $record,
             ],
         );
     }

@@ -10,14 +10,14 @@ namespace Honed\Table\Confirm\Concerns;
 trait HasCancel
 {
     /**
-     * @var string|(\Closure():string)|null
+     * @var string|(\Closure(mixed...):string)|null
      */
     protected $cancel = null;
 
     /**
      * Set the cancel, chainable.
      *
-     * @param  string|\Closure():string  $cancel
+     * @param  string|\Closure(mixed...):string  $cancel
      * @return $this
      */
     public function cancel(string|\Closure $cancel): static
@@ -30,22 +30,40 @@ trait HasCancel
     /**
      * Set the cancel quietly.
      *
-     * @param  string|(\Closure():string)|null  $cancel
+     * @param  string|(\Closure(mixed...):string)|null  $cancel
      */
     public function setCancel(string|\Closure|null $cancel): void
     {
-        if (is_null($cancel)) {
+        if (\is_null($cancel)) {
             return;
         }
+
         $this->cancel = $cancel;
     }
 
     /**
-     * Get the cancel.
+     * Get the cancel message using the given closure dependencies.
+     *
+     * @param  array<string, mixed>  $named
+     * @param  array<string, mixed>  $typed
      */
-    public function getCancel(): ?string
+    public function getCancel(array $named = [], array $typed = []): ?string
     {
-        return $this->evaluate($this->cancel);
+        return $this->evaluate($this->cancel, $named, $typed);
+    }
+
+    /**
+     * Resolve the cancel message using the given closure dependencies.
+     *
+     * @param  array<string, mixed>  $named
+     * @param  array<string, mixed>  $typed
+     */
+    public function resolveCancel(array $named = [], array $typed = []): ?string
+    {
+        $cancel = $this->getCancel($named, $typed);
+        $this->setCancel($cancel);
+
+        return $cancel;
     }
 
     /**

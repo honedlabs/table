@@ -9,14 +9,14 @@ trait HasColumns
 {
     /**
      * Retrieved columns with authorization applied.
-     *
+     * 
      * @var Collection<\Honed\Table\Columns\BaseColumn>
      */
     protected $cachedColumns;
 
     /**
      * The columns to be used for the table.
-     *
+     * 
      * @var array<int,\Honed\Table\Columns\BaseColumn>
      */
     // protected $columns;
@@ -34,7 +34,7 @@ trait HasColumns
 
         $this->columns = $columns;
     }
-
+    
     /**
      * Determine if the table has columns.
      */
@@ -51,7 +51,7 @@ trait HasColumns
      */
     public function getColumns(): Collection
     {
-        return $this->cachedColumns ??= collect(match (true) {
+        return $this->cachedColumns ??= collect(match(true) {
             \method_exists($this, 'columns') => $this->columns(),
             \property_exists($this, 'columns') => $this->columns,
             default => [],
@@ -79,39 +79,16 @@ trait HasColumns
     {
         return $this->getColumns()
             ->filter(static fn (BaseColumn $column): bool => $column->isSearchable())
-            ->pluck('name');
+            ->map(static fn (BaseColumn $column): string => $column->getName())
+            ->values();
     }
 
     /**
      * Get the key column for the table.
      */
-    public function getKeyColumn(): ?BaseColumn
+    public function getKeyColumn(): BaseColumn|null
     {
         return $this->getColumns()
             ->first(static fn (BaseColumn $column): bool => $column->isKey());
-    }
-
-    /**
-     * Retrieve the column attributes.
-     *
-     * @return array<string,mixed>
-     */
-    public function getAttributedColumns(): array
-    {
-        return $this->getColumns()
-            ->mapWithKeys(fn (BaseColumn $column) => [$column->getName() => $column])
-            ->toArray();
-    }
-
-    /**
-     * Get the columns that are active.
-     *
-     * @return Collection<\Honed\Table\Columns\BaseColumn>
-     */
-    public function getActiveColumns(): Collection
-    {
-        return $this->getColumns()
-            ->filter(fn (BaseColumn $column): bool => $column->isActive())
-            ->values();
     }
 }
