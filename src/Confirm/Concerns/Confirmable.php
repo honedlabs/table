@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Confirm\Concerns;
 
-use Illuminate\Support\Str;
 use Honed\Table\Confirm\Confirm;
+use Illuminate\Support\Str;
 
 /**
  * @mixin \Honed\Core\Concerns\Evaluable
@@ -56,7 +56,7 @@ trait Confirmable
     /**
      * Set the confirm instance quietly.
      */
-    public function setConfirm(Confirm|null $confirm)
+    public function setConfirm(?Confirm $confirm)
     {
         if (\is_null($confirm)) {
             return;

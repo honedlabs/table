@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Sorts\Sort;
 use Honed\Table\Concerns\Sortable;
+use Honed\Table\Sorts\Sort;
 use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
@@ -16,6 +16,7 @@ class SortableTest
 class SortableMethodTest extends SortableTest
 {
     protected $sort = 's';
+
     protected $order = 'o';
 
     public function sorts(): array
@@ -73,12 +74,12 @@ it('sets sorts', function () {
     expect($this->method)
         ->hasSorts()->toBeTrue()
         ->getSorts()->scoped(fn ($sorts) => $sorts
-            ->toBeCollection()
-            ->toHaveCount(1)
-            ->first()->scoped(fn ($sort) => $sort
-                ->toBeInstanceOf(Sort::class)
-                ->getAttribute()->toBe('test')
-            )
+        ->toBeCollection()
+        ->toHaveCount(1)
+        ->first()->scoped(fn ($sort) => $sort
+        ->toBeInstanceOf(Sort::class)
+        ->getAttribute()->toBe('test')
+        )
         );
 });
 
@@ -95,12 +96,12 @@ it('retrieves sorts from method', function () {
     expect($this->method)
         ->hasSorts()->toBeTrue()
         ->getSorts()->scoped(fn ($sorts) => $sorts
-            ->toBeCollection()
-            ->toHaveCount(1)
-            ->first()->scoped(fn ($sort) => $sort
-                ->toBeInstanceOf(Sort::class)
-                ->getAttribute()->toBe('test')
-            )
+        ->toBeCollection()
+        ->toHaveCount(1)
+        ->first()->scoped(fn ($sort) => $sort
+        ->toBeInstanceOf(Sort::class)
+        ->getAttribute()->toBe('test')
+        )
         );
 });
 

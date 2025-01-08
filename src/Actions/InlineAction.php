@@ -6,8 +6,8 @@ namespace Honed\Table\Actions;
 
 use Honed\Core\Concerns\IsDefault;
 use Honed\Core\Contracts\HigherOrder;
-use Honed\Core\Link\Concerns\Linkable;
 use Honed\Core\Contracts\ProxiesHigherOrder;
+use Honed\Core\Link\Concerns\Linkable;
 use Honed\Core\Link\Proxies\HigherOrderLink;
 use Honed\Table\Confirm\Concerns\Confirmable;
 use Honed\Table\Confirm\Proxies\HigherOrderConfirm;

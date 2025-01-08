@@ -8,7 +8,7 @@ trait Selectable
 {
     /**
      * Whether the records are selectable for bulk actions.
-     * 
+     *
      * @var (\Closure(mixed...):bool)|null
      */
     protected $selectable;
@@ -18,14 +18,14 @@ trait Selectable
      *
      * @param  (\Closure(mixed...):bool)|null  $selectable
      */
-    public function setSelectable(\Closure|null $selectable): void
+    public function setSelectable(?\Closure $selectable): void
     {
         $this->selectable = $selectable;
     }
 
     /**
      * Retrieve the selectable closure.
-     * 
+     *
      * @return (\Closure(mixed...):bool)|array{0:$this,1:string}|null
      */
     public function getSelector(): \Closure|array|null
@@ -50,8 +50,8 @@ trait Selectable
      */
     public function isSelectable(mixed $record): bool
     {
-        return ! $this->hasSelector() 
-            ? true 
+        return ! $this->hasSelector()
+            ? true
             : \call_user_func($this->getSelector(), $record);
     }
 }

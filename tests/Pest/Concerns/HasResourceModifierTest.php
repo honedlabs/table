@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Honed\Table\Concerns\HasResourceModifier;
 use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Database\Eloquent\Builder;
-use Honed\Table\Concerns\HasResourceModifier;
 
 class HasResourceModifierTest
 {
@@ -20,8 +20,8 @@ class HasResourceModifierMethodTest extends HasResourceModifierTest
 }
 
 beforeEach(function () {
-    $this->test = new HasResourceModifierTest();
-    $this->method = new HasResourceModifierMethodTest();
+    $this->test = new HasResourceModifierTest;
+    $this->method = new HasResourceModifierMethodTest;
     $this->builder = Product::query();
 });
 
@@ -67,7 +67,7 @@ it('rejects null values', function () {
         ->hasResourceModifier()->toBeTrue();
 
     $this->test->modifyResource($this->builder);
-    
+
     expect($this->builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->{0}->toEqual([

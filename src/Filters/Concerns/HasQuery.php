@@ -47,7 +47,7 @@ trait HasQuery
         if (\is_null($query)) {
             return;
         }
-        
+
         $this->query = $query;
     }
 

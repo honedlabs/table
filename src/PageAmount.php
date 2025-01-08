@@ -10,8 +10,8 @@ use Honed\Core\Primitive;
 
 class PageAmount extends Primitive
 {
-    use IsActive;
     use HasValue;
+    use IsActive;
 
     public function __construct(int $value, bool $active = false)
     {
