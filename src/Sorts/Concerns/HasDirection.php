@@ -142,7 +142,7 @@ trait HasDirection
      *
      * @return 'asc'|'desc'|null
      */
-    public function getActiveDirection(): ?string
+    public function getActiveDirection(): string|null
     {
         return $this->activeDirection;
     }

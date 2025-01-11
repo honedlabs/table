@@ -1,15 +1,16 @@
 <?php
 
 use Honed\Core\Concerns\Evaluable;
+use Honed\Table\Sorts\Sort;
+use Honed\Table\Columns\Column;
 use Honed\Core\Concerns\HasName;
 use Honed\Table\Columns\Concerns\IsSortable;
-use Honed\Table\Sorts\Sort;
 
 class IsSortableTest
 {
-    use Evaluable;
-    use HasName;
     use IsSortable;
+    use HasName;
+    use Evaluable;
 }
 
 beforeEach(function () {
@@ -26,8 +27,8 @@ it('sets sortable', function () {
     expect($this->test)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
-        ->toBeInstanceOf(Sort::class)
-        ->getAttribute()->toBe('name')
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('name')
         );
 });
 
@@ -36,8 +37,8 @@ it('chains sortable', function () {
         ->toBeInstanceOf(IsSortableTest::class)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
-        ->toBeInstanceOf(Sort::class)
-        ->getAttribute()->toBe('name')
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('name')
         );
 });
 
@@ -52,8 +53,8 @@ it('rejects null values', function () {
     expect($this->test)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
-        ->toBeInstanceOf(Sort::class)
-        ->getAttribute()->toBe('name')
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('name')
         );
 });
 
@@ -62,7 +63,7 @@ it('can change column name', function () {
         ->toBeInstanceOf(IsSortableTest::class)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
-        ->toBeInstanceOf(Sort::class)
-        ->getAttribute()->toBe('created_at')
+            ->toBeInstanceOf(Sort::class)
+            ->getAttribute()->toBe('created_at')
         );
 });

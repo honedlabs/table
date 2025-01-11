@@ -41,7 +41,7 @@ abstract class BaseColumn extends Primitive implements Column
     /**
      * Create a new column instance specifying the related database attribute, and optionally the display label.
      */
-    final public function __construct(string $name, ?string $label = null)
+    final public function __construct(string $name, string $label = null)
     {
         parent::__construct();
         $this->setName($name);
@@ -59,7 +59,7 @@ abstract class BaseColumn extends Primitive implements Column
     /**
      * Make a column specifying the related database attribute, and optionally the display label.
      */
-    public static function make(string $name, ?string $label = null): static
+    public static function make(string $name, string $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }
