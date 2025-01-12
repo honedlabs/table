@@ -13,21 +13,21 @@ trait HasRecords
 {
     /**
      * The records of the table retrieved from the resource.
-     *
+     * 
      * @var \Illuminate\Support\Collection<array-key,array<array-key,mixed>>|null
      */
     protected $records = null;
 
     /**
      * Whether to reduce the records to only contain properties present in the columns.
-     *
+     * 
      * @var bool
      */
     protected $reduce;
 
     /**
      * Whether to reduce the records to only contain properties present in the columns by default.
-     *
+     * 
      * @var bool
      */
     protected static $defaultReduce = false;
@@ -60,7 +60,7 @@ trait HasRecords
 
     /**
      * Set the records of the table.
-     *
+     * 
      * @param  \Illuminate\Support\Collection<int,array<string,mixed>>  $records
      */
     public function setRecords(Collection $records): void
@@ -74,7 +74,7 @@ trait HasRecords
     public function isReducing(): bool
     {
         return match (true) {
-            \property_exists($this, 'reduce') && ! \is_null($this->reduce) => (bool) $this->reduce,
+            \property_exists($this, 'reduce') && !\is_null($this->reduce) => (bool) $this->reduce,
             \method_exists($this, 'reduce') => (bool) $this->reduce(),
             default => static::$defaultReduce,
         };
@@ -82,11 +82,11 @@ trait HasRecords
 
     /**
      * Format the records using the provided columns.
-     *
-     * @param  \Illuminate\Support\Collection<int,\Honed\Table\Columns\BaseColumn>  $activeColumns
-     * @param  \Illuminate\Support\Collection<int,\Honed\Table\Actions\InlineAction>  $inlineActions
+     * 
+     * @param \Illuminate\Support\Collection<int,\Honed\Table\Columns\BaseColumn> $activeColumns
+     * @param \Illuminate\Support\Collection<int,\Honed\Table\Actions\InlineAction> $inlineActions
      */
-    public function formatRecords(Collection $records, Collection $activeColumns, ?Collection $inlineActions = null, mixed $selectableEvaluation = null)
+    public function formatRecords(Collection $records, Collection $activeColumns, Collection $inlineActions = null, mixed $selectableEvaluation = null)
     {
         if ($records->isEmpty()) {
             return $records;
@@ -138,7 +138,7 @@ trait HasRecords
             ->each(fn (InlineAction $action) => $action->link->resolveLink([
                 'record' => $record,
             ], [
-
+                
             ]))
             ->values();
     }

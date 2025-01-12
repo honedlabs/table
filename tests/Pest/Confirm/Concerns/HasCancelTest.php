@@ -7,8 +7,8 @@ use Honed\Table\Tests\Stubs\Product;
 
 class HasCancelTest
 {
-    use Evaluable;
     use HasCancel;
+    use Evaluable;
 }
 
 beforeEach(function () {

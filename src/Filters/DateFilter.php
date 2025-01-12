@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Honed\Table\Filters\Enums\DateClause;
+use Illuminate\Http\Request;
 use Honed\Table\Filters\Enums\Operator;
+use Honed\Table\Filters\Enums\DateClause;
 use Illuminate\Database\Eloquent\Builder;
 
 class DateFilter extends BaseFilter
