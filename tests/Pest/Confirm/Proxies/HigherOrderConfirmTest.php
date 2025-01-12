@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 use Honed\Core\Contracts\HigherOrder;
 use Honed\Core\Contracts\ProxiesHigherOrder;
-use Honed\Table\Confirm\Concerns\Confirmable;
-use Honed\Table\Confirm\Confirm;
-use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
 use Honed\Core\Primitive;
-use Illuminate\Support\Facades\URL;
+use Honed\Table\Confirm\Concerns\Confirmable;
+use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
 
 class HigherOrderConfirmTest extends Primitive implements ProxiesHigherOrder
 {
@@ -42,4 +40,3 @@ it('proxies calls to the Confirm object', function () {
         ->toBeInstanceOf(HigherOrderConfirmTest::class)
         ->getConfirm('title')->toBe('Title');
 });
-
