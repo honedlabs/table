@@ -14,7 +14,7 @@ trait Actionable
     /**
      * Set the action to apply.
      *
-     * @param  \Closure(mixed...):void|string  $action
+     * @param \Closure(mixed...):void|string $action
      * @return $this
      */
     public function action(\Closure|string $action)
@@ -34,8 +34,8 @@ trait Actionable
 
     /**
      * Set the action to apply.
-     *
-     * @param  \Closure(mixed...):void|string|null  $action
+     * 
+     * @param \Closure(mixed...):void|string|null $action
      */
     public function setAction(\Closure|string|null $action): void
     {
@@ -55,7 +55,7 @@ trait Actionable
      *
      * @return \Closure(mixed...):void|null
      */
-    public function getAction(): ?\Closure
+    public function getAction(): \Closure|null
     {
         return $this->action;
     }

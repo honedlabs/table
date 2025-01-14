@@ -31,7 +31,7 @@ abstract class BaseSort extends Primitive implements Contracts\Sort
     /**
      * Create a new sort instance specifying the database column, and optionally the display label.
      */
-    public function __construct(string $attribute, ?string $label = null)
+    public function __construct(string $attribute, string $label = null)
     {
         parent::__construct();
         $this->setAttribute($attribute);
@@ -41,7 +41,7 @@ abstract class BaseSort extends Primitive implements Contracts\Sort
     /**
      * Make a sort specifying the database column, and optionally the display label.
      */
-    public static function make(string $attribute, ?string $label = null): static
+    public static function make(string $attribute, string $label = null): static
     {
         return resolve(static::class, compact('attribute', 'label'));
     }
@@ -75,7 +75,7 @@ abstract class BaseSort extends Primitive implements Contracts\Sort
 
     public function getParameterName(): string
     {
-        return $this->getAlias()
+        return $this->getAlias() 
             ?? (new Stringable($this->getAttribute()))
                 ->afterLast('.')
                 ->value();

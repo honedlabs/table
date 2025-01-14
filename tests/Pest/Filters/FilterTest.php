@@ -34,7 +34,7 @@ it('can be applied', function () {
             'operator' => Operator::Equal->value,
             'boolean' => 'and',
         ]);
-
+    
     expect($this->filter)
         ->isActive()->toBeTrue()
         ->getValue()->toBe($this->value);

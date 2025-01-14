@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests;
 
-use Honed\Table\TableServiceProvider;
-use Honed\Table\Tests\Stubs\Status;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
-use Inertia\ServiceProvider as InertiaServiceProvider;
+use Honed\Table\Tests\Stubs\Status;
+use Illuminate\Support\Facades\View;
+use Honed\Table\TableServiceProvider;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Inertia\ServiceProvider as InertiaServiceProvider;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class TestCase extends Orchestra
 {

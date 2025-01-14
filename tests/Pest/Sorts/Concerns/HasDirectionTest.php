@@ -9,7 +9,7 @@ class HasDirectionTest
 
 beforeEach(function () {
     HasDirectionTest::sortByAscending();
-    $this->test = new HasDirectionTest;
+    $this->test = new HasDirectionTest();
 });
 
 it('has no direction by default', function () {
@@ -17,6 +17,7 @@ it('has no direction by default', function () {
         ->getDirection()->toBeNull()
         ->hasDirection()->toBeFalse();
 });
+
 
 it('sets direction', function () {
     $this->test->setDirection(HasDirectionTest::Descending);
@@ -38,6 +39,7 @@ it('rejects invalid directions', function () {
         ->getDirection()->toBe(HasDirectionTest::Descending)
         ->hasDirection()->toBeTrue();
 });
+
 
 it('has shorthand `desc`', function () {
     expect($this->test->desc())->toBeInstanceOf(HasDirectionTest::class)

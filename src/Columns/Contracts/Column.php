@@ -16,7 +16,7 @@ interface Column
      */
     public function apply(mixed $value);
 
-    /**
+   /**
      * Format how the record values are displayed in this column.
      *
      * @template T
