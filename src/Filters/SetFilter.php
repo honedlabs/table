@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
-use Illuminate\Http\Request;
-use Honed\Core\Options\Option;
 use Honed\Core\Concerns\IsStrict;
-use Honed\Table\Filters\Enums\Clause;
-use Honed\Table\Filters\Enums\Operator;
-use Illuminate\Database\Eloquent\Builder;
 use Honed\Core\Options\Concerns\HasOptions;
+use Honed\Core\Options\Option;
+use Honed\Table\Filters\Enums\Clause;
+use Illuminate\Http\Request;
 
 class SetFilter extends Filter
 {
@@ -41,13 +39,12 @@ class SetFilter extends Filter
         $filtering = $this->collectOptions()->reduce(
             static fn (bool $filtering, Option $option) => $option
                 ->active(\in_array($option->getValue(), (array) $value))
-                ->isActive() || $filtering
-            , false);
+                ->isActive() || $filtering, false);
 
         return ! $this->isStrict() || $filtering;
     }
 
-    public function getValueFromRequest(Request $request = null): mixed
+    public function getValueFromRequest(?Request $request = null): mixed
     {
         $input = ($request ?? request())
             ->input($this->getParameterName(), null);
@@ -82,7 +79,7 @@ class SetFilter extends Filter
     {
         $this->multiple = $multiple;
 
-        !$this->getClause()?->isMultiple()
+        ! $this->getClause()?->isMultiple()
             && $this->setClause(Clause::Contains);
     }
 

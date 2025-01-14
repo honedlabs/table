@@ -27,7 +27,7 @@ trait HasBreakpoint
 
     /**
      * Set the breakpoint, chainable.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function breakpoint(string $breakpoint): static
@@ -39,7 +39,7 @@ trait HasBreakpoint
 
     /**
      * Set the breakpoint quietly.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function setBreakpoint(?string $breakpoint): void
@@ -75,7 +75,7 @@ trait HasBreakpoint
 
     /**
      * Set the breakpoint to extra small.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function xs(): static
@@ -85,7 +85,7 @@ trait HasBreakpoint
 
     /**
      * Set the breakpoint to small.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function sm(): static
@@ -95,7 +95,7 @@ trait HasBreakpoint
 
     /**
      * Set the breakpoint to medium.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function md(): static
@@ -105,7 +105,7 @@ trait HasBreakpoint
 
     /**
      * Set the breakpoint to large.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function lg(): static
@@ -115,7 +115,7 @@ trait HasBreakpoint
 
     /**
      * Set the breakpoint to extra large.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function xl(): static

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Actions\Contracts\Action;
 use Honed\Table\Actions\BulkAction;
+use Honed\Table\Actions\Contracts\Action;
 use Honed\Table\Actions\InlineAction;
 use Honed\Table\Actions\PageAction;
 use Illuminate\Support\Collection;
@@ -46,8 +46,8 @@ trait HasActions
      */
     public function getActions(): Collection
     {
-        return collect(match(true) {
-            \property_exists($this, 'actions') && !\is_null($this->actions) => $this->actions,
+        return collect(match (true) {
+            \property_exists($this, 'actions') && ! \is_null($this->actions) => $this->actions,
             \method_exists($this, 'actions') => $this->actions(),
             default => [],
         });

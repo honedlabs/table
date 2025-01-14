@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-use function Pest\Laravel\get;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\Searchable;
 use Honed\Table\Tests\Stubs\Product;
-
 use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
@@ -21,17 +19,17 @@ class SearchableMethodTest extends SearchableTest
 
     public function search()
     {
-       return ['name', 'description'];
+        return ['name', 'description'];
     }
 }
 
 beforeEach(function () {
     SearchableTest::useScout(false);
     SearchableTest::useSearchTerm();
-    $this->test = new SearchableTest();
-    $this->method = new SearchableMethodTest();
+    $this->test = new SearchableTest;
+    $this->method = new SearchableMethodTest;
     Request::swap(Request::create('/', HttpFoundationRequest::METHOD_GET, [
-        $this->method->getSearchTerm() => 'helloworld'
+        $this->method->getSearchTerm() => 'helloworld',
     ]));
 });
 
@@ -72,7 +70,7 @@ it('determines whether to apply searching', function () {
         ->isSearching()->toBeTrue();
 
     $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-        'none' => 'helloworld'
+        'none' => 'helloworld',
     ]);
 
     expect($this->method)
@@ -87,65 +85,64 @@ it('applies search to builder', function () {
     expect($builder->getQuery()->wheres)
         ->toHaveCount(1)
         ->{0}->{'query'}->wheres
-            ->toEqual([
-                [
-                    'type' => 'Basic',
-                    'column' => 'name',
-                    'value' => '%helloworld%',
-                    'operator' => 'LIKE',
-                    'boolean' => 'or',
-                ],
-                [
-                    'type' => 'Basic',
-                    'column' => 'description',
-                    'value' => '%helloworld%',
-                    'operator' => 'LIKE',
-                    'boolean' => 'or',
-                ]
-            ]);
+        ->toEqual([
+            [
+                'type' => 'Basic',
+                'column' => 'name',
+                'value' => '%helloworld%',
+                'operator' => 'LIKE',
+                'boolean' => 'or',
+            ],
+            [
+                'type' => 'Basic',
+                'column' => 'description',
+                'value' => '%helloworld%',
+                'operator' => 'LIKE',
+                'boolean' => 'or',
+            ],
+        ]);
 });
-
 
 describe('searches', function () {
     beforeEach(function () {
         $this->columns = collect([
             Column::make('status')->searchable(),
-            Column::make('price')->searchable()
+            Column::make('price')->searchable(),
         ]);
     });
 
     test('not by default', function () {
         $builder = Product::query();
-    
+
         $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-            'none' => 'helloworld'
+            'none' => 'helloworld',
         ]);
-    
+
         $this->method->searchQuery($builder, $this->columns, $request);
-    
+
         expect($builder->getQuery()->wheres)
             ->toBeEmpty();
     });
 
     test('with request', function () {
         $builder = Product::query();
-    
+
         $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-            $this->method->getSearchTerm() => 'helloworld'
+            $this->method->getSearchTerm() => 'helloworld',
         ]);
-    
+
         $this->method->searchQuery($builder, $this->columns, $request);
-    
+
         expect($builder->getQuery()->wheres)
             ->toHaveCount(1)
             ->{0}->scoped(fn ($nested) => $nested
-                ->{'type'}->toBe('Nested')
-                ->{'query'}->wheres
-                    ->toHaveCount(4)
-                    ->each(fn ($where) => $where
-                        ->toBeArray()
-                        ->toHaveKeys(['value', 'type', 'column', 'operator', 'boolean'])
-                    )
+            ->{'type'}->toBe('Nested')
+            ->{'query'}->wheres
+            ->toHaveCount(4)
+            ->each(fn ($where) => $where
+                ->toBeArray()
+                ->toHaveKeys(['value', 'type', 'column', 'operator', 'boolean'])
+            )
             );
     });
 
@@ -157,21 +154,20 @@ describe('searches', function () {
         }
 
         $builder = Product::query();
-    
+
         $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-            $this->method->getSearchTerm() => 'helloworld'
+            $this->method->getSearchTerm() => 'helloworld',
         ]);
-    
+
         $this->method->searchQuery($builder, $this->columns, $request);
-    
+
         expect($builder->getQuery()->wheres)
             ->toHaveCount(1)
             ->{0}->scoped(fn ($nested) => $nested
-                ->{'type'}->toBe('In')
-                ->{'column'}->toBe('id')
-                ->{'values'}->toBe([])
-                ->{'boolean'}->toBe('and')
+            ->{'type'}->toBe('In')
+            ->{'column'}->toBe('id')
+            ->{'values'}->toBe([])
+            ->{'boolean'}->toBe('and')
             );
     });
 });
-

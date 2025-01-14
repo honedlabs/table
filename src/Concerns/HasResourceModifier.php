@@ -15,10 +15,10 @@ trait HasResourceModifier
 
     /**
      * Set the resource modifier quietly.
-     * 
+     *
      * @param  (\Closure(\Illuminate\Database\Eloquent\Builder):(\Illuminate\Database\Eloquent\Builder|null))|null  $modifier
      */
-    public function setModifier(\Closure|null $modifier): void
+    public function setModifier(?\Closure $modifier): void
     {
         if (\is_null($modifier)) {
             return;

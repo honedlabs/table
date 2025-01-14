@@ -43,12 +43,12 @@ it('sets filters', function () {
     expect($this->test)
         ->hasFilters()->toBeTrue()
         ->getFilters()->scoped(fn ($filters) => $filters
-            ->toBeCollection()
-            ->toHaveCount(1)
-            ->first()->scoped(fn ($filter) => $filter
-                ->toBeInstanceOf(Filter::class)
-                ->getAttribute()->toBe('test')
-            )
+        ->toBeCollection()
+        ->toHaveCount(1)
+        ->first()->scoped(fn ($filter) => $filter
+        ->toBeInstanceOf(Filter::class)
+        ->getAttribute()->toBe('test')
+        )
         );
 });
 
@@ -65,12 +65,12 @@ it('retrieves filters from method', function () {
     expect($this->method)
         ->hasFilters()->toBeTrue()
         ->getFilters()->scoped(fn ($filters) => $filters
-            ->toBeCollection()
-            ->toHaveCount(1)
-            ->first()->scoped(fn ($filter) => $filter
-                ->toBeInstanceOf(Filter::class)
-                ->getAttribute()->toBe('test')
-            )
+        ->toBeCollection()
+        ->toHaveCount(1)
+        ->first()->scoped(fn ($filter) => $filter
+        ->toBeInstanceOf(Filter::class)
+        ->getAttribute()->toBe('test')
+        )
         );
 });
 
