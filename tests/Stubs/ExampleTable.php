@@ -41,8 +41,8 @@ class ExampleTable extends Table
         return [
             Column::make('id')->key(),
             TextColumn::make('name')->searchable(),
-            TextColumn::make('description')->placeholder('-'), // ->truncate(100)
-            BooleanColumn::make('best_seller', 'Favourite'), // ->labels('Favourite', 'Not Favourite'),
+            TextColumn::make('description')->placeholder('-'), //->truncate(100)
+            BooleanColumn::make('best_seller', 'Favourite'), //->labels('Favourite', 'Not Favourite'),
             Column::make('status')->meta(['badge' => true]),
             NumberColumn::make('price')->currency(),
             DateColumn::make('created_at')->sortable(),
@@ -84,9 +84,10 @@ class ExampleTable extends Table
             InlineAction::make('edit-route')
                 ->route('product.show'),
 
-            BulkAction::make('touch')->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
+            BulkAction::make('touch')
+                ->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
 
-            PageAction::make('create')->url->to('/products/create'),
+            PageAction::make('create')->link->to('/products/create'),
 
         ];
     }

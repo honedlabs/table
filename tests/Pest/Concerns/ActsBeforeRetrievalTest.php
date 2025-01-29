@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Honed\Table\Concerns\ActsBeforeRetrieval;
 use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Database\Eloquent\Builder;
+use Honed\Table\Concerns\ActsBeforeRetrieval;
 
 class ActsBeforeRetrievalTest
 {
@@ -20,8 +20,8 @@ class ActsBeforeRetrievalMethodTest extends ActsBeforeRetrievalTest
 }
 
 beforeEach(function () {
-    $this->test = new ActsBeforeRetrievalTest;
-    $this->method = new ActsBeforeRetrievalMethodTest;
+    $this->test = new ActsBeforeRetrievalTest();
+    $this->method = new ActsBeforeRetrievalMethodTest();
 });
 
 it('checks if it exists', function () {

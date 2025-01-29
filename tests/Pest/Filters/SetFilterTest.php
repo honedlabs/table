@@ -14,7 +14,7 @@ beforeEach(function () {
     $this->filter = SetFilter::make($this->name);
     $this->builder = Product::query();
     Request::swap(Request::create('/', HttpFoundationRequest::METHOD_GET, [
-        $this->name => $this->value,
+        $this->name => $this->value
     ]));
 });
 
@@ -64,7 +64,7 @@ it('has options', function () {
         ->options([
             Option::make('test3', 'Test 3'),
             Option::make('test2', 'Test 2'),
-            Option::make($this->value, 'Test'),
+            Option::make($this->value, 'Test'),  
         ])
         ->apply($this->builder);
 
@@ -77,13 +77,13 @@ it('has options', function () {
             'operator' => '=',
             'boolean' => 'and',
         ]);
-
+    
     expect($this->filter)
         ->hasOptions()->toBeTrue()
         ->collectOptions()->scoped(fn ($options) => $options
-        ->toHaveCount(3)
-        ->first(fn (Option $option) => $option->isActive())
-        ->getValue()->toBe($this->value)
+            ->toHaveCount(3)
+            ->first(fn (Option $option) => $option->isActive())
+                ->getValue()->toBe($this->value)
         );
 });
 
@@ -92,10 +92,10 @@ it('accepts multiple values', function () {
     $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [$this->name => \sprintf('%s,%s', $this->value, $value2)]);
 
     $this->filter->options([
-        Option::make('test3', 'Test 3'),
-        Option::make('test2', 'Test 2'),
-        Option::make($this->value, 'Test'),
-    ])
+            Option::make('test3', 'Test 3'),
+            Option::make('test2', 'Test 2'),
+            Option::make($this->value, 'Test'),  
+        ])
         ->multiple()
         ->apply($this->builder, $request);
 
@@ -111,12 +111,12 @@ it('accepts multiple values', function () {
     expect($this->filter)
         ->hasOptions()->toBeTrue()
         ->collectOptions()->scoped(fn ($options) => $options
-        ->toHaveCount(3)
-        ->sequence(
-            fn ($option) => $option->isActive()->toBeFalse(),
-            fn ($option) => $option->isActive()->toBeTrue(),
-            fn ($option) => $option->isActive()->toBeTrue(),
-        )
+            ->toHaveCount(3)
+            ->sequence(
+                fn ($option) => $option->isActive()->toBeFalse(),
+                fn ($option) => $option->isActive()->toBeTrue(),
+                fn ($option) => $option->isActive()->toBeTrue(),
+            )
         );
 });
 

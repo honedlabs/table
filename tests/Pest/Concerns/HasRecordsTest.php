@@ -14,7 +14,7 @@ class HasRecordsTest
 
 beforeEach(function () {
     HasRecordsTest::reduceRecords(false);
-    $this->test = new HasRecordsTest;
+    $this->test = new HasRecordsTest();
 });
 
 it('has no records by default', function () {
@@ -48,20 +48,20 @@ describe('formats', function () {
             Column::make('public_id'),
             Column::make('name'),
             Column::make('description'),
-            Column::make('status'),
+            Column::make('status')
         ]);
 
         $this->actions = collect([
             // InlineAction::make('show')->link(fn (Product $p) => route('product.show', $p->id)),
             InlineAction::make('show.other')->link->link(fn (mixed $record) => route('product.show', $record->id)),
-            InlineAction::make('delete')->authorize(fn (Product $p) => $p->id !== 1),
+            InlineAction::make('delete')->authorize(fn (Product $p) => $p->id % 2 === 0)
         ]);
 
         foreach (\range(1, 10) as $_) {
             product();
         }
     });
-
+    
     test('not with empty records', function () {
         expect($this->test->formatRecords(collect(), $this->columns))
             ->toBeCollection()
@@ -82,7 +82,9 @@ describe('formats', function () {
         expect($this->test->formatRecords(Product::all(), $this->columns, $this->actions))
             ->toBeCollection()
             ->toHaveCount(10)
-            ->dd()
-            ->each(fn ($record) => $record->toHaveKey('actions'));
+            ->each(fn ($record, $i) => $record
+                ->toHaveKey('actions')
+                ->{'actions'}->toHaveCount($i % 2 === 0 ? 1 : 2)
+            );
     });
 });

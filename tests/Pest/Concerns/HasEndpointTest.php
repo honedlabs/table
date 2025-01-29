@@ -23,7 +23,7 @@ class HasEndpointPropertyTest extends HasEndpointTest
 }
 
 beforeEach(function () {
-    $this->test = new HasEndpointTest;
+    $this->test = new HasEndpointTest();
 });
 
 it('has default config endpoint', function () {
@@ -32,11 +32,11 @@ it('has default config endpoint', function () {
 });
 
 it('has property endpoint', function () {
-    expect((new HasEndpointPropertyTest)->getEndpoint())->toBe('/property');
+    expect((new HasEndpointPropertyTest())->getEndpoint())->toBe('/property');
 });
 
 it('has method endpoint', function () {
-    expect((new HasEndpointMethodTest)->getEndpoint())->toBe('/method');
+    expect((new HasEndpointMethodTest())->getEndpoint())->toBe('/method');
 });
 
 it('sets endpoint', function () {

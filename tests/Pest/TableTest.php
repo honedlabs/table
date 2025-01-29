@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 use Honed\Table\Table;
+use Honed\Table\Tests\Stubs\ExampleTable;
 
 beforeEach(function () {
-    $this->test = Table::make();
+    $this->test = ExampleTable::make();
 });
 
 it('can be made', function () {
@@ -33,7 +34,7 @@ it('has array representation', function () {
             'toggle',
             'endpoint',
         ]);
-})->todo();
+});
 
 it('accepts a request to use', function () {
     $this->test->build(request());

@@ -8,8 +8,8 @@ use Honed\Table\Columns\BaseColumn;
 use Honed\Table\Columns\Contracts\Column;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Stringable;
+use Illuminate\Support\Facades\Cookie;
 
 trait Toggleable
 {
@@ -19,7 +19,7 @@ trait Toggleable
 
     /**
      * The name of this table's cookie for remembering column visibility
-     *
+     * 
      * @var string
      */
     protected $cookie;
@@ -36,42 +36,42 @@ trait Toggleable
 
     /**
      * The duration that this table's cookie should be remembered for
-     *
+     * 
      * @var int|null
      */
     protected $duration;
 
     /**
      * The duration of the cookie to use for all tables.
-     *
+     * 
      * @var int|null
      */
     protected static $cookieRemember = self::RememberDuration;
 
     /**
      * The name of the query parameter to use for toggling columns.
-     *
+     * 
      * @var string
      */
     protected $remember;
 
     /**
      * The name to use for the query parameter to toggle visibility for all tables.
-     *
+     * 
      * @var string
      */
     protected static $rememberName = self::RememberName;
 
     /**
      * Whether to enable toggling of column visibility for this table.
-     *
+     * 
      * @var bool
      */
     protected $toggle;
 
     /**
      * Whether to enable toggling of column visibility for all tables.
-     *
+     * 
      * @var bool
      */
     protected static $defaultToggle = false;
@@ -79,7 +79,7 @@ trait Toggleable
     /**
      * Configure the default duration of the cookie to use for all tables.
      */
-    public static function rememberCookieFor(?int $seconds): void
+    public static function rememberCookieFor(int|null $seconds): void
     {
         static::$cookieRemember = $seconds;
     }
@@ -87,7 +87,7 @@ trait Toggleable
     /**
      * Configure the name of the query parameter to use for toggling columns.
      */
-    public static function rememberCookieAs(?string $name = null): void
+    public static function rememberCookieAs(string $name = null): void
     {
         static::$rememberName = $name ?? self::RememberName;
     }
@@ -183,23 +183,27 @@ trait Toggleable
 
     /**
      * Update the cookie with the new data.
+     * 
+     * @param mixed $data
      */
-    public function enqueueCookie(mixed $data): void
+    public function enqueueCookie($data): void
     {
         Cookie::queue(
-            $this->getCookieName(),
-            \json_encode($data),
+            $this->getCookieName(), 
+            \json_encode($data), 
             $this->getRememberDuration()
         );
     }
 
     /**
      * Get the data stored in the cookie.
+     * 
+     * @param \Illuminate\Http\Request $request
      */
-    public function retrieveCookie(?Request $request = null): mixed
+    public function retrieveCookie($request = null): mixed
     {
         return \json_decode(
-            ($request ?? request())->cookie($this->getCookieName(), null),
+            ($request ?? request())->cookie($this->getCookieName(), '[]'),
             true
         );
     }
@@ -207,14 +211,14 @@ trait Toggleable
     /**
      * Resolve parameters using cookies if applicable.
      *
-     * @param  array<int,string>|null  $params
+     * @param array<int,string>|null $params
+     * @param \Illuminate\Http\Request|null $request
      * @return array<int,string>|null
      */
-    protected function resolveCookieParams(?array $params, ?Request $request): ?array
+    protected function resolveCookieParams($params, $request): ?array
     {
         if (! \is_null($params)) {
             $this->enqueueCookie($params);
-
             return $params;
         }
 
@@ -226,14 +230,14 @@ trait Toggleable
      *
      * @return array<int,string>|null
      */
-    public function toggleParameters(?Request $request = null): ?array
+    public function toggleParameters(Request $request = null): ?array
     {
         $params = ($request ?? request())
             ->string($this->getRememberName())
             ->trim()
             ->remove(' ')
             ->explode(',')
-            ->filter(fn ($param) => $param !== '') // Filter out empty strings
+            ->filter(fn($param) => $param !== '') // Filter out empty strings
             ->toArray();
 
         return empty($params) ? null : $params;
@@ -241,19 +245,20 @@ trait Toggleable
 
     /**
      * Toggle the columns for the request.
-     *
-     * @param  \Illuminate\Support\Collection<\Honed\Table\Columns\Contracts\Column>  $columns
+     * 
+     * @param \Illuminate\Support\Collection<\Honed\Table\Columns\Contracts\Column> $columns
      * @return \Illuminate\Support\Collection<\Honed\Table\Columns\Contracts\Column>
      */
-    public function toggleColumns(Collection $columns, ?Request $request = null)
+    public function toggleColumns(Collection $columns, Request $request = null)
     {
         if (! $this->isToggleable()) {
             // All columns are active by default using `setUp()`
             return $columns;
         }
 
+        
         $params = $this->toggleParameters($request);
-
+        
         if ($this->useCookie()) {
             $params = $this->resolveCookieParams($params, $request);
         }
@@ -262,7 +267,7 @@ trait Toggleable
             ->when(! \is_null($params),
                 fn (Collection $columns) => $columns
                     ->filter(static fn (BaseColumn $column) => $column
-                        ->active(! $column->isToggleable() || \in_array($column->getName(), $params))
+                        ->active(!$column->isToggleable() || \in_array($column->getName(), $params))
                         ->isActive()
                     )->values()
             );

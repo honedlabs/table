@@ -46,7 +46,7 @@ trait Filterable
     public function getFilters(): Collection
     {
         return collect(match (true) {
-            \property_exists($this, 'filters') && ! \is_null($this->filters) => $this->filters,
+            \property_exists($this, 'filters') && !\is_null($this->filters) => $this->filters,
             \method_exists($this, 'filters') => $this->filters(),
             default => [],
         });
@@ -55,7 +55,7 @@ trait Filterable
     /**
      * Apply the filters to a query.
      */
-    public function filterQuery(Builder $builder, ?Request $request = null): void
+    public function filterQuery(Builder $builder, Request $request = null): void
     {
         $this->getFilters()
             ->each(static fn (Filter $filter) => $filter->apply($builder, $request));
