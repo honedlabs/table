@@ -8,7 +8,7 @@ trait HasEndpoint
 {
     /**
      * The endpoint to use for this table.
-     * 
+     *
      * @var string
      */
     // protected $endpoint;
@@ -16,7 +16,7 @@ trait HasEndpoint
     /**
      * Set the endpoint for the table.
      */
-    public function setEndpoint(string|null $endpoint): void
+    public function setEndpoint(?string $endpoint): void
     {
         if (\is_null($endpoint)) {
             return;

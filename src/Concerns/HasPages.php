@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\PageAmount;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Contracts\Pagination\CursorPaginator;
 use Honed\Table\Exceptions\InvalidPaginatorException;
+use Honed\Table\PageAmount;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator as PaginationCursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator as PaginationLengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 trait HasPages
 {
@@ -42,7 +42,6 @@ trait HasPages
      */
     protected static $defaultPerPageAmount = 10;
 
-
     /**
      * @var 'cursor'|'simple'|'length-aware'|class-string<\Illuminate\Contracts\Pagination\Paginator>|null
      */
@@ -60,7 +59,7 @@ trait HasPages
 
     /**
      * Use the default page key.
-     * 
+     *
      * @var string|null
      */
     protected static $pageKey = null;
@@ -88,7 +87,7 @@ trait HasPages
     /**
      * Configure the paginator to use.
      *
-     * @param 'cursor'|'simple'|'length-aware'|class-string<\Illuminate\Contracts\Pagination\Paginator>|null $paginator
+     * @param  'cursor'|'simple'|'length-aware'|class-string<\Illuminate\Contracts\Pagination\Paginator>|null  $paginator
      */
     public static function usePaginator(?string $paginator = null): void
     {
@@ -139,7 +138,7 @@ trait HasPages
 
     /**
      * Get the paginator to use.
-     * 
+     *
      * @return 'cursor'|'simple'|'length-aware'|class-string<\Illuminate\Contracts\Pagination\Paginator>|null
      */
     public function getPaginator(): ?string
@@ -177,8 +176,8 @@ trait HasPages
 
     /**
      * Set the paginator to use.
-     * 
-     * @param 'cursor'|'simple'|'length-aware'|class-string<\Illuminate\Contracts\Pagination\Paginator>|null $paginator
+     *
+     * @param  'cursor'|'simple'|'length-aware'|class-string<\Illuminate\Contracts\Pagination\Paginator>|null  $paginator
      */
     public function setPaginator(?string $paginator): void
     {
@@ -187,8 +186,8 @@ trait HasPages
 
     /**
      * Set the page amount options quietly.
-     * 
-     * @param \Illuminate\Support\Collection<int,\Honed\Table\PageAmount> $pages
+     *
+     * @param  \Illuminate\Support\Collection<int,\Honed\Table\PageAmount>  $pages
      */
     public function setPages(Collection $pages): void
     {
@@ -197,7 +196,7 @@ trait HasPages
 
     /**
      * Get the page amount options.
-     * 
+     *
      * @return \Illuminate\Support\Collection<int,\Honed\Table\PageAmount>|null
      */
     public function getPages(): ?Collection
@@ -226,7 +225,7 @@ trait HasPages
 
         $requestedAmount = ($request ?? request())
             ->integer($this->getShownKey(), null);
-        
+
         // dd($requestedAmount);
 
         $currentAmount = in_array($requestedAmount, $perPageOptions, true)
@@ -238,15 +237,16 @@ trait HasPages
 
         return $currentAmount;
     }
-    
+
     /**
      * Execute the query and paginate the results.
-     * 
-     * @throws \Honed\Table\Exceptions\InvalidPaginatorException
+     *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Contracts\Pagination\Paginator|\Illuminate\Contracts\Pagination\CursorPaginator|\Illuminate\Support\Collection
+     *
+     * @throws \Honed\Table\Exceptions\InvalidPaginatorException
      */
-    public function paginateRecords(Builder $query, Request $request = null): mixed
-    {        
+    public function paginateRecords(Builder $query, ?Request $request = null): mixed
+    {
         $paginator = $this->getPaginator();
 
         $paginated = match (true) {
@@ -265,10 +265,10 @@ trait HasPages
                 perPage: $this->getRecordsPerPage($request),
                 cursorName: $this->getPageKey(),
             ),
-            \in_array($paginator, [null, 
-                'none', 
-                'collection', 
-                Collection::class
+            \in_array($paginator, [null,
+                'none',
+                'collection',
+                Collection::class,
             ]) => $query->get(),
             default => throw new InvalidPaginatorException($paginator),
         };

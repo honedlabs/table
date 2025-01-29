@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Honed\Table\Sorts\Contracts\Sort;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait Sortable
 {
@@ -86,8 +86,8 @@ trait Sortable
      */
     public function getSorts(): Collection
     {
-        return collect(match(true) {
-            \property_exists($this, 'sorts') && !\is_null($this->sorts) => $this->sorts,
+        return collect(match (true) {
+            \property_exists($this, 'sorts') && ! \is_null($this->sorts) => $this->sorts,
             \method_exists($this, 'sorts') => $this->sorts(),
             default => [],
         });
@@ -100,7 +100,7 @@ trait Sortable
      */
     public function getSortKey()
     {
-        return \property_exists($this, 'sort') && !\is_null($this->sort)
+        return \property_exists($this, 'sort') && ! \is_null($this->sort)
             ? $this->sort
             : static::$sortKey;
     }
@@ -112,7 +112,7 @@ trait Sortable
      */
     public function getOrderKey()
     {
-        return \property_exists($this, 'order') && !\is_null($this->order)
+        return \property_exists($this, 'order') && ! \is_null($this->order)
             ? $this->order
             : static::$orderKey;
     }
@@ -128,7 +128,7 @@ trait Sortable
 
         $sortBy = $request->input($this->getSortKey(), null);
         $direction = $request->input($this->getOrderKey(), null);
-        
+
         if (Str::startsWith($sortBy, ['+', '-'])) {
             $direction = Str::startsWith($sortBy, '+') ? 'asc' : 'desc';
             $sortBy = Str::substr($sortBy, 1);
@@ -140,7 +140,7 @@ trait Sortable
     /**
      * Apply the sorts to a query using the current request
      */
-    public function sortQuery(Builder $builder, Request $request = null): void
+    public function sortQuery(Builder $builder, ?Request $request = null): void
     {
         [$sortBy, $direction] = $this->getSortParameters($request);
 

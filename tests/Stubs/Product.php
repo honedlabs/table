@@ -2,8 +2,8 @@
 
 namespace Honed\Table\Tests\Stubs;
 
-use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
@@ -24,4 +24,3 @@ class Product extends Model
         ];
     }
 }
-

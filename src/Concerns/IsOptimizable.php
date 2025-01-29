@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 trait IsOptimizable
 {
     /**
      * Whether to optimize the query `select` statement.
-     * 
+     *
      * @var bool
      */
     protected $optimize;
@@ -49,8 +49,8 @@ trait IsOptimizable
 
     /**
      * Optimize a query
-     * 
-     * @param \Illuminate\Support\Collection<\Honed\Table\Columns\Contracts\Column> $activeColumns
+     *
+     * @param  \Illuminate\Support\Collection<\Honed\Table\Columns\Contracts\Column>  $activeColumns
      */
     public function optimize(Builder $builder, Collection $activeColumns): void
     {

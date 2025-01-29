@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Honed\Table\PageAmount;
 use Honed\Table\Concerns\HasPages;
-use Illuminate\Support\Collection;
-use Honed\Table\Tests\Stubs\Product;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Pagination\CursorPaginator;
 use Honed\Table\Exceptions\InvalidPaginatorException;
+use Honed\Table\PageAmount;
+use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 class HasPagesTest
@@ -44,7 +44,6 @@ class HasPagesMethodTest extends HasPagesTest
     {
         return 20;
     }
-    
 }
 
 beforeEach(function () {
@@ -52,8 +51,8 @@ beforeEach(function () {
     HasPagesTest::usePaginator();
     HasPagesTest::recordsPerPage();
     HasPagesTest::useShownKey();
-    $this->test = new HasPagesTest();
-    $this->method = new HasPagesMethodTest();
+    $this->test = new HasPagesTest;
+    $this->method = new HasPagesMethodTest;
 });
 
 it('configures page key', function () {
@@ -95,7 +94,7 @@ it('configures paginator', function () {
 it('retrieves per page', function () {
     expect($this->test)
         ->getPerPage()->toBe($this->test->getDefaultPerPage());
-    
+
     expect($this->method)
         ->getPerPage()->toBe([10, 20, 50]);
 });
@@ -103,7 +102,7 @@ it('retrieves per page', function () {
 it('retrieves default per page', function () {
     expect($this->test)
         ->getDefaultPerPage()->toBe(10);
-    
+
     expect($this->method)
         ->getDefaultPerPage()->toBe(20);
 });
@@ -111,7 +110,7 @@ it('retrieves default per page', function () {
 it('retrieves paginator', function () {
     expect($this->test)
         ->getPaginator()->toBe(LengthAwarePaginator::class);
-    
+
     expect($this->method)
         ->getPaginator()->toBe('length-aware');
 });
@@ -126,7 +125,7 @@ it('sets paginator', function () {
 it('retrieves page key', function () {
     expect($this->test)
         ->getPageKey()->toBeNull();
-    
+
     expect($this->method)
         ->getPageKey()->toBe('page');
 });
@@ -134,7 +133,7 @@ it('retrieves page key', function () {
 it('retrieves shown key', function () {
     expect($this->test)
         ->getShownKey()->toBe('show');
-    
+
     expect($this->method)
         ->getShownKey()->toBe('records');
 });
@@ -145,44 +144,44 @@ it('sets pages', function () {
     expect($this->test)
         ->hasPages()->toBeTrue()
         ->getPages()->scoped(fn ($pages) => $pages
-            ->toHaveCount(2)
-            ->sequence(
-                fn ($page) => $page
-                    ->getValue()->toBe(10)
-                    ->isActive()->toBeFalse(),
-                fn ($page) => $page
-                    ->getValue()->toBe(20)
-                    ->isActive()->toBeFalse(),
-            )
+        ->toHaveCount(2)
+        ->sequence(
+            fn ($page) => $page
+                ->getValue()->toBe(10)
+                ->isActive()->toBeFalse(),
+            fn ($page) => $page
+                ->getValue()->toBe(20)
+                ->isActive()->toBeFalse(),
+        )
         );
 });
 
 it('gets number of records from empty request', function () {
     $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-        'other' => 10
+        'other' => 10,
     ]);
 
     expect($this->method)
         ->getRecordsPerPage($request)->toBe(20)
         ->getPages()->scoped(fn ($pages) => $pages
-            ->toHaveCount(3)
-            ->sequence(
-                fn ($page) => $page
-                    ->getValue()->toBe(10)
-                    ->isActive()->toBeFalse(),
-                fn ($page) => $page
-                    ->getValue()->toBe(20)
-                    ->isActive()->toBeTrue(),
-                fn ($page) => $page
-                    ->getValue()->toBe(50)
-                    ->isActive()->toBeFalse(),
-            )
+        ->toHaveCount(3)
+        ->sequence(
+            fn ($page) => $page
+                ->getValue()->toBe(10)
+                ->isActive()->toBeFalse(),
+            fn ($page) => $page
+                ->getValue()->toBe(20)
+                ->isActive()->toBeTrue(),
+            fn ($page) => $page
+                ->getValue()->toBe(50)
+                ->isActive()->toBeFalse(),
+        )
         );
 });
 
 it('gets number of records when not array', function () {
     $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-        $this->test->getShownKey() => 100
+        $this->test->getShownKey() => 100,
     ]);
 
     expect($this->test)
@@ -193,47 +192,47 @@ it('gets number of records when not array', function () {
 
 it('gets number of records from request', function () {
     $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-        $this->method->getShownKey() => 50
+        $this->method->getShownKey() => 50,
     ]);
 
     expect($this->method)
         ->getRecordsPerPage($request)->toBe(50)
         ->getPages()->scoped(fn ($pages) => $pages
-            ->toHaveCount(3)
-            ->sequence(
-                fn ($page) => $page
-                    ->getValue()->toBe(10)
-                    ->isActive()->toBeFalse(),
-                fn ($page) => $page
-                    ->getValue()->toBe(20)
-                    ->isActive()->toBeFalse(),
-                fn ($page) => $page
-                    ->getValue()->toBe(50)
-                    ->isActive()->toBeTrue(),
-            )
+        ->toHaveCount(3)
+        ->sequence(
+            fn ($page) => $page
+                ->getValue()->toBe(10)
+                ->isActive()->toBeFalse(),
+            fn ($page) => $page
+                ->getValue()->toBe(20)
+                ->isActive()->toBeFalse(),
+            fn ($page) => $page
+                ->getValue()->toBe(50)
+                ->isActive()->toBeTrue(),
+        )
         );
 });
 
 it('prevents invalid page amounts', function () {
     $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-        $this->method->getShownKey() => 100
+        $this->method->getShownKey() => 100,
     ]);
 
     expect($this->method)
         ->getRecordsPerPage($request)->toBe(20)
         ->getPages()->scoped(fn ($pages) => $pages
-            ->toHaveCount(3)
-            ->sequence(
-                fn ($page) => $page
-                    ->getValue()->toBe(10)
-                    ->isActive()->toBeFalse(),
-                fn ($page) => $page
-                    ->getValue()->toBe(20)
-                    ->isActive()->toBeTrue(),
-                fn ($page) => $page
-                    ->getValue()->toBe(50)
-                    ->isActive()->toBeFalse(),
-            )
+        ->toHaveCount(3)
+        ->sequence(
+            fn ($page) => $page
+                ->getValue()->toBe(10)
+                ->isActive()->toBeFalse(),
+            fn ($page) => $page
+                ->getValue()->toBe(20)
+                ->isActive()->toBeTrue(),
+            fn ($page) => $page
+                ->getValue()->toBe(50)
+                ->isActive()->toBeFalse(),
+        )
         );
 });
 
@@ -295,7 +294,7 @@ describe('paginates', function () {
 
     it('handles pipeline correctly', function () {
         $request = Request::create('/', HttpFoundationRequest::METHOD_GET, [
-            $this->method->getShownKey() => 20
+            $this->method->getShownKey() => 20,
         ]);
 
         $builder = Product::query();

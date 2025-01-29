@@ -9,14 +9,14 @@ trait HasColumns
 {
     /**
      * Retrieved columns with authorization applied.
-     * 
+     *
      * @var Collection<\Honed\Table\Columns\BaseColumn>
      */
     protected $cachedColumns;
 
     /**
      * The columns to be used for the table.
-     * 
+     *
      * @var array<int,\Honed\Table\Columns\BaseColumn>
      */
     // protected $columns;
@@ -34,7 +34,7 @@ trait HasColumns
 
         $this->columns = $columns;
     }
-    
+
     /**
      * Determine if the table has columns.
      */
@@ -51,7 +51,7 @@ trait HasColumns
      */
     public function getColumns(): Collection
     {
-        return $this->cachedColumns ??= collect(match(true) {
+        return $this->cachedColumns ??= collect(match (true) {
             \method_exists($this, 'columns') => $this->columns(),
             \property_exists($this, 'columns') => $this->columns,
             default => [],
@@ -86,7 +86,7 @@ trait HasColumns
     /**
      * Get the key column for the table.
      */
-    public function getKeyColumn(): BaseColumn|null
+    public function getKeyColumn(): ?BaseColumn
     {
         return $this->getColumns()
             ->first(static fn (BaseColumn $column): bool => $column->isKey());

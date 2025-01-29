@@ -17,7 +17,7 @@ class InvokableTest
 }
 
 beforeEach(function () {
-    $this->test = new ActionableTest();
+    $this->test = new ActionableTest;
     $this->fn = fn (Product $product) => $product->touch();
 });
 
