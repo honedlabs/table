@@ -29,27 +29,8 @@ class TableServiceProvider extends ServiceProvider
             __DIR__.'/../config/table.php' => $this->app['path.config'].DIRECTORY_SEPARATOR.'table.php',
         ]);
 
-        Route::macro('table', function () {
-            Route::post(config('table.endpoint', '/actions'), [Table::class, 'handleAction']);
-        });
-
-        Route::bind('table', function (string $value) {
-            try {
-                $class = Table::decodeClass($value);
-
-                if (! \class_exists($class)) {
-                    abort(404);
-                }
-
-                if (! \is_subclass_of($class, Table::class)) {
-                    abort(404);
-                }
-
-                return $class::make();
-            } catch (\Throwable $th) {
-                abort(404);
-            }
-        });
+        $this->configureEndpoint();
+        $this->configureBindings();
     }
 
     public function provides()
@@ -57,5 +38,36 @@ class TableServiceProvider extends ServiceProvider
         return [
             TableMakeCommand::class,
         ];
+    }
+
+    /**
+     * Configure the route model binding for the Table class.
+     */
+    private function configureBindings(): void
+    {
+        Route::bind('table', function (string $value): Table {
+            try {
+                $class = Table::decodeClass($value);
+
+                if (! \class_exists($class) || ! \is_subclass_of($class, Table::class)) {
+                    abort(404);
+                }
+
+                return $class::make();
+                
+            } catch (\Throwable $th) {
+                abort(404);
+            }
+        });
+    }
+
+    /**
+     * Configure the default endpoint for the Table class.
+     */
+    private function configureEndpoint(): void
+    {
+        Route::macro('table', function () {
+            Route::post(config('table.endpoint', '/actions'), [Table::class, 'handleAction']);
+        });
     }
 }

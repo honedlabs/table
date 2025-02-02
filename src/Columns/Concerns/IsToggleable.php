@@ -21,17 +21,9 @@ trait IsToggleable
      */
     public function toggleable(bool $toggleable = true): static
     {
-        $this->setToggleable($toggleable);
+        $this->toggleable = $toggleable;
 
         return $this;
-    }
-
-    /**
-     * Set as toggleable quietly.
-     */
-    public function setToggleable(bool $toggleable): void
-    {
-        $this->toggleable = $toggleable;
     }
 
     /**

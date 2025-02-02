@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Sorts\Sort;
 use Honed\Table\Table;
+use Honed\Table\Sorts\Sort;
 use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;

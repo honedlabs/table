@@ -7,16 +7,14 @@ namespace Honed\Table\Concerns;
 trait HasEndpoint
 {
     /**
-     * The endpoint to use for this table.
-     *
-     * @var string
+     * @var string|null
      */
-    // protected $endpoint;
+    protected $endpoint;
 
     /**
      * Set the endpoint for the table.
      */
-    public function setEndpoint(?string $endpoint): void
+    public function setEndpoint(string|null $endpoint): void
     {
         if (\is_null($endpoint)) {
             return;

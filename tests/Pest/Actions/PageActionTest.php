@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Core\Link\Proxies\HigherOrderLink;
 use Honed\Table\Actions\PageAction;
+use Honed\Core\Link\Proxies\HigherOrderLink;
 
 beforeEach(function () {
     $this->test = PageAction::make('test');

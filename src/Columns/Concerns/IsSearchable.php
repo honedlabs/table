@@ -21,17 +21,9 @@ trait IsSearchable
      */
     public function searchable(bool $searchable = true): static
     {
-        $this->setSearchable($searchable);
+        $this->searchable = $searchable;
 
         return $this;
-    }
-
-    /**
-     * Set as searchable quietly.
-     */
-    public function setSearchable(bool $searchable): void
-    {
-        $this->searchable = $searchable;
     }
 
     /**

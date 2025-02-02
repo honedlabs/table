@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Honed\Core\Concerns\Authorizable;
+use Honed\Core\Concerns\Allowable;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasName;
@@ -20,7 +20,7 @@ use Honed\Table\Columns\Contracts\Column;
 
 abstract class BaseColumn extends Primitive implements Column
 {
-    use Authorizable;
+    use Allowable;
     use Concerns\HasBreakpoint;
     use Concerns\HasTooltip;
     use Concerns\IsSearchable;
@@ -38,28 +38,20 @@ abstract class BaseColumn extends Primitive implements Column
     use IsKey;
     use Transformable;
 
-    /**
-     * Create a new column instance specifying the related database attribute, and optionally the display label.
-     */
-    final public function __construct(string $name, ?string $label = null)
+    public function __construct(string $name, string $label = null)
     {
         parent::__construct();
-        $this->setName($name);
-        $this->setLabel($label ?? $this->makeLabel($name));
+
+        $this->name($name);
+        $this->label($label ?? $this->makeLabel($name));
     }
 
-    /**
-     * Ensure all columns are active by default.
-     */
     public function setUp(): void
     {
-        $this->setActive(true);
+        $this->active(true);
     }
 
-    /**
-     * Make a column specifying the related database attribute, and optionally the display label.
-     */
-    public static function make(string $name, ?string $label = null): static
+    public static function make(string $name, string $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }
