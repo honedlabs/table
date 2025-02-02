@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Filters;
 
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
 class CustomFilter extends BaseFilter

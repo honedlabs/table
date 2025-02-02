@@ -42,8 +42,8 @@ trait IsSortable
             return;
         }
 
-        $sortName = \is_string($sortable)
-            ? $sortable
+        $sortName = \is_string($sortable) 
+            ? $sortable 
             : $this->getName();
 
         $this->sort = Sort::make($sortName)->agnostic();

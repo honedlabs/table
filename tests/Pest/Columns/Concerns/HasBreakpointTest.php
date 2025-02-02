@@ -1,5 +1,6 @@
 <?php
 
+use Honed\Table\Columns\Column;
 use Honed\Table\Columns\Concerns\HasBreakpoint;
 
 class HasBreakpointTest
@@ -71,3 +72,7 @@ it('has shorthand `xl`', function () {
 it('rejects invalid breakpoints', function () {
     $this->test->breakpoint('Invalid');
 })->throws(\InvalidArgumentException::class);
+
+
+
+

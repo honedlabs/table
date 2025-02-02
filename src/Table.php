@@ -6,58 +6,58 @@ namespace Honed\Table;
 
 use Closure;
 use Exception;
+use Honed\Core\Primitive;
+use Illuminate\Http\Response;
 use Honed\Core\Concerns\Encodable;
+use Illuminate\Support\Collection;
+use Honed\Table\Actions\BulkAction;
+use Honed\Table\Columns\BaseColumn;
 use Honed\Core\Concerns\IsAnonymous;
 use Honed\Core\Concerns\RequiresKey;
-use Honed\Core\Exceptions\MissingRequiredAttributeException;
-use Honed\Core\Primitive;
-use Honed\Table\Actions\BulkAction;
 use Honed\Table\Actions\InlineAction;
-use Honed\Table\Columns\BaseColumn;
+use Illuminate\Database\Eloquent\Model;
 use Honed\Table\Http\DTOs\BulkActionData;
+use Illuminate\Database\Eloquent\Builder;
 use Honed\Table\Http\DTOs\InlineActionData;
 use Honed\Table\Http\Requests\TableActionRequest;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
+use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Illuminate\Pipeline\Pipeline;
 
 /**
  * @template T of \Illuminate\Database\Eloquent\Model
- *
  * @method static static build((\Closure(\Illuminate\Database\Eloquent\Builder<T>):(\Illuminate\Database\Eloquent\Builder<T>)|null) $resource = null) Build the table records and metadata using the current request.
  * @method $this build() Build the table records and metadata using the current request.
  */
 class Table extends Primitive
 {
-    use Concerns\ActsBeforeRetrieval;
     use Concerns\Filterable;
+    use Concerns\HasRecords;
+    use Concerns\HasPages;
     use Concerns\HasActions;
     use Concerns\HasColumns;
     use Concerns\HasEndpoint;
-    use Concerns\HasPages;
-    use Concerns\HasRecords;
-    use Concerns\HasResource;
-    use Concerns\HasResourceModifier;
-    use Concerns\IsOptimizable;
     use Concerns\Searchable;
     use Concerns\Selectable;
     use Concerns\Sortable;
+    use Concerns\HasResource;
     use Concerns\Toggleable;
+    use Concerns\IsOptimizable;
+    use Concerns\ActsBeforeRetrieval;
+    use Concerns\HasResourceModifier;
     use Encodable;
     use IsAnonymous;
     use RequiresKey;
 
     /**
      * The parent class-string of the table.
-     *
+     * 
      * @var class-string<\Honed\Table\Table<T>>
      */
     protected $anonymous = self::class;
 
     /**
      * The request instance to use for the table.
-     *
+     * 
      * @var \Illuminate\Http\Request|null
      */
     protected $request = null;
@@ -125,7 +125,7 @@ class Table extends Primitive
      *
      * @param  \Illuminate\Database\Eloquent\Builder<T>|T|class-string<T>|\Closure(\Illuminate\Database\Eloquent\Builder<T>):(\Illuminate\Database\Eloquent\Builder<T>)  $resource
      */
-    public static function make(Model|Builder|Closure|string|null $resource = null): static
+    public static function make(Model|Builder|Closure|string $resource = null): static
     {
         return resolve(static::class, compact('resource'));
     }
@@ -146,7 +146,7 @@ class Table extends Primitive
 
     /**
      * Get the table as an array.
-     *
+     * 
      * @return array<string,mixed>
      */
     public function toArray(): array
@@ -189,7 +189,7 @@ class Table extends Primitive
         $columns = $this->getColumns();
         $activeColumns = $this->toggleColumns($columns);
         $resource = $this->getResource();
-
+        
         $this->modifyResource($resource);
         $this->filterQuery($resource);
         $this->sortQuery($resource);
