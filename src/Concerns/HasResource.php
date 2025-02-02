@@ -4,25 +4,23 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Closure;
-use RuntimeException;
-use Illuminate\Support\Stringable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Honed\Table\Exceptions\MissingResourceException;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Stringable;
 
 trait HasResource
 {
     /**
      * The model class-string, or Eloquent Builder instance to use for the table.
-     * 
+     *
      * @var \Illuminate\Contracts\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model>|string
      */
     protected $resource;
 
     /**
      * The resource query builder instance.
-     * 
+     *
      * @var \Illuminate\Contracts\Database\Eloquent\Builder|null
      */
     protected $builder;
@@ -36,7 +34,7 @@ trait HasResource
     {
         return $this->builder ??= $this->resolveResource(match (true) {
             \method_exists($this, 'resource') => $this->resource(),
-            \property_exists($this, 'resource') && !\is_null($this->resource) => $this->resource,
+            \property_exists($this, 'resource') && ! \is_null($this->resource) => $this->resource,
             default => $this->guessResource()
         });
     }
@@ -72,10 +70,10 @@ trait HasResource
 
     /**
      * Guess the resource class name from the table class name.
-     * 
+     *
      * @return class-string<\Illuminate\Database\Eloquent\Model>
      */
-    public function guessResource(): string 
+    public function guessResource(): string
     {
         return (new Stringable(static::class))
             ->classBasename()
@@ -87,9 +85,8 @@ trait HasResource
 
     /**
      * Get the model class used by the resource.
-     * 
+     *
      * @throws \Honed\Table\Exceptions\MissingResourceException
-     * @return \Illuminate\Database\Eloquent\Model
      */
     public function getModel(): Model
     {
@@ -98,7 +95,7 @@ trait HasResource
 
     /**
      * Get the model class as a name.
-     * 
+     *
      * @throws \Honed\Table\Exceptions\MissingResourceException
      */
     public function getModelName(): string
@@ -108,7 +105,7 @@ trait HasResource
 
     /**
      * Get the name of the model's primary key.
-     * 
+     *
      * @throws \Honed\Table\Exceptions\MissingResourceException
      */
     public function getModelKey(): string

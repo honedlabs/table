@@ -10,7 +10,7 @@ interface Filter
     /**
      * Apply the filter to the builder
      */
-    public function apply(Builder $builder, Request $request = null): void;
+    public function apply(Builder $builder, ?Request $request = null): void;
 
     /**
      * Handle the filter operation
@@ -27,7 +27,7 @@ interface Filter
      *
      * @return int|string|array<int,int|string>|null
      */
-    public function getValueFromRequest(Request $request = null): mixed;
+    public function getValueFromRequest(?Request $request = null): mixed;
 
     /**
      * Retrieve the query parameter name of the filter.

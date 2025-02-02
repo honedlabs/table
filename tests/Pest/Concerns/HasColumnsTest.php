@@ -45,8 +45,8 @@ it('sets columns', function () {
     expect($this->test)
         ->hasColumns()->toBeTrue()
         ->getColumns()->first()->scoped(fn ($column) => $column
-            ->toBeInstanceOf(Column::class)
-            ->getName()->toBe('test')
+        ->toBeInstanceOf(Column::class)
+        ->getName()->toBe('test')
         );
 });
 
@@ -68,11 +68,11 @@ it('gets sortable columns', function () {
     expect($this->method)
         ->hasColumns()->toBeTrue()
         ->getSortableColumns()->scoped(fn ($columns) => $columns
-            ->toBeCollection()
-            ->first()->scoped(fn ($column) => $column
-                ->toBeInstanceOf(Column::class)
-                ->getName()->toBe('test2')
-            )
+        ->toBeCollection()
+        ->first()->scoped(fn ($column) => $column
+        ->toBeInstanceOf(Column::class)
+        ->getName()->toBe('test2')
+        )
         );
 });
 
@@ -80,8 +80,8 @@ it('gets searchable columns', function () {
     expect($this->method)
         ->hasColumns()->toBeTrue()
         ->getSearchableColumns()->scoped(fn ($columns) => $columns
-            ->toBeCollection()
-            ->first()->toBe('test3')
+        ->toBeCollection()
+        ->first()->toBe('test3')
         );
 });
 
@@ -89,7 +89,7 @@ it('gets key column', function () {
     expect($this->method)
         ->hasColumns()->toBeTrue()
         ->getKeyColumn()->scoped(fn ($column) => $column
-            ->toBeInstanceOf(Column::class)
-            ->getName()->toBe('test4')
+        ->toBeInstanceOf(Column::class)
+        ->getName()->toBe('test4')
         );
 });
