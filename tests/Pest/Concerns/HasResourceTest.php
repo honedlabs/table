@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Concerns\HasResource;
+use Honed\Table\Tests\Stubs\Product;
 use Illuminate\Database\Eloquent\Builder;
 
 class ResourceTable
@@ -21,8 +21,8 @@ class ResourceMethodTest extends ResourceTable
 }
 
 beforeEach(function () {
-    $this->test = new ResourceTable();
-    $this->method = new ResourceMethodTest();
+    $this->test = new ResourceTable;
+    $this->method = new ResourceMethodTest;
 });
 
 it('guesses resource from name', function () {

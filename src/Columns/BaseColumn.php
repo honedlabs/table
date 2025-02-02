@@ -38,7 +38,7 @@ abstract class BaseColumn extends Primitive implements Column
     use IsKey;
     use Transformable;
 
-    public function __construct(string $name, string $label = null)
+    public function __construct(string $name, ?string $label = null)
     {
         parent::__construct();
 
@@ -51,7 +51,7 @@ abstract class BaseColumn extends Primitive implements Column
         $this->active(true);
     }
 
-    public static function make(string $name, string $label = null): static
+    public static function make(string $name, ?string $label = null): static
     {
         return resolve(static::class, compact('name', 'label'));
     }

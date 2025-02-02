@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Refine\Refine;
 use Honed\Core\Concerns\Encodable;
 use Honed\Core\Concerns\RequiresKey;
 use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Honed\Refine\Refine;
 
 class Table extends Refine
 {
-    use Concerns\HasRecords;
-    use Concerns\HasPages;
     use Concerns\HasColumns;
+    use Concerns\HasPages;
+    use Concerns\HasRecords;
     use Concerns\HasResource;
     use Concerns\Toggleable;
     use Encodable;
@@ -50,11 +50,11 @@ class Table extends Refine
         $resource = $this->getResource();
 
         $columns = $this->getColumns();
-        
+
         $this->modifyResource($resource);
 
         $this->refine();
-        
+
         $records = $this->paginateRecords($resource);
         $formatted = $this->formatRecords($records, $columns, $this->getInlineActions(), $this->getSelector());
         $this->setRecords($formatted);
