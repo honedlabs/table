@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Honed\Table\Sorts\Sort;
+use Honed\Refine\Sorts\Sort;
 
 /**
  * @mixin \Honed\Core\Concerns\HasName
@@ -22,36 +22,21 @@ trait IsSortable
     protected $sort;
 
     /**
-     * Set as sortable, chainable.
+     * Set the column as sortable.
      *
      * @return $this
      */
-    public function sortable(bool|string|null $sortable = true): static
+    public function sortable(bool|string $sortable = true): static
     {
-        $this->setSortable($sortable);
-
-        return $this;
-    }
-
-    /**
-     * Set as sortable quietly.
-     */
-    public function setSortable(bool|string|null $sortable): void
-    {
-        if (\is_null($sortable)) {
-            return;
+        if (! $sortable) {
+            return $this->disableSorting();
         }
 
-        $sortName = \is_string($sortable)
-            ? $sortable
-            : $this->getName();
-
-        $this->sort = Sort::make($sortName)->agnostic();
-        $this->sortable = (bool) $sortable;
+        return $this->enableSorting($sortable);
     }
 
     /**
-     * Determine if it is sortable.
+     * Determine if the column is sortable.
      */
     public function isSortable(): bool
     {
@@ -64,5 +49,29 @@ trait IsSortable
     public function getSort(): ?Sort
     {
         return $this->sort;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function disableSorting(): static
+    {
+        $this->sortable = false;
+        $this->sort = null;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function enableSorting(string $sortable): static
+    {
+        $this->sortable = true;
+        $this->sort = Sort::make(
+            \is_string($sortable) ? $sortable : $this->getName()
+        );
+
+        return $this;
     }
 }

@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
+use Honed\Refine\Refine;
 use Honed\Core\Concerns\Encodable;
 use Honed\Core\Concerns\RequiresKey;
 use Honed\Core\Exceptions\MissingRequiredAttributeException;
-use Honed\Refine\Refine;
 
 class Table extends Refine
 {
-    use Concerns\HasColumns;
-    use Concerns\HasPages;
     use Concerns\HasRecords;
+    use Concerns\HasPages;
+    use Concerns\HasColumns;
     use Concerns\HasResource;
-    use Concerns\Toggleable;
+    use Concerns\HasToggle;
     use Encodable;
     use RequiresKey;
 
@@ -48,28 +48,43 @@ class Table extends Refine
         }
 
         $resource = $this->getResource();
-
-        $columns = $this->getColumns();
-
+        
+        $columns = $this->toggle();
+        
         $this->modifyResource($resource);
-
+        
         $this->refine();
-
+        
         $records = $this->paginateRecords($resource);
+        
         $formatted = $this->formatRecords($records, $columns, $this->getInlineActions(), $this->getSelector());
+
         $this->setRecords($formatted);
 
         return $this;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function toArray(): array
     {
         $this->buildTable();
 
-        return [
+        return \array_merge(parent::toArray(), [
             'id' => $this->encodeClass(),
-            'endpoint' => $this->isAnonymous() ? null : $this->getEndpoint(),
+            'records' => $this->getRecords(),
+            'meta' => $this->getMeta(),
+            'columns' => $this->getColumns(),
+            'pages' => $this->getPages(),
+            'filters' => $this->getFilters(),
+            'sorts' => $this->getSorts(),
+            'endpoint' => $this->getEndpoint(),
             'toggleable' => $this->isToggleable(),
+            'actions' => [
+                'bulk' => $this->getBulkActions(),
+                'page' => $this->getPageActions(),
+            ],
             'keys' => [
                 'records' => $this->getKeyName(),
                 'sorts' => $this->getSortKey(),
@@ -78,17 +93,7 @@ class Table extends Refine
                 'toggle' => $this->getToggleKey(),
                 'pages' => $this->getPagesKey(),
                 ...($this->hasMatches() ? ['match' => $this->getMatchKey()] : []),
-
             ],
-            'records' => $this->getRecords(),
-            'columns' => $this->getColumns(),
-            'actions' => [
-                'bulk' => $this->getBulkActions(),
-                'page' => $this->getPageActions(),
-            ],
-            'filters' => $this->getFilters(),
-            'sorts' => $this->getSorts(),
-            'pages' => $this->getPages(),
-        ];
+        ]);
     }
 }

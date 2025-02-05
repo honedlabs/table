@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Honed\Table\Actions\BulkAction;
 use Honed\Table\Actions\Contracts\Action;
-use Honed\Table\Actions\InlineAction;
 use Honed\Table\Actions\PageAction;
 use Honed\Table\Concerns\HasActions;
+use Honed\Table\Actions\InlineAction;
 
 class HasActionsTest
 {
@@ -47,12 +47,12 @@ it('sets actions', function () {
     expect($this->test)
         ->hasActions()->toBeTrue()
         ->getActions()->scoped(fn ($actions) => $actions
-        ->toBeCollection()
-        ->toHaveCount(1)
-        ->first()->scoped(fn ($action) => $action
-        ->toBeInstanceOf(Action::class)
-        ->getName()->toBe('test')
-        )
+            ->toBeCollection()
+            ->toHaveCount(1)
+            ->first()->scoped(fn ($action) => $action
+                ->toBeInstanceOf(Action::class)
+                ->getName()->toBe('test')
+            )
         );
 });
 
@@ -69,8 +69,8 @@ it('gets actions from method', function () {
     expect($this->method)
         ->hasActions()->toBeTrue()
         ->getActions()->scoped(fn ($actions) => $actions
-        ->toBeCollection()
-        ->toHaveCount(3)
+            ->toBeCollection()
+            ->toHaveCount(3)
         );
 });
 
@@ -91,3 +91,4 @@ it('gets page actions', function () {
         ->getPageActions()->toBeCollection()
         ->each->toBeInstanceOf(PageAction::class);
 });
+

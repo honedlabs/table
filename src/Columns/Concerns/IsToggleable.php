@@ -15,7 +15,7 @@ trait IsToggleable
     protected $toggleable = false;
 
     /**
-     * Set as toggleable, chainable.
+     * Set the column as toggleable.
      *
      * @return $this
      */
@@ -27,7 +27,7 @@ trait IsToggleable
     }
 
     /**
-     * Determine if it is toggleable.
+     * Determine if the column is toggleable.
      */
     public function isToggleable(): bool
     {

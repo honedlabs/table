@@ -2,29 +2,29 @@
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Columns\BaseColumn;
+use Honed\Table\Columns\Column;
 use Illuminate\Support\Collection;
 
 trait HasColumns
 {
     /**
      * Retrieved columns with authorization applied.
-     *
-     * @var Collection<\Honed\Table\Columns\BaseColumn>
+     * 
+     * @var Collection<\Honed\Table\Columns\Column>
      */
     protected $cachedColumns;
 
     /**
      * The columns to be used for the table.
-     *
-     * @var array<int,\Honed\Table\Columns\BaseColumn>
+     * 
+     * @var array<int,\Honed\Table\Columns\Column>|null
      */
-    // protected $columns;
+    protected $columns;
 
     /**
      * Set the columns for the table.
      *
-     * @param  array<int,\Honed\Table\Columns\BaseColumn>|null  $columns
+     * @param  array<int,\Honed\Table\Columns\Column>|null  $columns
      */
     public function setColumns(?array $columns): void
     {
@@ -34,7 +34,7 @@ trait HasColumns
 
         $this->columns = $columns;
     }
-
+    
     /**
      * Determine if the table has columns.
      */
@@ -45,28 +45,27 @@ trait HasColumns
 
     /**
      * Get the columns for the table.
-     * Authorization is applied at this level.
      *
-     * @return Collection<\Honed\Table\Columns\BaseColumn>
+     * @return Collection<\Honed\Table\Columns\Column>
      */
     public function getColumns(): Collection
     {
-        return $this->cachedColumns ??= collect(match (true) {
+        return $this->cachedColumns ??= collect(match(true) {
             \method_exists($this, 'columns') => $this->columns(),
-            \property_exists($this, 'columns') => $this->columns,
+            \property_exists($this, 'columns') && ! \is_null($this->columns) => $this->columns,
             default => [],
-        })->filter(static fn (BaseColumn $column): bool => $column->allows());
+        })->filter(static fn (Column $column): bool => $column->isAllowed());
     }
 
     /**
      * Get the sortable columns for the table.
      *
-     * @return Collection<\Honed\Table\Columns\BaseColumn>
+     * @return Collection<\Honed\Table\Columns\Column>
      */
     public function getSortableColumns(): Collection
     {
         return $this->getColumns()
-            ->filter(static fn (BaseColumn $column): bool => $column->isSortable())
+            ->filter(static fn (Column $column): bool => $column->isSortable())
             ->values();
     }
 
@@ -78,17 +77,17 @@ trait HasColumns
     public function getSearchableColumns(): Collection
     {
         return $this->getColumns()
-            ->filter(static fn (BaseColumn $column): bool => $column->isSearchable())
-            ->map(static fn (BaseColumn $column): string => $column->getName())
+            ->filter(static fn (Column $column) => $column->isSearchable())
+            ->map(static fn (Column $column): string => $column->getName())
             ->values();
     }
 
     /**
      * Get the key column for the table.
      */
-    public function getKeyColumn(): ?BaseColumn
+    public function getKeyColumn(): ?Column
     {
         return $this->getColumns()
-            ->first(static fn (BaseColumn $column): bool => $column->isKey());
+            ->first(static fn (Column $column): bool => $column->isKey());
     }
 }
