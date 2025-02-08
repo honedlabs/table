@@ -37,7 +37,7 @@ class Column extends Primitive
     use IsKey;
     use Transformable;
 
-    public function __construct(string $name, string $label = null)
+    public function __construct(string $name, ?string $label = null)
     {
         parent::__construct();
 
@@ -50,7 +50,7 @@ class Column extends Primitive
         $this->active(true);
     }
 
-    public static function make(string $name, string $label = null): static
+    public static function make(string $name, ?string $label = null): static
     {
         return resolve(static::class, \compact('name', 'label'));
     }
@@ -78,7 +78,7 @@ class Column extends Primitive
             'name' => $this->getName(),
             'label' => $this->getLabel(),
             'hidden' => $this->isHidden(),
-            // 'icon' => 
+            // 'icon' =>
             'toggle' => $this->isToggleable(),
             'active' => $this->isActive(),
             'sort' => ($this->isSortable() ? [

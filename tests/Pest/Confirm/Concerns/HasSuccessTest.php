@@ -7,8 +7,8 @@ use Honed\Table\Tests\Stubs\Product;
 
 class HasSuccessTest
 {
-    use HasSuccess;
     use Evaluable;
+    use HasSuccess;
 }
 
 beforeEach(function () {

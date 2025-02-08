@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 trait HasResource
 {
@@ -26,7 +26,7 @@ trait HasResource
     {
         return match (true) {
             \method_exists($this, 'resource') => $this->resource(),
-            \property_exists($this, 'resource') && !\is_null($this->resource) => $this->resource,
+            \property_exists($this, 'resource') && ! \is_null($this->resource) => $this->resource,
             default => $this->guessResource()
         };
     }
@@ -34,7 +34,7 @@ trait HasResource
     /**
      * @return class-string<\Illuminate\Database\Eloquent\Model>
      */
-    public function guessResource(): string 
+    public function guessResource(): string
     {
         return str(static::class)
             ->classBasename()
@@ -67,22 +67,22 @@ trait HasResource
     /**
      * Get the resource modifier.
      */
-    public function getModifier(): \Closure|null
+    public function getModifier(): ?\Closure
     {
         return $this->modifier;
     }
 
     /**
      * Apply the resource modifier to the resource.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $resource
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>  $resource
      */
     public function modifyResource(Builder $resource): void
     {
         if (! $this->hasModifier()) {
             return;
         }
-        
+
         \call_user_func($this->modifier, $resource);
     }
 }

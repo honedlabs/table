@@ -1,7 +1,7 @@
 <?php
 
-use Honed\Table\Actions\InlineAction;
 use Honed\Core\Link\Proxies\HigherOrderLink;
+use Honed\Table\Actions\InlineAction;
 use Honed\Table\Confirm\Proxies\HigherOrderConfirm;
 
 beforeEach(function () {
