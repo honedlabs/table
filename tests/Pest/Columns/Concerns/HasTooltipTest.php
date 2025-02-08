@@ -1,8 +1,8 @@
 <?php
 
 use Honed\Core\Concerns\Evaluable;
-use Honed\Table\Columns\Concerns\HasTooltip;
 use Honed\Table\Tests\Stubs\Product;
+use Honed\Table\Columns\Concerns\HasTooltip;
 
 class HasTooltipTest
 {

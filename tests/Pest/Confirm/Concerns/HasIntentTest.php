@@ -2,6 +2,7 @@
 
 use Honed\Table\Confirm\Concerns\HasIntent;
 use Honed\Table\Confirm\Confirm;
+use Honed\Table\Tests\Stubs\Product;
 
 class HasIntentTest
 {
