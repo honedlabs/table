@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Exceptions\InvalidPaginatorException;
 use Honed\Table\PageAmount;
-use Illuminate\Contracts\Pagination\CursorPaginator;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Contracts\Pagination\CursorPaginator;
+use Honed\Table\Exceptions\InvalidPaginatorException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator as PaginationCursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator as PaginationLengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 trait HasPages
 {
@@ -85,7 +85,7 @@ trait HasPages
 
     /**
      * Get the paginator to use.
-     *
+     * 
      * @return 'cursor'|'simple'|'length-aware'|class-string<\Illuminate\Contracts\Pagination\Paginator>|null
      */
     public function getPaginator(): ?string
@@ -142,7 +142,7 @@ trait HasPages
 
         $requestedAmount = ($request ?? request())
             ->integer($this->getShownKey(), null);
-
+        
         // dd($requestedAmount);
 
         $currentAmount = in_array($requestedAmount, $perPageOptions, true)
@@ -154,16 +154,15 @@ trait HasPages
 
         return $currentAmount;
     }
-
+    
     /**
      * Execute the query and paginate the results.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Contracts\Pagination\Paginator|\Illuminate\Contracts\Pagination\CursorPaginator|\Illuminate\Support\Collection
-     *
+     * 
      * @throws \Honed\Table\Exceptions\InvalidPaginatorException
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Contracts\Pagination\Paginator|\Illuminate\Contracts\Pagination\CursorPaginator|\Illuminate\Support\Collection
      */
-    public function paginateRecords(Builder $query, ?Request $request = null): mixed
-    {
+    public function paginateRecords(Builder $query, Request $request = null): mixed
+    {        
         $paginator = $this->getPaginator();
 
         $paginated = match (true) {
@@ -182,10 +181,10 @@ trait HasPages
                 perPage: $this->getRecordsPerPage($request),
                 cursorName: $this->getPageKey(),
             ),
-            \in_array($paginator, [null,
-                'none',
-                'collection',
-                Collection::class,
+            \in_array($paginator, [null, 
+                'none', 
+                'collection', 
+                Collection::class
             ]) => $query->get(),
             default => throw new InvalidPaginatorException($paginator),
         };

@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
+use function Pest\Laravel\get;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\Toggleable;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
-
-use function Pest\Laravel\get;
 
 class ToggleableTest
 {
@@ -110,8 +109,8 @@ it('enqueues a cookie', function () {
     expect(Cookie::getQueuedCookies())
         ->toHaveCount(1)
         ->{0}->scoped(fn ($cookie) => $cookie
-        ->getName()->toBe($this->test->getCookieName())
-        ->getValue()->toBe(\json_encode($this->data))
+            ->getName()->toBe($this->test->getCookieName())
+            ->getValue()->toBe(\json_encode($this->data))
         );
 });
 
@@ -119,14 +118,14 @@ it('retrieves a cookie', function () {
     $this->test->enqueueCookie($this->data);
 
     $response = get('/');
-
+    
     expect($response->getCookie($this->test->getCookieName()))
         ->not->toBeNull()
         ->getValue()->toBe(\json_encode($this->data));
 
     $request = Request::create('/');
     $request->cookies->set(
-        $this->test->getCookieName(),
+        $this->test->getCookieName(), 
         \json_encode($this->data)
     );
 
@@ -155,7 +154,7 @@ describe('toggles', function () {
             Column::make('price')->toggleable(),
             Column::make('status')->toggleable(),
             Column::make('public_id'),
-            Column::make('description')->toggleable(false),
+            Column::make('description')->toggleable(false)
         ]);
 
         $this->data = ['name', 'price', 'misc'];
@@ -172,7 +171,7 @@ describe('toggles', function () {
             ->toBeCollection()
             ->toHaveCount(5)
             ->each(fn ($column) => $column->isActive()->toBeTrue());
-    });
+    }); 
 
     test('with request', function () {
         expect($this->property->toggleColumns($this->columns))

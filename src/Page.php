@@ -10,8 +10,8 @@ use Honed\Core\Primitive;
 
 class Page extends Primitive
 {
-    use HasValue;
     use IsActive;
+    use HasValue;
 
     public function __construct(int $value, bool $active = false)
     {
