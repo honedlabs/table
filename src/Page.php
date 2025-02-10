@@ -8,20 +8,19 @@ use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Primitive;
 
+/**
+ * @extends Primitive<string,bool|int>
+ */
 class Page extends Primitive
 {
-    use HasValue;
     use IsActive;
+    use HasValue;
 
-    public function __construct(int $value, bool $active = false)
+    public static function make(int $value, int $active = 0): static
     {
-        $this->value($value);
-        $this->active($active);
-    }
-
-    public static function make(int $value, bool $active = false): static
-    {
-        return resolve(static::class, \compact('value', 'active'));
+        return resolve(static::class)
+            ->value($value)
+            ->active($active === $value);
     }
 
     public function toArray(): array

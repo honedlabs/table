@@ -9,6 +9,6 @@ class DateColumn extends Column
     public function setUp(): void
     {
         parent::setUp();
-        $this->date();
+        $this->formatDate();
     }
 }

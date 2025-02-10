@@ -26,19 +26,19 @@ class TableMakeCommand extends GeneratorCommand
         return $this->resolveStubPath($stub);
     }
 
-    protected function resolveStubPath($stub)
+    protected function resolveStubPath($stub): string
     {
         return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
             ? $customPath
             : __DIR__.'/../../..'.$stub;
     }
 
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace($rootNamespace): string
     {
         return $rootNamespace.'\Tables';
     }
 
-    protected function buildClass($name)
+    protected function buildClass($name): string
     {
         $tableNamespace = $this->getNamespace($name);
 
@@ -53,7 +53,7 @@ class TableMakeCommand extends GeneratorCommand
         );
     }
 
-    protected function parseModel($table)
+    protected function parseModel($table): string
     {
         if (preg_match('([^A-Za-z0-9_/\\\\])', $table)) {
             throw new InvalidArgumentException('Table name contains invalid characters.');
@@ -62,7 +62,10 @@ class TableMakeCommand extends GeneratorCommand
         return $this->qualifyModel($table);
     }
 
-    protected function getOptions()
+    /**
+     * @return array<int,array<int,mixed>>
+     */
+    protected function getOptions(): array
     {
         return [
             ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the table already exists'],

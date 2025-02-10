@@ -7,6 +7,7 @@ namespace Honed\Table\Columns;
 use Honed\Core\Concerns\Allowable;
 use Honed\Core\Concerns\HasExtra;
 use Honed\Core\Concerns\HasFormatter;
+use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasName;
@@ -17,11 +18,13 @@ use Honed\Core\Concerns\IsKey;
 use Honed\Core\Concerns\Transformable;
 use Honed\Core\Primitive;
 
+/**
+ * @extends Primitive<string, mixed>
+ */
 class Column extends Primitive
 {
     use Allowable;
     use Concerns\HasBreakpoint;
-    use Concerns\HasTooltip;
     use Concerns\IsSearchable;
     use Concerns\IsSortable;
     use Concerns\IsSrOnly;
@@ -36,23 +39,18 @@ class Column extends Primitive
     use IsHidden;
     use IsKey;
     use Transformable;
+    use HasIcon;
 
-    public function __construct(string $name, ?string $label = null)
+    public static function make(string $name, string $label = null): static
     {
-        parent::__construct();
-
-        $this->name($name);
-        $this->label($label ?? $this->makeLabel($name));
+        return resolve(static::class)
+            ->name($name)
+            ->label($label ?? static::makeLabel($name));
     }
 
     public function setUp(): void
     {
         $this->active(true);
-    }
-
-    public static function make(string $name, ?string $label = null): static
-    {
-        return resolve(static::class, \compact('name', 'label'));
     }
 
     public function apply(mixed $value): mixed
@@ -78,13 +76,10 @@ class Column extends Primitive
             'name' => $this->getName(),
             'label' => $this->getLabel(),
             'hidden' => $this->isHidden(),
-            // 'icon' =>
+            'icon' => $this->getIcon(),
             'toggle' => $this->isToggleable(),
             'active' => $this->isActive(),
-            'sort' => ($this->isSortable() ? [
-                'direction' => $this->getSort()?->getDirection(),
-                'next' => $this->getSort()?->getNextDirection(),
-            ] : null),
+            'sort' => $this->isSortable() ? $this->sortToArray() : null,
             'meta' => $this->getMeta(),
         ];
     }

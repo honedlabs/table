@@ -19,8 +19,8 @@ class SelectableMethodTest extends SelectableTest
 }
 
 beforeEach(function () {
-    $this->test = new SelectableTest;
-    $this->method = new SelectableMethodTest;
+    $this->test = new SelectableTest();
+    $this->method = new SelectableMethodTest();
     $this->fn = fn (Product $product) => $product->name === 'name';
 });
 

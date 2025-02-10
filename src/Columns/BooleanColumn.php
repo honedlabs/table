@@ -9,6 +9,6 @@ class BooleanColumn extends Column
     public function setUp(): void
     {
         parent::setUp();
-        $this->boolean();
+        $this->formatBoolean();
     }
 }

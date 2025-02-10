@@ -9,6 +9,6 @@ class TextColumn extends Column
     public function setUp(): void
     {
         parent::setUp();
-        $this->string();
+        $this->formatString();
     }
 }

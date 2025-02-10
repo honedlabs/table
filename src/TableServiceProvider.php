@@ -26,14 +26,17 @@ class TableServiceProvider extends ServiceProvider
         ], 'honed-stubs');
 
         $this->publishes([
-            __DIR__.'/../config/table.php' => $this->app['path.config'].DIRECTORY_SEPARATOR.'table.php',
-        ]);
+            __DIR__.'/../config/table.php' => config_path('table.php'),
+        ], 'table-config');
 
         $this->configureEndpoint();
         $this->configureBindings();
     }
 
-    public function provides()
+    /**
+     * @return array<int,class-string>
+     */
+    public function provides(): array
     {
         return [
             TableMakeCommand::class,
@@ -47,14 +50,14 @@ class TableServiceProvider extends ServiceProvider
     {
         Route::bind('table', function (string $value): Table {
             try {
-                $class = Table::decodeClass($value);
+                $class = Table::decode($value);
 
                 if (! \class_exists($class) || ! \is_subclass_of($class, Table::class)) {
                     abort(404);
                 }
 
                 return $class::make();
-
+                
             } catch (\Throwable $th) {
                 abort(404);
             }
@@ -67,7 +70,7 @@ class TableServiceProvider extends ServiceProvider
     private function configureEndpoint(): void
     {
         Route::macro('table', function () {
-            Route::post(config('table.endpoint', '/actions'), [Table::class, 'handleAction']);
+            Route::post(Table::getDefaultEndpoint(), [Table::class, 'handleAction']);
         });
     }
 }

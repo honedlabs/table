@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Tests\Stubs;
 
-use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
@@ -14,6 +18,16 @@ class Product extends Model
     protected $casts = [
         'status' => Status::class,
     ];
+
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(Seller::class);
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
+    }
 
     public function toSearchableArray()
     {

@@ -9,14 +9,14 @@ trait HasColumns
 {
     /**
      * Retrieved columns with authorization applied.
-     *
-     * @var Collection<\Honed\Table\Columns\Column>
+     * 
+     * @var Collection<int,\Honed\Table\Columns\Column>|null
      */
     protected $cachedColumns;
 
     /**
      * The columns to be used for the table.
-     *
+     * 
      * @var array<int,\Honed\Table\Columns\Column>|null
      */
     protected $columns;
@@ -34,7 +34,7 @@ trait HasColumns
 
         $this->columns = $columns;
     }
-
+    
     /**
      * Determine if the table has columns.
      */
@@ -46,11 +46,11 @@ trait HasColumns
     /**
      * Get the columns for the table.
      *
-     * @return Collection<\Honed\Table\Columns\Column>
+     * @return Collection<int,\Honed\Table\Columns\Column>
      */
     public function getColumns(): Collection
     {
-        return $this->cachedColumns ??= collect(match (true) {
+        return $this->cachedColumns ??= collect(match(true) {
             \method_exists($this, 'columns') => $this->columns(),
             \property_exists($this, 'columns') && ! \is_null($this->columns) => $this->columns,
             default => [],
@@ -60,7 +60,7 @@ trait HasColumns
     /**
      * Get the sortable columns for the table.
      *
-     * @return Collection<\Honed\Table\Columns\Column>
+     * @return Collection<int,\Honed\Table\Columns\Column>
      */
     public function getSortableColumns(): Collection
     {
@@ -72,13 +72,13 @@ trait HasColumns
     /**
      * Get the searchable attributes for the table.
      *
-     * @return Collection<string>
+     * @return Collection<int,string>
      */
     public function getSearchableColumns(): Collection
     {
         return $this->getColumns()
             ->filter(static fn (Column $column) => $column->isSearchable())
-            ->map(static fn (Column $column): string => $column->getName())
+            ->map(static fn (Column $column): string => type($column->getName())->asString())
             ->values();
     }
 

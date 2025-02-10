@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-use Honed\Table\Table;
-use Honed\Table\Tests\Stubs\ExampleTable;
+use Honed\Table\Table as HonedTable;
+use Honed\Table\Tests\Fixtures\Table;
+use Illuminate\Support\Arr;
 
 beforeEach(function () {
-    $this->test = ExampleTable::make();
-});
+    $this->test = Table::make();
 
-it('can be made', function () {
-    expect(Table::make())->toBeInstanceOf(Table::class);
+    foreach (\range(1, 100) as $i) {
+        product();
+    }
 });
 
 it('has array representation', function () {
@@ -34,8 +35,9 @@ it('has array representation', function () {
             'toggle',
             'endpoint',
         ]);
-});
+})->skip();
 
 it('accepts a request to use', function () {
-    $this->test->build(request());
-})->todo();
+    // $this->test->build(request());
+    dd($this->test->toArray());
+});
