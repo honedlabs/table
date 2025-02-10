@@ -31,6 +31,7 @@ class Column extends Primitive
     use Concerns\IsToggleable;
     use HasExtra;
     use HasFormatter;
+    use HasIcon;
     use HasLabel;
     use HasMeta;
     use HasName;
@@ -39,9 +40,8 @@ class Column extends Primitive
     use IsHidden;
     use IsKey;
     use Transformable;
-    use HasIcon;
 
-    public static function make(string $name, string $label = null): static
+    public static function make(string $name, ?string $label = null): static
     {
         return resolve(static::class)
             ->name($name)

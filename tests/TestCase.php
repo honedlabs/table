@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests;
 
-use Inertia\Inertia;
-use Illuminate\Support\Str;
-use Honed\Table\Tests\Stubs\Status;
-use Illuminate\Support\Facades\View;
 use Honed\Table\TableServiceProvider;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Orchestra\Testbench\TestCase as Orchestra;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Inertia\ServiceProvider as InertiaServiceProvider;
+use Honed\Table\Tests\Stubs\Status;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\ServiceProvider as InertiaServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
@@ -55,7 +55,7 @@ class TestCase extends Orchestra
             $table->unsignedInteger('price')->default(0);
             $table->boolean('best_seller')->default(false);
             $table->timestamps();
-        });        
+        });
 
         Schema::create('categories', function (Blueprint $table) {
             $table->id();

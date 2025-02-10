@@ -57,7 +57,7 @@ class TableServiceProvider extends ServiceProvider
                 }
 
                 return $class::make();
-                
+
             } catch (\Throwable $th) {
                 abort(404);
             }

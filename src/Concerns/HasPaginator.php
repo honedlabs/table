@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 trait HasPaginator
@@ -14,22 +14,21 @@ trait HasPaginator
 
     /**
      * The paginator to use for the table.
-     * 
+     *
      * @var 'cursor'|'simple'|'length-aware'|'none'|string|null
      */
     protected $paginator;
 
-
     /**
      * The default paginator for all tables.
-     * 
+     *
      * @var 'cursor'|'simple'|'length-aware'|'none'|string
      */
     protected static $defaultPaginator = self::Paginator;
 
     /**
      * Retrieve the default paginator for the table.
-     * 
+     *
      * @return 'cursor'|'simple'|'length-aware'|'none'|string
      */
     public function getPaginator(): string
@@ -47,15 +46,15 @@ trait HasPaginator
 
     /**
      * Set the default paginator for the table.
-     * 
-     * @param 'cursor'|'simple'|'length-aware'|'none'|string $paginator
+     *
+     * @param  'cursor'|'simple'|'length-aware'|'none'|string  $paginator
      */
     public static function usePaginator(string $paginator): void
     {
         static::$defaultPaginator = $paginator;
     }
 
-        /**
+    /**
      * Determine if the paginator is a length-aware paginator.
      */
     protected static function isLengthAware(string $paginator): bool
@@ -92,7 +91,7 @@ trait HasPaginator
     }
 
     /**
-     * Determine if the paginator is a collection, indicating no 
+     * Determine if the paginator is a collection, indicating no
      * pagination is to be applied.
      */
     protected static function isCollection(string $paginator): bool
@@ -104,11 +103,10 @@ trait HasPaginator
         ]);
     }
 
-        /**
+    /**
      * Get the metadata for the length-aware paginator.
-     * 
-     * @param \Illuminate\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model> $paginator
-     * 
+     *
+     * @param  \Illuminate\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string,mixed>
      */
     protected static function lengthAwarePaginatorMetadata(LengthAwarePaginator $paginator): array
@@ -125,9 +123,8 @@ trait HasPaginator
 
     /**
      * Get the metadata for the simple paginator.
-     * 
-     * @param \Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model> $paginator
-     * 
+     *
+     * @param  \Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string,mixed>
      */
     protected static function simplePaginatorMetadata(Paginator $paginator): array
@@ -142,9 +139,8 @@ trait HasPaginator
 
     /**
      * Get the metadata for the cursor paginator.
-     * 
-     * @param \Illuminate\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model> $paginator
-     * 
+     *
+     * @param  \Illuminate\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string,mixed>
      */
     protected static function cursorPaginatorMetadata(CursorPaginator $paginator): array
@@ -155,5 +151,4 @@ trait HasPaginator
             'per_page' => $paginator->perPage(),
         ];
     }
-
 }

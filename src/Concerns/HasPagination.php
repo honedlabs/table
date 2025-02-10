@@ -30,7 +30,7 @@ trait HasPagination
 
     /**
      * Retrieve the pagination options for the table.
-     * 
+     *
      * @return int|array<int,int>
      */
     public function getPagination(): int|array
@@ -48,8 +48,6 @@ trait HasPagination
 
     /**
      * Retrieve the default pagination options for the table.
-     * 
-     * @return int
      */
     public function getDefaultPagination(): int
     {
@@ -66,8 +64,8 @@ trait HasPagination
 
     /**
      * Set the per page amount for all tables.
-     * 
-     * @param int|array<int,int> $perPage
+     *
+     * @param  int|array<int,int>  $perPage
      */
     public static function perPage(int|array $perPage): void
     {
@@ -76,8 +74,6 @@ trait HasPagination
 
     /**
      * Set the default per page amount for all tables.
-     * 
-     * @param int $perPage
      */
     public static function defaultPerPage(int $perPage): void
     {

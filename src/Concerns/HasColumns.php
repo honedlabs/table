@@ -10,14 +10,14 @@ trait HasColumns
 {
     /**
      * Retrieved columns with authorization applied.
-     * 
+     *
      * @var Collection<int,\Honed\Table\Columns\Column>|null
      */
     protected $cachedColumns;
 
     /**
      * The columns to be used for the table.
-     * 
+     *
      * @var array<int,\Honed\Table\Columns\Column>|null
      */
     protected $columns;
@@ -35,7 +35,7 @@ trait HasColumns
 
         $this->columns = $columns;
     }
-    
+
     /**
      * Determine if the table has columns.
      */
@@ -51,7 +51,7 @@ trait HasColumns
      */
     public function getColumns(): array
     {
-        return $this->cachedColumns ??= Arr::where(match(true) {
+        return $this->cachedColumns ??= Arr::where(match (true) {
             \method_exists($this, 'columns') => $this->columns(),
             isset($this->columns) => $this->columns,
             default => [],
