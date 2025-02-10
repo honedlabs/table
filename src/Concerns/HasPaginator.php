@@ -10,23 +10,21 @@ trait HasPaginator
 
     /**
      * The paginator to use for the table.
-     * 
+     *
      * @var 'cursor'|'simple'|'length-aware'|'none'|string|null
      */
     protected $paginator;
 
-
     /**
      * The default paginator for all tables.
-     * 
+     *
      * @var 'cursor'|'simple'|'length-aware'|'none'|string
      */
     protected static $defaultPaginator = self::Paginator;
 
-
     /**
      * Retrieve the default paginator for the table.
-     * 
+     *
      * @return 'cursor'|'simple'|'length-aware'|'none'|string
      */
     public function getPaginator(): string
@@ -44,12 +42,11 @@ trait HasPaginator
 
     /**
      * Set the default paginator for the table.
-     * 
-     * @param 'cursor'|'simple'|'length-aware'|'none'|string $paginator
+     *
+     * @param  'cursor'|'simple'|'length-aware'|'none'|string  $paginator
      */
     public static function usePaginator(string $paginator): void
     {
         static::$defaultPaginator = $paginator;
     }
-
 }

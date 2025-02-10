@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Refine\Refine;
-use Honed\Table\Columns\Column;
+use Honed\Action\Concerns\HasActions;
 use Honed\Core\Concerns\Encodable;
 use Honed\Core\Concerns\RequiresKey;
-use Honed\Action\Concerns\HasActions;
-use Illuminate\Database\Eloquent\Builder;
 use Honed\Core\Exceptions\MissingRequiredAttributeException;
+use Honed\Refine\Refine;
+use Honed\Table\Columns\Column;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
@@ -28,7 +28,7 @@ class Table extends Refine
     use RequiresKey;
 
     /**
-     * @param \Closure|null $modifier
+     * @param  \Closure|null  $modifier
      */
     public static function make($modifier = null): static
     {
@@ -62,13 +62,13 @@ class Table extends Refine
         $this->builder(
             $this->createBuilder($this->getResource())
         );
-        
+
         $activeColumns = $this->toggle();
-        
+
         $this->modify();
-        
+
         $this->refine();
-        
+
         $this->formatAndPaginate($activeColumns);
 
         return $this;

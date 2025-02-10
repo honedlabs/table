@@ -13,8 +13,8 @@ use Honed\Core\Primitive;
  */
 class Page extends Primitive
 {
-    use IsActive;
     use HasValue;
+    use IsActive;
 
     public static function make(int $value, int $active = 0): static
     {

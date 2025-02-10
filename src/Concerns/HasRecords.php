@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Support\Arr;
 use Honed\Action\InlineAction;
 use Honed\Table\Page;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 trait HasRecords
 {
@@ -26,7 +26,7 @@ trait HasRecords
 
     /**
      * The records of the table retrieved from the resource.
-     * 
+     *
      * @var array<int,mixed>|null
      */
     protected $records = null;
@@ -48,7 +48,7 @@ trait HasRecords
 
     /**
      * Get the meta data of the table.
-     * 
+     *
      * @return array<string,mixed>
      */
     public function getMeta(): array
@@ -66,18 +66,18 @@ trait HasRecords
 
     /**
      * Get the page options of the table.
-     * 
+     *
      * @return array<int,\Honed\Table\Page>
      */
     public function getPages(): array
     {
         return $this->pages;
     }
-    
+
     /**
      * Format the records using the provided columns.
-     * 
-     * @param array<int,\Honed\Table\Columns\Column> $activeColumns
+     *
+     * @param  array<int,\Honed\Table\Columns\Column>  $activeColumns
      */
     public function formatAndPaginate(array $activeColumns): void
     {
@@ -103,7 +103,7 @@ trait HasRecords
             $this->isCursor($paginator) => $this->cursorPaginateRecords($builder),
 
             $this->isCollection($paginator) => $this->collectRecords($builder),
-            
+
             default => static::throwInvalidPaginatorException($paginator),
         };
 
@@ -112,7 +112,7 @@ trait HasRecords
         foreach ($records as $record) {
             $formattedRecords[] = $this->formatRecord($record, $activeColumns);
         }
-        
+
         $this->records = $formattedRecords;
     }
 
@@ -122,7 +122,7 @@ trait HasRecords
     protected function getRecordsPerPage(): int
     {
         $pagination = $this->getPagination();
-        
+
         if (! \is_array($pagination)) {
             return $pagination;
         }
@@ -133,7 +133,7 @@ trait HasRecords
             ? $perPage
             : $this->getDefaultPagination();
 
-        $this->pages = Arr::map($pagination, 
+        $this->pages = Arr::map($pagination,
             static fn (int $amount) => Page::make($amount, $perPage)
         );
 
@@ -156,13 +156,10 @@ trait HasRecords
         );
     }
 
-
     /**
      * Format a record using the provided columns.
-     * 
-     * @param \Illuminate\Database\Eloquent\Model $record
-     * @param array<int,\Honed\Table\Columns\Column> $columns
-     * 
+     *
+     * @param  array<int,\Honed\Table\Columns\Column>  $columns
      * @return array<string,mixed>
      */
     protected function formatRecord(Model $record, array $columns): array
@@ -228,7 +225,7 @@ trait HasRecords
     }
 
     /**
-     * Determine if the paginator is a collection, indicating no 
+     * Determine if the paginator is a collection, indicating no
      * pagination is to be applied.
      */
     protected function isCollection(string $paginator): bool
@@ -242,9 +239,8 @@ trait HasRecords
 
     /**
      * Length-aware paginate the records from the builder.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $builder
-     * 
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>  $builder
      * @return array{0:array<int,mixed>,1:array<string,mixed>}
      */
     protected function paginateRecords(Builder $builder): array
@@ -267,9 +263,8 @@ trait HasRecords
 
     /**
      * Simple paginate the records from the builder.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $builder
-     * 
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>  $builder
      * @return array{0:array<int,mixed>,1:array<string,mixed>}
      */
     protected function simplePaginateRecords(Builder $builder): array
@@ -292,9 +287,8 @@ trait HasRecords
 
     /**
      * Cursor paginate the records from the builder.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $builder
-     * 
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>  $builder
      * @return array{0:array<int,mixed>,1:array<string,mixed>}
      */
     protected function cursorPaginateRecords(Builder $builder): array
@@ -317,9 +311,8 @@ trait HasRecords
 
     /**
      * Collect the records from the builder.
-     * 
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $builder
-     * 
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>  $builder
      * @return array{0:array<int,mixed>,1:array<string,mixed>}
      */
     protected function collectRecords(Builder $builder): array
@@ -334,9 +327,8 @@ trait HasRecords
 
     /**
      * Get the metadata for the length-aware paginator.
-     * 
-     * @param \Illuminate\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model> $paginator
-     * 
+     *
+     * @param  \Illuminate\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string,mixed>
      */
     protected function lengthAwarePaginatorMetadata(LengthAwarePaginator $paginator): array
@@ -353,9 +345,8 @@ trait HasRecords
 
     /**
      * Get the metadata for the simple paginator.
-     * 
-     * @param \Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model> $paginator
-     * 
+     *
+     * @param  \Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string,mixed>
      */
     protected function paginatorMetadata(Paginator $paginator): array
@@ -370,9 +361,8 @@ trait HasRecords
 
     /**
      * Get the metadata for the cursor paginator.
-     * 
-     * @param \Illuminate\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model> $paginator
-     * 
+     *
+     * @param  \Illuminate\Pagination\CursorPaginator<\Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string,mixed>
      */
     protected function cursorPaginatorMetadata(CursorPaginator $paginator): array
@@ -391,7 +381,6 @@ trait HasRecords
     {
         throw new \InvalidArgumentException(
             \sprintf('The paginator [%s] is not valid.', $paginator
-        ));
+            ));
     }
-    
 }

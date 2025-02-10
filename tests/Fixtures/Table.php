@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests\Fixtures;
 
-use Honed\Action\Confirm;
 use Honed\Action\BulkAction;
-use Honed\Action\PageAction;
-use Honed\Refine\Sorts\Sort;
+use Honed\Action\Confirm;
 use Honed\Action\InlineAction;
-use Honed\Table\Columns\Column;
+use Honed\Action\PageAction;
+use Honed\Refine\Filters\DateFilter;
 use Honed\Refine\Filters\Filter;
 use Honed\Refine\Filters\SetFilter;
+use Honed\Refine\Sorts\Sort;
+use Honed\Table\Columns\BooleanColumn;
+use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
+use Honed\Table\Columns\NumericColumn;
 use Honed\Table\Columns\TextColumn;
-use Honed\Table\Tests\Stubs\Status;
-use Honed\Refine\Filters\DateFilter;
 use Honed\Table\Table as HonedTable;
 use Honed\Table\Tests\Stubs\Product;
-use Honed\Refine\Filters\CustomFilter;
-use Honed\Table\Columns\BooleanColumn;
-use Honed\Table\Columns\NumericColumn;
+use Honed\Table\Tests\Stubs\Status;
 
 class Table extends HonedTable
 {
@@ -45,7 +44,7 @@ class Table extends HonedTable
         return [
             Column::make('id')->key(),
             TextColumn::make('name')->searchable(),
-            TextColumn::make('description')->placeholder('-'), //->truncate(100)
+            TextColumn::make('description')->placeholder('-'), // ->truncate(100)
             BooleanColumn::make('best_seller', 'Favourite')->formatBoolean('Favourite', 'Not favourite'),
             TextColumn::make('seller.name', 'Sold by'),
             Column::make('status')->meta(['badge' => true]),

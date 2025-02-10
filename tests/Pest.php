@@ -1,13 +1,11 @@
 <?php
 
-use Honed\Table\Table;
-use Illuminate\Support\Str;
-use Honed\Table\Tests\TestCase;
+use Honed\Table\Tests\Stubs\Category;
+use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Tests\Stubs\Seller;
 use Honed\Table\Tests\Stubs\Status;
-use Honed\Table\Tests\Stubs\Product;
-use Honed\Table\Tests\Stubs\Category;
-use Honed\Table\Tests\Stubs\ExampleTable;
+use Honed\Table\Tests\TestCase;
+use Illuminate\Support\Str;
 
 uses(TestCase::class)->in(__DIR__);
 
