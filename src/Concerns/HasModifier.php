@@ -34,7 +34,7 @@ trait HasModifier
     /**
      * Get the resource modifier.
      */
-    public function getModifier(): ?\Closure
+    public function getModifier(): \Closure|null
     {
         return $this->modifier;
     }
@@ -47,7 +47,7 @@ trait HasModifier
         if (\is_null($this->modifier)) {
             return;
         }
-
+        
         \call_user_func($this->modifier, $this->getResource());
     }
 }

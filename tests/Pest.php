@@ -1,11 +1,13 @@
 <?php
 
-use Honed\Table\Tests\Stubs\Category;
-use Honed\Table\Tests\Stubs\Product;
+use Honed\Table\Table;
+use Illuminate\Support\Str;
+use Honed\Table\Tests\TestCase;
 use Honed\Table\Tests\Stubs\Seller;
 use Honed\Table\Tests\Stubs\Status;
-use Honed\Table\Tests\TestCase;
-use Illuminate\Support\Str;
+use Honed\Table\Tests\Stubs\Product;
+use Honed\Table\Tests\Stubs\Category;
+use Honed\Table\Tests\Stubs\ExampleTable;
 
 uses(TestCase::class)->in(__DIR__);
 
@@ -13,7 +15,7 @@ function product(?string $name = null): Product
 {
     return seller()->products()->create([
         'public_id' => Str::uuid(),
-        'name' => $name ?? fake()->unique()->words(2),
+        'name' => $name ?? fake()->unique()->words(2, true),
         'description' => fake()->sentence(),
         'price' => fake()->randomNumber(4),
         'best_seller' => fake()->boolean(),

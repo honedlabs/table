@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use Honed\Table\Table as HonedTable;
 use Honed\Table\Tests\Fixtures\Table;
+use Illuminate\Support\Arr;
 
 beforeEach(function () {
     $this->test = Table::make();
@@ -38,4 +40,5 @@ it('has array representation', function () {
 it('accepts a request to use', function () {
     // $this->test->build(request());
     dd($this->test->toArray());
+
 });

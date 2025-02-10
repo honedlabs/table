@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Action\Concerns\HasActions;
-use Honed\Core\Concerns\Encodable;
-use Honed\Core\Concerns\RequiresKey;
-use Honed\Core\Exceptions\MissingRequiredAttributeException;
 use Honed\Refine\Refine;
 use Honed\Table\Columns\Column;
+use Honed\Core\Concerns\Encodable;
+use Honed\Core\Concerns\RequiresKey;
+use Honed\Action\Concerns\HasActions;
 use Illuminate\Database\Eloquent\Builder;
+use Honed\Core\Exceptions\MissingRequiredAttributeException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class Table extends Refine
 {
@@ -28,7 +29,7 @@ class Table extends Refine
     use RequiresKey;
 
     /**
-     * @param  \Closure|null  $modifier
+     * @param \Closure|null $modifier
      */
     public static function make($modifier = null): static
     {
@@ -62,13 +63,13 @@ class Table extends Refine
         $this->builder(
             $this->createBuilder($this->getResource())
         );
-
+        
         $activeColumns = $this->toggle();
-
+        
         $this->modify();
-
+        
         $this->refine();
-
+        
         $this->formatAndPaginate($activeColumns);
 
         return $this;
@@ -85,9 +86,10 @@ class Table extends Refine
             'id' => $this->encode(static::class),
             'records' => $this->getRecords(),
             'meta' => $this->getMeta(),
-            'columns' => $this->getColumns()
-                ->filter(static fn (Column $column) => $column->isActive())
-                ->toArray(),
+            'columns' => Arr::where(
+                $this->getColumns(),
+                static fn (Column $column): bool => $column->isActive()
+            ),
             'pages' => $this->getPages(),
             'filters' => $this->getFilters(),
             'sorts' => $this->getSorts(),

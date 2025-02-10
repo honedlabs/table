@@ -14,50 +14,55 @@ trait ConfiguresKeys
 
     /**
      * The key for pagination.
-     *
+     * 
      * @var string|null
      */
+
     protected $pageKey;
 
     /**
      * The default key for pagination.
-     *
+     * 
      * @var string
      */
     protected static $defaultPageKey = self::PageKey;
 
+
     /**
      * The key for the columns to show.
-     *
+     * 
      * @var string|null
      */
     protected $columnsKey;
 
     /**
      * The default key for the columns to show.
-     *
+     * 
      * @var string
      */
     protected static $defaultColumnsKey = self::ColumnKey;
 
     /**
      * The key for the number of records to show.
-     *
+     * 
      * @var string|null
      */
     protected $recordsKey;
 
     /**
      * The default key for the number of records to show.
-     *
+     * 
      * @var string
      */
     protected static $defaultRecordsKey = self::RecordKey;
 
     /**
      * Get the key for pagination.
+
+
      */
     public function getPageKey(): string
+
     {
         return match (true) {
             \property_exists($this, 'pageKey') && ! \is_null($this->pageKey) => $this->pageKey,
@@ -117,6 +122,7 @@ trait ConfiguresKeys
 
     /**
      * Set the default page key for all tables.
+
      */
     public static function usePageKey(string $key): void
     {
@@ -141,9 +147,10 @@ trait ConfiguresKeys
 
     /**
      * Get the keys for the table as an array.
-     *
+     * 
      * @return array<string,string>
      */
+
     public function keysToArray(): array
     {
         return [
@@ -156,3 +163,4 @@ trait ConfiguresKeys
         ];
     }
 }
+

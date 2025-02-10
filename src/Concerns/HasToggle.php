@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Honed\Table\Columns\BaseColumn;
 use Honed\Table\Columns\Column;
 use Honed\Table\Contracts\ShouldRemember;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
 
 trait HasToggle
 {
     const Duration = 60 * 24 * 30 * 365; // 1 year
-
     const ColumnsKey = 'columns';
 
     /**
@@ -39,7 +40,7 @@ trait HasToggle
      * @var string|null
      */
     protected $columnsKey;
-
+    
     /**
      * Determine whether this table has toggling of the columns enabled.
      */
@@ -136,7 +137,8 @@ trait HasToggle
     }
 
     /**
-     * @param  array<int,string>|null  $params
+     * @param array<int,string>|null $params
+     * 
      * @return array<int,string>|null
      */
     public function configureCookie(Request $request, ?array $params): ?array
@@ -159,7 +161,7 @@ trait HasToggle
 
     /**
      * Retrieve the columns to display from the request.
-     *
+     * 
      * @return array<int,string>|null
      */
     public function getColumnsFromRequest(Request $request): ?array
