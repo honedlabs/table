@@ -19,13 +19,16 @@ class TableMakeCommand extends GeneratorCommand
 
     protected $type = 'Table';
 
-    protected function getStub()
+    protected function getStub(): string
     {
         $stub = '/stubs/table.php.stub';
 
         return $this->resolveStubPath($stub);
     }
 
+    /**
+     * @param  string  $stub
+     */
     protected function resolveStubPath($stub): string
     {
         return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
@@ -33,11 +36,17 @@ class TableMakeCommand extends GeneratorCommand
             : __DIR__.'/../../..'.$stub;
     }
 
+    /**
+     * @param  string  $rootNamespace
+     */
     protected function getDefaultNamespace($rootNamespace): string
     {
         return $rootNamespace.'\Tables';
     }
 
+    /**
+     * @param  string  $name
+     */
     protected function buildClass($name): string
     {
         $tableNamespace = $this->getNamespace($name);
@@ -53,6 +62,9 @@ class TableMakeCommand extends GeneratorCommand
         );
     }
 
+    /**
+     * @param  string  $table
+     */
     protected function parseModel($table): string
     {
         if (preg_match('([^A-Za-z0-9_/\\\\])', $table)) {

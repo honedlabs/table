@@ -1,19 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Tests\Stubs;
 
-enum Status: int
+enum Status: string
 {
-    case Available = 0;
-    case Unavailable = 1;
-    case ComingSoon = 2;
-
-    public function label(): string
-    {
-        return match ($this) {
-            self::Available => 'Available',
-            self::Unavailable => 'Unavailable',
-            self::ComingSoon => 'Coming soon',
-        };
-    }
+    case Available = 'available';
+    case Unavailable = 'unavailable';
+    case ComingSoon = 'coming-soon';
 }

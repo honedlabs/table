@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-class DateColumn extends Column
+class KeyColumn extends Column
 {
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->type('date');
-        $this->formatDate();
+        $this->type('key');
+        $this->hidden();
+        $this->key();
     }
 }

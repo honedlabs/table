@@ -7,34 +7,26 @@ namespace Honed\Table\Concerns;
 trait HasEndpoint
 {
     /**
+     * The endpoint to be used to handle table actions.
+     *
      * @var string|null
      */
     protected $endpoint;
-
-    /**
-     * @var string
-     */
-    protected static $defaultEndpoint = '/actions';
 
     /**
      * Get the endpoint to be used for table actions.
      */
     public function getEndpoint(): string
     {
-        return match (true) {
-            \property_exists($this, 'endpoint') && ! \is_null($this->endpoint) => $this->endpoint,
-            \method_exists($this, 'endpoint') => $this->endpoint(),
-            default => static::getDefaultEndpoint(),
-        };
-    }
+        if (isset($this->endpoint)) {
+            return $this->endpoint;
+        }
 
-    public static function useEndpoint(string $endpoint): void
-    {
-        static::$defaultEndpoint = $endpoint;
-    }
+        if (\method_exists($this, 'endpoint')) {
+            return $this->endpoint();
+        }
 
-    public static function getDefaultEndpoint(): string
-    {
-        return static::$defaultEndpoint;
+        /** @var string */
+        return config('table.endpoint', '/actions');
     }
 }

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-/**
- * @mixin \Honed\Core\Concerns\Evaluable
- */
 trait IsSearchable
 {
     /**
@@ -15,7 +12,7 @@ trait IsSearchable
     protected $searchable = false;
 
     /**
-     * Set as searchable, chainable.
+     * Set the column as searchable.
      *
      * @return $this
      */
@@ -27,7 +24,7 @@ trait IsSearchable
     }
 
     /**
-     * Determine if it is searchable.
+     * Determine if the column is searchable.
      */
     public function isSearchable(): bool
     {

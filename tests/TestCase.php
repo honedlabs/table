@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Tests;
 
 use Honed\Table\TableServiceProvider;
+use Honed\Table\Tests\Fixtures\Controller;
 use Honed\Table\Tests\Stubs\Status;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -78,6 +79,8 @@ class TestCase extends Orchestra
             $router->get('/products', fn () => Inertia::render('Products/Index'))->name('products.index');
             $router->get('/products/{product}', fn () => Inertia::render('Products/Show'))->name('products.show');
             $router->get('/products/create', fn () => Inertia::render('Products/Create'))->name('products.create');
+            $router->post('/table/{table}', [Controller::class, 'handle'])->name('products.table');
+            $router->table();
         });
     }
 

@@ -8,9 +8,11 @@ use Honed\Action\BulkAction;
 use Honed\Action\Confirm;
 use Honed\Action\InlineAction;
 use Honed\Action\PageAction;
+use Honed\Refine\Filters\BooleanFilter;
 use Honed\Refine\Filters\DateFilter;
 use Honed\Refine\Filters\Filter;
 use Honed\Refine\Filters\SetFilter;
+use Honed\Refine\Searches\Search;
 use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\BooleanColumn;
 use Honed\Table\Columns\Column;
@@ -23,15 +25,43 @@ use Honed\Table\Tests\Stubs\Status;
 
 class Table extends HonedTable
 {
-    public $search = ['description'];
+    const Pagination = [10, 25, 50];
 
-    public $toggle = true;
+    const DefaultPagination = 15;
 
-    public $pagination = [10, 25, 50];
+    const Search = ['description'];
 
-    public $defaultPagination = 10;
+    const Toggle = true;
 
-    public $cookie = 'example-table';
+    const Remember = true;
+
+    const ColumnsKey = 'cols';
+
+    const Duration = 10;
+
+    const Order = true;
+
+    const Cookie = 'example-table';
+
+    const PagesKey = 'cursor';
+
+    public $pagination = self::Pagination;
+
+    public $default = self::DefaultPagination;
+
+    public $toggle = self::Toggle;
+
+    public $remember = self::Remember;
+
+    public $columnsKey = self::ColumnsKey;
+
+    public $duration = self::Duration;
+
+    public $order = self::Order;
+
+    public $cookie = self::Cookie;
+
+    public $pagesKey = self::PagesKey;
 
     public function resource()
     {
@@ -43,31 +73,46 @@ class Table extends HonedTable
     {
         return [
             Column::make('id')->key(),
-            TextColumn::make('name')->searchable(),
-            TextColumn::make('description')->placeholder('-'), // ->truncate(100)
+            TextColumn::make('name')->always()->searchable(),
+            TextColumn::make('description')->placeholder('-'),
             BooleanColumn::make('best_seller', 'Favourite')->formatBoolean('Favourite', 'Not favourite'),
-            TextColumn::make('seller.name', 'Sold by'),
+            TextColumn::make('seller.name', 'Sold by')->sometimes(),
             Column::make('status')->meta(['badge' => true]),
-            NumericColumn::make('price'),
-            DateColumn::make('created_at')->sortable(),
+            NumericColumn::make('price')->sortable(),
+            DateColumn::make('created_at')->sometimes()->sortable(),
+            Column::make('public_id')->hidden()->always(),
+            Column::make('updated_at')->allow(false),
         ];
     }
 
     public function filters()
     {
         return [
-            Filter::make('price', 'Max')->alias('max')->lt(),
-            Filter::make('price', 'Min')->alias('min')->gt(),
-            SetFilter::make('status')->options(Status::class),
-            DateFilter::make('created_at', 'Year')->alias('year'),
+            Filter::make('name')->like(),
+            SetFilter::make('price', 'Maximum price')->options([10, 20, 50, 100])->lt(),
+            SetFilter::make('status')->enum(Status::class)->multiple(),
+            SetFilter::make('status', 'Single')->alias('only')->enum(Status::class),
+            BooleanFilter::make('best_seller', 'Favourite')->alias('favourite'),
+            DateFilter::make('created_at', 'Oldest')->alias('oldest')->gt(),
+            DateFilter::make('created_at', 'Newest')->alias('newest')->lt(),
         ];
     }
 
     public function sorts()
     {
         return [
-            Sort::make('name', 'A-Z')->asc(),
-            Sort::make('name', 'Z-A')->desc(),
+            Sort::make('name', 'A-Z')->alias('name-desc')->desc()->default(),
+            Sort::make('name', 'Z-A')->alias('name-asc')->asc(),
+            Sort::make('price'),
+            Sort::make('best_seller', 'Favourite')->alias('favourite'),
+        ];
+    }
+
+    public function searches()
+    {
+        return [
+            Search::make('name'),
+            Search::make('description'),
         ];
     }
 
@@ -82,10 +127,21 @@ class Table extends HonedTable
                 ->confirm(fn (Confirm $confirm) => $confirm->name(fn (Product $product) => 'You are about to delete '.$product->name)->description('Are you sure?')),
             InlineAction::make('show')
                 ->route(fn ($product) => route('products.show', $product)),
-            BulkAction::make('update')
+            BulkAction::make('edit')
                 ->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
+            BulkAction::make('delete')
+                ->action(fn (Product $product) => $product->delete())
+                ->allow(false),
+
             PageAction::make('create')
                 ->route('products.create'),
+
+            PageAction::make('factory')
+                ->action(function () {
+                    $product = product('test');
+
+                    return to_route('products.show', $product);
+                }),
         ];
     }
 }

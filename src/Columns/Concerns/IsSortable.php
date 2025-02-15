@@ -40,7 +40,7 @@ trait IsSortable
      */
     public function isSortable(): bool
     {
-        return $this->sortable;
+        return (bool) $this->sortable;
     }
 
     /**
@@ -52,7 +52,7 @@ trait IsSortable
     }
 
     /**
-     * @return array{direction: 'asc'|'desc'|null, next: 'asc'|'desc'|null}
+     * @return array{direction: 'asc'|'desc'|null, next: string|null}
      */
     public function sortToArray(): array
     {
@@ -80,7 +80,8 @@ trait IsSortable
     {
         $this->sortable = true;
         $this->sort = Sort::make(
-            \is_string($sortable) ? $sortable : $this->getName()
+            \is_string($sortable)
+                ? $sortable : type($this->getName())->asString()
         );
 
         return $this;

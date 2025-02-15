@@ -22,8 +22,8 @@ trait HasResource
     public function getResource(): Model|string|Builder
     {
         return match (true) {
-            \method_exists($this, 'resource') => $this->resource(),
             isset($this->resource) => $this->resource,
+            \method_exists($this, 'resource') => $this->resource(),
             default => $this->guessResource()
         };
     }

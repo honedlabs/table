@@ -3,15 +3,15 @@
 namespace Honed\Table\Concerns;
 
 use Honed\Table\Columns\Column;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 trait HasColumns
 {
     /**
      * Retrieved columns with authorization applied.
      *
-     * @var Collection<int,\Honed\Table\Columns\Column>|null
+     * @var array<int,\Honed\Table\Columns\Column>|null
      */
     protected $cachedColumns;
 
@@ -23,25 +23,27 @@ trait HasColumns
     protected $columns;
 
     /**
-     * Set the columns for the table.
-     *
-     * @param  array<int,\Honed\Table\Columns\Column>|null  $columns
-     */
-    public function setColumns(?array $columns): void
-    {
-        if (\is_null($columns)) {
-            return;
-        }
-
-        $this->columns = $columns;
-    }
-
-    /**
      * Determine if the table has columns.
      */
     public function hasColumns(): bool
     {
         return ! empty($this->getColumns());
+    }
+
+    /**
+     * @param  iterable<\Honed\Table\Columns\Column>  $columns
+     * @return $this
+     */
+    public function addColumns(iterable $columns): static
+    {
+        if ($columns instanceof Arrayable) {
+            $columns = $columns->toArray();
+        }
+
+        /** @var array<int, \Honed\Table\Columns\Column> $columns */
+        $this->columns = \array_merge($this->columns ?? [], $columns);
+
+        return $this;
     }
 
     /**
@@ -51,11 +53,39 @@ trait HasColumns
      */
     public function getColumns(): array
     {
-        return $this->cachedColumns ??= Arr::where(match (true) {
+        return $this->cachedColumns ??= $this->getSourceColumns();
+    }
+
+    /**
+     * Get the source columns for the table, with permissions applied.
+     *
+     * @return array<int,\Honed\Table\Columns\Column>
+     */
+    protected function getSourceColumns(): array
+    {
+        $columns = match (true) {
             \method_exists($this, 'columns') => $this->columns(),
             isset($this->columns) => $this->columns,
             default => [],
-        }, static fn (Column $column): bool => $column->isAllowed());
+        };
+
+        return Arr::where(
+            $columns,
+            static fn (Column $column): bool => $column->isAllowed()
+        );
+    }
+
+    /**
+     * Get the columns which are active for toggling.
+     *
+     * @return array<int,\Honed\Table\Columns\Column>
+     */
+    public function getActiveColumns(): array
+    {
+        return Arr::where(
+            $this->getColumns(),
+            static fn (Column $column): bool => $column->isActive()
+        );
     }
 
     /**
