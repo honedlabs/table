@@ -95,6 +95,8 @@ class Table extends HonedTable
             BooleanFilter::make('best_seller', 'Favourite')->alias('favourite'),
             DateFilter::make('created_at', 'Oldest')->alias('oldest')->gt(),
             DateFilter::make('created_at', 'Newest')->alias('newest')->lt(),
+
+            // DateFilter::make('updated_at', 'Oldest')->alias('oldest')->gt()->allow(false)
         ];
     }
 
@@ -105,6 +107,7 @@ class Table extends HonedTable
             Sort::make('name', 'Z-A')->alias('name-asc')->asc(),
             Sort::make('price'),
             Sort::make('best_seller', 'Favourite')->alias('favourite'),
+            Sort::make('updated_at')->allow(false),
         ];
     }
 
@@ -127,6 +130,7 @@ class Table extends HonedTable
                 ->confirm(fn (Confirm $confirm) => $confirm->name(fn (Product $product) => 'You are about to delete '.$product->name)->description('Are you sure?')),
             InlineAction::make('show')
                 ->route(fn ($product) => route('products.show', $product)),
+
             BulkAction::make('edit')
                 ->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
             BulkAction::make('delete')

@@ -29,7 +29,6 @@ trait CanRemember
             return true;
         }
 
-        /** @var bool */
-        return config('table.toggle.remember', false);
+        return (bool) config('table.toggle.remember', false);
     }
 }

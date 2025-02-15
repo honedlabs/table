@@ -23,7 +23,6 @@ trait CanToggle
             return $this->toggle;
         }
 
-        /** @var bool */
-        return config('table.toggle.enabled', false);
+        return (bool) config('table.toggle.enabled', false);
     }
 }

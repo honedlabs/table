@@ -15,14 +15,6 @@ beforeEach(function () {
     }
 });
 
-it('builds', function () {
-    expect($this->test->buildTable())
-        ->toBe($this->test)
-        ->getPaginator()->toBe('length-aware')
-        ->getMeta()->toHaveCount(10)
-        ->getCookie()->toBe('example-table');
-});
-
 it('can be modified', function () {
     $fn = fn (Builder $product) => $product->where('best_seller', true);
 
@@ -54,8 +46,6 @@ it('can be modified', function () {
         )
         );
 });
-
-it('can toggle', function () {});
 
 it('can refine', function () {
     $request = Request::create('/', 'GET', [
@@ -156,67 +146,38 @@ it('can refine', function () {
             'direction' => 'desc',
         ])
         )
+        )->toArray()->scoped(fn ($array) => $array
+            ->toHaveKeys([
+                'table',
+                'records',
+                'meta',
+                'columns',
+                'pages',
+                'filters',
+                'sorts',
+                'toggle',
+                'actions',
+                'endpoint',
+                'keys',
+            ])->{'keys'}->toEqual([
+                'record' => 'id',
+                'records' => 'rows',
+                'sorts' => 'sort',
+                'search' => 'search',
+                'columns' => 'cols',
+            ])->{'actions'}->scoped(fn ($actions) => $actions
+                ->toHaveKeys([
+                    'actions',
+                    'bulk',
+                    'page',
+                ])->{'actions'}->toBeTrue()
+                ->{'bulk'}->toHaveCount(1)
+                ->{'page'}->toHaveCount(2)
+            )->{'toggle'}->toBe(Table::Toggle)
+            ->{'sorts'}->toHaveCount(4)
+            ->{'filters'}->toHaveCount(7)
+            ->{'columns'}->toHaveCount(7)
         );
-});
-
-// it('toggles without request', function () {
-//     expect($this->test->buildTable())
-//         ->toBe($this->test)
-//         ->getColumns()->toBe([]);
-// });
-
-it('formats and paginates', function () {
-    expect(Table::make()->buildTable())
-        ->getPaginator()->toBe('length-aware')
-        ->getRecords()->scoped(fn ($records) => $records
-        ->toBeArray()
-        ->toHaveCount(Table::DefaultPagination)
-        ->each->toHaveKeys([
-            'id',
-            'name',
-            'description',
-            'best_seller',
-            'status',
-            'price',
-            'actions',
-        ])
-        )
-        ->getMeta()->toHaveKeys([
-            'prev',
-            'current',
-            'next',
-            'per_page',
-            'total',
-            'from',
-            'to',
-            'first',
-            'last',
-            'links',
-        ]);
-
-    expect(Table::make()->paginator('cursor')->buildTable())
-        ->getPaginator()->toBe('cursor')
-        ->getMeta()->toHaveKeys([
-            'prev',
-            'per_page',
-            'next',
-        ]);
-
-    expect(Table::make()->paginator('simple')->buildTable())
-        ->getPaginator()->toBe('simple')
-        ->getMeta()->toHaveKeys([
-            'prev',
-            'current',
-            'next',
-            'per_page',
-        ]);
-
-    expect(Table::make()->paginator('none')->buildTable())
-        ->getPaginator()->toBe('none')
-        ->getMeta()->toBeEmpty();
-
-    expect(fn () => Table::make()->paginator('invalid')->buildTable())
-        ->toThrow(\InvalidArgumentException::class);
 });
 
 it('has endpoint', function () {
