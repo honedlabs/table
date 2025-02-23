@@ -12,8 +12,6 @@ class TableServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/table.php', 'table');
-
-        $this->registerRoutesMacro();
     }
 
     public function boot(): void
@@ -32,6 +30,7 @@ class TableServiceProvider extends ServiceProvider
             __DIR__.'/../config/table.php' => config_path('table.php'),
         ], 'table-config');
 
+        $this->registerRoutesMacro();
     }
 
     /**
@@ -50,11 +49,11 @@ class TableServiceProvider extends ServiceProvider
     private function registerRoutesMacro(): void
     {
         Router::macro('table', function () {
-            /** @var string */
-            $endpoint = config('table.endpoint', '/actions/{table}');
+            $endpoint = type(config('table.endpoint', '/actions/{table}'))->asString();
 
             /** @var \Illuminate\Routing\Router $this */
-            $this->match(['post', 'patch', 'put'], $endpoint, [TableController::class, 'handle'])->name('table.actions');
+            $this->match(['post', 'patch', 'put'], $endpoint, [TableController::class, 'handle'])
+                ->name('table.actions');
         });
     }
 }

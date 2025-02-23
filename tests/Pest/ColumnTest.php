@@ -2,7 +2,7 @@
 
 use Honed\Core\Formatters\BooleanFormatter;
 use Honed\Core\Formatters\DateFormatter;
-use Honed\Core\Formatters\NumericFormatter;
+use Honed\Core\Formatters\NumberFormatter;
 use Honed\Core\Formatters\StringFormatter;
 use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\BooleanColumn;
@@ -10,7 +10,7 @@ use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
 use Honed\Table\Columns\HiddenColumn;
 use Honed\Table\Columns\KeyColumn;
-use Honed\Table\Columns\NumericColumn;
+use Honed\Table\Columns\NumberColumn;
 use Honed\Table\Columns\TextColumn;
 
 beforeEach(function () {
@@ -52,9 +52,9 @@ it('has formatters', function () {
         ->hasFormatter()->toBeTrue()
         ->getFormatter()->toBeInstanceOf(StringFormatter::class);
 
-    expect(NumericColumn::make($this->param))
+    expect(NumberColumn::make($this->param))
         ->hasFormatter()->toBeTrue()
-        ->getFormatter()->toBeInstanceOf(NumericFormatter::class);
+        ->getFormatter()->toBeInstanceOf(NumberFormatter::class);
 
     expect(DateColumn::make($this->param))
         ->hasFormatter()->toBeTrue()

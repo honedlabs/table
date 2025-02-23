@@ -3,8 +3,8 @@
 namespace Honed\Table\Concerns;
 
 use Honed\Table\Columns\Column;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 trait HasColumns
 {
@@ -31,13 +31,15 @@ trait HasColumns
     }
 
     /**
-     * @param  iterable<\Honed\Table\Columns\Column>  $columns
+     * @template T of \Honed\Table\Columns\Column
+     *
+     * @param  array<int,T>|Collection<int,T>  $columns
      * @return $this
      */
-    public function addColumns(iterable $columns): static
+    public function addColumns(array|Collection $columns): static
     {
-        if ($columns instanceof Arrayable) {
-            $columns = $columns->toArray();
+        if ($columns instanceof Collection) {
+            $columns = $columns->all();
         }
 
         /** @var array<int, \Honed\Table\Columns\Column> $columns */

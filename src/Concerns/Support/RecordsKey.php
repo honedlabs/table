@@ -34,7 +34,6 @@ trait RecordsKey
             return $this->recordsKey;
         }
 
-        /** @var string */
-        return config('table.keys.records', 'rows');
+        return type(config('table.keys.records', 'rows'))->asString();
     }
 }

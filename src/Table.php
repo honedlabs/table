@@ -9,8 +9,6 @@ use Honed\Action\Concerns\HasParameterNames;
 use Honed\Action\Handler;
 use Honed\Action\Http\Requests\ActionRequest;
 use Honed\Core\Concerns\Encodable;
-use Honed\Core\Concerns\RequiresKey;
-use Honed\Core\Exceptions\MissingRequiredAttributeException;
 use Honed\Refine\Refine;
 use Honed\Table\Concerns\HasTableBindings;
 use Illuminate\Contracts\Routing\UrlRoutable;
@@ -31,9 +29,94 @@ class Table extends Refine implements UrlRoutable
     use HasActions;
     use HasParameterNames;
     use HasTableBindings;
-    use RequiresKey;
 
     /**
+     * A unique identifier column for the table.
+     *
+     * @var string|null
+     */
+    protected $key;
+
+    /**
+     * Get the unique identifier key for table records.
+     *
+     * @throws \RuntimeException When no key is defined
+     */
+    public function getKey(): string
+    {
+        $key = $this->key ?? $this->getKeyColumn()?->getName();
+
+        if (\is_null($key)) {
+            static::throwMissingKeyException();
+        }
+
+        return $key;
+    }
+
+    /**
+     * Set the key property for the table.
+
+     *
+     * @return $this
+     */
+    public function key(string $key): static
+    {
+        $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSortsKey(): string
+    {
+        if (isset($this->sortsKey)) {
+            return $this->sortsKey;
+        }
+
+        return type(config('table.keys.sorts', 'sort'))->asString();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSearchesKey(): string
+    {
+        if (isset($this->searchesKey)) {
+            return $this->searchesKey;
+        }
+
+        return type(config('table.keys.searches', 'search'))->asString();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMatchesKey(): string
+    {
+        if (isset($this->matchesKey)) {
+            return $this->matchesKey;
+        }
+
+        return type(config('table.keys.matches', 'match'))->asString();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canMatch(): bool
+    {
+        if (isset($this->matches)) {
+            return $this->matches;
+        }
+
+        return type(config('table.matches', false))->asBool();
+    }
+
+    /**
+     * Create a new table instance.
+     *
      * @param  \Closure|null  $modifier
      */
     public static function make($modifier = null): static
@@ -45,31 +128,15 @@ class Table extends Refine implements UrlRoutable
     /**
      * Handle the incoming action request for this table.
      *
-     * @return \Illuminate\Contracts\Support\Responsable|\Illuminate\Http\RedirectResponse|void
+     * @return \Illuminate\Contracts\Support\Responsable|\Symfony\Component\HttpFoundation\RedirectResponse|void
      */
     public function handle(ActionRequest $request)
     {
-        $response = Handler::make(
+        return Handler::make(
             $this->getBuilder(),
             $this->getActions(),
-            $this->getKeyName()
+            $this->getKey()
         )->handle($request);
-
-        return $response;
-    }
-
-    /**
-     * Get the key name for the table records.
-     *
-     * @throws \Honed\Core\Exceptions\MissingRequiredAttributeException
-     */
-    public function getKeyName(): string
-    {
-        try {
-            return $this->getKey();
-        } catch (MissingRequiredAttributeException $e) {
-            return $this->getKeyColumn()?->getName() ?? throw $e;
-        }
     }
 
     /**
@@ -85,6 +152,7 @@ class Table extends Refine implements UrlRoutable
             'sorts' => $this->addSorts($args), // @phpstan-ignore-line
             'filters' => $this->addFilters($args), // @phpstan-ignore-line
             'searches' => $this->addSearches($args), // @phpstan-ignore-line
+            'actions' => $this->addActions($args), // @phpstan-ignore-line
             'pagination' => $this->pagination = $args, // @phpstan-ignore-line
             'paginator' => $this->paginator = $args, // @phpstan-ignore-line
             'endpoint' => $this->endpoint = $args, // @phpstan-ignore-line
@@ -153,19 +221,14 @@ class Table extends Refine implements UrlRoutable
 
     /**
      * Get the keys for the table as an array.
-     *
-     * @return array<string,string>
      */
     public function keysToArray(): array
     {
-        return [
-            'record' => $this->getKeyName(),
+        return \array_merge(parent::keysToArray(), [
+            'record' => $this->getKey(),
             'records' => $this->getRecordsKey(),
-            'sorts' => $this->getSortKey(),
-            'search' => $this->getSearchKey(),
             'columns' => $this->getColumnsKey(),
-            ...($this->hasMatches() ? ['match' => $this->getMatchKey()] : []),
-        ];
+        ]);
     }
 
     /**
@@ -200,5 +263,15 @@ class Table extends Refine implements UrlRoutable
             $model::class => [$this->getBuilder()],
             default => [],
         };
+    }
+
+    /**
+     * Throw an exception if the table does not have a key column or key property defined.
+     */
+    protected static function throwMissingKeyException(): never
+    {
+        throw new \RuntimeException(
+            'The table must have a key column or a key property defined.'
+        );
     }
 }

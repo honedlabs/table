@@ -17,11 +17,11 @@ return [
         'duration' => 15768000,
     ],
 
-    'matching' => false,
+    'matches' => false,
 
     'keys' => [
         'searches' => 'search',
-        'matches' => 'matches',
+        'matches' => 'match',
         'sorts' => 'sort',
         'pages' => 'page',
         'columns' => 'columns',

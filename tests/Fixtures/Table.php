@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Honed\Table\Tests\Fixtures;
 
 use Honed\Action\BulkAction;
-use Honed\Action\Confirm;
 use Honed\Action\InlineAction;
 use Honed\Action\PageAction;
 use Honed\Refine\Filters\BooleanFilter;
@@ -17,7 +16,7 @@ use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\BooleanColumn;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
-use Honed\Table\Columns\NumericColumn;
+use Honed\Table\Columns\NumberColumn;
 use Honed\Table\Columns\TextColumn;
 use Honed\Table\Table as HonedTable;
 use Honed\Table\Tests\Stubs\Product;
@@ -78,7 +77,7 @@ class Table extends HonedTable
             BooleanColumn::make('best_seller', 'Favourite')->formatBoolean('Favourite', 'Not favourite'),
             TextColumn::make('seller.name', 'Sold by')->sometimes(),
             Column::make('status')->meta(['badge' => true]),
-            NumericColumn::make('price')->sortable(),
+            NumberColumn::make('price')->sortable(),
             DateColumn::make('created_at')->sometimes()->sortable(),
             Column::make('public_id')->hidden()->always(),
             Column::make('updated_at')->allow(false),
@@ -123,18 +122,18 @@ class Table extends HonedTable
     {
         return [
             InlineAction::make('edit')
-                ->action(fn (Product $product) => $product->update(['name' => 'Inline'])),
+                ->action(fn ($product) => $product->update(['name' => 'Inline'])),
             InlineAction::make('delete')
-                ->allow(fn (Product $product) => $product->id % 2 === 0)
-                ->action(fn (Product $product) => $product->delete())
-                ->confirm(fn (Confirm $confirm) => $confirm->name(fn (Product $product) => 'You are about to delete '.$product->name)->description('Are you sure?')),
+                ->allow(fn ($product) => $product->id % 2 === 0)
+                ->action(fn ($product) => $product->delete())
+                ->confirm(fn ($confirm) => $confirm->name(fn ($product) => 'You are about to delete '.$product->name)->description('Are you sure?')),
             InlineAction::make('show')
                 ->route(fn ($product) => route('products.show', $product)),
 
             BulkAction::make('edit')
-                ->action(fn (Product $product) => $product->update(['name' => 'Bulk'])),
+                ->action(fn ($product) => $product->update(['name' => 'Bulk'])),
             BulkAction::make('delete')
-                ->action(fn (Product $product) => $product->delete())
+                ->action(fn ($product) => $product->delete())
                 ->allow(false),
 
             PageAction::make('create')

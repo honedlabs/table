@@ -125,7 +125,7 @@ trait HasRecords
     {
         [$named, $typed] = static::getNamedAndTypedParameters($record);
 
-        $actions = collect($this->inlineActions())
+        $actions = collect($this->getInlineActions())
             ->filter(fn (InlineAction $action) => $action->isAllowed($named, $typed))
             ->map(fn (InlineAction $action) => $action->resolve($named, $typed)->toArray())
             ->all();

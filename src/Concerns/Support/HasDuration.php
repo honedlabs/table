@@ -35,7 +35,6 @@ trait HasDuration
             return $this->duration;
         }
 
-        /** @var int */
-        return config('table.toggle.remember.duration', 15768000);
+        return type(config('table.toggle.remember.duration', 15768000))->asInt();
     }
 }

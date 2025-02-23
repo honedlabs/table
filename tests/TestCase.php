@@ -86,6 +86,7 @@ class TestCase extends Orchestra
 
     protected function getEnvironmentSetUp($app)
     {
+        config()->set('table', require __DIR__.'/../config/table.php');
         config()->set('database.default', 'testing');
         config()->set('app.key', 'base64:'.base64_encode(Str::random(32)));
     }

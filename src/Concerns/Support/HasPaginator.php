@@ -28,8 +28,7 @@ trait HasPaginator
             return $this->paginator;
         }
 
-        /** @var string */
-        return config('table.paginator', 'length-aware');
+        return type(config('table.paginator', 'length-aware'))->asString();
     }
 
     /**

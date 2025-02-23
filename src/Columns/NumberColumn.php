@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-class NumericColumn extends Column
+class NumberColumn extends Column
 {
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->type('numeric');
-        $this->formatNumeric();
+        $this->type('number');
+        $this->formatNumber();
     }
 }

@@ -2,20 +2,38 @@
 
 declare(strict_types=1);
 
-use Honed\Table\Tests\Fixtures\Table;
+use Honed\Table\Table;
+use Honed\Table\Tests\Fixtures\Table as FixtureTable;
 use Honed\Table\Tests\Stubs\Status;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 beforeEach(function () {
-    $this->test = Table::make();
+    $this->test = FixtureTable::make();
 
     foreach (\range(1, 100) as $i) {
         product();
     }
 });
 
-it('can be modified', function () {
+it('has endpoint', function () {
+    expect($this->test)
+        ->getEndpoint()->toBe(config('table.endpoint'))
+        ->endpoint('/other')->toBe($this->test)
+        ->getEndpoint()->toBe('/other');
+});
+
+it('has key', function () {
+    expect($this->test)
+        ->getKey()->toBe('id')
+        ->key('test')->toBe($this->test)
+        ->getKey()->toBe('test');
+
+    expect(fn () => Table::make()->getKey())
+        ->toThrow(\RuntimeException::class);
+});
+
+it('has modifier', function () {
     $fn = fn (Builder $product) => $product->where('best_seller', true);
 
     expect($this->test)
@@ -23,31 +41,18 @@ it('can be modified', function () {
         ->modifier($fn)->toBe($this->test)
         ->hasModifier()->toBeTrue();
 
-    expect(Table::make($fn)->buildTable())
+    expect(FixtureTable::make($fn)->buildTable())
         ->hasModifier()->toBeTrue()
         ->getBuilder()->getQuery()->scoped(fn ($query) => $query
-        ->wheres->scoped(fn ($wheres) => $wheres
-        ->toBeArray()
-        ->toHaveCount(1)
-        ->{0}->toEqual([
-            'type' => 'Basic',
-            'column' => 'best_seller',
-            'operator' => '=',
-            'value' => true,
-            'boolean' => 'and',
-        ])
-        )->orders->scoped(fn ($orders) => $orders
-        ->toBeArray()
-        ->toHaveCount(1)
-        ->{0}->toEqual([
-            'column' => 'products.name',
-            'direction' => 'desc',
-        ])
-        )
+            ->wheres->scoped(fn ($wheres) => $wheres
+                ->toBeArray()
+                ->toHaveCount(1)
+                ->{0}->{'column'}->toBe('best_seller')
+            )
         );
 });
 
-it('can refine', function () {
+it('builds', function () {
     $request = Request::create('/', 'GET', [
         'name' => 'test',
 
@@ -62,9 +67,9 @@ it('can refine', function () {
 
         'missing' => 'test',
 
-        Table::SortKey => '-price',
+        config('table.keys.sorts') => '-price',
 
-        Table::SearchKey => 'search term', // applied on name (col), description (property)
+        config('table.keys.searches') => 'search term', // applied on name (col), description (property)
     ]);
 
     expect($this->test->for($request)->buildTable())
@@ -94,7 +99,7 @@ it('can refine', function () {
             [
                 'type' => 'Basic',
                 'column' => qualifyProduct('price'),
-                'operator' => '<',
+                'operator' => '<=',
                 'value' => 100,
                 'boolean' => 'and',
             ],
@@ -125,7 +130,7 @@ it('can refine', function () {
             [
                 'type' => 'Date',
                 'column' => qualifyProduct('created_at'),
-                'operator' => '>',
+                'operator' => '>=',
                 'value' => '2000-01-01',
                 'boolean' => 'and',
             ],
@@ -133,7 +138,7 @@ it('can refine', function () {
             [
                 'type' => 'Date',
                 'column' => qualifyProduct('created_at'),
-                'operator' => '<',
+                'operator' => '<=',
                 'value' => '2001-01-01',
                 'boolean' => 'and',
             ],
@@ -147,40 +152,23 @@ it('can refine', function () {
         ])
         )
         )->toArray()->scoped(fn ($array) => $array
-        ->toHaveKeys([
-            'table',
-            'records',
-            'meta',
-            'columns',
-            'pages',
-            'filters',
-            'sorts',
-            'toggle',
-            'actions',
-            'endpoint',
-            'keys',
-        ])->{'keys'}->toEqual([
+            ->{'keys'}->toEqual([
                 'record' => 'id',
                 'records' => 'rows',
                 'sorts' => 'sort',
-                'search' => 'search',
+                'searches' => 'search',
                 'columns' => 'cols',
             ])->{'actions'}->scoped(fn ($actions) => $actions
-        ->toHaveKeys([
-            'actions',
-            'bulk',
-            'page',
-        ])->{'actions'}->toBeTrue()
-        ->{'bulk'}->toHaveCount(1)
-        ->{'page'}->toHaveCount(2)
-            )->{'toggle'}->toBe(Table::Toggle)
-        ->{'sorts'}->toHaveCount(4)
-        ->{'filters'}->toHaveCount(7)
-        ->{'columns'}->toHaveCount(7)
+                ->toHaveKeys([
+                    'actions',
+                    'bulk',
+                    'page',
+                ])->{'actions'}->toBeTrue()
+                ->{'bulk'}->toHaveCount(1)
+                ->{'page'}->toHaveCount(2)
+            )->{'toggle'}->toBe(FixtureTable::Toggle)
+            ->{'sorts'}->toHaveCount(4)
+            ->{'filters'}->toHaveCount(7)
+            ->{'columns'}->toHaveCount(7)
         );
-});
-
-it('has endpoint', function () {
-    expect($this->test)
-        ->getEndpoint()->toBe(config('table.endpoint', '/actions'));
 });

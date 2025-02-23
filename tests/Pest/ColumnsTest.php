@@ -26,7 +26,7 @@ it('has refineable columns', function () {
         ->getSortableColumns()->toHaveCount(2)
         ->getSearchableColumns()->toHaveCount(1)
         ->getKeyColumn()->scoped(fn ($column) => $column
-        ->getName()->toBe('id')
-        ->isKey()->toBeTrue()
+            ->getName()->toBe('id')
+            ->isKey()->toBeTrue()
         );
 });

@@ -55,8 +55,7 @@ trait HasPagination
             return $this->default;
         }
 
-        /** @var int */
-        return config('table.pagination.default', 10);
+        return type(config('table.pagination.default', 10))->asInt();
     }
 
     /**

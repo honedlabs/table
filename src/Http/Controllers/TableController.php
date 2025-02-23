@@ -17,7 +17,7 @@ class TableController extends Controller
     /**
      * Delegate the incoming action request to the appropriate table.
      *
-     * @return \Illuminate\Contracts\Support\Responsable|\Illuminate\Http\RedirectResponse|void
+     * @return \Illuminate\Contracts\Support\Responsable|\Symfony\Component\HttpFoundation\RedirectResponse|void
      */
     public function handle(TableRequest $request)
     {
