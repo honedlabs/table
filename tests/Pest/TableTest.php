@@ -147,36 +147,36 @@ it('can refine', function () {
         ])
         )
         )->toArray()->scoped(fn ($array) => $array
-        ->toHaveKeys([
-            'table',
-            'records',
-            'meta',
-            'columns',
-            'pages',
-            'filters',
-            'sorts',
-            'toggle',
-            'actions',
-            'endpoint',
-            'keys',
-        ])->{'keys'}->toEqual([
+            ->toHaveKeys([
+                'table',
+                'records',
+                'meta',
+                'columns',
+                'pages',
+                'filters',
+                'sorts',
+                'toggle',
+                'actions',
+                'endpoint',
+                'keys',
+            ])->{'keys'}->toEqual([
                 'record' => 'id',
                 'records' => 'rows',
                 'sorts' => 'sort',
                 'search' => 'search',
                 'columns' => 'cols',
             ])->{'actions'}->scoped(fn ($actions) => $actions
-        ->toHaveKeys([
-            'actions',
-            'bulk',
-            'page',
-        ])->{'actions'}->toBeTrue()
-        ->{'bulk'}->toHaveCount(1)
-        ->{'page'}->toHaveCount(2)
+                ->toHaveKeys([
+                    'actions',
+                    'bulk',
+                    'page',
+                ])->{'actions'}->toBeTrue()
+                ->{'bulk'}->toHaveCount(1)
+                ->{'page'}->toHaveCount(2)
             )->{'toggle'}->toBe(Table::Toggle)
-        ->{'sorts'}->toHaveCount(4)
-        ->{'filters'}->toHaveCount(7)
-        ->{'columns'}->toHaveCount(7)
+            ->{'sorts'}->toHaveCount(4)
+            ->{'filters'}->toHaveCount(7)
+            ->{'columns'}->toHaveCount(7)
         );
 });
 
