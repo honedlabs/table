@@ -12,7 +12,7 @@ beforeEach(function () {
 });
 
 it('has no modifier by default', function () {
-    expect($this->test->buildTable())
+    expect($this->test->build())
         ->hasModifier()->toBeFalse()
         ->getModifier()->toBeNull()
         ->getBuilder()->getQuery()->wheres->toBeEmpty();
@@ -25,7 +25,7 @@ it('can apply a modifier', function () {
         ->modifier($fn)
         ->hasModifier()->toBeTrue()
         ->getModifier()->toBe($fn)
-        ->buildTable()->getBuilder()->getQuery()->wheres->scoped(fn ($wheres) => $wheres
+        ->build()->getBuilder()->getQuery()->wheres->scoped(fn ($wheres) => $wheres
         ->toBeArray()
         ->toHaveCount(1)
         ->{0}->toEqual([
@@ -41,10 +41,10 @@ it('can apply a modifier', function () {
 it('can apply a modifier anonymously', function () {
     $fn = fn ($product) => $product->where('best_seller', true);
 
-    expect(Table::make()->builder(Product::query())->modifier($fn)->buildTable())
+    expect(Table::make()->builder(Product::query())->modifier($fn)->build())
         ->hasModifier()->toBeTrue()
         ->getModifier()->toBe($fn)
-        ->buildTable()->getBuilder()->getQuery()->wheres->scoped(fn ($wheres) => $wheres
+        ->build()->getBuilder()->getQuery()->wheres->scoped(fn ($wheres) => $wheres
         ->toBeArray()
         ->toHaveCount(1)
         ->{0}->toEqual([

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-
 trait HasResource
 {
     /**
@@ -19,7 +16,7 @@ trait HasResource
      *
      * @return class-string<\Illuminate\Database\Eloquent\Model>|\Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */
-    public function getResource(): Model|string|Builder
+    public function getResource()
     {
         return match (true) {
             isset($this->resource) => $this->resource,
@@ -30,8 +27,10 @@ trait HasResource
 
     /**
      * Guess an Eloquent model to use for the table based on the class name.
+     *
+     * @return string
      */
-    public function guessResource(): string
+    public function guessResource()
     {
         return str(static::class)
             ->classBasename()

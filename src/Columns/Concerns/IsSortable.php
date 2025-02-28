@@ -24,9 +24,10 @@ trait IsSortable
     /**
      * Set the column as sortable.
      *
+     * @param  bool|string  $sortable
      * @return $this
      */
-    public function sortable(bool|string $sortable = true): static
+    public function sortable($sortable = true)
     {
         if (! $sortable) {
             return $this->disableSorting();
@@ -37,16 +38,20 @@ trait IsSortable
 
     /**
      * Determine if the column is sortable.
+     *
+     * @return bool
      */
-    public function isSortable(): bool
+    public function isSortable()
     {
         return (bool) $this->sortable;
     }
 
     /**
      * Get the sort instance.
+     *
+     * @return \Honed\Refine\Sorts\Sort|null
      */
-    public function getSort(): ?Sort
+    public function getSort()
     {
         return $this->sort;
     }
@@ -54,7 +59,7 @@ trait IsSortable
     /**
      * @return array{direction: 'asc'|'desc'|null, next: string|null}
      */
-    public function sortToArray(): array
+    public function sortToArray()
     {
         return [
             'direction' => $this->getSort()?->getDirection(),
@@ -63,9 +68,11 @@ trait IsSortable
     }
 
     /**
+     * Disable sorting for the column.
+     *
      * @return $this
      */
-    protected function disableSorting(): static
+    protected function disableSorting()
     {
         $this->sortable = false;
         $this->sort = null;
@@ -74,9 +81,12 @@ trait IsSortable
     }
 
     /**
+     * Enable sorting for the column.
+     *
+     * @param  string|bool  $sortable
      * @return $this
      */
-    protected function enableSorting(string|true $sortable): static
+    protected function enableSorting($sortable)
     {
         $this->sortable = true;
         $this->sort = Sort::make(

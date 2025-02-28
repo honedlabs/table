@@ -24,23 +24,13 @@ class TableServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../stubs' => base_path('stubs'),
-        ], 'honed-stubs');
+        ], 'stubs');
 
         $this->publishes([
             __DIR__.'/../config/table.php' => config_path('table.php'),
-        ], 'table-config');
+        ], 'config');
 
         $this->registerRoutesMacro();
-    }
-
-    /**
-     * @return array<int,class-string>
-     */
-    public function provides(): array
-    {
-        return [
-            TableMakeCommand::class,
-        ];
     }
 
     /**

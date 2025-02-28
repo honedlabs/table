@@ -12,9 +12,12 @@ trait HasModifier
     protected $modifier;
 
     /**
+     * Set the resource modifier.
+     *
+     * @param  \Closure|null  $modifier
      * @return $this
      */
-    public function modifier(?\Closure $modifier): static
+    public function modifier($modifier)
     {
         $this->modifier = $modifier;
 
@@ -23,16 +26,20 @@ trait HasModifier
 
     /**
      * Determine if the instance has a resource modifier.
+     *
+     * @return bool
      */
-    public function hasModifier(): bool
+    public function hasModifier()
     {
         return ! \is_null($this->modifier);
     }
 
     /**
      * Get the resource modifier.
+     *
+     * @return \Closure|null
      */
-    public function getModifier(): ?\Closure
+    public function getModifier()
     {
         return $this->modifier;
     }

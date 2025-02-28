@@ -18,8 +18,11 @@ trait IsToggleable
 
     /**
      * Set the column to always be shown; it's visibility cannot be toggled.
+     *
+     * @param  bool  $always
+     * @return $this
      */
-    public function always(bool $always = true): static
+    public function always($always = true)
     {
         $this->always = $always;
 
@@ -30,8 +33,11 @@ trait IsToggleable
      * Set the column to be shown sometimes; it's visibility can be toggled.
      * The boolean provided indicates whether the column is visible
      * to begin with - if false, the column will be shown initially.
+     *
+     * @param  bool  $sometimes
+     * @return $this
      */
-    public function sometimes(bool $sometimes = true): static
+    public function sometimes($sometimes = true)
     {
         $this->sometimes = $sometimes;
 
@@ -40,24 +46,30 @@ trait IsToggleable
 
     /**
      * Determine if the column is always shown.
+     *
+     * @return bool
      */
-    public function isAlways(): bool
+    public function isAlways()
     {
         return $this->always;
     }
 
     /**
      * Determine if the column is hidden on initial load.
+     *
+     * @return bool
      */
-    public function isSometimes(): bool
+    public function isSometimes()
     {
         return $this->sometimes;
     }
 
     /**
      * Determine if the column can be toggleable.
+     *
+     * @return bool
      */
-    public function isToggleable(): bool
+    public function isToggleable()
     {
         if ($this->isKey() || $this->isAlways()) {
             return false;
@@ -70,8 +82,9 @@ trait IsToggleable
      * Determine if this column should be shown on initial load.
      *
      * @param  array<int,string>|null  $params
+     * @return bool
      */
-    public function isDisplayed(?array $params = null): bool
+    public function isDisplayed($params = null)
     {
         if (! $this->isToggleable()) {
             return true;

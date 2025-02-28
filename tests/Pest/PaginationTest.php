@@ -34,7 +34,7 @@ it('can be length-aware', function () {
 
     expect($this->table)
         ->getPaginator()->toBe('length-aware')
-        ->buildTable()->toBe($this->table)
+        ->build()->toBe($this->table)
         ->getRecords()->scoped(fn ($records) => $records
         ->toBeArray()
         ->toHaveCount(FixtureTable::DefaultPagination)
@@ -66,7 +66,7 @@ it('can be length-aware', function () {
 });
 
 it('can be simple', function () {
-    expect($this->table->paginator('simple')->buildTable())
+    expect($this->table->paginator('simple')->build())
         ->getPaginator()->toBe('simple')
         ->getMeta()->toHaveKeys([
             'prev',
@@ -77,7 +77,7 @@ it('can be simple', function () {
 });
 
 it('can be cursor', function () {
-    expect($this->table->paginator('cursor')->buildTable())
+    expect($this->table->paginator('cursor')->build())
         ->getPaginator()->toBe('cursor')
         ->getMeta()->toHaveKeys([
             'prev',
@@ -87,13 +87,13 @@ it('can be cursor', function () {
 });
 
 it('can be collection', function () {
-    expect($this->table->paginator('collection')->buildTable())
+    expect($this->table->paginator('collection')->build())
         ->getPaginator()->toBe('collection')
         ->getMeta()->toBeEmpty();
 });
 
 it('throws exception when invalid paginator', function () {
-    expect(fn () => $this->table->paginator('invalid')->buildTable())
+    expect(fn () => $this->table->paginator('invalid')->build())
         ->toThrow(\InvalidArgumentException::class);
 });
 
@@ -104,7 +104,7 @@ it('can set the page key', function () {
         ->getPagesKey()->toBe('test');
 
     expect(Table::make())
-        ->getPagesKey()->toBe(config('table.keys.pages'))
+        ->getPagesKey()->toBe(config('table.config.pages'))
         ->pagesKey('test')
         ->getPagesKey()->toBe('test');
 });

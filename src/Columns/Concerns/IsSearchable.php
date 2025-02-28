@@ -14,9 +14,10 @@ trait IsSearchable
     /**
      * Set the column as searchable.
      *
+     * @param  bool  $searchable
      * @return $this
      */
-    public function searchable(bool $searchable = true): static
+    public function searchable($searchable = true)
     {
         $this->searchable = $searchable;
 
@@ -25,8 +26,10 @@ trait IsSearchable
 
     /**
      * Determine if the column is searchable.
+     *
+     * @return bool
      */
-    public function isSearchable(): bool
+    public function isSearchable()
     {
         return $this->searchable;
     }

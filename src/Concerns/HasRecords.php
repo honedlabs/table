@@ -38,7 +38,7 @@ trait HasRecords
      *
      * @return array<int,mixed>|null
      */
-    public function getRecords(): ?array
+    public function getRecords()
     {
         return $this->records;
     }
@@ -56,7 +56,7 @@ trait HasRecords
      *
      * @return array<string,mixed>
      */
-    public function getMeta(): array
+    public function getMeta()
     {
         return $this->meta;
     }
@@ -65,8 +65,9 @@ trait HasRecords
      * Format the records using the provided columns.
      *
      * @param  array<int,\Honed\Table\Columns\Column>  $activeColumns
+     * @return void
      */
-    public function formatAndPaginate(array $activeColumns): void
+    public function formatAndPaginate($activeColumns)
     {
         if ($this->hasRecords()) {
             return;
@@ -83,7 +84,7 @@ trait HasRecords
      *
      * @return array{0:\Illuminate\Support\Collection<int,\Illuminate\Database\Eloquent\Model>,1:array<string,mixed>}
      */
-    protected function retrievedRecords(): array
+    protected function retrievedRecords()
     {
         /**
          * @var \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
@@ -108,7 +109,7 @@ trait HasRecords
      * @param  array<int,\Honed\Table\Columns\Column>  $activeColumns
      * @return array<int,array<string,mixed>>
      */
-    protected function formatRecords(Collection $records, array $activeColumns): array
+    protected function formatRecords($records, $activeColumns)
     {
         return $records->map(
             fn (Model $record) => $this->formatRecord($record, $activeColumns)
@@ -118,10 +119,11 @@ trait HasRecords
     /**
      * Format a record using the provided columns.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @param  array<int,\Honed\Table\Columns\Column>  $columns
      * @return array<string,mixed>
      */
-    protected function formatRecord(Model $record, array $columns): array
+    protected function formatRecord($record, $columns)
     {
         [$named, $typed] = static::getNamedAndTypedParameters($record);
 
@@ -140,10 +142,11 @@ trait HasRecords
     /**
      * Format a single column's value for the record.
      *
-     *
+     * @param  \Honed\Table\Columns\Column  $column
+     * @param  \Illuminate\Database\Eloquent\Model  $record
      * @return array<string,mixed>
      */
-    protected function formatColumn(Column $column, Model $record): array
+    protected function formatColumn($column, $record)
     {
         /** @var string */
         $name = $column->getName();
@@ -160,7 +163,7 @@ trait HasRecords
      * @param  \Illuminate\Database\Eloquent\Builder<T>  $builder
      * @return array{0:\Illuminate\Support\Collection<int,T>,1:array<string,mixed>}
      */
-    protected function lengthAwarePaginateRecords(Builder $builder): array
+    protected function lengthAwarePaginateRecords($builder)
     {
         /**
          * @var \Illuminate\Pagination\LengthAwarePaginator<T> $paginated
@@ -186,7 +189,7 @@ trait HasRecords
      * @param  \Illuminate\Database\Eloquent\Builder<T>  $builder
      * @return array{0:\Illuminate\Support\Collection<int,T>,1:array<string,mixed>}
      */
-    protected function simplePaginateRecords(Builder $builder): array
+    protected function simplePaginateRecords($builder)
     {
         /**
          * @var \Illuminate\Pagination\Paginator<T> $paginated
@@ -212,7 +215,7 @@ trait HasRecords
      * @param  \Illuminate\Database\Eloquent\Builder<T>  $builder
      * @return array{0:\Illuminate\Support\Collection<int,T>,1:array<string,mixed>}
      */
-    protected function cursorPaginateRecords(Builder $builder): array
+    protected function cursorPaginateRecords($builder)
     {
         /**
          * @var \Illuminate\Pagination\CursorPaginator<T> $paginated
@@ -238,7 +241,7 @@ trait HasRecords
      * @param  \Illuminate\Database\Eloquent\Builder<T>  $builder
      * @return array{0:\Illuminate\Support\Collection<int,T>,1:array<string,mixed>}
      */
-    protected function collectRecords(Builder $builder): array
+    protected function collectRecords($builder)
     {
         $retrieved = $builder->get();
 
@@ -250,11 +253,14 @@ trait HasRecords
 
     /**
      * Throw an exception for an invalid paginator type.
+     *
+     * @param  string  $paginator
+     * @return never
      */
-    protected static function throwInvalidPaginatorException(string $paginator): never
+    protected static function throwInvalidPaginatorException($paginator)
     {
         throw new \InvalidArgumentException(
-            \sprintf('The paginator [%s] is not valid.', $paginator
-            ));
+            \sprintf('The paginator [%s] is not valid.', $paginator)
+        );
     }
 }

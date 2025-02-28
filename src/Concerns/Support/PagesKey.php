@@ -34,6 +34,6 @@ trait PagesKey
             return $this->pagesKey;
         }
 
-        return type(config('table.keys.pages', 'page'))->asString();
+        return type(config('table.config.pages', 'page'))->asString();
     }
 }

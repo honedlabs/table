@@ -6,7 +6,10 @@ namespace Honed\Table\Columns;
 
 class NumberColumn extends Column
 {
-    public function setUp(): void
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
     {
         parent::setUp();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table\Concerns;
 
 use Honed\Table\Columns\Column;
@@ -9,13 +11,6 @@ use Illuminate\Support\Collection;
 trait HasColumns
 {
     /**
-     * Retrieved columns with authorization applied.
-     *
-     * @var array<int,\Honed\Table\Columns\Column>|null
-     */
-    protected $cachedColumns;
-
-    /**
      * The columns to be used for the table.
      *
      * @var array<int,\Honed\Table\Columns\Column>|null
@@ -23,27 +18,31 @@ trait HasColumns
     protected $columns;
 
     /**
-     * Determine if the table has columns.
-     */
-    public function hasColumns(): bool
-    {
-        return ! empty($this->getColumns());
-    }
-
-    /**
      * @template T of \Honed\Table\Columns\Column
      *
      * @param  array<int,T>|Collection<int,T>  $columns
      * @return $this
      */
-    public function addColumns(array|Collection $columns): static
+    public function addColumns($columns)
     {
         if ($columns instanceof Collection) {
             $columns = $columns->all();
         }
 
-        /** @var array<int, \Honed\Table\Columns\Column> $columns */
         $this->columns = \array_merge($this->columns ?? [], $columns);
+
+        return $this;
+    }
+
+    /**
+     * Add a single column to the list of columns.
+     *
+     * @param  \Honed\Table\Columns\Column  $column
+     * @return $this
+     */
+    public function addColumn($column)
+    {
+        $this->columns[] = $column;
 
         return $this;
     }
@@ -53,28 +52,29 @@ trait HasColumns
      *
      * @return array<int,\Honed\Table\Columns\Column>
      */
-    public function getColumns(): array
+    public function getColumns()
     {
-        return $this->cachedColumns ??= $this->getSourceColumns();
+        return once(function () {
+            $methodColumns = method_exists($this, 'columns') ? $this->columns() : [];
+            $propertyColumns = $this->columns ?? [];
+
+            return \array_values(
+                \array_filter(
+                    \array_merge($propertyColumns, $methodColumns),
+                    static fn (Column $column): bool => $column->isAllowed()
+                )
+            );
+        });
     }
 
     /**
-     * Get the source columns for the table, with permissions applied.
+     * Determine if the table has columns.
      *
-     * @return array<int,\Honed\Table\Columns\Column>
+     * @return bool
      */
-    protected function getSourceColumns(): array
+    public function hasColumns()
     {
-        $columns = match (true) {
-            \method_exists($this, 'columns') => $this->columns(),
-            isset($this->columns) => $this->columns,
-            default => [],
-        };
-
-        return Arr::where(
-            $columns,
-            static fn (Column $column): bool => $column->isAllowed()
-        );
+        return filled($this->getColumns());
     }
 
     /**
@@ -82,44 +82,58 @@ trait HasColumns
      *
      * @return array<int,\Honed\Table\Columns\Column>
      */
-    public function getActiveColumns(): array
+    public function getActiveColumns()
     {
-        return Arr::where(
-            $this->getColumns(),
-            static fn (Column $column): bool => $column->isActive()
+        return \array_values(
+            \array_filter(
+                $this->getColumns(),
+                static fn (Column $column): bool => $column->isActive()
+            )
         );
     }
 
     /**
-     * Get the sortable columns for the table.
+     * Get the sortable columns for the table or a list of columns.
      *
+     * @param  array<int,\Honed\Table\Columns\Column>|null  $columns
      * @return array<int,\Honed\Table\Columns\Column>
      */
-    public function getSortableColumns(): array
+    public function getColumnSorts($columns = null)
     {
-        return Arr::where(
-            $this->getColumns(),
-            static fn (Column $column): bool => $column->isSortable()
+        $columns = $columns ?? $this->getColumns();
+
+        return \array_values(
+            \array_filter(
+                $columns,
+                static fn (Column $column) => $column->isSortable()
+            )
         );
     }
 
     /**
-     * Get the searchable attributes for the table.
+     * Get the searchable columns from the table or a list of columns.
      *
-     * @return array<int,string>
+     * @param  array<int,\Honed\Table\Columns\Column>|null  $columns
+     * @return array<int,\Honed\Table\Columns\Column>
      */
-    public function getSearchableColumns(): array
+    public function getColumnSearches($columns = null)
     {
-        return Arr::where(
-            $this->getColumns(),
-            static fn (Column $column): bool => $column->isSearchable()
+        $columns = $columns ?? $this->getColumns();
+
+        return \array_values(
+            \array_filter(
+                $columns,
+                static fn (Column $column) => $column->isSearchable()
+            )
         );
     }
 
     /**
      * Get the key column for the table.
+     *
+     * @return \Honed\Table\Columns\Column|null
      */
-    public function getKeyColumn(): ?Column
+    public function getKeyColumn()
     {
         return Arr::first(
             $this->getColumns(),

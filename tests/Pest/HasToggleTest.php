@@ -19,7 +19,7 @@ it('can set the columns key', function () {
         ->getColumnsKey()->toBe('test');
 
     expect(Table::make())
-        ->getColumnsKey()->toBe(config('table.keys.columns'))
+        ->getColumnsKey()->toBe(config('table.config.columns'))
         ->columnsKey('test')
         ->getColumnsKey()->toBe('test');
 });
@@ -36,7 +36,7 @@ it('can set a duration', function () {
         ->getDuration()->toBe(100);
 });
 
-it('can set as remembering', function () {
+it('can remember', function () {
     expect($this->table)
         ->canRemember()->toBe(FixtureTable::Remember);
 });
@@ -50,7 +50,7 @@ it('can set a cookie', function () {
 });
 
 // it('toggles columns', function () {
-//     expect($this->table->buildTable())
+//     expect($this->table->build())
 //         ->getActiveColumns()->dd();
 
 // });

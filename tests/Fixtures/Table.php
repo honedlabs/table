@@ -16,6 +16,7 @@ use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\BooleanColumn;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
+use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Columns\NumberColumn;
 use Honed\Table\Columns\TextColumn;
 use Honed\Table\Table as HonedTable;
@@ -71,7 +72,7 @@ class Table extends HonedTable
     public function columns()
     {
         return [
-            Column::make('id')->key(),
+            KeyColumn::make('id'),
             TextColumn::make('name')->always()->searchable(),
             TextColumn::make('description')->placeholder('-'),
             BooleanColumn::make('best_seller', 'Favourite')->formatBoolean('Favourite', 'Not favourite'),
@@ -94,8 +95,6 @@ class Table extends HonedTable
             BooleanFilter::make('best_seller', 'Favourite')->alias('favourite'),
             DateFilter::make('created_at', 'Oldest')->alias('oldest')->gt(),
             DateFilter::make('created_at', 'Newest')->alias('newest')->lt(),
-
-            // DateFilter::make('updated_at', 'Oldest')->alias('oldest')->gt()->allow(false)
         ];
     }
 

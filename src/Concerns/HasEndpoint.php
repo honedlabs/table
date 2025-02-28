@@ -15,8 +15,10 @@ trait HasEndpoint
 
     /**
      * Get the endpoint to be used for table actions.
+     *
+     * @return string
      */
-    public function getEndpoint(): string
+    public function getEndpoint()
     {
         if (isset($this->endpoint)) {
             return $this->endpoint;
@@ -26,6 +28,16 @@ trait HasEndpoint
             return $this->endpoint();
         }
 
+        return $this->getFallbackEndpoint();
+    }
+
+    /**
+     * Get the fallback endpoint to be used for table actions.
+     *
+     * @return string
+     */
+    public function getFallbackEndpoint()
+    {
         return type(config('table.endpoint', '/actions'))->asString();
     }
 }

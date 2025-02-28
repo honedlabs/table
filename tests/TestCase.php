@@ -26,6 +26,7 @@ class TestCase extends Orchestra
 
         View::addLocation(__DIR__.'/Stubs');
         Inertia::setRootView('app');
+
         config()->set('inertia.testing.ensure_pages_exist', false);
         config()->set('inertia.testing.page_paths', [realpath(__DIR__)]);
     }

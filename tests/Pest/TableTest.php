@@ -41,7 +41,7 @@ it('has modifier', function () {
         ->modifier($fn)->toBe($this->test)
         ->hasModifier()->toBeTrue();
 
-    expect(FixtureTable::make($fn)->buildTable())
+    expect(FixtureTable::make($fn)->build())
         ->hasModifier()->toBeTrue()
         ->getBuilder()->getQuery()->scoped(fn ($query) => $query
             ->wheres->scoped(fn ($wheres) => $wheres
@@ -67,12 +67,12 @@ it('builds', function () {
 
         'missing' => 'test',
 
-        config('table.keys.sorts') => '-price',
+        config('table.config.sorts') => '-price',
 
-        config('table.keys.searches') => 'search term', // applied on name (col), description (property)
+        config('table.config.searches') => 'search term', // applied on name (col), description (property)
     ]);
 
-    expect($this->test->for($request)->buildTable())
+    expect($this->test->request($request)->build())
         ->getBuilder()->getQuery()->scoped(fn ($query) => $query
         ->wheres->scoped(fn ($wheres) => $wheres
         ->toBeArray()
@@ -144,31 +144,32 @@ it('builds', function () {
             ],
         ])
         )->orders->scoped(fn ($orders) => $orders
-        ->toBeArray()
-        ->toHaveCount(1)
-        ->{0}->toEqual([
-            'column' => qualifyProduct('price'),
-            'direction' => 'desc',
-        ])
+            ->toBeArray()
+            ->toHaveCount(1)
+            ->{0}->toEqual([
+                'column' => qualifyProduct('price'),
+                'direction' => 'desc',
+            ])
         )
         )->toArray()->scoped(fn ($array) => $array
-            ->{'keys'}->toEqual([
+            ->{'config'}->toEqual([
+                'delimiter' => config('table.config.delimiter'),
                 'record' => 'id',
-                'records' => 'rows',
-                'sorts' => 'sort',
-                'searches' => 'search',
-                'columns' => 'cols',
+                'records' => config('table.config.records'),
+                'sorts' => config('table.config.sorts'),
+                'searches' => config('table.config.searches'),
+                'columns' => FixtureTable::ColumnsKey,
+                'pages' => FixtureTable::PagesKey,
+                'endpoint' => config('table.endpoint'),
+                'search' => 'search term'
             ])->{'actions'}->scoped(fn ($actions) => $actions
-                ->toHaveKeys([
-                    'actions',
-                    'bulk',
-                    'page',
-                ])->{'actions'}->toBeTrue()
+                ->toHaveKeys([ 'hasInline', 'bulk', 'page'])
+                ->{'hasInline'}->toBeTrue()
                 ->{'bulk'}->toHaveCount(1)
                 ->{'page'}->toHaveCount(2)
-            )->{'toggle'}->toBe(FixtureTable::Toggle)
+            )->{'toggleable'}->toBe(FixtureTable::Toggle)
             ->{'sorts'}->toHaveCount(4)
             ->{'filters'}->toHaveCount(7)
-            ->{'columns'}->toHaveCount(7)
+            ->{'columns'}->toHaveCount(9)
         );
 });

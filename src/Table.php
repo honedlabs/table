@@ -7,16 +7,21 @@ namespace Honed\Table;
 use Honed\Action\Concerns\HasActions;
 use Honed\Action\Concerns\HasParameterNames;
 use Honed\Action\Handler;
-use Honed\Action\Http\Requests\ActionRequest;
 use Honed\Core\Concerns\Encodable;
 use Honed\Refine\Refine;
+use Honed\Refine\Searches\Search;
+use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\HasTableBindings;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
 
+/**
+ * @extends Refine<\Illuminate\Database\Eloquent\Model>
+ */
 class Table extends Refine implements UrlRoutable
 {
     use Concerns\HasColumns;
@@ -40,11 +45,14 @@ class Table extends Refine implements UrlRoutable
     /**
      * Get the unique identifier key for table records.
      *
+     * @return string
+     *
      * @throws \RuntimeException When no key is defined
      */
-    public function getKey(): string
+    public function getKey()
     {
-        $key = $this->key ?? $this->getKeyColumn()?->getName();
+        $key = $this->key
+            ?? $this->getKeyColumn()?->getName();
 
         if (\is_null($key)) {
             static::throwMissingKeyException();
@@ -55,11 +63,11 @@ class Table extends Refine implements UrlRoutable
 
     /**
      * Set the key property for the table.
-
      *
+     * @param  string  $key
      * @return $this
      */
-    public function key(string $key): static
+    public function key($key)
     {
         $this->key = $key;
 
@@ -69,57 +77,42 @@ class Table extends Refine implements UrlRoutable
     /**
      * {@inheritdoc}
      */
-    public function getSortsKey(): string
+    public function getFallbackSortsKey()
     {
-        if (isset($this->sortsKey)) {
-            return $this->sortsKey;
-        }
-
-        return type(config('table.keys.sorts', 'sort'))->asString();
+        return type(config('table.config.sorts', 'sort'))->asString();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSearchesKey(): string
+    public function getFallbackSearchesKey()
     {
-        if (isset($this->searchesKey)) {
-            return $this->searchesKey;
-        }
-
-        return type(config('table.keys.searches', 'search'))->asString();
+        return type(config('table.config.searches', 'search'))->asString();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMatchesKey(): string
+    public function getFallbackMatchesKey()
     {
-        if (isset($this->matchesKey)) {
-            return $this->matchesKey;
-        }
-
-        return type(config('table.keys.matches', 'match'))->asString();
+        return type(config('table.config.matches', 'match'))->asString();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function canMatch(): bool
+    public function getFallbackCanMatch()
     {
-        if (isset($this->matches)) {
-            return $this->matches;
-        }
-
-        return type(config('table.matches', false))->asBool();
+        return (bool) config('table.matches', false);
     }
 
     /**
      * Create a new table instance.
      *
      * @param  \Closure|null  $modifier
+     * @return static
      */
-    public static function make($modifier = null): static
+    public static function make($modifier = null)
     {
         return resolve(static::class)
             ->modifier($modifier);
@@ -128,9 +121,10 @@ class Table extends Refine implements UrlRoutable
     /**
      * Handle the incoming action request for this table.
      *
+     * @param  \Honed\Action\Http\Requests\ActionRequest  $request
      * @return \Illuminate\Contracts\Support\Responsable|\Symfony\Component\HttpFoundation\RedirectResponse|void
      */
-    public function handle(ActionRequest $request)
+    public function handle($request)
     {
         return Handler::make(
             $this->getBuilder(),
@@ -140,10 +134,9 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
-     * @param  string  $name
-     * @param  array<int, mixed>  $arguments
+     * {@inheritdoc}
      */
-    public function __call($name, $arguments): mixed
+    public function __call($name, $arguments)
     {
         $args = Arr::first($arguments);
 
@@ -167,11 +160,21 @@ class Table extends Refine implements UrlRoutable
      *
      * @return $this
      */
-    public function buildTable(): static
+    public function build()
     {
         if ($this->isRefined()) {
             return $this;
         }
+
+        // If toggling is enabled, we need to determine which
+        // columns are to be used from the request, cookie or by the
+        // default state of each column.
+        $columns = $this->toggle($this->getColumns());
+
+        // Before refining, merge the column sorts and searches
+        // with the defined sorts and searches.
+        $this->mergeSorts($columns);
+        $this->mergeSearches($columns);
 
         // Intermediate step allowing for table reuse with
         // minor changes between them.
@@ -181,60 +184,61 @@ class Table extends Refine implements UrlRoutable
         // according to the given request.
         $this->refine();
 
-        // If toggling is enabled, we need to determine which
-        // columns are to be used from the request, cookie or by the
-        // default state of each column.
-        $activeColumns = $this->toggle($this->getColumns());
-
         // Retrieved the records, generate metadata and complete the
         // table pipeline.
-        $this->formatAndPaginate($activeColumns);
+        $this->formatAndPaginate($columns);
 
         return $this;
     }
 
-    public function getBuilder(): Builder
+    /**
+     * {@inheritdoc}
+     */
+    public function getBuilder()
     {
-        $this->builder ??= $this->createBuilder($this->getResource());
+        $this->builder ??= $this->createBuilder(
+            $this->getResource()
+        );
 
         return parent::getBuilder();
     }
 
-    public function toArray(): array
-    {
-        $this->buildTable();
-
-        return [
-            'table' => $this->getRouteKey(),
-            'records' => $this->getRecords(),
-            'meta' => $this->getMeta(),
-            'columns' => $this->getActiveColumns(),
-            'pages' => $this->getPages(),
-            'filters' => $this->getFilters(),
-            'sorts' => $this->getSorts(),
-            'toggle' => $this->canToggle(),
-            'actions' => $this->actionsToArray(),
-            'endpoint' => $this->getEndpoint(),
-            'keys' => $this->keysToArray(),
-        ];
-    }
-
     /**
-     * Get the keys for the table as an array.
+     * {@inheritdoc}
      */
-    public function keysToArray(): array
+    public function toArray()
     {
-        return \array_merge(parent::keysToArray(), [
-            'record' => $this->getKey(),
-            'records' => $this->getRecordsKey(),
-            'columns' => $this->getColumnsKey(),
+        $this->build();
+
+        return \array_merge(parent::toArray(), [
+            'id' => $this->getRouteKey(),
+            'records' => $this->getRecords(),
+            'paginator' => $this->getMeta(),
+            'columns' => $this->getColumns(),
+            'recordsPerPage' => $this->getPages(),
+            'toggleable' => $this->canToggle(),
+            'actions' => $this->actionsToArray(),
         ]);
     }
 
     /**
-     * @return array<mixed>
+     * {@inheritdoc}
      */
-    protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
+    public function configToArray()
+    {
+        return \array_merge(parent::configToArray(), [
+            'endpoint' => $this->getEndpoint(),
+            'record' => $this->getKey(),
+            'records' => $this->getRecordsKey(),
+            'columns' => $this->getColumnsKey(),
+            'pages' => $this->getPagesKey(),
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function resolveDefaultClosureDependencyForEvaluationByName($parameterName)
     {
         [$_, $singular, $plural] = $this->getParameterNames($this->getBuilder());
 
@@ -250,9 +254,9 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
-     * @return array<mixed>
+     * {@inheritdoc}
      */
-    protected function resolveDefaultClosureDependencyForEvaluationByType(string $parameterType): array
+    protected function resolveDefaultClosureDependencyForEvaluationByType($parameterType)
     {
         [$model] = $this->getParameterNames($this->getBuilder());
 
@@ -261,14 +265,52 @@ class Table extends Refine implements UrlRoutable
             Model::class => [$this->getBuilder()],
             Request::class => [$this->getRequest()],
             $model::class => [$this->getBuilder()],
-            default => [],
+            default => [App::make($parameterType)],
         };
     }
 
     /**
-     * Throw an exception if the table does not have a key column or key property defined.
+     * Merge the column sorts with the defined sorts.
+     *
+     * @param  array<int,\Honed\Table\Columns\Column>  $columns
+     * @return void
      */
-    protected static function throwMissingKeyException(): never
+    protected function mergeSorts($columns)
+    {
+        /** @var array<int,\Honed\Refine\Sorts\Sort> */
+        $sorts = \array_map(
+            fn (Column $column) => $column->getSort(),
+            $this->getColumnSorts($columns)
+        );
+
+        $this->addSorts($sorts);
+    }
+
+    /**
+     * Merge the column searches with the defined searches.
+     *
+     * @param  array<int,\Honed\Table\Columns\Column>  $columns
+     * @return void
+     */
+    protected function mergeSearches($columns)
+    {
+        /** @var array<int,\Honed\Refine\Searches\Search> */
+        $searches = \array_map(
+            fn (Column $column) => Search::make(
+                type($column->getName())->asString(),
+                $column->getLabel()
+            ), $this->getColumnSearches($columns)
+        );
+
+        $this->addSearches($searches);
+    }
+
+    /**
+     * Throw an exception if the table does not have a key column or key property defined.
+     *
+     * @return never
+     */
+    protected static function throwMissingKeyException()
     {
         throw new \RuntimeException(
             'The table must have a key column or a key property defined.'

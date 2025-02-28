@@ -19,7 +19,7 @@ trait HasClass
      * @param  array<string>  $class
      * @return $this
      */
-    public function class(...$class): static
+    public function class(...$class)
     {
         $this->class = \array_merge(
             (array) $this->class,
@@ -31,16 +31,20 @@ trait HasClass
 
     /**
      * Determine if the column has class.
+     *
+     * @return bool
      */
-    public function hasClass(): bool
+    public function hasClass()
     {
-        return \count($this->class) > 0;
+        return filled($this->class);
     }
 
     /**
      * Get the class for the column.
+     *
+     * @return string|null
      */
-    public function getClass(): ?string
+    public function getClass()
     {
         if (! $this->hasClass()) {
             return null;

@@ -44,15 +44,22 @@ class Column extends Primitive
 
     /**
      * Create a new column instance.
+     *
+     * @param  string  $name
+     * @param  string|null  $label
+     * @return static
      */
-    public static function make(string $name, ?string $label = null): static
+    public static function make($name, $label = null)
     {
         return resolve(static::class)
             ->name($name)
             ->label($label ?? static::makeLabel($name));
     }
 
-    public function setUp(): void
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
     {
         $this->active(true);
         $this->type('default');
@@ -60,8 +67,11 @@ class Column extends Primitive
 
     /**
      * Apply the column's transform and format value.
+     *
+     * @param  mixed  $value
+     * @return mixed
      */
-    public function apply(mixed $value): mixed
+    public function apply($value)
     {
         $value = $this->transform($value);
 
@@ -70,13 +80,19 @@ class Column extends Primitive
 
     /**
      * Format the value of the column.
+     *
+     * @param  mixed  $value
+     * @return mixed
      */
-    public function formatValue(mixed $value): mixed
+    public function formatValue($value)
     {
         return $this->format($value) ?? $this->getPlaceholder();
     }
 
-    public function toArray(): array
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
     {
         return [
             'name' => $this->getName(),
@@ -84,7 +100,7 @@ class Column extends Primitive
             'type' => $this->getType(),
             'hidden' => $this->isHidden(),
             'icon' => $this->getIcon(),
-            'toggle' => $this->isToggleable(),
+            'toggleable' => $this->isToggleable(),
             'active' => $this->isActive(),
             'sort' => $this->isSortable() ? $this->sortToArray() : null,
             'class' => $this->getClass(),

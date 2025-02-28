@@ -37,6 +37,6 @@ trait ColumnsKey
             return $this->columnsKey;
         }
 
-        return type(config('table.keys.columns', 'columns'))->asString();
+        return type(config('table.config.columns', 'columns'))->asString();
     }
 }
