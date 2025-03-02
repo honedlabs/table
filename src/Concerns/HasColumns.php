@@ -18,6 +18,8 @@ trait HasColumns
     protected $columns;
 
     /**
+     * Merge a set of columns with the existing columns.
+     *
      * @template T of \Honed\Table\Columns\Column
      *
      * @param  array<int,T>|Collection<int,T>  $columns
@@ -138,6 +140,19 @@ trait HasColumns
         return Arr::first(
             $this->getColumns(),
             static fn (Column $column): bool => $column->isKey()
+        );
+    }
+
+    /**
+     * Get the columns as an array.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    public function columnsToArray()
+    {
+        return \array_map(
+            static fn (Column $column) => $column->toArray(),
+            $this->getColumns()
         );
     }
 }

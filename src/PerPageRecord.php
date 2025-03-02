@@ -11,19 +11,29 @@ use Honed\Core\Primitive;
 /**
  * @extends Primitive<string,bool|int>
  */
-class Page extends Primitive
+class PerPageRecord extends Primitive
 {
     use HasValue;
     use IsActive;
 
-    public static function make(int $value, int $active = 0): static
+    /**
+     * Create a new per page record.
+     *
+     * @param  int  $value
+     * @param  int  $active
+     * @return static
+     */
+    public static function make($value, $active = 0)
     {
         return resolve(static::class)
             ->value($value)
             ->active($active === $value);
     }
 
-    public function toArray(): array
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
     {
         return [
             'value' => $this->getValue(),

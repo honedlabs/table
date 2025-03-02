@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\Column;
 use Honed\Table\Table as BaseTable;
 use Honed\Table\Tests\Fixtures\Table;

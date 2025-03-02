@@ -27,7 +27,7 @@ trait HasTableBindings
     /**
      * @param  mixed  $value
      * @param  string|null  $field
-     * @return \Honed\Table\Table|null
+     * @return \Honed\Table\Table<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>>|null
      */
     public function resolveRouteBinding($value, $field = null)
     {
@@ -48,7 +48,7 @@ trait HasTableBindings
      * @param  string  $childType
      * @param  string  $value
      * @param  string|null  $field
-     * @return \Honed\Table\Table|null
+     * @return \Honed\Table\Table<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>>|null
      */
     public function resolveChildRouteBinding($childType, $value, $field)
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Contracts;
 
-interface ShouldRemember
+interface ShouldRemember extends ShouldToggle
 {
     //
 }

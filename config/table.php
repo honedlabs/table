@@ -5,6 +5,8 @@ return [
 
     'paginator' => 'length-aware',
 
+    'delimiter' => ',',
+
     'pagination' => [
         /** The options for the table, int or array of ints */
         'options' => 10,

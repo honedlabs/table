@@ -18,6 +18,8 @@ use Honed\Core\Concerns\IsHidden;
 use Honed\Core\Concerns\IsKey;
 use Honed\Core\Concerns\Transformable;
 use Honed\Core\Primitive;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * @extends Primitive<string, mixed>
@@ -66,6 +68,31 @@ class Column extends Primitive
     }
 
     /**
+     * Get the serialized name of the column.
+     *
+     * @return string
+     */
+    public function serializeName()
+    {
+        return Str::replace('.', '_', type($this->getName())->asString());
+    }
+
+    /**
+     * Get the value of the column to form a record.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return array<string,mixed>
+     */
+    public function forRecord($model)
+    {
+        $value = Arr::get($model, $this->getName());
+
+        return [
+            $this->serializeName() => $this->apply($value),
+        ];
+    }
+
+    /**
      * Apply the column's transform and format value.
      *
      * @param  mixed  $value
@@ -95,16 +122,16 @@ class Column extends Primitive
     public function toArray()
     {
         return [
-            'name' => $this->getName(),
+            'name' => $this->serializeName(),
             'label' => $this->getLabel(),
             'type' => $this->getType(),
             'hidden' => $this->isHidden(),
-            'icon' => $this->getIcon(),
-            'toggleable' => $this->isToggleable(),
             'active' => $this->isActive(),
-            'sort' => $this->isSortable() ? $this->sortToArray() : null,
+            'toggleable' => $this->isToggleable(),
+            'icon' => $this->getIcon(),
             'class' => $this->getClass(),
             'meta' => $this->getMeta(),
+            'sort' => $this->isSortable() ? $this->sortToArray() : null,
         ];
     }
 }

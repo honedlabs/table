@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests;
 
+use Honed\Core\CoreServiceProvider;
 use Honed\Table\TableServiceProvider;
 use Honed\Table\Tests\Fixtures\Controller;
 use Honed\Table\Tests\Stubs\Status;
@@ -36,6 +37,7 @@ class TestCase extends Orchestra
         return [
             InertiaServiceProvider::class,
             TableServiceProvider::class,
+            CoreServiceProvider::class,
         ];
     }
 

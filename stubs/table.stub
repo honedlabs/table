@@ -1,0 +1,84 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Honed\Actions\BulkAction;
+use Honed\Actions\PageAction;
+use Honed\Actions\InlineAction;
+use Honed\Refine\Filters\Filter;
+use Honed\Refine\Sorts\Sort;
+use Honed\Table\Columns\Column;
+use Honed\Table\Columns\KeyColumn;
+use Honed\Table\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Honed\Table\Contracts\ShouldToggle;
+use Honed\Table\Contracts\ShouldRemember;
+
+final class {{ class }} extends Table
+{
+    /* The database column(s) to use for searching */
+    public $search = [];
+
+    /* The number of records to show per page */
+    public $pagination = 10;
+
+    /**
+     * Define the database resource to use.
+     * 
+     * @return Builder|class-string<\Illuminate\Database\Eloquent\Model>
+     */
+    public function for()
+    {
+        //
+    }
+
+    /**
+     * Define the columns to apply.
+     * 
+     * @return array<int, \Honed\Table\Columns\Column>
+     */
+    public function columns()
+    {
+        return [
+            KeyColumn::make('id'),
+        ];
+    }
+
+    /**
+     * Define the filters available to refine the resource query.
+     * 
+     * @return array<int, \Honed\Refine\Filters\Filter>
+     */
+    public function filters()
+    {
+        return [
+
+        ];
+    }
+
+    /**
+     * Define the sorts available to order the records.
+     * 
+     * @return array<int, \Honed\Refine\Sorts\Sort>
+     */
+    public function sorts()
+    {
+        return [
+
+        ];
+    }
+
+    /**
+     * Define the actions available on the records, or the page itself.
+     * 
+     * @return array<int, \Honed\Actions\Action>
+     */
+    public function actions()
+    {
+        return [
+
+        ];
+    }
+}
