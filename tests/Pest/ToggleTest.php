@@ -4,6 +4,7 @@ use Honed\Table\Table;
 use Honed\Table\Contracts\ShouldToggle;
 use Honed\Table\Contracts\ShouldRemember;
 use Honed\Table\Tests\Fixtures\Table as FixtureTable;
+use Illuminate\Support\Facades\Request;
 
 beforeEach(function () {
     $this->table = FixtureTable::make();
@@ -104,4 +105,19 @@ it('has duration', function () {
         ->getDuration()->toBe(config('table.toggle.duration'))
         ->duration($duration)
         ->getDuration()->toBe($duration);
+});
+
+it('has base active columns', function () {
+    expect($this->table->build())
+        ->getActiveColumns()->toHaveCount(7);
+});
+
+it('toggles column activity', function () {
+    $key = $this->table->formatScope($this->table->getColumnsKey());
+    $request = Request::create('/', 'GET', [
+        $key => \sprintf('%s%s%s', 'price', $this->table->getDelimiter(), 'created_at')
+    ]);
+
+    expect($this->table->request($request)->build())
+        ->getActiveColumns()->toHaveCount(5);
 });

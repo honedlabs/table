@@ -229,7 +229,12 @@ trait HasToggle
         }
 
         return collect($columns)
-            ->filter(fn (Column $column) => $column->isDisplayed($params))
+            ->filter(static function (Column $column) use ($params) {
+                $active = $column->isDisplayed($params);
+                $column->active($active);
+
+                return $active;
+            })
             ->values()
             ->all();
     }
