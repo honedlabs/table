@@ -31,14 +31,14 @@ use Illuminate\Support\Facades\App;
 class Table extends Refine implements UrlRoutable
 {
     use Encodable;
-    use HasActions;
-    use HasColumns;
 
+    use HasActions;
+
+    use HasColumns;
     /**
      * @use HasPagination<TModel, TBuilder>
      */
     use HasPagination;
-
     use HasParameterNames;
     use HasParameterNames;
     use HasTableBindings;
