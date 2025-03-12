@@ -30,7 +30,6 @@ class Column extends Primitive
     use Concerns\IsSearchable;
     use Concerns\IsSortable;
     use Concerns\IsToggleable;
-    use HasAlias;
     use HasExtra;
     use HasIcon;
     use HasLabel;
@@ -41,6 +40,7 @@ class Column extends Primitive
     use IsHidden;
     use IsKey;
     use Transformable;
+    use HasAlias;
 
     /**
      * The value to display when the column is empty.

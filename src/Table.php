@@ -32,11 +32,10 @@ use Illuminate\Support\Facades\App;
 class Table extends Refine implements UrlRoutable
 {
     use Encodable;
+
     use HasActions;
+
     use HasColumns;
-
-    use HasMeta;
-
     /**
      * @use HasPagination<TModel, TBuilder>
      */
@@ -45,6 +44,7 @@ class Table extends Refine implements UrlRoutable
     use HasParameterNames;
     use HasTableBindings;
     use HasToggle;
+    use HasMeta;
 
     /**
      * The unique identifier column for the table.
@@ -374,8 +374,9 @@ class Table extends Refine implements UrlRoutable
 
         /** @var array<int,\Honed\Refine\Search> */
         $searches = \array_map(
-            static fn (Column $column) => Search::make($column->getName(), $column->getLabel())
-                ->alias($column->getParameter()),
+            static fn (Column $column) => 
+                Search::make($column->getName(), $column->getLabel())
+                    ->alias($column->getParameter()),
             $this->getColumnSearches($columns)
         );
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Core\Concerns\InterpretsRequest;
 use Honed\Table\PerPageRecord;
 use Illuminate\Support\Collection;
+use Honed\Core\Concerns\InterpretsRequest;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
@@ -420,10 +420,7 @@ trait HasPagination
         /** @var string */
         $param = $this->formatScope($this->getRecordsKey());
 
-        $interpreter = new class
-        {
-            use InterpretsRequest;
-        };
+        $interpreter = new class { use InterpretsRequest; };
 
         $count = $interpreter->interpretInteger($request, $param);
 
