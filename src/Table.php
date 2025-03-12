@@ -9,8 +9,9 @@ use Honed\Action\Concerns\HasParameterNames;
 use Honed\Action\Handler;
 use Honed\Action\InlineAction;
 use Honed\Core\Concerns\Encodable;
+use Honed\Core\Concerns\HasMeta;
 use Honed\Refine\Refine;
-use Honed\Refine\Searches\Search;
+use Honed\Refine\Search;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\HasColumns;
 use Honed\Table\Concerns\HasPagination;
@@ -31,18 +32,19 @@ use Illuminate\Support\Facades\App;
 class Table extends Refine implements UrlRoutable
 {
     use Encodable;
-    use HasActions;
-    use HasColumns;
 
+    use HasActions;
+
+    use HasColumns;
     /**
      * @use HasPagination<TModel, TBuilder>
      */
     use HasPagination;
-
     use HasParameterNames;
     use HasParameterNames;
     use HasTableBindings;
     use HasToggle;
+    use HasMeta;
 
     /**
      * The unique identifier column for the table.
@@ -249,6 +251,7 @@ class Table extends Refine implements UrlRoutable
             'recordsPerPage' => $this->recordsPerPageToArray(),
             'toggleable' => $this->isToggleable(),
             'actions' => $this->actionsToArray(),
+            'meta' => $this->getMeta(),
         ]);
     }
 
@@ -303,45 +306,9 @@ class Table extends Refine implements UrlRoutable
     /**
      * {@inheritdoc}
      */
-    protected function fallbackCanMatch()
+    protected function fallbackIsMatching()
     {
-        return (bool) config('table.matches', false);
-    }
-
-    /**
-     * Merge the column sorts with the defined sorts.
-     *
-     * @param  array<int,\Honed\Table\Columns\Column>  $columns
-     * @return void
-     */
-    protected function mergeSorts($columns)
-    {
-        /** @var array<int,\Honed\Refine\Sorts\Sort> */
-        $sorts = \array_map(
-            static fn (Column $column) => $column->getSort(),
-            $this->getColumnSorts($columns)
-        );
-
-        $this->addSorts($sorts);
-    }
-
-    /**
-     * Merge the column searches with the defined searches.
-     *
-     * @param  array<int,\Honed\Table\Columns\Column>  $columns
-     * @return void
-     */
-    protected function mergeSearches($columns)
-    {
-        /** @var array<int,\Honed\Refine\Searches\Search> */
-        $searches = \array_map(
-            static fn (Column $column) => Search::make(
-                type($column->getName())->asString(),
-                $column->getLabel()
-            ), $this->getColumnSearches($columns)
-        );
-
-        $this->addSearches($searches);
+        return (bool) config('table.config.match', false);
     }
 
     /**
@@ -392,18 +359,29 @@ class Table extends Refine implements UrlRoutable
     /**
      * {@inheritdoc}
      */
-    protected function pipeline($builder, $request)
+    protected function pipeline($builder, $request, $sorts = [], $filters = [], $searches = [])
     {
         $columns = $this->toggleColumns(
             $request,
             $this->getColumns()
         );
 
-        $this->mergeSorts($columns);
-        $this->mergeSearches($columns);
+        /** @var array<int,\Honed\Refine\Sort> */
+        $sorts = \array_map(
+            static fn (Column $column) => $column->getSort(),
+            $this->getColumnSorts($columns)
+        );
+
+        /** @var array<int,\Honed\Refine\Search> */
+        $searches = \array_map(
+            static fn (Column $column) => 
+                Search::make($column->getName(), $column->getLabel())
+                    ->alias($column->getParameter()),
+            $this->getColumnSearches($columns)
+        );
 
         // Use the parent pipeline to perform refinement.
-        parent::pipeline($builder, $request);
+        parent::pipeline($builder, $request, $sorts, [], $searches);
 
         $this->retrieveRecords($builder, $request, $columns);
     }
@@ -439,7 +417,7 @@ class Table extends Refine implements UrlRoutable
             Request::class => [$this->getRequest()],
             Builder::class => [$for],
             Model::class => [$for],
-            $model::class => [$for],
+            $model => [$for],
             /** If typing reaches this point, use dependency injection. */
             default => [App::make($parameterType)],
         };

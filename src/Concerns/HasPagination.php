@@ -6,6 +6,7 @@ namespace Honed\Table\Concerns;
 
 use Honed\Table\PerPageRecord;
 use Illuminate\Support\Collection;
+use Honed\Core\Concerns\InterpretsRequest;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
@@ -67,7 +68,7 @@ trait HasPagination
             return $this->paginator;
         }
 
-        return $this->fallbackPaginator();
+        return static::fallbackPaginator();
     }
 
     /**
@@ -75,7 +76,7 @@ trait HasPagination
      *
      * @return 'cursor'|'simple'|'length-aware'|'collection'|string
      */
-    protected function fallbackPaginator()
+    public static function fallbackPaginator()
     {
         return type(config('table.paginator', 'length-aware'))->asString();
     }
@@ -95,7 +96,18 @@ trait HasPagination
             return $this->pagination();
         }
 
-        return $this->getDefaultPagination();
+        return static::fallbackPagination();
+    }
+
+    /**
+     * Retrieve the pagination options for the table from the config.
+     *
+     * @return int|array<int,int>
+     */
+    public static function fallbackPagination()
+    {
+        /** @var int|array<int,int> */
+        return config('table.pagination.options', 10);
     }
 
     /**
@@ -382,17 +394,13 @@ trait HasPagination
     /**
      * Ensure that the pagination count is a valid option.
      *
-     * @param  int  $count
+     * @param  int|null  $count
      * @param  array<int,int>  $options
-     * @return void
+     * @return bool
      */
-    protected function validatePagination(&$count, $options)
+    protected function invalidPagination($count, $options)
     {
-        if (\in_array($count, $options)) {
-            return;
-        }
-
-        $count = $this->getDefaultPagination();
+        return \is_null($count) || ! \in_array($count, $options);
     }
 
     /**
@@ -411,9 +419,17 @@ trait HasPagination
 
         /** @var string */
         $param = $this->formatScope($this->getRecordsKey());
-        $count = $request->safeInteger($param, 0);
 
-        $this->validatePagination($count, $pagination);
+        $interpreter = new class { use InterpretsRequest; };
+
+        $count = $interpreter->interpretInteger($request, $param);
+
+        if ($this->invalidPagination($count, $pagination)) {
+            $count = $this->getDefaultPagination();
+        }
+
+        $count = type($count)->asInt();
+
         $this->createRecordsPerPage($pagination, $count);
 
         return $count;

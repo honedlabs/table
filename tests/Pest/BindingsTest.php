@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Honed\Action\Creator;
+use Honed\Action\ActionFactory;
 use Honed\Table\Table;
 use Honed\Table\Tests\Fixtures\Table as FixtureTable;
 use Honed\Table\Tests\Stubs\Product;
@@ -31,7 +31,7 @@ it('can handle inline actions at endpoint', function () {
 
     $data = [
         'table' => $this->table->getRouteKey(),
-        'type' => Creator::Inline,
+        'type' => ActionFactory::Inline,
         'name' => 'edit',
         'id' => $product->id,
     ];
@@ -49,7 +49,7 @@ it('can authorize the action', function () {
 
     $data = [
         'table' => $this->table->getRouteKey(),
-        'type' => Creator::Inline,
+        'type' => ActionFactory::Inline,
         'name' => 'delete',
         'id' => $a->id,
     ];
@@ -78,7 +78,7 @@ it('can handle bulk actions at endpoint', function () {
 
     $data = [
         'table' => $this->table->getRouteKey(),
-        'type' => Creator::Bulk,
+        'type' => ActionFactory::Bulk,
         'name' => 'edit',
         'all' => false,
         'except' => [],
@@ -97,7 +97,7 @@ it('can handle bulk actions at endpoint', function () {
 
 it('can handle specific tables', function () {
     $data = [
-        'type' => Creator::Page,
+        'type' => ActionFactory::Page,
         'name' => 'factory',
     ];
 

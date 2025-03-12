@@ -7,6 +7,13 @@ namespace Honed\Table\Columns;
 class NumberColumn extends Column
 {
     /**
+     * The number of decimal places to display.
+     *
+     * @var int|null
+     */
+    protected $decimals;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp()
@@ -14,6 +21,5 @@ class NumberColumn extends Column
         parent::setUp();
 
         $this->type('number');
-        $this->formatNumber();
     }
 }

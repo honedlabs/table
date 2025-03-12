@@ -41,12 +41,12 @@ it('builds', function () {
                 [
                     'type' => 'raw',
                     'sql' => searchSql('name'),
-                    'boolean' => 'and',
+                    'boolean' => 'or',
                 ],
                 [
                     'type' => 'raw',
                     'sql' => searchSql('description'),
-                    'boolean' => 'or',
+                    'boolean' => 'and',
                 ],
                 // Name where filter
                 [
@@ -105,6 +105,7 @@ it('builds', function () {
         )->orders->scoped(fn ($orders) => $orders
             ->toBeArray()
             ->toHaveCount(1)
+            ->dd()
             ->{0}->toEqual([
                 'column' => qualifyProduct('price'),
                 'direction' => 'desc',

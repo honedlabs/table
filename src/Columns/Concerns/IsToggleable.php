@@ -71,11 +71,7 @@ trait IsToggleable
      */
     public function isToggleable()
     {
-        if ($this->isKey() || $this->isAlways()) {
-            return false;
-        }
-
-        return true;
+        return ! ($this->isKey() || $this->isAlways());
     }
 
     /**

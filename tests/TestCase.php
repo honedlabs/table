@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests;
 
-use Honed\Core\CoreServiceProvider;
 use Honed\Table\TableServiceProvider;
 use Honed\Table\Tests\Fixtures\Controller;
 use Honed\Table\Tests\Stubs\Status;
@@ -16,11 +15,13 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
-use Inertia\ServiceProvider as InertiaServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
+    /**
+     * Setup the test environment.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,15 +33,24 @@ class TestCase extends Orchestra
         config()->set('inertia.testing.page_paths', [realpath(__DIR__)]);
     }
 
+    /**
+     * Get the package providers.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     * @return array<int,class-string>
+     */
     protected function getPackageProviders($app)
     {
         return [
-            InertiaServiceProvider::class,
             TableServiceProvider::class,
-            CoreServiceProvider::class,
         ];
     }
 
+    /**
+     * Define the database migrations.
+     *
+     * @return void
+     */
     protected function defineDatabaseMigrations()
     {
         Schema::create('sellers', function (Blueprint $table) {
@@ -75,6 +85,12 @@ class TestCase extends Orchestra
         });
     }
 
+    /**
+     * Define the routes setup.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     protected function defineRoutes($router)
     {
         $router->middleware(SubstituteBindings::class, EncryptCookies::class, AddQueuedCookiesToResponse::class)->group(function ($router) {
@@ -87,6 +103,12 @@ class TestCase extends Orchestra
         });
     }
 
+    /**
+     * Define the environment setup.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     * @return void
+     */
     protected function getEnvironmentSetUp($app)
     {
         config()->set('table', require __DIR__.'/../config/table.php');

@@ -1,10 +1,8 @@
 <?php
 
-use Honed\Core\Formatters\BooleanFormatter;
-use Honed\Core\Formatters\DateFormatter;
-use Honed\Core\Formatters\NumberFormatter;
-use Honed\Core\Formatters\StringFormatter;
-use Honed\Refine\Sorts\Sort;
+declare(strict_types=1);
+
+use Honed\Refine\Sort;
 use Honed\Table\Columns\BooleanColumn;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
@@ -30,7 +28,7 @@ it('has array representation', function () {
     expect($this->test->toArray())->toEqual([
         'name' => $this->param,
         'label' => ucfirst($this->param),
-        'type' => 'default',
+        'type' => 'column',
         'hidden' => false,
         'icon' => null,
         'toggleable' => true,
@@ -41,40 +39,20 @@ it('has array representation', function () {
     ]);
 });
 
-it('has formatters', function () {
-    expect($this->test->hasFormatter())->toBeFalse();
-
-    expect(BooleanColumn::make($this->param))
-        ->hasFormatter()->toBeTrue()
-        ->getFormatter()->toBeInstanceOf(BooleanFormatter::class);
-
-    expect(TextColumn::make($this->param))
-        ->hasFormatter()->toBeTrue()
-        ->getFormatter()->toBeInstanceOf(StringFormatter::class);
-
-    expect(NumberColumn::make($this->param))
-        ->hasFormatter()->toBeTrue()
-        ->getFormatter()->toBeInstanceOf(NumberFormatter::class);
-
-    expect(DateColumn::make($this->param))
-        ->hasFormatter()->toBeTrue()
-        ->getFormatter()->toBeInstanceOf(DateFormatter::class);
-});
-
 it('can be sortable', function () {
     expect($this->test)
         ->isSortable()->toBeFalse()
         ->sortable()->toBeInstanceOf(Column::class)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
-        ->toBeInstanceOf(Sort::class)
-        ->getDirection()->toBeNull()
-        ->getNextDirection()->toBe($this->param)
+            ->toBeInstanceOf(Sort::class)
+            ->getDirection()->toBeNull()
+            ->getNextDirection()->toBe($this->param)
         )
         ->toArray()->toEqual([
             'name' => $this->param,
             'label' => ucfirst($this->param),
-            'type' => 'default',
+            'type' => 'column',
             'hidden' => false,
             'icon' => null,
             'toggleable' => true,
@@ -92,7 +70,7 @@ it('can be sortable', function () {
         ->toArray()->toEqual([
             'name' => $this->param,
             'label' => ucfirst($this->param),
-            'type' => 'default',
+            'type' => 'column',
             'hidden' => false,
             'icon' => null,
             'toggleable' => true,
@@ -103,15 +81,15 @@ it('can be sortable', function () {
         ])
         ->sortable('description')->toBeInstanceOf(Column::class)
         ->getSort()->scoped(fn ($sort) => $sort
-        ->toBeInstanceOf(Sort::class)
-        ->getDirection()->toBeNull()
-        ->getNextDirection()->toBe('description')
+            ->toBeInstanceOf(Sort::class)
+            ->getDirection()->toBeNull()
+            ->getNextDirection()->toBe('description')
         )
         ->isSortable()->toBeTrue()
         ->toArray()->toEqual([
             'name' => 'name',
             'label' => 'Name',
-            'type' => 'default',
+            'type' => 'column',
             'hidden' => false,
             'icon' => null,
             'toggleable' => true,
@@ -134,7 +112,7 @@ it('can be toggleable', function () {
         ->toArray()->toEqual([
             'name' => $this->param,
             'label' => ucfirst($this->param),
-            'type' => 'default',
+            'type' => 'column',
             'hidden' => false,
             'icon' => null,
             'toggleable' => true,
@@ -149,7 +127,7 @@ it('can be toggleable', function () {
         ->toArray()->toEqual([
             'name' => $this->param,
             'label' => ucfirst($this->param),
-            'type' => 'default',
+            'type' => 'column',
             'hidden' => false,
             'icon' => null,
             'toggleable' => false,

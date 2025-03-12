@@ -7,12 +7,12 @@ namespace {{ namespace }};
 use Honed\Actions\BulkAction;
 use Honed\Actions\PageAction;
 use Honed\Actions\InlineAction;
-use Honed\Refine\Filters\Filter;
-use Honed\Refine\Sorts\Sort;
+use Honed\Refine\Filter;
+use Honed\Refine\Sort;
+use Honed\Refine\Search;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Honed\Table\Contracts\ShouldToggle;
 use Honed\Table\Contracts\ShouldRemember;
 
@@ -27,7 +27,7 @@ final class {{ class }} extends Table
     /**
      * Define the database resource to use.
      * 
-     * @return Builder|class-string<\Illuminate\Database\Eloquent\Model>
+     * @return \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model>
      */
     public function for()
     {
@@ -49,7 +49,7 @@ final class {{ class }} extends Table
     /**
      * Define the filters available to refine the resource query.
      * 
-     * @return array<int, \Honed\Refine\Filters\Filter>
+     * @return array<int, \Honed\Refine\Filter>
      */
     public function filters()
     {
@@ -61,7 +61,7 @@ final class {{ class }} extends Table
     /**
      * Define the sorts available to order the records.
      * 
-     * @return array<int, \Honed\Refine\Sorts\Sort>
+     * @return array<int, \Honed\Refine\Sort>
      */
     public function sorts()
     {

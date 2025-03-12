@@ -42,23 +42,23 @@ it('has a searches key', function () {
 });
 
 it('can match', function () {
-    $canMatch = true;
+    $matching = true;
 
     // Class-based
     expect($this->test)
-        ->canMatch()->toBe(config('table.matches'));
+        ->isMatching()->toBe(config('table.matches'));
 
-    expect($this->test->match($canMatch))
+    expect($this->test->match($matching))
         ->toBe($this->test)
-        ->canMatch()->toBe($canMatch);
+        ->isMatching()->toBe($matching);
 
     // Anonymous
     expect(Table::make())
-        ->canMatch()->toBe(config('table.matches'));
+        ->isMatching()->toBe(config('table.matches'));
 
-    expect(Table::make()->match($canMatch))
+    expect(Table::make()->match($matching))
         ->toBeInstanceOf(Table::class)
-        ->canMatch()->toBe($canMatch);
+        ->isMatching()->toBe($matching);
 });
 
 it('has a delimiter', function () {

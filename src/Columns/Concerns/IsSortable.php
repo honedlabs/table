@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns\Concerns;
 
-use Honed\Refine\Sorts\Sort;
+use Honed\Refine\Sort;
 
 /**
  * @mixin \Honed\Core\Concerns\HasName
@@ -17,7 +17,7 @@ trait IsSortable
     protected $sortable = false;
 
     /**
-     * @var \Honed\Refine\Sorts\Sort|null
+     * @var \Honed\Refine\Sort|null
      */
     protected $sort;
 
@@ -49,7 +49,7 @@ trait IsSortable
     /**
      * Get the sort instance.
      *
-     * @return \Honed\Refine\Sorts\Sort|null
+     * @return \Honed\Refine\Sort|null
      */
     public function getSort()
     {
@@ -57,6 +57,8 @@ trait IsSortable
     }
 
     /**
+     * Get the sort instance as an array.
+     * 
      * @return array{direction: 'asc'|'desc'|null, next: string|null}
      */
     public function sortToArray()
@@ -89,10 +91,10 @@ trait IsSortable
     protected function enableSorting($sortable)
     {
         $this->sortable = true;
-        $this->sort = Sort::make(
-            \is_string($sortable)
-                ? $sortable : type($this->getName())->asString()
-        );
+        $sortColumn = \is_string($sortable) ? $sortable : $this->getName();
+
+        $this->sort = Sort::make($sortColumn)
+            ->alias($this->getParameter());
 
         return $this;
     }
