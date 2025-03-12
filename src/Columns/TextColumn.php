@@ -53,11 +53,11 @@ class TextColumn extends Column
         $length = $this->getLength();
 
         if (! \is_null($prefix)) {
-            $value = $prefix . $value;
+            $value = $prefix.$value;
         }
 
         if (! \is_null($suffix)) {
-            $value = $value . $suffix;
+            $value = $value.$suffix;
         }
 
         if (! \is_null($length)) {
@@ -70,7 +70,7 @@ class TextColumn extends Column
     /**
      * Set the prefix to display.
      *
-     * @param string $prefix
+     * @param  string  $prefix
      * @return $this
      */
     public function prefix($prefix)
@@ -93,7 +93,7 @@ class TextColumn extends Column
     /**
      * Set the suffix to display.
      *
-     * @param string $suffix
+     * @param  string  $suffix
      * @return $this
      */
     public function suffix($suffix)
@@ -113,10 +113,10 @@ class TextColumn extends Column
         return $this->suffix;
     }
 
-        /**
+    /**
      * Set the number of characters to display.
      *
-     * @param int $length
+     * @param  int  $length
      * @return $this
      */
     public function length($length)
