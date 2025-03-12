@@ -35,13 +35,13 @@ class Table extends Refine implements UrlRoutable
     use Encodable;
     use HasActions;
     use HasColumns;
-
     use HasMeta;
 
     /**
      * @use HasPagination<TModel, TBuilder>
      */
     use HasPagination;
+
     use HasParameterNames;
     use HasParameterNames;
     use HasTableBindings;
