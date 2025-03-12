@@ -100,7 +100,7 @@ class Table extends HonedTable
 
             BooleanColumn::make('best_seller', 'Favourite')
                 ->labels('Favourite', 'Not favourite'),
-
+                
             TextColumn::make('seller.name', 'Sold by')
                 ->sometimes(),
 
@@ -163,7 +163,7 @@ class Table extends HonedTable
                 ->alias('name-desc')
                 ->desc()
                 ->default(),
-
+            
             Sort::make('name', 'Z-A')
                 ->alias('name-asc')
                 ->asc(),
@@ -197,7 +197,7 @@ class Table extends HonedTable
                 ->confirm(fn ($confirm) => $confirm
                     ->label(fn ($product) => 'You are about to delete '.$product->name)
                     ->description('Are you sure?')),
-
+            
             InlineAction::make('show')
                 ->route(fn ($product) => route('products.show', $product)),
 

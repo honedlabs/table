@@ -35,13 +35,13 @@ class BooleanColumn extends Column
      */
     public function formatValue($value)
     {
-        return (bool) $value ? $this->getTrueLabel() : $this->getFalseLabel();
+        return !!$value ? $this->getTrueLabel() : $this->getFalseLabel();
     }
 
     /**
      * Set the label for the true value.
-     *
-     * @param  string  $true
+     * 
+     * @param string $true
      * @return $this
      */
     public function true($true)
@@ -85,6 +85,7 @@ class BooleanColumn extends Column
     }
 
     /**
+     *
      * @param  string  $true
      * @param  string  $false
      * @return $this

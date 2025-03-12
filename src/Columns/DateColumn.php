@@ -47,7 +47,7 @@ class DateColumn extends Column
         if (\is_null($value)) {
             return $this->getFallback();
         }
-
+        
         if (! $value instanceof Carbon) {
             try {
                 // @phpstan-ignore-next-line
@@ -66,8 +66,8 @@ class DateColumn extends Column
 
     /**
      * Use diffForHumans to format the date.
-     *
-     * @param  bool  $diff
+     * 
+     * @param bool $diff
      * @return $this
      */
     public function diff($diff = true)
@@ -89,8 +89,8 @@ class DateColumn extends Column
 
     /**
      * Set the format for the date.
-     *
-     * @param  string  $format
+     * 
+     * @param string $format
      * @return $this
      */
     public function format($format)
@@ -113,7 +113,7 @@ class DateColumn extends Column
     /**
      * Set the timezone for date parsing.
      *
-     * @param  string  $timezone
+     * @param string $timezone
      * @return $this
      */
     public function timezone($timezone)

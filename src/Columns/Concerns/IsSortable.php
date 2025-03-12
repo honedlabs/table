@@ -58,7 +58,7 @@ trait IsSortable
 
     /**
      * Get the sort instance as an array.
-     *
+     * 
      * @return array{direction: 'asc'|'desc'|null, next: string|null}
      */
     public function sortToArray()
