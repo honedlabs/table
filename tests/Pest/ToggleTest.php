@@ -19,7 +19,7 @@ it('can toggle', function () {
 
     // Anonymous
     expect(Table::make())
-        ->isToggleable()->toBe(config('table.toggle.enabled'))
+        ->isToggleable()->toBe(config('table.toggle'))
         ->toggleable(true)->toBeInstanceOf(Table::class)
         ->isToggleable()->toBe(true);
 
@@ -45,7 +45,7 @@ it('has columns key', function () {
 
     // Anonymous
     expect(Table::make())
-        ->getColumnsKey()->toBe(config('table.config.columns'))
+        ->getColumnsKey()->toBe(config('table.columns_key'))
         ->columnsKey($columnsKey)
         ->getColumnsKey()->toBe($columnsKey);
 });
@@ -59,7 +59,7 @@ it('can remember', function () {
 
     // Anonymous
     expect(Table::make())
-        ->isRememberable()->toBe(config('table.toggle.remember'))
+        ->isRememberable()->toBe(config('table.remember'))
         ->remember(true)->toBeInstanceOf(Table::class)
         ->isRememberable()->toBe(true);
 
@@ -102,7 +102,7 @@ it('has duration', function () {
 
     // Anonymous
     expect(Table::make())
-        ->getDuration()->toBe(config('table.toggle.duration'))
+        ->getDuration()->toBe(config('table.duration'))
         ->duration($duration)
         ->getDuration()->toBe($duration);
 });
@@ -114,8 +114,9 @@ it('has base active columns', function () {
 
 it('toggles column activity', function () {
     $key = $this->table->formatScope($this->table->getColumnsKey());
+
     $request = Request::create('/', 'GET', [
-        $key => \sprintf('%s%s%s', 'price', $this->table->getDelimiter(), 'created_at')
+        $key => \sprintf('%s%s%s', 'cost', $this->table->getDelimiter(), 'created_at')
     ]);
 
     expect($this->table->request($request)->build())

@@ -7,7 +7,6 @@ namespace Honed\Table\Columns;
 use Honed\Action\Concerns\HasParameterNames;
 use Honed\Core\Concerns\Allowable;
 use Honed\Core\Concerns\HasAlias;
-use Honed\Core\Concerns\HasExtra;
 use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasMeta;
@@ -32,7 +31,6 @@ class Column extends Primitive
     use Concerns\IsSortable;
     use Concerns\IsToggleable;
     use HasAlias;
-    use HasExtra;
     use HasIcon;
     use HasLabel;
     use HasMeta;

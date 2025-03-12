@@ -55,3 +55,12 @@ it('has a key column', function () {
     expect(BaseTable::make()->getKeyColumn())
         ->toBeNull();
 });
+
+it('can disable columns', function () {
+    expect($this->table)
+        ->isWithoutColumns()->toBeFalse()
+        ->getColumns()->toHaveCount(9)
+        ->withoutColumns()->toBe($this->table)
+        ->isWithoutColumns()->toBeTrue()
+        ->getColumns()->toBeEmpty();
+});

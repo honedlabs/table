@@ -64,11 +64,7 @@ trait HasPagination
      */
     public function getPaginator()
     {
-        if (isset($this->paginator)) {
-            return $this->paginator;
-        }
-
-        return static::fallbackPaginator();
+        return $this->paginator ?? static::fallbackPaginator();
     }
 
     /**
@@ -107,7 +103,7 @@ trait HasPagination
     public static function fallbackPagination()
     {
         /** @var int|array<int,int> */
-        return config('table.pagination.options', 10);
+        return config('table.pagination', 10);
     }
 
     /**
@@ -117,11 +113,17 @@ trait HasPagination
      */
     public function getDefaultPagination()
     {
-        if (isset($this->defaultPagination)) {
-            return $this->defaultPagination;
-        }
+        return $this->defaultPagination ?? static::fallbackDefaultPagination();
+    }
 
-        return $this->fallbackDefaultPagination();
+    /**
+     * Get the fallback default pagination options for the table from the config.
+     *
+     * @return int
+     */
+    public static function fallbackDefaultPagination()
+    {
+        return type(config('table.default_pagination', 10))->asInt();
     }
 
     /**
@@ -167,11 +169,17 @@ trait HasPagination
      */
     public function getPagesKey()
     {
-        if (isset($this->pagesKey)) {
-            return $this->pagesKey;
-        }
+        return $this->pagesKey ?? static::fallbackPagesKey();
+    }
 
-        return $this->fallbackPagesKey();
+    /**
+     * Get the query parameter for the page number from the config.
+     *
+     * @return string
+     */
+    public static function fallbackPagesKey()
+    {
+        return type(config('table.pages_key', 'page'))->asString();
     }
 
     /**
@@ -194,11 +202,18 @@ trait HasPagination
      */
     public function getRecordsKey()
     {
-        if (isset($this->recordsKey)) {
-            return $this->recordsKey;
-        }
+        return $this->recordsKey ?? static::fallbackRecordsKey();
+    }
 
-        return $this->fallbackRecordsKey();
+    /**
+     * Get the query parameter for the number of records to show per page from
+     * the config.
+     *
+     * @return string
+     */
+    public static function fallbackRecordsKey()
+    {
+        return type(config('table.records_key', 'rows'))->asString();
     }
 
     /**
@@ -214,36 +229,6 @@ trait HasPagination
             static fn (int $amount) => PerPageRecord::make($amount, $active),
             $pagination
         );
-    }
-
-    /**
-     * Get the fallback default pagination options for the table.
-     *
-     * @return int
-     */
-    protected function fallbackDefaultPagination()
-    {
-        return type(config('table.pagination.default', 10))->asInt();
-    }
-
-    /**
-     * Get the query parameter for the page number.
-     *
-     * @return string
-     */
-    protected function fallbackPagesKey()
-    {
-        return type(config('table.config.pages', 'page'))->asString();
-    }
-
-    /**
-     * Get the query parameter for the number of records to show per page.
-     *
-     * @return string
-     */
-    protected function fallbackRecordsKey()
-    {
-        return type(config('table.config.records', 'rows'))->asString();
     }
 
     /**

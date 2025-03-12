@@ -66,6 +66,7 @@ trait IsSortable
     public function sortToArray()
     {
         return [
+            'active' => $this->getSort()?->isActive(),
             'direction' => $this->getSort()?->getDirection(),
             'next' => $this->getSort()?->getNextDirection(),
         ];

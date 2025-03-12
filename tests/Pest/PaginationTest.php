@@ -40,7 +40,7 @@ it('has pagination', function () {
 
     // Anonymous
     expect(Table::make())
-        ->getPagination()->toBe(config('table.pagination.default'))
+        ->getPagination()->toBe(config('table.default_pagination'))
         ->pagination($pagination)->toBeInstanceOf(Table::class)
         ->getPagination()->toEqual($pagination);
 });
@@ -56,7 +56,7 @@ it('has default pagination', function () {
 
     // Anonymous
     expect(Table::make())
-        ->getDefaultPagination()->toBe(config('table.pagination.default'))
+        ->getDefaultPagination()->toBe(config('table.default_pagination'))
         ->defaultPagination($default)->toBeInstanceOf(Table::class)
         ->getDefaultPagination()->toBe($default);
 });
@@ -72,7 +72,7 @@ it('has pages key', function () {
 
     // Anonymous
     expect(Table::make())
-        ->getPagesKey()->toBe(config('table.config.pages'))
+        ->getPagesKey()->toBe(config('table.pages_key'))
         ->pagesKey($pagesKey)->toBeInstanceOf(Table::class)
         ->getPagesKey()->toBe($pagesKey);
 });
@@ -88,7 +88,7 @@ it('has records key', function () {
 
     // Anonymous
     expect(Table::make())
-        ->getRecordsKey()->toBe(config('table.config.records'))
+        ->getRecordsKey()->toBe(config('table.records_key'))
         ->recordsKey($recordsKey)->toBeInstanceOf(Table::class)
         ->getRecordsKey()->toBe($recordsKey);
 });
@@ -175,7 +175,8 @@ it('creates paginate records using default', function () {
     // Find the active one, which should be default.
     $active = collect($recordsPerPage)
         ->first(
-            fn (PerPageRecord $record) => $record->getValue() === FixtureTable::DefaultPagination
+            fn (PerPageRecord $record) => $record->getValue() 
+                === FixtureTable::DefaultPagination
         );
 
     expect($active)

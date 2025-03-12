@@ -97,7 +97,7 @@ trait HasToggle
      */
     public static function fallbackToggleable()
     {
-        return (bool) config('table.toggle.enabled', false);
+        return (bool) config('table.toggle', false);
     }
 
     /**
@@ -134,7 +134,7 @@ trait HasToggle
      */
     public static function fallbackColumnsKey()
     {
-        return type(config('table.config.columns', 'columns'))->asString();
+        return type(config('table.columns_key', 'columns'))->asString();
     }
 
     /**
@@ -176,7 +176,7 @@ trait HasToggle
      */
     public static function fallbackRememberable()
     {
-        return (bool) config('table.toggle.remember', false);
+        return (bool) config('table.remember', false);
     }
 
     /**
@@ -258,7 +258,7 @@ trait HasToggle
      */
     public static function fallbackDuration()
     {
-        return type(config('table.toggle.duration', 15768000))->asInt();
+        return type(config('table.duration', 15768000))->asInt();
     }
 
     /**

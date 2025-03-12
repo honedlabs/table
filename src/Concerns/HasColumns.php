@@ -18,6 +18,13 @@ trait HasColumns
     protected $columns;
 
     /**
+     * Whether the columns should be retrievable.
+     *
+     * @var bool
+     */
+    protected $withoutColumns = false;
+
+    /**
      * Merge a set of columns with the existing columns.
      *
      * @template T of \Honed\Table\Columns\Column
@@ -50,12 +57,38 @@ trait HasColumns
     }
 
     /**
+     * Set the columns to not be retrieved.
+     *
+     * @return $this
+     */
+    public function withoutColumns()
+    {
+        $this->withoutColumns = true;
+
+        return $this;
+    }
+
+    /**
+     * Determine if the columns should not be retrieved.
+     *
+     * @return bool
+     */
+    public function isWithoutColumns()
+    {
+        return $this->withoutColumns;
+    }
+
+    /**
      * Get the columns for the table.
      *
      * @return array<int,\Honed\Table\Columns\Column>
      */
     public function getColumns()
     {
+        if ($this->isWithoutColumns()) {
+            return [];
+        }
+
         return once(function () {
             $methodColumns = method_exists($this, 'columns') ? $this->columns() : [];
             $propertyColumns = $this->columns ?? [];

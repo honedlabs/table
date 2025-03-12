@@ -105,6 +105,6 @@ trait IsToggleable
             return ! $this->isSometimes();
         }
 
-        return \in_array($this->getName(), $params);
+        return \in_array($this->getParameter(), $params);
     }
 }

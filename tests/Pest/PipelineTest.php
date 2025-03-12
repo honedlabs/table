@@ -130,5 +130,6 @@ it('builds', function () {
             ->{'sorts'}->toHaveCount(4)
             ->{'filters'}->toHaveCount(7)
             ->{'columns'}->toHaveCount(9)
+            ->{'meta'}->toBeEmpty()
         );
 });

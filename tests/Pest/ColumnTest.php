@@ -51,6 +51,7 @@ it('is sortable', function () {
             ->getNextDirection()->toBe($this->param)
         )
         ->toArray()->{'sort'}->toBe([
+            'active' => false,
             'direction' => null,
             'next' => $this->param,
         ]);
@@ -213,7 +214,15 @@ it('can be a number column', function () {
 
     expect($column)
         ->toBe($column)
-        ->getType()->toBe('number');
+        ->getType()->toBe('number')
+        ->isAbbreviated()->toBeFalse()
+        ->abbreviate()->toBe($column)
+        ->isAbbreviated()->toBeTrue()
+        ->formatValue(1000)->toBe('1K')
+        ->abbreviate(false)->toBe($column)
+        ->decimals(2)->toBe($column)
+        ->getDecimals()->toBe(2)
+        ->formatValue(1.23456789)->toBe('1.23');
 });
 
 it('can be a text column', function () {
