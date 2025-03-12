@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Tests;
 
+use Carbon\Carbon;
 use Honed\Table\TableServiceProvider;
 use Honed\Table\Tests\Fixtures\Controller;
 use Honed\Table\Tests\Stubs\Status;
@@ -31,6 +32,8 @@ class TestCase extends Orchestra
 
         config()->set('inertia.testing.ensure_pages_exist', false);
         config()->set('inertia.testing.page_paths', [realpath(__DIR__)]);
+
+        Carbon::setTestNow(Carbon::parse('2000-01-01 00:00:00'));
     }
 
     /**

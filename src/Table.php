@@ -21,6 +21,7 @@ use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -188,7 +189,17 @@ class Table extends Refine implements UrlRoutable
             return $this->endpoint();
         }
 
-        return $this->fallbackEndpoint();
+        return static::fallbackEndpoint();
+    }
+
+    /**
+     * Get the fallback endpoint to be used for table actions from the config.
+     *
+     * @return string
+     */
+    public static function fallbackEndpoint()
+    {
+        return type(config('table.endpoint', '/actions'))->asString();
     }
 
     /**
@@ -227,7 +238,7 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
-     * Build the table. Alias for refine.
+     * Build the table. Alias for `refine`.
      *
      * @return $this
      */
@@ -270,16 +281,6 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
-     * Get the fallback endpoint to be used for table actions.
-     *
-     * @return string
-     */
-    protected function fallbackEndpoint()
-    {
-        return type(config('table.endpoint', '/actions'))->asString();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function fallbackDelimiter()
@@ -319,7 +320,7 @@ class Table extends Refine implements UrlRoutable
      * @param  array<int,\Honed\Table\Columns\Column>  $columns
      * @return void
      */
-    protected function retrieveRecords($builder, $request, $columns)
+    public function retrieveRecords($builder, $request, $columns)
     {
         [$records, $this->paginationData] = $this->paginate($builder, $request);
 
@@ -338,21 +339,26 @@ class Table extends Refine implements UrlRoutable
      * @param  array<int,\Honed\Action\InlineAction>  $actions
      * @return array<string,mixed>
      */
-    protected static function createRecord($model, $columns, $actions)
+    public static function createRecord($model, $columns, $actions)
     {
-        [$named, $typed] = static::getNamedAndTypedParameters($model);
+        [$named, $typed] = static::getModelParameters($model);
 
-        $actions = collect($actions)
-            ->filter(fn (InlineAction $action) => $action->isAllowed($named, $typed))
-            ->map(fn (InlineAction $action) => $action->resolve($named, $typed))
-            ->values()
-            ->toArray(); // Get as array; not as array of classes
+        $actions = \array_map(
+            fn (InlineAction $action) => $action->resolve($named, $typed)->toArray(),
+            \array_values(
+                \array_filter(
+                    $actions,
+                    fn (InlineAction $action) => $action->isAllowed($named, $typed)
+                )
+            )
+        );
 
-        $record = collect($columns)
-            ->mapWithKeys(
-                static fn (Column $column) => $column->forRecord($model)
-            )->toArray();
+        $record = Arr::mapWithKeys(
+            $columns,
+            fn (Column $column) => $column->createRecord($model),
+        );
 
+        /** @var array<string,mixed> */
         return \array_merge($record, ['actions' => $actions]);
     }
 

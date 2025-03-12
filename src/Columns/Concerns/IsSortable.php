@@ -24,16 +24,18 @@ trait IsSortable
     /**
      * Set the column as sortable.
      *
-     * @param  bool|string  $sortable
+     * @param  \Honed\Refine\Sort|string|bool  $sortable
+     * @param  string|null  $alias
+     * @param  bool  $default
      * @return $this
      */
-    public function sortable($sortable = true)
+    public function sortable($sortable = true, $alias = null, $default = false)
     {
         if (! $sortable) {
             return $this->disableSorting();
         }
 
-        return $this->enableSorting($sortable);
+        return $this->enableSorting($sortable, $alias, $default);
     }
 
     /**
@@ -85,16 +87,26 @@ trait IsSortable
     /**
      * Enable sorting for the column.
      *
-     * @param  string|bool  $sortable
+     * @param  \Honed\Refine\Sort|string|bool  $sortable
+     * @param  string|null  $alias
+     * @param  bool  $default
      * @return $this
      */
-    protected function enableSorting($sortable)
+    protected function enableSorting($sortable = true, $alias = null, $default = false)
     {
         $this->sortable = true;
-        $sortColumn = \is_string($sortable) ? $sortable : $this->getName();
 
-        $this->sort = Sort::make($sortColumn)
-            ->alias($this->getParameter());
+        $this->sort = match (true) {
+            $sortable instanceof Sort => $sortable,
+
+            \is_string($sortable) => Sort::make($sortable)
+                ->alias($alias ?? $this->getParameter())
+                ->default($default),
+
+            default => Sort::make($this->getName())
+                ->alias($alias ?? $this->getParameter())
+                ->default($default),
+        };
 
         return $this;
     }

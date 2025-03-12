@@ -105,7 +105,6 @@ it('builds', function () {
         )->orders->scoped(fn ($orders) => $orders
             ->toBeArray()
             ->toHaveCount(1)
-            ->dd()
             ->{0}->toEqual([
                 'column' => qualifyProduct('price'),
                 'direction' => 'desc',

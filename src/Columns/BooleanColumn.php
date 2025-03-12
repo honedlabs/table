@@ -44,7 +44,7 @@ class BooleanColumn extends Column
      * @param  string  $true
      * @return $this
      */
-    public function true($true)
+    public function trueLabel($true)
     {
         $this->trueLabel = $true;
 
@@ -57,7 +57,7 @@ class BooleanColumn extends Column
      * @param  string  $false
      * @return $this
      */
-    public function false($false)
+    public function falseLabel($false)
     {
         $this->falseLabel = $false;
 
@@ -91,8 +91,8 @@ class BooleanColumn extends Column
      */
     public function labels($true, $false)
     {
-        $this->true($true);
-        $this->false($false);
+        $this->trueLabel($true);
+        $this->falseLabel($false);
 
         return $this;
     }

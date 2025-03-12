@@ -43,7 +43,7 @@ it('can handle inline actions at endpoint', function () {
         ->name->toBe('Inline');
 });
 
-it('can authorize the action', function () {
+it('authorizez', function () {
     $a = product();
     $b = product();
 

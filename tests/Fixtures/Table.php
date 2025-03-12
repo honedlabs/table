@@ -108,11 +108,12 @@ class Table extends HonedTable
                 ->meta(['badge' => true]),
 
             NumberColumn::make('price')
+                ->alias('cost')
                 ->sortable(),
 
             DateColumn::make('created_at')
                 ->sometimes()
-                ->sortable(),
+                ->sortable('col_created_at'),
 
             Column::make('public_id')
                 ->hidden()

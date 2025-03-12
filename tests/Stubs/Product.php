@@ -37,4 +37,14 @@ class Product extends Model
             'description' => $this->description,
         ];
     }
+
+    /**
+     * Dummy method to test the getter.
+     *
+     * @return string
+     */
+    public function price()
+    {
+        return '$10.00';
+    }
 }

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-use Honed\Table\Tests\Fixtures\Table as FixtureTable;
 use Honed\Table\Table;
+use Honed\Table\Columns\Column;
+use Illuminate\Support\Facades\Request;
+use Honed\Table\Tests\Fixtures\Table as FixtureTable;
 
 beforeEach(function () {
     $this->test = FixtureTable::make();
@@ -92,9 +94,8 @@ it('has key', function () {
 });
 
 it('errors if no key is set', function () {
-    expect(fn () => Table::make()->getRecordKey())
-        ->toThrow(\RuntimeException::class);
-});
+    Table::make()->getRecordKey();
+})->throws(\RuntimeException::class);
 
 it('has endpoint', function () {
     $endpoint = '/other';
@@ -110,4 +111,23 @@ it('has endpoint', function () {
         ->getEndpoint()->toBe(config('table.endpoint'))
         ->endpoint($endpoint)->toBeInstanceOf(Table::class)
         ->getEndpoint()->toBe($endpoint);
+});
+
+it('retrieves records', function () {
+    $product = product();
+
+    $request = Request::create('/', 'GET');
+
+    $columns = $this->test->getColumns();
+
+    $this->test->retrieveRecords($product, $request, $columns);
+
+    $keys = [...array_map(fn (Column $column) => $column->getParameter(), $columns), 'actions'];
+
+    expect($this->test->getRecords())
+        ->{0}->scoped(fn ($record) => $record
+            ->toHaveKeys($keys)
+            ->toHaveCount(\count($keys))
+            ->{'actions'}->toHaveCount(2) // ID not divisible by 2
+        );
 });

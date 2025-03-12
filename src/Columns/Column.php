@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
+use Honed\Action\Concerns\HasParameterNames;
 use Honed\Core\Concerns\Allowable;
 use Honed\Core\Concerns\HasAlias;
 use Honed\Core\Concerns\HasExtra;
@@ -36,6 +37,7 @@ class Column extends Primitive
     use HasLabel;
     use HasMeta;
     use HasName;
+    use HasParameterNames;
     use HasType;
     use IsActive;
     use IsHidden;
@@ -48,6 +50,13 @@ class Column extends Primitive
      * @var string|null
      */
     protected $fallback;
+
+    /**
+     * How the column value is retrieved.
+     *
+     * @var \Closure|null
+     */
+    protected $using;
 
     /**
      * Create a new column instance.
@@ -96,6 +105,29 @@ class Column extends Primitive
     }
 
     /**
+     * Set how the column value is retrieved.
+     *
+     * @param  \Closure|null  $using
+     * @return $this
+     */
+    public function using($using)
+    {
+        $this->using = $using;
+
+        return $this;
+    }
+
+    /**
+     * Get how the column value is retrieved.
+     *
+     * @return \Closure|null
+     */
+    public function getUsing()
+    {
+        return $this->using;
+    }
+
+    /**
      * Get the parameter for the column.
      *
      * @return string
@@ -114,9 +146,13 @@ class Column extends Primitive
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return array<string,mixed>
      */
-    public function forRecord($model)
+    public function createRecord($model)
     {
-        $value = Arr::get($model, $this->getName());
+        $using = $this->getUsing();
+
+        $value = $using
+            ? $this->evaluate($using, ...static::getModelParameters($model))
+            : Arr::get($model, $this->getName());
 
         return [
             $this->getParameter() => $this->apply($value),

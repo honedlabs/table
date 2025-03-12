@@ -121,3 +121,15 @@ it('toggles column activity', function () {
     expect($this->table->request($request)->build())
         ->getActiveColumns()->toHaveCount(5);
 });
+
+it('can disable toggling', function () {
+    $request = Request::create('/', 'GET');
+
+    $columns = $this->table->getColumns();
+
+    expect($this->table->request($request)->build())
+        ->isWithoutToggling()->toBeFalse()
+        ->withoutToggling()->toBe($this->table)
+        ->isWithoutToggling()->toBeTrue()
+        ->toggleColumns($request, $columns)->toHaveCount(7);
+});

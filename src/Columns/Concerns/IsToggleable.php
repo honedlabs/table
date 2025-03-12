@@ -75,6 +75,21 @@ trait IsToggleable
     }
 
     /**
+     * Activate the displayed columns, and return the active columns.
+     *
+     * @param  array<int,string>|null  $params
+     * @return bool
+     */
+    public function display($params = null)
+    {
+        $active = $this->isDisplayed($params);
+
+        $this->active($active);
+
+        return $active;
+    }
+
+    /**
      * Determine if this column should be shown on initial load.
      *
      * @param  array<int,string>|null  $params

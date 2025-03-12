@@ -3,20 +3,21 @@
 declare(strict_types=1);
 
 use Honed\Refine\Sort;
-use Honed\Table\Columns\BooleanColumn;
+use Carbon\Carbon;
 use Honed\Table\Columns\Column;
-use Honed\Table\Columns\DateColumn;
-use Honed\Table\Columns\HiddenColumn;
 use Honed\Table\Columns\KeyColumn;
-use Honed\Table\Columns\NumberColumn;
+use Honed\Table\Columns\DateColumn;
 use Honed\Table\Columns\TextColumn;
+use Honed\Table\Columns\HiddenColumn;
+use Honed\Table\Columns\NumberColumn;
+use Honed\Table\Columns\BooleanColumn;
 
 beforeEach(function () {
     $this->param = 'name';
     $this->test = Column::make($this->param);
 });
 
-it('applies to a value', function () {
+it('applies', function () {
     expect($this->test->apply('value'))->toBe('value');
 
     expect($this->test->transformer(fn ($value) => $value * 2))
@@ -39,131 +40,197 @@ it('has array representation', function () {
     ]);
 });
 
-it('can be sortable', function () {
+it('is sortable', function () {
     expect($this->test)
         ->isSortable()->toBeFalse()
-        ->sortable()->toBeInstanceOf(Column::class)
+        ->sortable()->toBe($this->test)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
             ->toBeInstanceOf(Sort::class)
             ->getDirection()->toBeNull()
             ->getNextDirection()->toBe($this->param)
         )
-        ->toArray()->toEqual([
-            'name' => $this->param,
-            'label' => ucfirst($this->param),
-            'type' => 'column',
-            'hidden' => false,
-            'icon' => null,
-            'toggleable' => true,
-            'active' => true,
-            'sort' => [
-                'direction' => null,
-                'next' => $this->param,
-            ],
-            'class' => null,
-            'meta' => [],
-        ])
-        ->sortable(false)->toBeInstanceOf(Column::class)
-        ->isSortable()->toBeFalse()
-        ->getSort()->toBeNull()
-        ->toArray()->toEqual([
-            'name' => $this->param,
-            'label' => ucfirst($this->param),
-            'type' => 'column',
-            'hidden' => false,
-            'icon' => null,
-            'toggleable' => true,
-            'active' => true,
-            'sort' => null,
-            'class' => null,
-            'meta' => [],
-        ])
-        ->sortable('description')->toBeInstanceOf(Column::class)
+        ->toArray()->{'sort'}->toBe([
+            'direction' => null,
+            'next' => $this->param,
+        ]);
+});
+
+it('is sortable on sort alias', function () {
+    expect($this->test)
+        ->sortable('description', 'alias')->toBe($this->test)
+        ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
             ->toBeInstanceOf(Sort::class)
             ->getDirection()->toBeNull()
-            ->getNextDirection()->toBe('description')
-        )
-        ->isSortable()->toBeTrue()
-        ->toArray()->toEqual([
-            'name' => 'name',
-            'label' => 'Name',
-            'type' => 'column',
-            'hidden' => false,
-            'icon' => null,
-            'toggleable' => true,
-            'active' => true,
-            'sort' => [
-                'direction' => null,
-                'next' => 'description',
-            ],
-            'class' => null,
-            'meta' => [],
-        ]);
+            ->getNextDirection()->toBe('alias')
+        );
 });
 
-it('can be toggleable', function () {
+it('is sortable using column alias', function () {
+    expect($this->test)
+        ->sortable('description', 'alias')->toBe($this->test)
+        ->alias('alias')->toBe($this->test)
+        ->isSortable()->toBeTrue()
+        ->getSort()->scoped(fn ($sort) => $sort
+            ->toBeInstanceOf(Sort::class)
+            ->getDirection()->toBeNull()
+            ->getNextDirection()->toBe('alias')
+        );
+});
+
+it('can disable sortable', function () {
+    expect($this->test)
+        ->sortable()->toBe($this->test)
+        ->isSortable()->toBeTrue()
+        ->sortable(false)->toBe($this->test)
+        ->isSortable()->toBeFalse();
+});
+
+it('is sometimes toggleable', function () {
     expect($this->test)
         ->isToggleable()->toBeTrue()
-        ->sometimes()->toBeInstanceOf(Column::class)
+        ->isSometimes()->toBeFalse()
+        ->sometimes()->toBe($this->test)
         ->isSometimes()->toBeTrue()
         ->isToggleable()->toBeTrue()
-        ->toArray()->toEqual([
-            'name' => $this->param,
-            'label' => ucfirst($this->param),
-            'type' => 'column',
-            'hidden' => false,
-            'icon' => null,
-            'toggleable' => true,
-            'active' => true,
-            'class' => null,
-            'sort' => null,
-            'meta' => [],
-        ])
-        ->always()->toBeInstanceOf(Column::class)
-        ->isToggleable()->toBeFalse()
-        ->isAlways()->toBeTrue()
-        ->toArray()->toEqual([
-            'name' => $this->param,
-            'label' => ucfirst($this->param),
-            'type' => 'column',
-            'hidden' => false,
-            'icon' => null,
-            'toggleable' => false,
-            'active' => true,
-            'class' => null,
-            'sort' => null,
-            'meta' => [],
-        ]);
+        ->toArray()->scoped(fn ($array) => $array
+            ->{'toggleable'}->toBe(true)
+            ->{'active'}->toBe(true)
+        );
 });
 
-it('can be searchable', function () {
+it('is always toggleable', function () {
+    expect($this->test)
+        ->isToggleable()->toBeTrue()
+        ->isAlways()->toBeFalse()
+        ->always()->toBe($this->test)
+        ->isAlways()->toBeTrue()
+        ->isToggleable()->toBeFalse()
+        ->toArray()->scoped(fn ($array) => $array
+            ->{'toggleable'}->toBe(false)
+            ->{'active'}->toBe(true)
+        );
+});
+
+it('is searchable', function () {
     expect($this->test)
         ->isSearchable()->toBeFalse()
-        ->searchable()->toBeInstanceOf(Column::class)
+        ->searchable()->toBe($this->test)
         ->isSearchable()->toBeTrue();
 });
 
-it('can have classes', function () {
+it('has classes', function () {
     expect($this->test)
         ->hasClass()->toBeFalse()
         ->getClass()->toBeNull()
-        ->class('bg-red-500 text-white', 'font-bold')->toBeInstanceOf(Column::class)
+        ->class('bg-red-500 text-white', 'font-bold')->toBe($this->test)
         ->hasClass()->toBeTrue()
         ->getClass()->toBe('bg-red-500 text-white font-bold');
 });
 
-it('has other column types', function () {
-    expect(HiddenColumn::make($this->param))
-        ->toBeInstanceOf(Column::class)
+it('creates record', function () {
+    $product = product();
+
+    expect($this->test->createRecord($product))->toBe([
+        $this->param => $product->name,
+    ]);
+});
+
+it('creates record using', function () {
+    $product = product();
+
+    expect($this->test)
+        ->getUsing()->toBeNull()
+        ->using(fn ($product) => $product->price())->toBe($this->test)
+        ->getUsing()->toBeInstanceOf(\Closure::class)
+        ->createRecord($product)->toBe([
+            $this->param => '$10.00',
+        ]);
+});
+
+
+it('can be a boolean column', function () {
+    $column = BooleanColumn::make($this->param);
+
+    expect($column)
+        ->toBe($column)
+        ->getType()->toBe('boolean')
+        ->getTrueLabel()->toBe('True')
+        ->getFalseLabel()->toBe('False')
+        ->trueLabel('Yes')->toBe($column)
+        ->getTrueLabel()->toBe('Yes')
+        ->falseLabel('No')->toBe($column)
+        ->getFalseLabel()->toBe('No')
+        ->labels('Enabled', 'Disabled')->toBe($column)
+        ->formatValue(true)->toBe('Enabled')
+        ->formatValue(false)->toBe('Disabled');
+});
+
+it('can be a date column', function () {
+    $column = DateColumn::make($this->param);
+
+    expect($column)
+        ->toBe($column)
+        ->getType()->toBe('date')
+        ->getFormat()->toBeNull()
+        ->format('d M Y')->toBe($column)
+        ->getFormat()->toBe('d M Y')
+        ->formatValue('2021-01-01')->toBe('01 Jan 2021')
+        ->isDiff()->toBeFalse()
+        ->diff()->toBe($column)
+        ->isDiff()->toBeTrue()
+        ->apply(Carbon::parse('1999-12-31'))->toBe('1 day ago')
+        ->timezone('America/New_York')->toBe($column)
+        ->getTimezone()->toBe('America/New_York')
+        ->fallback('-')->toBe($column)
+        ->apply(null)->toBe('-')
+        ->apply('invalid date')->toBe('-');
+});
+
+it('can be a hidden column', function () {
+    $column = HiddenColumn::make($this->param);
+
+    expect($column)
+        ->toBe($column)
         ->getType()->toBe('hidden')
         ->isAlways()->toBeTrue()
         ->isHidden()->toBeTrue();
+});
 
-    expect(KeyColumn::make($this->param))
-        ->toBeInstanceOf(Column::class)
+it('can be a key column', function () {
+    $column = KeyColumn::make($this->param);
+
+    expect($column)
+        ->toBe($column)
         ->getType()->toBe('key')
         ->isKey()->toBeTrue()
         ->isHidden()->toBeTrue();
+});
+
+it('can be a number column', function () {
+    $column = NumberColumn::make($this->param);
+
+    expect($column)
+        ->toBe($column)
+        ->getType()->toBe('number');
+});
+
+it('can be a text column', function () {
+    $column = TextColumn::make($this->param);
+
+    expect($column)
+        ->toBe($column)
+        ->getType()->toBe('text')
+        ->getPrefix()->toBeNull()
+        ->getSuffix()->toBeNull()
+        ->prefix('#')->toBe($column)
+        ->getPrefix()->toBe('#')
+        ->suffix('!')->toBe($column)
+        ->getSuffix()->toBe('!')
+        ->length(10)->toBe($column)
+        ->getLength()->toBe(10)
+        ->formatValue('1234567890')->toBe('#123456789')
+        ->fallback('-')->toBe($column)
+        ->apply(null)->toBe('-');
 });
