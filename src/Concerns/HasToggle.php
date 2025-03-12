@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Illuminate\Support\Str;
-use Honed\Table\Columns\Column;
-use Illuminate\Support\Facades\Cookie;
-use Honed\Table\Contracts\ShouldToggle;
-use Honed\Table\Contracts\ShouldRemember;
 use Honed\Core\Concerns\InterpretsRequest;
+use Honed\Table\Columns\Column;
+use Honed\Table\Contracts\ShouldRemember;
+use Honed\Table\Contracts\ShouldToggle;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
 
 trait HasToggle
 {
@@ -179,7 +179,6 @@ trait HasToggle
         return (bool) config('table.toggle.remember', false);
     }
 
-
     /**
      * Get the cookie name to use for the table toggle.
      *
@@ -297,7 +296,10 @@ trait HasToggle
             return $columns;
         }
 
-        $interpreter = new class { use InterpretsRequest; };
+        $interpreter = new class
+        {
+            use InterpretsRequest;
+        };
 
         $key = $this->getColumnsKey();
         /** @var array<int,string>|null */
