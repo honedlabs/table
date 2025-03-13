@@ -2,6 +2,7 @@
 
 namespace Honed\Table;
 
+use Honed\Table\Console\Commands\ColumnMakeCommand;
 use Honed\Table\Console\Commands\TableMakeCommand;
 use Honed\Table\Http\Controllers\TableController;
 use Illuminate\Routing\Router;
@@ -19,16 +20,17 @@ class TableServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 TableMakeCommand::class,
+                ColumnMakeCommand::class,
             ]);
+
+            $this->publishes([
+                __DIR__.'/../stubs' => base_path('stubs'),
+            ], 'stubs');
+
+            $this->publishes([
+                __DIR__.'/../config/table.php' => config_path('table.php'),
+            ], 'config');
         }
-
-        $this->publishes([
-            __DIR__.'/../stubs' => base_path('stubs'),
-        ], 'stubs');
-
-        $this->publishes([
-            __DIR__.'/../config/table.php' => config_path('table.php'),
-        ], 'config');
 
         $this->registerRoutesMacro();
     }

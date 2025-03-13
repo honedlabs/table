@@ -8,29 +8,29 @@ use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputOption;
 
-#[AsCommand(name: 'make:table')]
-class TableMakeCommand extends GeneratorCommand
+#[AsCommand(name: 'make:column')]
+class ColumnMakeCommand extends GeneratorCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'make:table';
+    protected $name = 'make:column';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Create a new table column class.';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $description = 'Create a new table class';
-
-    /**
-     * The type of class being generated.
-     *
-     * @var string
-     */
-    protected $type = 'Table';
+    protected $type = 'Column';
 
     /**
      * Get the stub file for the generator.
@@ -39,7 +39,7 @@ class TableMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return $this->resolveStubPath('/stubs/honed.table.stub');
+        return $this->resolveStubPath('/stubs/honed.column.stub');
     }
 
     /**
@@ -63,16 +63,18 @@ class TableMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Tables';
+        return $rootNamespace.'\Tables\Columns';
     }
 
     /**
+     * Get the console command options
+     *
      * @return array<int,array<int,mixed>>
      */
-    protected function getOptions(): array
+    protected function getOptions()
     {
         return [
-            ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the table already exists'],
+            ['force', null, InputOption::VALUE_NONE, 'Create the class even if the column already exists'],
         ];
     }
 
@@ -86,7 +88,7 @@ class TableMakeCommand extends GeneratorCommand
         return [
             'name' => [
                 'What should the '.strtolower($this->type).' be named?',
-                'E.g. UserTable',
+                'E.g. TextColumn',
             ],
         ];
     }
