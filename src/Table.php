@@ -7,7 +7,6 @@ namespace Honed\Table;
 use Honed\Action\Concerns\HasActions;
 use Honed\Action\Concerns\HasParameterNames;
 use Honed\Action\Handler;
-use Honed\Action\InlineAction;
 use Honed\Core\Concerns\Encodable;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Refine\Refine;
@@ -337,31 +336,18 @@ class Table extends Refine implements UrlRoutable
     {
         [$named, $typed] = static::getModelParameters($model);
 
-        $actions = \array_map(
-            fn (InlineAction $action) => $action->resolve($named, $typed)->toArray(),
-            \array_values(
-                \array_filter(
-                    $actions,
-                    fn (InlineAction $action) => $action->isAllowed($named, $typed)
-                )
-            )
-        );
+        $actions = $this->getRecordActions($named, $typed);
 
-        $record = $this->isWithAttributes()
-            ? $model->toArray()
-            : [];
+        $record = $this->isWithAttributes() ? $model->toArray() : [];
 
         /** @var array<string,mixed> */
-        $record = \array_merge($record,
-            Arr::mapWithKeys(
-                $columns,
-                fn (Column $column) => $column->createRecord($model),
-            ), [
-                'actions' => $actions,
-            ]
+        $row = Arr::mapWithKeys(
+            $columns,
+            fn (Column $column) => $column->createRecord($model, $named, $typed),
         );
 
-        return $record;
+        /** @var array<string,mixed> */
+        return \array_merge($record, $row, ['actions' => $actions]);
     }
 
     /**
@@ -369,10 +355,7 @@ class Table extends Refine implements UrlRoutable
      */
     protected function pipeline($builder, $request, $sorts = [], $filters = [], $searches = [])
     {
-        $columns = $this->toggleColumns(
-            $request,
-            $this->getColumns()
-        );
+        $columns = $this->toggleColumns($request, $this->getColumns());
 
         /** @var array<int,\Honed\Refine\Sort> */
         $sorts = \array_map(
@@ -425,7 +408,6 @@ class Table extends Refine implements UrlRoutable
             Builder::class => [$for],
             Model::class => [$for],
             $model => [$for],
-            /** If typing reaches this point, use dependency injection. */
             default => [App::make($parameterType)],
         };
     }

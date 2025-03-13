@@ -234,7 +234,7 @@ trait HasPagination
     /**
      * Determine if the paginator is a length-aware paginator.
      *
-     * @param  string|'length-aware'|'simple'|'cursor'|'collection'  $paginator
+     * @param  string  $paginator
      * @return bool
      */
     protected static function isLengthAware($paginator)
@@ -249,7 +249,7 @@ trait HasPagination
     /**
      * Determine if the paginator is a simple paginator.
      *
-     * @param  string|'length-aware'|'simple'|'cursor'|'collection'  $paginator
+     * @param  string  $paginator
      * @return bool
      */
     protected static function isSimple($paginator)
@@ -264,7 +264,7 @@ trait HasPagination
     /**
      * Determine if the paginator is a cursor paginator.
      *
-     * @param  string|'length-aware'|'simple'|'cursor'|'collection'  $paginator
+     * @param  string  $paginator
      * @return bool
      */
     protected static function isCursor($paginator)
@@ -279,10 +279,10 @@ trait HasPagination
     /**
      * Determine if the paginator is a collection.
      *
-     * @param  string|'length-aware'|'simple'|'cursor'|'collection'  $paginator
+     * @param  string  $paginator
      * @return bool
      */
-    protected static function isCollection($paginator)
+    protected static function isCollector($paginator)
     {
         return \in_array($paginator, [
             'none',
@@ -325,14 +325,14 @@ trait HasPagination
         $start = max(1, min($currentPage - $onEachSide, $lastPage - ($onEachSide * 2)));
         $end = min($lastPage, max($currentPage + $onEachSide, ($onEachSide * 2 + 1)));
 
-        return collect(range($start, $end))
-            ->map(static fn ($page) => [
+        return \array_map(
+            static fn (int $page) => [
                 'url' => $paginator->url($page),
                 'label' => (string) $page,
                 'active' => $currentPage === $page,
-            ])
-            ->values()
-            ->all();
+            ],
+            range($start, $end)
+        );
     }
 
     /**
@@ -452,7 +452,7 @@ trait HasPagination
                 $builder->cursorPaginate(perPage: $count, cursorName: $key),
                 'cursorPaginator',
             ],
-            static::isCollection($paginator) => [
+            static::isCollector($paginator) => [
                 $builder->get(),
                 'collectionPaginator',
             ],
@@ -466,7 +466,7 @@ trait HasPagination
         $paginationData = \call_user_func([static::class, $method], $data);
 
         return [
-            $data instanceof Collection ? $data : $data->getCollection(),
+            $data instanceof Collection ? $data : collect($data->items()),
             $paginationData,
         ];
     }
@@ -474,7 +474,7 @@ trait HasPagination
     /**
      * Throw an exception if the paginator is invalid.
      *
-     * @param  string|'cursor'|'simple'|'length-aware'|'collection'  $paginator
+     * @param  string  $paginator
      * @return never
      */
     protected static function throwInvalidPaginatorException($paginator)

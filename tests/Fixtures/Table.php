@@ -104,8 +104,7 @@ class Table extends HonedTable
             TextColumn::make('seller.name', 'Sold by')
                 ->sometimes(),
 
-            Column::make('status')
-                ->meta(['badge' => true]),
+            Column::make('status'),
 
             NumberColumn::make('price')
                 ->alias('cost')

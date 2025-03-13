@@ -85,18 +85,14 @@ trait HasColumns
      */
     public function getColumns()
     {
-        if ($this->isWithoutColumns()) {
-            return [];
-        }
-
         return once(function () {
-            $methodColumns = method_exists($this, 'columns') ? $this->columns() : [];
-            $propertyColumns = $this->columns ?? [];
+            $columns = \method_exists($this, 'columns') ? $this->columns() : [];
+            $columns = \array_merge($columns, $this->columns ?? []);
 
             return \array_values(
                 \array_filter(
-                    \array_merge($propertyColumns, $methodColumns),
-                    static fn (Column $column): bool => $column->isAllowed()
+                    $columns,
+                    static fn (Column $column) => $column->isAllowed()
                 )
             );
         });
@@ -183,6 +179,10 @@ trait HasColumns
      */
     public function columnsToArray()
     {
+        if ($this->isWithoutColumns()) {
+            return [];
+        }
+
         return \array_map(
             static fn (Column $column) => $column->toArray(),
             $this->getColumns()

@@ -60,7 +60,9 @@ it('can disable columns', function () {
     expect($this->table)
         ->isWithoutColumns()->toBeFalse()
         ->getColumns()->toHaveCount(9)
+        ->columnsToArray()->toHaveCount(9)
         ->withoutColumns()->toBe($this->table)
         ->isWithoutColumns()->toBeTrue()
-        ->getColumns()->toBeEmpty();
+        ->getColumns()->toHaveCount(9)
+        ->columnsToArray()->toBeEmpty();
 });

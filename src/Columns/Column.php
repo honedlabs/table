@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Honed\Action\Concerns\HasParameterNames;
 use Honed\Core\Concerns\Allowable;
 use Honed\Core\Concerns\HasAlias;
+use Honed\Core\Concerns\HasExtra;
 use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Concerns\HasLabel;
-use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\IsActive;
@@ -31,11 +30,10 @@ class Column extends Primitive
     use Concerns\IsSortable;
     use Concerns\IsToggleable;
     use HasAlias;
+    use HasExtra;
     use HasIcon;
     use HasLabel;
-    use HasMeta;
     use HasName;
-    use HasParameterNames;
     use HasType;
     use IsActive;
     use IsHidden;
@@ -142,18 +140,25 @@ class Column extends Primitive
      * Get the value of the column to form a record.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  array<string,mixed>  $named
+     * @param  array<class-string,mixed>  $typed
      * @return array<string,mixed>
      */
-    public function createRecord($model)
+    public function createRecord($model, $named, $typed)
     {
         $using = $this->getUsing();
 
         $value = $using
-            ? $this->evaluate($using, ...static::getModelParameters($model))
+            ? $this->evaluate($using, $named, $typed)
             : Arr::get($model, $this->getName());
 
+        $extra = $this->resolveExtra($named, $typed);
+
         return [
-            $this->getParameter() => $this->apply($value),
+            $this->getParameter() => [
+                'value' => $this->apply($value),
+                'extra' => $extra,
+            ],
         ];
     }
 
@@ -195,7 +200,6 @@ class Column extends Primitive
             'toggleable' => $this->isToggleable(),
             'icon' => $this->getIcon(),
             'class' => $this->getClass(),
-            'meta' => $this->getMeta(),
             'sort' => $this->isSortable() ? $this->sortToArray() : null,
         ];
     }

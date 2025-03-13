@@ -120,11 +120,7 @@ trait HasToggle
      */
     public function getColumnsKey()
     {
-        if (isset($this->columnsKey)) {
-            return $this->columnsKey;
-        }
-
-        return static::fallbackColumnsKey();
+        return $this->columnsKey ?? static::fallbackColumnsKey();
     }
 
     /**
@@ -158,7 +154,7 @@ trait HasToggle
     public function isRememberable()
     {
         if (isset($this->remember)) {
-            return $this->remember;
+            return (bool) $this->remember;
         }
 
         if ($this instanceof ShouldRemember) {
@@ -186,11 +182,7 @@ trait HasToggle
      */
     public function getCookieName()
     {
-        if (isset($this->cookieName)) {
-            return $this->cookieName;
-        }
-
-        return $this->guessCookieName();
+        return $this->cookieName ?? static::guessCookieName();
     }
 
     /**
@@ -212,7 +204,7 @@ trait HasToggle
      *
      * @return string
      */
-    public function guessCookieName()
+    public static function guessCookieName()
     {
         return Str::of(static::class)
             ->classBasename()
@@ -243,11 +235,7 @@ trait HasToggle
      */
     public function getDuration()
     {
-        if (isset($this->duration)) {
-            return $this->duration;
-        }
-
-        return static::fallbackDuration();
+        return $this->duration ?? static::fallbackDuration();
     }
 
     /**
@@ -293,12 +281,7 @@ trait HasToggle
     public function toggleColumns($request, $columns)
     {
         if (! $this->isToggleable() || $this->isWithoutToggling()) {
-            return \array_values(
-                \array_filter(
-                    $columns,
-                    static fn (Column $column) => $column->display()
-                )
-            );
+            return $this->displayedColumns($columns);
         }
 
         $interpreter = new class
@@ -315,6 +298,18 @@ trait HasToggle
             $params = $this->configureCookie($request, $params);
         }
 
+        return $this->displayedColumns($columns, $params);
+    }
+
+    /**
+     * Get the columns that are displayed.
+     *
+     * @param  array<int,\Honed\Table\Columns\Column>  $columns
+     * @param  array<int,string>|null  $params
+     * @return array<int,\Honed\Table\Columns\Column>
+     */
+    public function displayedColumns($columns, $params = null)
+    {
         return \array_values(
             \array_filter(
                 $columns,

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Honed\Refine\Sort;
 use Carbon\Carbon;
+use Honed\Refine\Sort;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Columns\DateColumn;
@@ -11,6 +11,7 @@ use Honed\Table\Columns\TextColumn;
 use Honed\Table\Columns\HiddenColumn;
 use Honed\Table\Columns\NumberColumn;
 use Honed\Table\Columns\BooleanColumn;
+use Honed\Action\Concerns\HasParameterNames;
 
 beforeEach(function () {
     $this->param = 'name';
@@ -35,7 +36,6 @@ it('has array representation', function () {
         'toggleable' => true,
         'active' => true,
         'sort' => null,
-        'meta' => [],
         'class' => null,
     ]);
 });
@@ -133,20 +133,34 @@ it('has classes', function () {
 it('creates record', function () {
     $product = product();
 
-    expect($this->test->createRecord($product))->toBe([
-        $this->param => $product->name,
+    $namer = new class { use HasParameterNames; };
+
+    [$named, $typed] = $namer->getModelParameters($product);
+
+    expect($this->test->createRecord($product, $named, $typed))->toBe([
+        $this->param => [
+            'value' => $product->name,
+            'extra' => [],
+        ],
     ]);
 });
 
-it('creates record using', function () {
+it('creates record using callback', function () {
     $product = product();
+
+    $namer = new class { use HasParameterNames; };
+
+    [$named, $typed] = $namer->getModelParameters($product);
 
     expect($this->test)
         ->getUsing()->toBeNull()
         ->using(fn ($product) => $product->price())->toBe($this->test)
         ->getUsing()->toBeInstanceOf(\Closure::class)
-        ->createRecord($product)->toBe([
-            $this->param => '$10.00',
+        ->createRecord($product, $named, $typed)->toEqual([
+            $this->param => [
+                'value' => '$10.00',
+                'extra' => [],
+            ],
         ]);
 });
 
