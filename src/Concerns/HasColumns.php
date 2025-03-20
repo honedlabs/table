@@ -6,16 +6,26 @@ namespace Honed\Table\Concerns;
 
 use Honed\Table\Columns\Column;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ */
 trait HasColumns
 {
     /**
      * The columns to be used for the table.
      *
-     * @var array<int,\Honed\Table\Columns\Column>|null
+     * @var array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>|null
      */
     protected $columns;
+
+    /**
+     * The cached columns to be used for pipelines.
+     *
+     * @var array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
+     */
+    protected $cachedColumns = [];
 
     /**
      * Whether the columns should be retrievable.
@@ -27,16 +37,12 @@ trait HasColumns
     /**
      * Merge a set of columns with the existing columns.
      *
-     * @template T of \Honed\Table\Columns\Column
-     *
-     * @param  array<int,T>|Collection<int,T>  $columns
+     * @param  iterable<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  ...$columns
      * @return $this
      */
-    public function addColumns($columns)
+    public function withColumns(...$columns)
     {
-        if ($columns instanceof Collection) {
-            $columns = $columns->all();
-        }
+        $columns = Arr::flatten($columns);
 
         $this->columns = \array_merge($this->columns ?? [], $columns);
 
@@ -44,49 +50,20 @@ trait HasColumns
     }
 
     /**
-     * Add a single column to the list of columns.
-     *
-     * @param  \Honed\Table\Columns\Column  $column
-     * @return $this
-     */
-    public function addColumn($column)
-    {
-        $this->columns[] = $column;
-
-        return $this;
-    }
-
-    /**
-     * Set the columns to not be retrieved.
-     *
-     * @return $this
-     */
-    public function withoutColumns()
-    {
-        $this->withoutColumns = true;
-
-        return $this;
-    }
-
-    /**
-     * Determine if the columns should not be retrieved.
-     *
-     * @return bool
-     */
-    public function isWithoutColumns()
-    {
-        return $this->withoutColumns;
-    }
-
-    /**
      * Get the columns for the table.
      *
-     * @return array<int,\Honed\Table\Columns\Column>
+     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
      */
     public function getColumns()
     {
+        if ($this->isWithoutColumns()) {
+            return [];
+        }
+
         return once(function () {
+
             $columns = \method_exists($this, 'columns') ? $this->columns() : [];
+
             $columns = \array_merge($columns, $this->columns ?? []);
 
             return \array_values(
@@ -109,67 +86,59 @@ trait HasColumns
     }
 
     /**
-     * Get the columns which are active for toggling.
+     * Get the cached columns.
      *
-     * @return array<int,\Honed\Table\Columns\Column>
+     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
      */
-    public function getActiveColumns()
+    public function getCachedColumns()
     {
-        return \array_values(
-            \array_filter(
-                $this->getColumns(),
-                static fn (Column $column): bool => $column->isActive()
-            )
-        );
+        return $this->cachedColumns;
     }
 
     /**
-     * Get the sortable columns for the table or a list of columns.
+     * Set the cached columns.
      *
-     * @param  array<int,\Honed\Table\Columns\Column>|null  $columns
-     * @return array<int,\Honed\Table\Columns\Column>
+     * @param  array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  $cachedColumns
+     * @return $this
      */
-    public function getColumnSorts($columns = null)
+    public function cacheColumns($cachedColumns)
     {
-        $columns = $columns ?? $this->getColumns();
+        $this->cachedColumns = $cachedColumns;
 
-        return \array_values(
-            \array_filter(
-                $columns,
-                static fn (Column $column) => $column->isSortable()
-            )
-        );
+        return $this;
     }
 
     /**
-     * Get the searchable columns from the table or a list of columns.
+     * Flush the cached columns.
      *
-     * @param  array<int,\Honed\Table\Columns\Column>|null  $columns
-     * @return array<int,\Honed\Table\Columns\Column>
+     * @return void
      */
-    public function getColumnSearches($columns = null)
+    public function flushCachedColumns()
     {
-        $columns = $columns ?? $this->getColumns();
-
-        return \array_values(
-            \array_filter(
-                $columns,
-                static fn (Column $column) => $column->isSearchable()
-            )
-        );
+        $this->cachedColumns = [];
     }
 
     /**
-     * Get the key column for the table.
+     * Set the instance to not provide the columns.
      *
-     * @return \Honed\Table\Columns\Column|null
+     * @param  bool  $withoutColumns
+     * @return $this
      */
-    public function getKeyColumn()
+    public function withoutColumns($withoutColumns = true)
     {
-        return Arr::first(
-            $this->getColumns(),
-            static fn (Column $column): bool => $column->isKey()
-        );
+        $this->withoutColumns = $withoutColumns;
+
+        return $this;
+    }
+
+    /**
+     * Determine if the instance should not provide the columns.
+     *
+     * @return bool
+     */
+    public function isWithoutColumns()
+    {
+        return $this->withoutColumns;
     }
 
     /**
@@ -179,10 +148,6 @@ trait HasColumns
      */
     public function columnsToArray()
     {
-        if ($this->isWithoutColumns()) {
-            return [];
-        }
-
         return \array_map(
             static fn (Column $column) => $column->toArray(),
             $this->getColumns()

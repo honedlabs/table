@@ -6,6 +6,12 @@ namespace {{ namespace }};
 
 use Honed\Table\Columns\Column;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends Column<TModel, TBuilder>
+ */
 final class {{ class }} extends Column
 {
     /**

@@ -6,6 +6,12 @@ namespace Honed\Table\Columns;
 
 use Illuminate\Support\Number;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends Column<TModel, TBuilder>
+ */
 class NumberColumn extends Column
 {
     /**
@@ -28,7 +34,6 @@ class NumberColumn extends Column
     public function setUp()
     {
         parent::setUp();
-
         $this->type('number');
     }
 
@@ -45,7 +50,7 @@ class NumberColumn extends Column
         $abbreviate = $this->isAbbreviated();
 
         return match (true) {
-            ! \is_null($decimals) => \number_format((float) $value, $decimals),
+            isset($decimals) => \number_format((float) $value, $decimals),
             $abbreviate => Number::abbreviate((int) $value),
             default => $value,
         };

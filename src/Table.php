@@ -5,21 +5,34 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Honed\Action\Concerns\HasActions;
-use Honed\Action\Concerns\HasParameterNames;
 use Honed\Action\Handler;
 use Honed\Core\Concerns\Encodable;
 use Honed\Core\Concerns\HasMeta;
+use Honed\Core\Concerns\HasParameterNames;
+use Honed\Refine\Pipelines\AfterRefining;
+use Honed\Refine\Pipelines\BeforeRefining;
+use Honed\Refine\Pipelines\RefineFilters;
+use Honed\Refine\Pipelines\RefineSearches;
 use Honed\Refine\Refine;
-use Honed\Refine\Search;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\HasColumns;
 use Honed\Table\Concerns\HasPagination;
 use Honed\Table\Concerns\HasTableBindings;
-use Honed\Table\Concerns\HasToggle;
+use Honed\Table\Concerns\IsSelectable;
+use Honed\Table\Concerns\IsToggleable;
+use Honed\Table\Pipelines\CleanupTable;
+use Honed\Table\Pipelines\MergeColumnFilters;
+use Honed\Table\Pipelines\MergeColumnSearches;
+use Honed\Table\Pipelines\Paginate;
+use Honed\Table\Pipelines\QueryColumns;
+use Honed\Table\Pipelines\RefineSorts;
+use Honed\Table\Pipelines\SelectColumns;
+use Honed\Table\Pipelines\ToggleColumns;
+use Honed\Table\Pipelines\TransformRecords;
 use Illuminate\Contracts\Routing\UrlRoutable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 
@@ -33,18 +46,25 @@ class Table extends Refine implements UrlRoutable
 {
     use Encodable;
     use HasActions;
+
+    /** @use HasColumns<TModel, TBuilder> */
     use HasColumns;
+
     use HasMeta;
 
-    /**
-     * @use HasPagination<TModel, TBuilder>
-     */
+    /** @use HasPagination<TModel, TBuilder> */
     use HasPagination;
 
+    /** @use HasParameterNames<TModel, TBuilder> */
     use HasParameterNames;
-    use HasParameterNames;
+
     use HasTableBindings;
-    use HasToggle;
+
+    /** @use IsSelectable<TModel, TBuilder> */
+    use IsSelectable;
+
+    /** @use IsToggleable<TModel, TBuilder> */
+    use IsToggleable;
 
     /**
      * The unique identifier column for the table.
@@ -65,12 +85,12 @@ class Table extends Refine implements UrlRoutable
      *
      * @var bool|null
      */
-    protected $withAttributes;
+    protected $attributes;
 
     /**
      * The table records.
      *
-     * @var array<int,array<string,mixed>>
+     * @var array<int,mixed>
      */
     protected $records = [];
 
@@ -94,11 +114,15 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
-     * {@inheritdoc}
+     * Set the record key to use.
+     *
+     * @param  string  $key
+     * @return $this
      */
-    protected function forwardBuilderCall($method, $parameters)
+    public function key($key)
     {
-        // Remove refine behaviour and prevent calling of the underlying builder.
+        $this->key = $key;
+
         return $this;
     }
 
@@ -109,24 +133,35 @@ class Table extends Refine implements UrlRoutable
      *
      * @throws \RuntimeException
      */
-    public function getRecordKey()
+    public function getKey()
     {
-        return $this->key // $this->getKey()
-            ?? $this->getKeyColumn()?->getName()
-            ?? throw new \RuntimeException(
-                'The table must have a key column or a key property defined.'
-            );
+        if (isset($this->key)) {
+            return $this->key;
+        }
+
+        $keyColumn = Arr::first(
+            $this->getColumns(),
+            static fn (Column $column): bool => $column->isKey()
+        );
+
+        if ($keyColumn) {
+            return $keyColumn->getName();
+        }
+
+        throw new \RuntimeException(
+            'The table must have a key column or a key property defined.'
+        );
     }
 
     /**
-     * Set the key property for the table.
+     * Set the endpoint to be used for actions.
      *
-     * @param  string  $key
+     * @param  string  $endpoint
      * @return $this
      */
-    public function key($key)
+    public function endpoint($endpoint)
     {
-        $this->key = $key;
+        $this->endpoint = $endpoint;
 
         return $this;
     }
@@ -142,15 +177,11 @@ class Table extends Refine implements UrlRoutable
             return $this->endpoint;
         }
 
-        if (\method_exists($this, 'endpoint')) {
-            return $this->endpoint();
-        }
-
         return static::fallbackEndpoint();
     }
 
     /**
-     * Get the fallback endpoint to be used for table actions from the config.
+     * Get the endpoint to be used for table actions from the config.
      *
      * @return string
      */
@@ -160,14 +191,14 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
-     * Set whether the model should be serialized per record.
+     * Set whether the model attributes should serialized alongside columns.
      *
-     * @param  bool|null  $withAttributes
+     * @param  bool|null  $attributes
      * @return $this
      */
-    public function withAttributes($withAttributes = true)
+    public function attributes($attributes = true)
     {
-        $this->withAttributes = $withAttributes;
+        $this->attributes = $attributes;
 
         return $this;
     }
@@ -175,12 +206,15 @@ class Table extends Refine implements UrlRoutable
     /**
      * Get whether the model should be serialized per record.
      *
-     * @return bool|null
+     * @return bool
      */
-    public function isWithAttributes()
+    public function hasAttributes()
     {
-        return (bool) ($this->withAttributes
-            ?? static::fallbackWithAttributes());
+        if (isset($this->attributes)) {
+            return $this->attributes;
+        }
+
+        return static::fallbackAttributes();
     }
 
     /**
@@ -188,9 +222,51 @@ class Table extends Refine implements UrlRoutable
      *
      * @return bool
      */
-    public static function fallbackWithAttributes()
+    public static function fallbackAttributes()
     {
         return (bool) config('table.attributes', false);
+    }
+
+    /**
+     * Set the records for the table.
+     *
+     * @param  array<int,mixed>  $records
+     * @return void
+     */
+    public function setRecords($records)
+    {
+        $this->records = $records;
+    }
+
+    /**
+     * Get the records from the table.
+     *
+     * @return array<int,mixed>
+     */
+    public function getRecords()
+    {
+        return $this->records;
+    }
+
+    /**
+     * Set the pagination data for the table.
+     *
+     * @param  array<string,mixed>  $paginationData
+     * @return void
+     */
+    public function setPaginationData($paginationData)
+    {
+        $this->paginationData = $paginationData;
+    }
+
+    /**
+     * Get the pagination data from the table.
+     *
+     * @return array<string,mixed>
+     */
+    public function getPaginationData()
+    {
+        return $this->paginationData;
     }
 
     /**
@@ -214,37 +290,15 @@ class Table extends Refine implements UrlRoutable
      */
     public static function fallbackMatchesKey()
     {
-        parent::fallbackMatchesKey();
-
         return type(config('table.matches_key', 'match'))->asString();
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function fallbackMatching()
+    public static function fallbackMatches()
     {
         return (bool) config('table.match', false);
-    }
-
-    /**
-     * Get the records from the table.
-     *
-     * @return array<int,array<string,mixed>>
-     */
-    public function getRecords()
-    {
-        return $this->records;
-    }
-
-    /**
-     * Get the pagination data from the table.
-     *
-     * @return array<string,mixed>
-     */
-    public function getPaginationData()
-    {
-        return $this->paginationData;
     }
 
     /**
@@ -258,7 +312,7 @@ class Table extends Refine implements UrlRoutable
         return Handler::make(
             $this->getFor(),
             $this->getActions(),
-            $this->getRecordKey()
+            $this->getKey()
         )->handle($request);
     }
 
@@ -279,8 +333,10 @@ class Table extends Refine implements UrlRoutable
     {
         $this->build();
 
+        $id = $this->isWithoutActions() ? null : $this->getRouteKey();
+
         return \array_merge(parent::toArray(), [
-            'id' => $this->getRouteKey(),
+            'id' => $id,
             'records' => $this->getRecords(),
             'paginator' => $this->getPaginationData(),
             'columns' => $this->columnsToArray(),
@@ -298,168 +354,42 @@ class Table extends Refine implements UrlRoutable
     {
         return \array_merge(parent::configToArray(), [
             'endpoint' => $this->getEndpoint(),
-            'record' => $this->getRecordKey(),
-            'records' => $this->getRecordsKey(),
-            'columns' => $this->getColumnsKey(),
-            'pages' => $this->getPagesKey(),
+            'record' => $this->getKey(),
+            'records' => $this->formatScope($this->getRecordsKey()),
+            'columns' => $this->formatScope($this->getColumnsKey()),
+            'pages' => $this->formatScope($this->getPagesKey()),
         ]);
     }
 
     /**
-     * Retrieve the records from the underlying builder resource.
-     *
-     * @param  TBuilder  $builder
-     * @param  \Illuminate\Http\Request  $request
-     * @param  array<int,\Honed\Table\Columns\Column>  $columns
-     * @return void
+     * {@inheritdoc}
      */
-    public function retrieveRecords($builder, $request, $columns)
+    protected function pipeline()
     {
-        [$records, $this->paginationData] = $this->paginate($builder, $request);
-
-        $actions = $this->getInlineActions();
-
-        $this->records = $records->map(
-            fn ($record) => $this->createRecord($record, $columns, $actions)
-        )->all();
-    }
-
-    /**
-     * Create a record for the table.
-     *
-     * @param  TModel  $model
-     * @param  array<int,\Honed\Table\Columns\Column>  $columns
-     * @param  array<int,\Honed\Action\InlineAction>  $actions
-     * @return array<string,mixed>
-     */
-    public function createRecord($model, $columns, $actions)
-    {
-        [$named, $typed] = static::getModelParameters($model);
-
-        $actions = $this->getRecordActions($named, $typed);
-
-        $record = $this->isWithAttributes() ? $model->toArray() : [];
-
-        /** @var array<string,mixed> */
-        $row = Arr::mapWithKeys(
-            $columns,
-            fn (Column $column) => $column->createRecord($model, $named, $typed),
-        );
-
-        /** @var array<string,mixed> */
-        return \array_merge($record, $row, ['actions' => $actions]);
+        App::make(Pipeline::class)
+            ->send($this)
+            ->through([
+                BeforeRefining::class,
+                ToggleColumns::class,
+                MergeColumnFilters::class,
+                MergeColumnSearches::class,
+                RefineSearches::class,
+                RefineFilters::class,
+                RefineSorts::class,
+                SelectColumns::class,
+                QueryColumns::class,
+                AfterRefining::class,
+                Paginate::class,
+                TransformRecords::class,
+                CleanupTable::class,
+            ])->thenReturn();
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function pipeline($builder, $request, $sorts = [], $filters = [], $searches = [])
+    protected function forwardBuilderCall($method, $parameters)
     {
-        $columns = $this->toggleColumns($request, $this->getColumns());
-
-        /** @var array<int,\Honed\Refine\Sort> */
-        $sorts = \array_map(
-            static fn (Column $column) => $column->getSort(),
-            $this->getColumnSorts($columns)
-        );
-
-        /** @var array<int,\Honed\Refine\Search> */
-        $searches = \array_map(
-            static fn (Column $column) => Search::make($column->getName(), $column->getLabel())
-                ->alias($column->getParameter()),
-            $this->getColumnSearches($columns)
-        );
-
-        // Use the parent pipeline to perform refinement.
-        parent::pipeline($builder, $request, $sorts, [], $searches);
-
-        $this->retrieveRecords($builder, $request, $columns);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function resolveDefaultClosureDependencyForEvaluationByName($parameterName)
-    {
-        $for = $this->getFor();
-        [$_, $singular, $plural] = $this->getParameterNames($for);
-
-        return match ($parameterName) {
-            'request' => [$this->getRequest()],
-            'builder' => [$for],
-            'resource' => [$for],
-            'query' => [$for],
-            $singular => [$for],
-            $plural => [$for],
-            default => [],
-        };
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function resolveDefaultClosureDependencyForEvaluationByType($parameterType)
-    {
-        $for = $this->getFor();
-        [$model] = $this->getParameterNames($for);
-
-        return match ($parameterType) {
-            Request::class => [$this->getRequest()],
-            Builder::class => [$for],
-            Model::class => [$for],
-            $model => [$for],
-            default => [App::make($parameterType)],
-        };
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $parameters)
-    {
-        switch ($method) {
-            case 'columns':
-                /** @var array<int,\Honed\Table\Columns\Column> $columns */
-                $columns = $parameters[0];
-
-                return $this->addColumns($columns);
-
-            case 'actions':
-                /** @var array<int,\Honed\Action\Action> $actions */
-                $actions = $parameters[0];
-
-                return $this->addActions($actions);
-
-            case 'defaultPagination':
-                /** @var int $defaultPagination */
-                $defaultPagination = $parameters[0];
-                $this->defaultPagination = $defaultPagination;
-
-                return $this;
-
-            case 'pagination':
-                /** @var int|array<int,int> $pagination */
-                $pagination = $parameters[0];
-                $this->pagination = $pagination;
-
-                return $this;
-
-            case 'paginator':
-                /** @var string $paginator */
-                $paginator = $parameters[0];
-                $this->paginator = $paginator;
-
-                return $this;
-
-            case 'endpoint':
-                /** @var string $endpoint */
-                $endpoint = $parameters[0];
-                $this->endpoint = $endpoint;
-
-                return $this;
-
-            default:
-                return parent::__call($method, $parameters);
-        }
+        return $this;
     }
 }

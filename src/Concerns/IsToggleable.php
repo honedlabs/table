@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Core\Concerns\InterpretsRequest;
-use Honed\Table\Columns\Column;
 use Honed\Table\Contracts\ShouldRemember;
 use Honed\Table\Contracts\ShouldToggle;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 
-trait HasToggle
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ */
+trait IsToggleable
 {
     /**
-     * Whether the table should allow the user to toggle which columns are
-     * displayed.
+     * Whether the table should allow for toggling which columns are visible.
      *
      * @var bool|null
      */
@@ -50,22 +51,15 @@ trait HasToggle
     protected $duration;
 
     /**
-     * Whether the displayed columns should not be toggled.
-     *
-     * @var bool
-     */
-    protected $withoutToggling = false;
-
-    /**
      * Set whether the table should allow the user to toggle which columns are
      * displayed.
      *
-     * @param  bool  $toggleable
+     * @param  bool  $toggle
      * @return $this
      */
-    public function toggleable($toggleable = true)
+    public function toggle($toggle = true)
     {
-        $this->toggle = $toggleable;
+        $this->toggle = $toggle;
 
         return $this;
     }
@@ -82,7 +76,7 @@ trait HasToggle
             return $this->toggle;
         }
 
-        if ($this instanceof ShouldToggle) {
+        if ($this instanceof ShouldToggle || $this instanceof ShouldRemember) {
             return true;
         }
 
@@ -120,7 +114,11 @@ trait HasToggle
      */
     public function getColumnsKey()
     {
-        return $this->columnsKey ?? static::fallbackColumnsKey();
+        if (isset($this->columnsKey)) {
+            return $this->columnsKey;
+        }
+
+        return static::fallbackColumnsKey();
     }
 
     /**
@@ -176,16 +174,6 @@ trait HasToggle
     }
 
     /**
-     * Get the cookie name to use for the table toggle.
-     *
-     * @return string
-     */
-    public function getCookieName()
-    {
-        return $this->cookieName ?? static::guessCookieName();
-    }
-
-    /**
      * Set the cookie name to use for the table toggle.
      *
      * @param  string  $cookieName
@@ -196,6 +184,20 @@ trait HasToggle
         $this->cookieName = $cookieName;
 
         return $this;
+    }
+
+    /**
+     * Get the cookie name to use for the table toggle.
+     *
+     * @return string
+     */
+    public function getCookieName()
+    {
+        if (isset($this->cookieName)) {
+            return $this->cookieName;
+        }
+
+        return static::guessCookieName();
     }
 
     /**
@@ -235,7 +237,11 @@ trait HasToggle
      */
     public function getDuration()
     {
-        return $this->duration ?? static::fallbackDuration();
+        if (isset($this->duration)) {
+            return $this->duration;
+        }
+
+        return static::fallbackDuration();
     }
 
     /**
@@ -250,75 +256,6 @@ trait HasToggle
     }
 
     /**
-     * Set the columns to not be toggled.
-     *
-     * @return $this
-     */
-    public function withoutToggling()
-    {
-        $this->withoutToggling = true;
-
-        return $this;
-    }
-
-    /**
-     * Determine if the columns should not be toggled.
-     *
-     * @return bool
-     */
-    public function isWithoutToggling()
-    {
-        return $this->withoutToggling;
-    }
-
-    /**
-     * Toggle the columns that are displayed.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  array<int,\Honed\Table\Columns\Column>  $columns
-     * @return array<int,\Honed\Table\Columns\Column>
-     */
-    public function toggleColumns($request, $columns)
-    {
-        if (! $this->isToggleable() || $this->isWithoutToggling()) {
-            return $this->displayedColumns($columns);
-        }
-
-        $interpreter = new class
-        {
-            use InterpretsRequest;
-        };
-
-        $key = $this->getColumnsKey();
-
-        /** @var array<int,string>|null */
-        $params = $interpreter->interpretArray($request, $key, $this->getDelimiter());
-
-        if ($this->isRememberable()) {
-            $params = $this->configureCookie($request, $params);
-        }
-
-        return $this->displayedColumns($columns, $params);
-    }
-
-    /**
-     * Get the columns that are displayed.
-     *
-     * @param  array<int,\Honed\Table\Columns\Column>  $columns
-     * @param  array<int,string>|null  $params
-     * @return array<int,\Honed\Table\Columns\Column>
-     */
-    public function displayedColumns($columns, $params = null)
-    {
-        return \array_values(
-            \array_filter(
-                $columns,
-                static fn (Column $column) => $column->display($params)
-            )
-        );
-    }
-
-    /**
      * Use the columns cookie to determine which columns are active, or set the
      * cookie to the current columns.
      *
@@ -326,7 +263,7 @@ trait HasToggle
      * @param  array<int,string>|null  $params
      * @return array<int,string>|null
      */
-    protected function configureCookie($request, $params)
+    public function configureCookie($request, $params)
     {
         if (filled($params)) {
             Cookie::queue(

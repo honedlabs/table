@@ -6,11 +6,34 @@ use Honed\Table\Tests\Fixtures\Table as FixtureTable;
 use Honed\Table\Tests\Stubs\Status;
 use Illuminate\Http\Request;
 
-it('builds', function () {
-
+beforeEach(function () {
     foreach (\range(1, 100) as $i) {
         product();
     }
+
+    $this->request = Request::create('/', 'GET', [
+        'name' => 'test',
+
+        'price' => 100,
+        'status' => \sprintf('%s,%s', Status::Available->value, Status::Unavailable->value),
+        'only' => Status::ComingSoon->value,
+
+        'favourite' => '1',
+
+        'oldest' => '2000-01-01',
+        'newest' => '2001-01-01',
+
+        'missing' => 'test',
+
+        config('table.sorts_key') => '-price',
+        config('table.searches_key') => 'search+term',
+        config('table.columns_key') => 'id,name,price,status,best_seller,created_at',
+        config('table.records_key') => 25,
+    ]);
+});
+
+it('builds class', function () {
+
     $request = Request::create('/', 'GET', [
         'name' => 'test',
 
@@ -25,8 +48,10 @@ it('builds', function () {
 
         'missing' => 'test',
 
-        FixtureTable::SortsKey => '-price',
-        FixtureTable::SearchesKey => 'search+term',
+        config('table.sorts_key') => '-price',
+        config('table.searches_key') => 'search+term',
+        config('table.columns_key') => 'id,name,price,status,best_seller,created_at',
+        config('table.records_key') => 25,
     ]);
 
     expect(FixtureTable::make()
@@ -113,22 +138,23 @@ it('builds', function () {
         )->toArray()->scoped(fn ($array) => $array
             ->{'config'}->toEqual([
                 'record' => 'id',
-                'delimiter' => FixtureTable::Delimiter,
-                'records' => FixtureTable::RecordsKey,
-                'sorts' => FixtureTable::SortsKey,
-                'searches' => FixtureTable::SearchesKey,
-                'columns' => FixtureTable::ColumnsKey,
-                'pages' => FixtureTable::PagesKey,
-                'endpoint' => FixtureTable::Endpoint,
-                'search' => 'search term'
+                'delimiter' => config('table.delimiter'),
+                'records' => config('table.records_key'),
+                'sorts' => config('table.sorts_key'),
+                'searches' => config('table.searches_key'),
+                'columns' => config('table.columns_key'),
+                'pages' => config('table.pages_key'),
+                'endpoint' => config('table.endpoint'),
+                'search' => 'search term',
+                'matches' => 'match',
             ])->{'actions'}->scoped(fn ($actions) => $actions
                 ->toHaveKeys([ 'hasInline', 'bulk', 'page'])
                 ->{'hasInline'}->toBeTrue()
                 ->{'bulk'}->toHaveCount(1)
                 ->{'page'}->toHaveCount(2)
-            )->{'toggleable'}->toBe(FixtureTable::Toggle)
+            )->{'toggleable'}->toBeTrue()
             ->{'sorts'}->toHaveCount(4)
-            ->{'filters'}->toHaveCount(7)
+            ->{'filters'}->toHaveCount(8)
             ->{'columns'}->toHaveCount(9)
             ->{'meta'}->toBeEmpty()
         );

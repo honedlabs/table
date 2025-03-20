@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Honed\Table\Columns\Concerns;
+namespace Honed\Table\Concerns;
 
 use Illuminate\Support\Arr;
 

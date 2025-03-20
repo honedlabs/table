@@ -52,3 +52,18 @@ function searchSql(string $column)
 {
     return \sprintf('LOWER(%s) LIKE ?', qualifyProduct($column));
 }
+
+expect()->extend('toBeOrder', function (string $column, string $direction = 'asc') {
+    return $this->toBeArray()
+        ->toHaveKeys(['column', 'direction'])
+        ->{'column'}->toBe($column)
+        ->{'direction'}->toBe($direction);
+});
+
+expect()->extend('toBeOnlyOrder', function (string $column, string $direction = 'asc') {
+    return $this->toBeArray()
+        ->toHaveCount(1)
+        ->{0}->scoped(fn ($order) => $order
+        ->toBeOrder($column, $direction)
+        );
+});

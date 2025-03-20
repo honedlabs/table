@@ -30,6 +30,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Select
+    |--------------------------------------------------------------------------
+    |
+    | By default, the table will not select any columns. If you would like to
+    | globally enable column selection, you can set this to true.
+    |
+    */
+
+    'select' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Delimiter
     |--------------------------------------------------------------------------
     |
@@ -63,6 +75,9 @@ return [
 
     /** The parameter name for the page number. */
     'pages_key' => 'page',
+
+    /** The number of links to show either side of the current page. */
+    'window' => 2,
 
     /*
     |--------------------------------------------------------------------------

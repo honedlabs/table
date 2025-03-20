@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends Column<TModel, TBuilder>
+ */
 class HiddenColumn extends Column
 {
     /**
@@ -12,7 +18,6 @@ class HiddenColumn extends Column
     public function setUp()
     {
         parent::setUp();
-
         $this->type('hidden');
         $this->always();
         $this->hidden();

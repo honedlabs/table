@@ -3,163 +3,71 @@
 declare(strict_types=1);
 
 use Honed\Table\Table;
-use Honed\Table\Columns\Column;
-use Illuminate\Support\Facades\Request;
-use Honed\Table\Tests\Fixtures\Table as FixtureTable;
+use Honed\Table\Columns\KeyColumn;
 
 beforeEach(function () {
-    $this->test = FixtureTable::make();
-});
-
-it('has a sorts key', function () {
-    $sortsKey = 's';
-
-    // Class-based
-    expect($this->test)
-        ->getSortsKey()->toBe(FixtureTable::SortsKey)
-        ->sortsKey($sortsKey)->toBe($this->test)
-        ->getSortsKey()->toBe($sortsKey);
-
-    // Anonymous
-    expect(Table::make())
-        ->getSortsKey()->toBe(config('table.sorts_key'))
-        ->sortsKey($sortsKey)->toBeInstanceOf(Table::class)
-        ->getSortsKey()->toBe($sortsKey);
-});
-
-it('has a searches key', function () {
-    $searchesKey = 's';
-
-    // Class-based
-    expect($this->test)
-        ->getSearchesKey()->toBe(FixtureTable::SearchesKey)
-        ->searchesKey($searchesKey)->toBe($this->test)
-        ->getSearchesKey()->toBe($searchesKey);
-
-    // Anonymous
-    expect(Table::make())
-        ->getSearchesKey()->toBe(config('table.searches_key'))
-        ->searchesKey($searchesKey)->toBeInstanceOf(Table::class)
-        ->getSearchesKey()->toBe($searchesKey);
-});
-
-it('can match', function () {
-    $matching = true;
-
-    // Class-based
-    expect($this->test)
-        ->isMatching()->toBe(config('table.match'));
-
-    expect($this->test->match($matching))
-        ->toBe($this->test)
-        ->isMatching()->toBe($matching);
-
-    // Anonymous
-    expect(Table::make())
-        ->isMatching()->toBe(config('table.match'));
-
-    expect(Table::make()->match($matching))
-        ->toBeInstanceOf(Table::class)
-        ->isMatching()->toBe($matching);
-});
-
-it('has a delimiter', function () {
-    $delimiter = '|';
-
-    // Class-based
-    expect($this->test)
-        ->getDelimiter()->toBe(FixtureTable::Delimiter)
-        ->delimiter($delimiter)->toBe($this->test)
-        ->getDelimiter()->toBe($delimiter);
-
-    // Anonymous
-    expect(Table::make())
-        ->getDelimiter()->toBe(config('table.delimiter'))
-        ->delimiter($delimiter)->toBeInstanceOf(Table::class)
-        ->getDelimiter()->toBe($delimiter);
+    $this->table = Table::make();
 });
 
 it('has key', function () {
-    $key = 'test';
-
-    // Class-based
-    expect($this->test)
-        ->key($key)->toBe($this->test)
-        ->getRecordKey()->toBe($key);
-
-    // Anonymous
-    expect(Table::make())
-        ->key($key)->toBeInstanceOf(Table::class)
-        ->getRecordKey()->toBe($key);
+    expect($this->table)
+        ->withColumns(KeyColumn::make('id'))
+        ->getKey()->toBe('id')
+        ->key('test')->toBe($this->table)
+        ->getKey()->toBe('test');
 });
 
-it('errors if no key is set', function () {
-    Table::make()->getRecordKey();
+it('requires key', function () {
+    $this->table->getKey();
 })->throws(\RuntimeException::class);
 
 it('has endpoint', function () {
-    $endpoint = '/other';
-
-    // Class-based
-    expect($this->test)
-        ->getEndpoint()->toBe(FixtureTable::Endpoint)
-        ->endpoint($endpoint)->toBe($this->test)
-        ->getEndpoint()->toBe($endpoint);
-
-    // Anonymous
-    expect(Table::make())
+    expect($this->table)
         ->getEndpoint()->toBe(config('table.endpoint'))
-        ->endpoint($endpoint)->toBeInstanceOf(Table::class)
-        ->getEndpoint()->toBe($endpoint);
+        ->endpoint('/other')->toBe($this->table)
+        ->getEndpoint()->toBe('/other')
+        ->fallbackEndpoint()->toBe(config('table.endpoint'));
 });
 
-it('retrieves records', function () {
-    $product = product();
-
-    $request = Request::create('/', 'GET');
-
-    $columns = $this->test->getColumns();
-
-    $this->test->retrieveRecords($product, $request, $columns);
-
-    $keys = [...array_map(fn (Column $column) => $column->getParameter(), $columns), 'actions'];
-
-    expect($this->test->getRecords())
-        ->{0}->scoped(fn ($record) => $record
-            ->toHaveKeys($keys)
-            ->toHaveCount(\count($keys))
-            ->{'actions'}->toHaveCount(2) // ID not divisible by 2
-        );
+it('has attributes', function () {
+    expect($this->table)
+        ->hasAttributes()->toBe(config('table.attributes'))
+        ->attributes(true)->toBe($this->table)
+        ->hasAttributes()->toBe(true)
+        ->fallbackAttributes()->toBe(config('table.attributes'));
 });
 
-it('retrieves records with attributes', function () {
-    $product = product();
+it('has records', function () {
+    expect($this->table)
+        ->getRecords()->toBeEmpty();
 
-    $request = Request::create('/', 'GET');
+    $this->table->setRecords([
+        [
+            'id' => 1,
+        ]
+    ]);
 
-    $columns = $this->test->getColumns();
+    expect($this->table)
+        ->getRecords()->not->toBeEmpty();
+});
 
-    expect($this->test)
-        ->isWithAttributes()->toBeFalse()
-        ->withAttributes()->toBe($this->test)
-        ->isWithAttributes()->toBeTrue();
+it('has pagination data', function () {
+    expect($this->table)
+        ->getPaginationData()->toBeEmpty();
 
-    $this->test->retrieveRecords($product, $request, $columns);
+    $this->table->setPaginationData([
+        'empty' => true,
+    ]);
 
-    $colKeys = \array_map(fn (Column $column) => $column->getParameter(), $columns);
+    expect($this->table)
+        ->getPaginationData()->not->toBeEmpty();
 
-    $keys = \array_unique(
-        \array_merge(
-            $colKeys, 
-            \array_keys($product->toArray()), 
-            ['actions']
-        )
-    );
+});
 
-    expect($this->test->getRecords())
-        ->{0}->scoped(fn ($record) => $record
-            ->toHaveKeys($keys)
-            ->toHaveCount(\count($keys))
-            ->{'actions'}->toHaveCount(2) // ID not divisible by 2
-        );
+it('overrides refine fallbacks', function () {
+    expect($this->table)
+        ->getDelimiter()->toBe(config('table.delimiter'))
+        ->getSearchesKey()->toBe(config('table.searches_key'))
+        ->getMatchesKey()->toBe(config('table.matches_key'))
+        ->matches()->toBe(config('table.match'));
 });

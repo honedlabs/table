@@ -16,6 +16,12 @@ use Honed\Table\Table;
 use Honed\Table\Contracts\ShouldToggle;
 use Honed\Table\Contracts\ShouldRemember;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends Table<TModel, TBuilder>
+ */
 final class {{ class }} extends Table
 {
     /* The database column(s) to use for searching */
@@ -27,7 +33,7 @@ final class {{ class }} extends Table
     /**
      * Define the database resource to use.
      * 
-     * @return \Illuminate\Database\Eloquent\Builder|class-string<\Illuminate\Database\Eloquent\Model>
+     * @return TBuilder|class-string<TModel>
      */
     public function for()
     {
@@ -47,26 +53,38 @@ final class {{ class }} extends Table
     }
 
     /**
-     * Define the filters available to refine the resource query.
+     * Define the filters available to refine the query.
      * 
-     * @return array<int, \Honed\Refine\Filter>
+     * @return array<int, \Honed\Refine\Filter<TModel, TBuilder>>
      */
     public function filters()
     {
         return [
-
+            //
         ];
     }
 
     /**
      * Define the sorts available to order the records.
      * 
-     * @return array<int, \Honed\Refine\Sort>
+     * @return array<int, \Honed\Refine\Sort<TModel, TBuilder>>
      */
     public function sorts()
     {
         return [
+            //
+        ];
+    }
 
+    /**
+     * Define the columns to search on.
+     * 
+     * @return array<int, \Honed\Refine\Search<TModel, TBuilder>>
+     */
+    protected function searches()
+    {
+        return [
+            //
         ];
     }
 

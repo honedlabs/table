@@ -13,72 +13,21 @@ use Honed\Refine\Sort;
 use Honed\Table\Columns\BooleanColumn;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
+use Honed\Table\Columns\HiddenColumn;
 use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Columns\NumberColumn;
 use Honed\Table\Columns\TextColumn;
-use Honed\Table\Table as HonedTable;
+use Honed\Table\Table as BaseTable;
 use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Tests\Stubs\Status;
 
-class Table extends HonedTable
+class Table extends BaseTable
 {
-    const Endpoint = '/test';
+    protected $toggle = true;
 
-    const Delimiter = '|';
+    protected $remember = true;
 
-    const Paginator = 'simple';
-
-    const Pagination = [10, 25, 50];
-
-    const DefaultPagination = 25;
-
-    const PagesKey = 'p';
-
-    const RecordsKey = 'records';
-
-    const SearchesKey = 's';
-
-    const SortsKey = 'order';
-
-    const Search = ['description'];
-
-    const Toggle = true;
-
-    const Remember = true;
-
-    const ColumnsKey = 'cols';
-
-    const Duration = 10;
-
-    const CookieName = 'example-table';
-
-    public $endpoint = self::Endpoint;
-
-    public $delimiter = self::Delimiter;
-
-    public $pagination = self::Pagination;
-
-    public $paginator = self::Paginator;
-
-    public $defaultPagination = self::DefaultPagination;
-
-    public $pagesKey = self::PagesKey;
-
-    public $recordsKey = self::RecordsKey;
-
-    public $searchesKey = self::SearchesKey;
-
-    public $sortsKey = self::SortsKey;
-
-    public $toggle = self::Toggle;
-
-    public $remember = self::Remember;
-
-    public $columnsKey = self::ColumnsKey;
-
-    public $duration = self::Duration;
-
-    public $cookieName = self::CookieName;
+    protected $pagination = [10, 25, 50];
 
     public function for()
     {
@@ -93,9 +42,10 @@ class Table extends HonedTable
 
             TextColumn::make('name')
                 ->always()
-                ->searchable(),
+                ->search(),
 
             TextColumn::make('description')
+                ->filter()
                 ->fallback('-'),
 
             BooleanColumn::make('best_seller', 'Favourite')
@@ -108,17 +58,18 @@ class Table extends HonedTable
 
             NumberColumn::make('price')
                 ->alias('cost')
-                ->sortable(),
+                ->sort(),
 
             DateColumn::make('created_at')
                 ->sometimes()
-                ->sortable('col_created_at'),
+                ->sort(),
 
-            Column::make('public_id')
+            HiddenColumn::make('public_id')
                 ->hidden()
                 ->always(),
 
-            Column::make('updated_at')
+            DateColumn::make('updated_at')
+                ->filter()
                 ->allow(false),
         ];
     }
@@ -138,16 +89,17 @@ class Table extends HonedTable
                 ->multiple(),
 
             Filter::make('status', 'Single')
-                ->alias('only')->enum(Status::class),
+                ->alias('only')
+                ->enum(Status::class),
 
             Filter::make('best_seller', 'Favourite')
-                ->asBoolean()
+                ->boolean()
                 ->alias('favourite'),
 
             Filter::make('created_at', 'Oldest')
                 ->alias('oldest')
-                ->operator('>=')
-                ->asDate(),
+                ->date()
+                ->operator('>='),
 
             Filter::make('created_at', 'Newest')
                 ->alias('newest')
@@ -160,12 +112,10 @@ class Table extends HonedTable
     {
         return [
             Sort::make('name', 'A-Z')
-                ->alias('name-desc')
                 ->desc()
                 ->default(),
 
             Sort::make('name', 'Z-A')
-                ->alias('name-asc')
                 ->asc(),
 
             Sort::make('price'),
