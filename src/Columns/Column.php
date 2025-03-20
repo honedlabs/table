@@ -37,14 +37,15 @@ class Column extends Primitive
     use HasIcon;
     use HasLabel;
     use HasName;
+
     /** @use HasQueryClosure<TModel, TBuilder> */
     use HasQueryClosure;
+
     use HasType;
     use HasValue;
     use IsActive;
     use IsHidden;
     use IsVisible;
-
     use Transformable;
 
     /**
