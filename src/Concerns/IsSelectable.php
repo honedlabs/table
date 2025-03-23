@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Columns\Column;
 use Honed\Table\Contracts\ShouldSelect;
 use Illuminate\Support\Arr;
 
@@ -56,15 +55,15 @@ trait IsSelectable
             return true;
         }
 
-        return static::fallbackSelectable();
+        return static::isSelectableByDefault();
     }
 
     /**
-     * Whether to do column selection from the config.
+     * Whether to do column selection by default.
      *
      * @return bool
      */
-    public function fallbackSelectable()
+    public function isSelectableByDefault()
     {
         return (bool) config('table.select', false);
     }

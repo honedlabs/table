@@ -17,7 +17,7 @@ it('has paginator', function () {
         ->getPaginator()->toBe(config('table.paginator'))
         ->paginator('cursor')->toBe($this->table)
         ->getPaginator()->toBe('cursor')
-        ->fallbackPaginator()->toBe(config('table.paginator'));
+        ->getDefaultPaginator()->toBe(config('table.paginator'));
 });
 
 it('has pagination', function () {
@@ -25,7 +25,7 @@ it('has pagination', function () {
         ->getPagination()->toBe(config('table.pagination'))
         ->pagination([5, 10, 20])->toBe($this->table)
         ->getPagination()->toEqual([5, 10, 20])
-        ->fallbackPagination()->toBe(config('table.pagination'));
+        ->getDefaultPagination()->toBe(config('table.pagination'));
 });
 
 it('has default pagination', function () {
@@ -33,23 +33,23 @@ it('has default pagination', function () {
         ->getDefaultPagination()->toBe(config('table.default_pagination'))
         ->defaultPagination(5)->toBe($this->table)
         ->getDefaultPagination()->toBe(5)
-        ->fallbackDefaultPagination()->toBe(config('table.default_pagination'));
+        ->getDefaultedPagination()->toBe(config('table.default_pagination'));
 });
 
 it('has pages key', function () {
     expect($this->table)
-        ->getPagesKey()->toBe(config('table.pages_key'))
-        ->pagesKey('test')->toBe($this->table)
-        ->getPagesKey()->toBe('test')
-        ->fallbackPagesKey()->toBe(config('table.pages_key'));
+        ->getPageKey()->toBe(config('table.page_key'))
+        ->pageKey('test')->toBe($this->table)
+        ->getPageKey()->toBe('test')
+        ->getDefaultPageKey()->toBe(config('table.page_key'));
 });
 
 it('has records key', function () {
     expect($this->table)
-        ->getRecordsKey()->toBe(config('table.records_key'))
-        ->recordsKey('test')->toBe($this->table)
-        ->getRecordsKey()->toBe('test')
-        ->fallbackRecordsKey()->toBe(config('table.records_key'));
+        ->getRecordKey()->toBe(config('table.record_key'))
+        ->recordKey('test')->toBe($this->table)
+        ->getRecordKey()->toBe('test')
+        ->getDefaultRecordKey()->toBe(config('table.record_key'));
 });
 
 it('has window', function () {

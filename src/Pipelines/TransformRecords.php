@@ -24,15 +24,17 @@ class TransformRecords
      */
     public function __invoke($table, $next)
     {
-        $actions = $table->getInlineActions();
-        $columns = $table->getCachedColumns();
-        /** @var array<int,TModel> $records */
+        /** @var array<int,TModel> */
         $records = $table->getRecords();
-        $serialize = $table->hasAttributes();
 
         $table->setRecords(
             \array_map(
-                static fn ($record) => static::createRecord($record, $columns, $actions, $serialize),
+                static fn ($record) => static::createRecord(
+                    $record,
+                    $table->getCachedColumns(),
+                    $table->getInlineActions(),
+                    $table->hasAttributes()
+                ),
                 $records
             )
         );
@@ -46,15 +48,11 @@ class TransformRecords
      * @param  TModel  $record
      * @param  array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  $columns
      * @param  array<int,\Honed\Action\InlineAction>  $actions
-     * @param  bool  $serialize
+     * @param  bool  $attr
      * @return array<string,mixed>
      */
-    public static function createRecord(
-        $record,
-        $columns,
-        $actions,
-        $serialize = false
-    ) {
+    public static function createRecord($record, $columns, $actions, $attr)
+    {
         [$named, $typed] = Table::getModelParameters($record);
 
         $actions = \array_map(
@@ -67,22 +65,11 @@ class TransformRecords
             )
         );
 
-        $entry = $serialize ? $record->toArray() : [];
+        $entry = $attr ? $record->toArray() : [];
 
         $row = Arr::mapWithKeys(
             $columns,
-            static function (Column $column) use ($record, $named, $typed) {
-                $value = $column->hasValue()
-                    ? $column->evaluate($column->getValue(), $named, $typed)
-                    : Arr::get($record, $column->getName());
-
-                return [
-                    $column->getParameter() => [
-                        'value' => $column->apply($value),
-                        'extra' => $column->resolveExtra($named, $typed),
-                    ],
-                ];
-            },
+            static fn (Column $column) => $column->createEntry($record, $named, $typed)
         );
 
         return \array_merge($entry, $row, ['actions' => $actions]);

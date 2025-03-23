@@ -8,11 +8,12 @@ use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
 use Honed\Table\Columns\NumberColumn;
 use Honed\Table\Columns\TextColumn;
-use Honed\Table\Pipelines\MergeColumnFilters;
+use Honed\Table\Pipelines\RefineFilters;
 use Honed\Table\Table;
+use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
-    $this->pipe = new MergeColumnFilters();
+    $this->pipe = new RefineFilters;
     $this->next = fn ($table) => $table;
 
     $columns = [
@@ -20,6 +21,7 @@ beforeEach(function () {
     ];
 
     $this->table = Table::make()
+        ->builder(Product::query())
         ->withColumns($columns);
 });
 
@@ -95,7 +97,7 @@ it('merges as number', function () {
         ->getColumns()->toHaveCount(2);
 
     expect(collect($this->table->getFilters())->first())
-        ->getType()->toBe('integer')
+        ->getType()->toBe('number')
         ->getParameter()->toBe('price');
 });
 
@@ -112,7 +114,7 @@ it('merges as text', function () {
         ->getColumns()->toHaveCount(2);
 
     expect(collect($this->table->getFilters())->first())
-        ->getType()->toBe('string')
+        ->getType()->toBe('text')
         ->getParameter()->toBe('description');
 });
 

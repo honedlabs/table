@@ -40,14 +40,14 @@ trait HasPagination
      *
      * @var string|null
      */
-    protected $pagesKey;
+    protected $pageKey;
 
     /**
      * The query parameter for the number of records to show per page.
      *
      * @var string|null
      */
-    protected $recordsKey;
+    protected $recordKey;
 
     /**
      * The number of page links to show either side of the current page.
@@ -87,15 +87,15 @@ trait HasPagination
             return $this->paginator;
         }
 
-        return static::fallbackPaginator();
+        return static::getDefaultPaginator();
     }
 
     /**
-     * Get the paginator type from the config.
+     * Get the default paginator type.
      *
      * @return 'cursor'|'simple'|'length-aware'|'collection'|string
      */
-    public static function fallbackPaginator()
+    public static function getDefaultPaginator()
     {
         return type(config('table.paginator', 'length-aware'))->asString();
     }
@@ -124,7 +124,7 @@ trait HasPagination
             return $this->pagination;
         }
 
-        return static::fallbackPagination();
+        return static::getFallbackPagination();
     }
 
     /**
@@ -132,7 +132,7 @@ trait HasPagination
      *
      * @return int|array<int,int>
      */
-    public static function fallbackPagination()
+    public static function getFallbackPagination()
     {
         /** @var int|array<int,int> */
         return config('table.pagination', 10);
@@ -162,7 +162,7 @@ trait HasPagination
             return $this->defaultPagination;
         }
 
-        return static::fallbackDefaultPagination();
+        return static::getDefaultedPagination();
     }
 
     /**
@@ -170,7 +170,7 @@ trait HasPagination
      *
      * @return int
      */
-    public static function fallbackDefaultPagination()
+    public static function getDefaultedPagination()
     {
         return type(config('table.default_pagination', 10))->asInt();
     }
@@ -178,12 +178,12 @@ trait HasPagination
     /**
      * Set the query parameter for the page number.
      *
-     * @param  string  $pagesKey
+     * @param  string  $pageKey
      * @return $this
      */
-    public function pagesKey($pagesKey)
+    public function pageKey($pageKey)
     {
-        $this->pagesKey = $pagesKey;
+        $this->pageKey = $pageKey;
 
         return $this;
     }
@@ -193,13 +193,13 @@ trait HasPagination
      *
      * @return string
      */
-    public function getPagesKey()
+    public function getPageKey()
     {
-        if (isset($this->pagesKey)) {
-            return $this->pagesKey;
+        if (isset($this->pageKey)) {
+            return $this->pageKey;
         }
 
-        return static::fallbackPagesKey();
+        return static::getDefaultPageKey();
     }
 
     /**
@@ -207,20 +207,20 @@ trait HasPagination
      *
      * @return string
      */
-    public static function fallbackPagesKey()
+    public static function getDefaultPageKey()
     {
-        return type(config('table.pages_key', 'page'))->asString();
+        return type(config('table.page_key', 'page'))->asString();
     }
 
     /**
      * Set the query parameter for the number of records to show per page.
      *
-     * @param  string  $recordsKey
+     * @param  string  $recordKey
      * @return $this
      */
-    public function recordsKey($recordsKey)
+    public function recordKey($recordKey)
     {
-        $this->recordsKey = $recordsKey;
+        $this->recordKey = $recordKey;
 
         return $this;
     }
@@ -230,24 +230,24 @@ trait HasPagination
      *
      * @return string
      */
-    public function getRecordsKey()
+    public function getRecordKey()
     {
-        if (isset($this->recordsKey)) {
-            return $this->recordsKey;
+        if (isset($this->recordKey)) {
+            return $this->recordKey;
         }
 
-        return static::fallbackRecordsKey();
+        return static::getDefaultRecordKey();
     }
 
     /**
-     * Get the query parameter for the number of records to show per page from
-     * the config.
+     * Get the default query parameter for the number of records to show per
+     * page.
      *
      * @return string
      */
-    public static function fallbackRecordsKey()
+    public static function getDefaultRecordKey()
     {
-        return type(config('table.records_key', 'rows'))->asString();
+        return type(config('table.record_key', 'rows'))->asString();
     }
 
     /**

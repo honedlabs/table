@@ -11,8 +11,6 @@ use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasParameterNames;
 use Honed\Refine\Pipelines\AfterRefining;
 use Honed\Refine\Pipelines\BeforeRefining;
-use Honed\Refine\Pipelines\RefineFilters;
-use Honed\Refine\Pipelines\RefineSearches;
 use Honed\Refine\Refine;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\HasColumns;
@@ -21,10 +19,10 @@ use Honed\Table\Concerns\HasTableBindings;
 use Honed\Table\Concerns\IsSelectable;
 use Honed\Table\Concerns\IsToggleable;
 use Honed\Table\Pipelines\CleanupTable;
-use Honed\Table\Pipelines\MergeColumnFilters;
-use Honed\Table\Pipelines\MergeColumnSearches;
 use Honed\Table\Pipelines\Paginate;
 use Honed\Table\Pipelines\QueryColumns;
+use Honed\Table\Pipelines\RefineFilters;
+use Honed\Table\Pipelines\RefineSearches;
 use Honed\Table\Pipelines\RefineSorts;
 use Honed\Table\Pipelines\SelectColumns;
 use Honed\Table\Pipelines\ToggleColumns;
@@ -280,23 +278,23 @@ class Table extends Refine implements UrlRoutable
     /**
      * {@inheritdoc}
      */
-    public static function fallbackSearchesKey()
+    public static function getDefaultSearchKey()
     {
-        return type(config('table.searches_key', 'search'))->asString();
+        return type(config('table.search_key', 'search'))->asString();
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function fallbackMatchesKey()
+    public static function getDefaultMatchKey()
     {
-        return type(config('table.matches_key', 'match'))->asString();
+        return type(config('table.match_key', 'match'))->asString();
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function fallbackMatches()
+    public static function isMatchingByDefault()
     {
         return (bool) config('table.match', false);
     }
@@ -310,7 +308,7 @@ class Table extends Refine implements UrlRoutable
     public function handle($request)
     {
         return Handler::make(
-            $this->getFor(),
+            $this->getBuilder(),
             $this->getActions(),
             $this->getKey()
         )->handle($request);
@@ -355,9 +353,9 @@ class Table extends Refine implements UrlRoutable
         return \array_merge(parent::configToArray(), [
             'endpoint' => $this->getEndpoint(),
             'record' => $this->getKey(),
-            'records' => $this->formatScope($this->getRecordsKey()),
+            'records' => $this->formatScope($this->getRecordKey()),
             'columns' => $this->formatScope($this->getColumnsKey()),
-            'pages' => $this->formatScope($this->getPagesKey()),
+            'pages' => $this->formatScope($this->getPageKey()),
         ]);
     }
 
@@ -371,8 +369,6 @@ class Table extends Refine implements UrlRoutable
             ->through([
                 BeforeRefining::class,
                 ToggleColumns::class,
-                MergeColumnFilters::class,
-                MergeColumnSearches::class,
                 RefineSearches::class,
                 RefineFilters::class,
                 RefineSorts::class,
@@ -388,8 +384,8 @@ class Table extends Refine implements UrlRoutable
     /**
      * {@inheritdoc}
      */
-    protected function forwardBuilderCall($method, $parameters)
+    public function __call($method, $parameters)
     {
-        return $this;
+        return $this->macroCall($method, $parameters);
     }
 }

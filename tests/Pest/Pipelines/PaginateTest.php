@@ -20,7 +20,7 @@ beforeEach(function () {
     $this->next = fn ($table) => $table;
 
     $this->table = Table::make()
-        ->for(Product::query());
+        ->builder(Product::query());
 });
 
 it('paginates default', function () {
@@ -108,7 +108,7 @@ it('changes per page', function () {
     $count = 25;
 
     $request = Request::create('/', 'GET', [
-        config('table.records_key') => $count
+        config('table.record_key') => $count
     ]);
 
     $this->table->pagination([10, 25, 50])->request($request);
@@ -126,7 +126,7 @@ it('changes per page with restrictions', function () {
     $count = 20;
 
     $request = Request::create('/', 'GET', [
-        config('table.records_key') => $count
+        config('table.record_key') => $count
     ]);
 
     $this->table->pagination([10, 25, 50])->request($request);
@@ -144,7 +144,7 @@ it('changes default per page', function () {
     $count = 25;
 
     $request = Request::create('/', 'GET', [
-        config('table.records_key') => 20
+        config('table.record_key') => 20
     ]);
 
     $this->table->pagination([10, 25, 50])
@@ -179,8 +179,8 @@ it('fails to paginate scope', function () {
         ->pagination([10, 25, 50]);
 
     $request = Request::create('/', 'GET', [
-        config('table.records_key') => 25,
-        config('table.pages_key') => 2
+        config('table.record_key') => 25,
+        config('table.page_key') => 2
     ]);
 
     $this->table->request($request);
@@ -204,8 +204,8 @@ it('paginates scope', function () {
         ->pagination([10, 25, 50]);
 
     $request = Request::create('/', 'GET', [
-        $this->table->formatScope(config('table.records_key')) => 25,
-        $this->table->formatScope(config('table.pages_key')) => 2
+        $this->table->formatScope(config('table.record_key')) => 25,
+        $this->table->formatScope(config('table.page_key')) => 2
     ]);
 
     $this->table->request($request);

@@ -21,10 +21,10 @@ class QueryColumns
      */
     public function __invoke($table, $next)
     {
-        $for = $table->getFor();
+        $builder = $table->getBuilder();
 
         foreach ($table->getCachedColumns() as $column) {
-            $column->modifyQuery($for);
+            $column->modifyQuery($builder);
         }
 
         return $next($table);

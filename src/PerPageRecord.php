@@ -8,9 +8,6 @@ use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
 use Honed\Core\Primitive;
 
-/**
- * @extends Primitive<string,bool|int>
- */
 class PerPageRecord extends Primitive
 {
     use HasValue;

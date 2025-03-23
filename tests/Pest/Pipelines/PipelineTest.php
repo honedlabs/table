@@ -25,10 +25,10 @@ beforeEach(function () {
 
         'missing' => 'test',
 
-        config('table.sorts_key') => '-price',
-        config('table.searches_key') => 'search+term',
-        config('table.columns_key') => 'id,name,price,status,best_seller,created_at',
-        config('table.records_key') => 25,
+        config('table.sort_key') => '-price',
+        config('table.search_key') => 'search+term',
+        config('table.column_key') => 'id,name,price,status,best_seller,created_at',
+        config('table.record_key') => 25,
     ]);
 });
 
@@ -48,16 +48,16 @@ it('builds class', function () {
 
         'missing' => 'test',
 
-        config('table.sorts_key') => '-price',
-        config('table.searches_key') => 'search+term',
-        config('table.columns_key') => 'id,name,price,status,best_seller,created_at',
-        config('table.records_key') => 25,
+        config('table.sort_key') => '-price',
+        config('table.search_key') => 'search+term',
+        config('table.column_key') => 'id,name,price,status,best_seller,created_at',
+        config('table.record_key') => 25,
     ]);
 
     expect(FixtureTable::make()
         ->request($request)
         ->build()
-    )->getFor()->getQuery()->scoped(fn ($query) => $query
+    )->getBuilder()->getQuery()->scoped(fn ($query) => $query
         ->wheres->scoped(fn ($wheres) => $wheres
             ->toBeArray()
             ->toHaveCount(9)
@@ -65,18 +65,18 @@ it('builds class', function () {
                 // Search done on name (column) and description (property)
                 [
                     'type' => 'raw',
-                    'sql' => searchSql('name'),
+                    'sql' => searchSql('products.name'),
                     'boolean' => 'or',
                 ],
                 [
                     'type' => 'raw',
-                    'sql' => searchSql('description'),
+                    'sql' => searchSql('products.description'),
                     'boolean' => 'and',
                 ],
                 // Name where filter
                 [
                     'type' => 'raw',
-                    'sql' => searchSql('name'),
+                    'sql' => searchSql('products.name'),
                     'boolean' => 'and',
                 ],
                 // Price set filter
@@ -96,10 +96,9 @@ it('builds class', function () {
                 ],
                 // Only set filter
                 [
-                    'type' => 'Basic',
+                    'type' => 'In',
                     'column' => qualifyProduct('status'),
-                    'operator' => '=',
-                    'value' => Status::ComingSoon->value,
+                    'values' => [Status::ComingSoon->value],
                     'boolean' => 'and',
                 ],
                 // Favourite filter
@@ -139,14 +138,14 @@ it('builds class', function () {
             ->{'config'}->toEqual([
                 'record' => 'id',
                 'delimiter' => config('table.delimiter'),
-                'records' => config('table.records_key'),
-                'sorts' => config('table.sorts_key'),
-                'searches' => config('table.searches_key'),
-                'columns' => config('table.columns_key'),
-                'pages' => config('table.pages_key'),
+                'records' => config('table.record_key'),
+                'sort' => config('table.sort_key'),
+                'search' => config('table.search_key'),
+                'columns' => config('table.column_key'),
+                'pages' => config('table.page_key'),
                 'endpoint' => config('table.endpoint'),
-                'search' => 'search term',
-                'matches' => 'match',
+                'term' => 'search term',
+                'match' => 'match',
             ])->{'actions'}->scoped(fn ($actions) => $actions
                 ->toHaveKeys([ 'hasInline', 'bulk', 'page'])
                 ->{'hasInline'}->toBeTrue()

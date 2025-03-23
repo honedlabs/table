@@ -74,7 +74,7 @@ return [
     'default_pagination' => 10,
 
     /** The parameter name for the page number. */
-    'pages_key' => 'page',
+    'page_key' => 'page',
 
     /** The number of links to show either side of the current page. */
     'window' => 2,
@@ -101,10 +101,10 @@ return [
     'duration' => 15768000,
 
     /** The parameter name for the columns to display. */
-    'columns_key' => 'cols',
+    'column_key' => 'cols',
 
     /** The parameter name for the number of records to display. */
-    'records_key' => 'rows',
+    'record_key' => 'rows',
 
     /*
     |--------------------------------------------------------------------------
@@ -133,11 +133,11 @@ return [
     */
 
     /** The parameter name for the sort field and direction. */
-    'sorts_key' => 'sort',
+    'sort_key' => 'sort',
 
     /** The parameter name when using a text search. */
-    'searches_key' => 'search',
+    'search_key' => 'search',
 
     /** The parameter name when selecting which columns to match on. */
-    'matches_key' => 'match',
+    'match_key' => 'match',
 ];

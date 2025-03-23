@@ -42,10 +42,8 @@ it('is key', function () {
 
 it('has fallback', function () {
     expect($this->test)
-        ->hasFallback()->toBeFalse()
         ->getFallback()->toBeNull()
         ->fallback('test')->toBe($this->test)
-        ->hasFallback()->toBeTrue()
         ->getFallback()->toBe('test');
 });
 
@@ -110,7 +108,7 @@ it('is select', function () {
         ->isSelectable()->toBeTrue()
         ->select(false)->toBe($this->test)
         ->isSelectable()->toBeFalse()
-        ->getSelect()->toBeFalse()
+        ->getSelect()->toBe($this->test->getName())
         ->select('test')->toBe($this->test)
         ->isSelectable()->toBeTrue()
         ->getSelect()->toBe('test');
@@ -127,7 +125,7 @@ it('applies', function () {
 it('has a query', function () {
     expect($this->test)
         ->query(fn ($query) => $query->where('name', 'value'))->toBe($this->test)
-        ->getQueryClosure()->toBeInstanceOf(\Closure::class);
+        ->getQuery()->toBeInstanceOf(\Closure::class);
 });
 
 it('has array representation', function () {

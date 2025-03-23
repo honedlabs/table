@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipelines;
 
+use Honed\Refine\Pipelines\RefineSearches as BaseRefineSearches;
 use Honed\Refine\Search;
 use Honed\Table\Columns\Column;
-use Honed\Table\Table;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends BaseRefineSearches<TModel, TBuilder>
  */
-class MergeColumnSearches
+class RefineSearches extends BaseRefineSearches
 {
     /**
-     * Apply the sorts refining logic.
+     * The searches to use.
      *
      * @param  \Honed\Table\Table<TModel, TBuilder>  $table
-     * @param  \Closure(Table<TModel, TBuilder>): Table<TModel, TBuilder>  $next
-     * @return \Honed\Table\Table<TModel, TBuilder>
+     * @return array<int, \Honed\Refine\Search<TModel, TBuilder>>
      */
-    public function __invoke($table, $next)
+    public function searches($table)
     {
         $columns = $table->getColumns();
 
@@ -39,6 +40,6 @@ class MergeColumnSearches
 
         $table->withSearches($searches);
 
-        return $next($table);
+        return parent::searches($table);
     }
 }

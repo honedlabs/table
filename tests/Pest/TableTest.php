@@ -67,7 +67,7 @@ it('has pagination data', function () {
 it('overrides refine fallbacks', function () {
     expect($this->table)
         ->getDelimiter()->toBe(config('table.delimiter'))
-        ->getSearchesKey()->toBe(config('table.searches_key'))
-        ->getMatchesKey()->toBe(config('table.matches_key'))
-        ->matches()->toBe(config('table.match'));
+        ->getSearchKey()->toBe(config('table.search_key'))
+        ->getMatchKey()->toBe(config('table.match_key'))
+        ->isMatching()->toBe(config('table.match'));
 });

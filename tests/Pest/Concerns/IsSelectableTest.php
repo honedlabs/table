@@ -16,7 +16,7 @@ it('is select', function () {
         ->isSelectable()->toBe(config('table.select'))
         ->select(true)->toBe($this->table)
         ->isSelectable()->toBe(true)
-        ->fallbackSelectable()->toBe(config('table.select'));
+        ->isSelectableByDefault()->toBe(config('table.select'));
 
     $class = new class extends Table implements ShouldSelect {
         public function __construct() {}

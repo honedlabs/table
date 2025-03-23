@@ -10,23 +10,21 @@ use Honed\Core\Concerns\HasExtra;
 use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasName;
-use Honed\Core\Concerns\HasQueryClosure;
+use Honed\Core\Concerns\HasQuery;
 use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
-use Honed\Core\Concerns\IsHidden;
 use Honed\Core\Concerns\Transformable;
 use Honed\Core\Primitive;
 use Honed\Refine\Sort;
 use Honed\Table\Concerns\HasClass;
 use Honed\Table\Concerns\IsVisible;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
- *
- * @extends Primitive<string, mixed>
  */
 class Column extends Primitive
 {
@@ -38,13 +36,12 @@ class Column extends Primitive
     use HasLabel;
     use HasName;
 
-    /** @use HasQueryClosure<TModel, TBuilder> */
-    use HasQueryClosure;
+    /** @use HasQuery<TModel, TBuilder> */
+    use HasQuery;
 
     use HasType;
     use HasValue;
     use IsActive;
-    use IsHidden;
     use IsVisible;
     use Transformable;
 
@@ -54,6 +51,13 @@ class Column extends Primitive
      * @var bool
      */
     protected $key = false;
+
+    /**
+     * Whether this column is hidden.
+     *
+     * @var bool
+     */
+    protected $hidden = false;
 
     /**
      * The value to display when the column is empty.
@@ -136,6 +140,29 @@ class Column extends Primitive
     }
 
     /**
+     * Set the column as hidden.
+     *
+     * @param  bool  $hidden
+     * @return $this
+     */
+    public function hidden($hidden = true)
+    {
+        $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    /**
+     * Determine if the column is hidden.
+     *
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return $this->hidden;
+    }
+
+    /**
      * Set the fallback value for the column.
      *
      * @param  mixed  $fallback
@@ -156,16 +183,6 @@ class Column extends Primitive
     public function getFallback()
     {
         return $this->fallback;
-    }
-
-    /**
-     * Determine if the column has a fallback value.
-     *
-     * @return bool
-     */
-    public function hasFallback()
-    {
-        return isset($this->fallback);
     }
 
     /**
@@ -278,10 +295,14 @@ class Column extends Primitive
     /**
      * Get the properties to select.
      *
-     * @return string|bool|array<int,string>
+     * @return string|array<int,string>
      */
     public function getSelect()
     {
+        if (\is_bool($this->select)) {
+            return $this->getName();
+        }
+
         return $this->select;
     }
 
@@ -333,6 +354,34 @@ class Column extends Primitive
     }
 
     /**
+     * Create a record entry for the column.
+     *
+     * @param  TModel  $record
+     * @param  array<string,mixed>  $named
+     * @param  array<class-string,mixed>  $typed
+     * @return array<string,array{value:mixed, extra:array<string,mixed>}>
+     */
+    public function createEntry($record, $named = [], $typed = [])
+    {
+        $valueUsing = $this->getValue();
+
+        $value = $this->apply((bool) $valueUsing
+            ? $this->evaluate($valueUsing, $named, $typed)
+            : Arr::get($record, $this->getName())
+        );
+
+        return [
+            $this->getParameter() => [
+                'value' => $value,
+                'extra' => $this->resolveExtra(
+                    \array_merge($named, ['value' => [$value]]),
+                    $typed,
+                ),
+            ],
+        ];
+    }
+
+    /**
      * Get the sort instance as an array.
      *
      * @return array<string,mixed>
@@ -368,20 +417,5 @@ class Column extends Primitive
             'class' => $this->getClass(),
             'sort' => $this->sortToArray(),
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $parameters)
-    {
-        if ($method === 'query') {
-            /** @var \Closure(mixed...):void $query */
-            $query = $parameters[0];
-
-            return $this->queryClosure($query);
-        }
-
-        parent::__call($method, $parameters);
     }
 }

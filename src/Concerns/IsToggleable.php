@@ -128,7 +128,7 @@ trait IsToggleable
      */
     public static function fallbackColumnsKey()
     {
-        return type(config('table.columns_key', 'columns'))->asString();
+        return type(config('table.column_key', 'columns'))->asString();
     }
 
     /**

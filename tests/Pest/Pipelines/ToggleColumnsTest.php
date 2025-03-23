@@ -56,7 +56,7 @@ it('toggles using request', function () {
     );
 
     $request = Request::create('/', 'GET', [
-        config('table.columns_key') => $params,
+        config('table.column_key') => $params,
     ]);
 
     $this->table->request($request);
@@ -71,7 +71,7 @@ it('toggles using cookie', function () {
     $this->table->remember(true);
 
     $request = Request::create('/', 'GET', [
-        config('table.columns_key') => 'description',
+        config('table.column_key') => 'description',
     ]);
 
     $this->table->request($request);

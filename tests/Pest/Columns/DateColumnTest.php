@@ -26,9 +26,9 @@ it('is diff for humans', function () {
 
 it('has format', function () {
     expect($this->column)
-        ->getFormat()->toBeNull()
+        ->getBuildermat()->toBeNull()
         ->format('Y-m-d')->toBe($this->column)
-        ->getFormat()->toBe('Y-m-d');
+        ->getBuildermat()->toBe('Y-m-d');
 });
 
 it('has timezone', function () {

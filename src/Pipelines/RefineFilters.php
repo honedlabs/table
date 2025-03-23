@@ -5,23 +5,24 @@ declare(strict_types=1);
 namespace Honed\Table\Pipelines;
 
 use Honed\Refine\Filter;
+use Honed\Refine\Pipelines\RefineFilters as BaseRefineFilters;
 use Honed\Table\Columns\Column;
-use Honed\Table\Table;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends BaseRefineFilters<TModel, TBuilder>
  */
-class MergeColumnFilters
+class RefineFilters extends BaseRefineFilters
 {
     /**
-     * Merge the column filters with the table.
+     * The filters to use.
      *
      * @param  \Honed\Table\Table<TModel, TBuilder>  $table
-     * @param  \Closure(Table<TModel, TBuilder>): Table<TModel, TBuilder>  $next
-     * @return \Honed\Table\Table<TModel, TBuilder>
+     * @return array<int, \Honed\Refine\Filter<TModel, TBuilder>>
      */
-    public function __invoke($table, $next)
+    public function filters($table)
     {
         $columns = $table->getColumns();
 
@@ -38,7 +39,7 @@ class MergeColumnFilters
 
         $table->withFilters($filters);
 
-        return $next($table);
+        return parent::filters($table);
     }
 
     /**
@@ -57,8 +58,8 @@ class MergeColumnFilters
         match ($type) {
             'date' => $filter->date(),
             'boolean' => $filter->boolean(),
-            'number' => $filter->integer(),
-            'text' => $filter->string(),
+            'number' => $filter->int(),
+            'text' => $filter->text(),
             default => null,
         };
 

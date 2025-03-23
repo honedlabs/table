@@ -15,7 +15,7 @@ beforeEach(function () {
     $this->next = fn ($table) => $table;
 
     $this->table = Table::make()
-        ->for(Product::query())
+        ->builder(Product::query())
         ->select(true)
         ->cacheColumns([
             Column::make('name')
@@ -34,14 +34,14 @@ it('selects only if select', function () {
 
     $this->pipe->__invoke($this->table, $this->next);
 
-    expect($this->table->getFor()->getQuery()->columns)
+    expect($this->table->getBuilder()->getQuery()->columns)
         ->toBeEmpty();
 });
 
 it('selects', function () {
     $this->pipe->__invoke($this->table, $this->next);
 
-    expect($this->table->getFor()->getQuery()->columns)
+    expect($this->table->getBuilder()->getQuery()->columns)
         ->toEqual([
             'name',
             'price',

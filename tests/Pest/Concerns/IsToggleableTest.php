@@ -31,10 +31,10 @@ it('is toggleable', function () {
 
 it('has columns key', function () {
     expect($this->table)
-        ->getColumnsKey()->toBe(config('table.columns_key'))
+        ->getColumnsKey()->toBe(config('table.column_key'))
         ->columnsKey('test')
         ->getColumnsKey()->toBe('test')
-        ->fallbackColumnsKey()->toBe(config('table.columns_key'));
+        ->fallbackColumnsKey()->toBe(config('table.column_key'));
 });
 
 it('can remember', function () {

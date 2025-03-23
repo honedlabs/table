@@ -39,6 +39,7 @@ class TextColumn extends Column
     public function setUp()
     {
         parent::setUp();
+
         $this->type('text');
     }
 

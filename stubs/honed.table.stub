@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
+use Honed\Core\Contracts\Builds;
 use Honed\Actions\BulkAction;
 use Honed\Actions\PageAction;
 use Honed\Actions\InlineAction;
@@ -22,7 +23,7 @@ use Honed\Table\Contracts\ShouldRemember;
  *
  * @extends Table<TModel, TBuilder>
  */
-final class {{ class }} extends Table
+final class {{ class }} extends Table implements Builds
 {
     /* The database column(s) to use for searching */
     public $search = [];
@@ -31,9 +32,19 @@ final class {{ class }} extends Table
     public $pagination = 10;
 
     /**
+     * Provide the instance with any necessary setup
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        //
+    }
+
+    /**
      * Define the database resource to use.
      * 
-     * @return TBuilder|class-string<TModel>
+     * @return TBuilder|TModel|class-string<TModel>
      */
     public function for()
     {

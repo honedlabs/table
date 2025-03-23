@@ -7,6 +7,7 @@ namespace Honed\Table\Tests\Fixtures;
 use Honed\Action\BulkAction;
 use Honed\Action\InlineAction;
 use Honed\Action\PageAction;
+use Honed\Core\Contracts\Builds;
 use Honed\Refine\Filter;
 use Honed\Refine\Search;
 use Honed\Refine\Sort;
@@ -21,7 +22,7 @@ use Honed\Table\Table as BaseTable;
 use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Tests\Stubs\Status;
 
-class Table extends BaseTable
+class Table extends BaseTable implements Builds
 {
     protected $toggle = true;
 
@@ -145,7 +146,7 @@ class Table extends BaseTable
                 ->allow(fn ($product) => $product->id % 2 === 0)
                 ->action(fn ($product) => $product->delete())
                 ->confirm(fn ($confirm) => $confirm
-                    ->label(fn ($product) => 'You are about to delete '.$product->name)
+                    ->title(fn ($product) => 'You are about to delete '.$product->name)
                     ->description('Are you sure?')),
 
             InlineAction::make('show')

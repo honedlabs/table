@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 use Honed\Refine\Search;
 use Honed\Table\Columns\Column;
-use Honed\Table\Pipelines\MergeColumnSearches;
+use Honed\Table\Pipelines\RefineSearches;
 use Honed\Table\Table;
+use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
-    $this->pipe = new MergeColumnSearches();
+    $this->pipe = new RefineSearches;
     $this->next = fn ($table) => $table;
 
     $columns = [
@@ -16,6 +17,7 @@ beforeEach(function () {
     ];
 
     $this->table = Table::make()
+        ->builder(Product::query())
         ->withColumns($columns);
 });
 

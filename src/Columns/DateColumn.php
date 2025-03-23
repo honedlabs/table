@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Columns;
 
 use Carbon\Carbon;
+use Honed\Core\Interpret;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
@@ -46,6 +47,8 @@ class DateColumn extends Column
 
     /**
      * {@inheritdoc}
+     *
+     * @param  string|\Carbon\Carbon|null  $value
      */
     public function formatValue($value)
     {
@@ -54,19 +57,18 @@ class DateColumn extends Column
         }
 
         if (! $value instanceof Carbon) {
-            try {
-                // @phpstan-ignore-next-line
-                $value = Carbon::parse($value, $this->getTimezone());
-            } catch (\InvalidArgumentException $e) {
-                return $this->getFallback();
-            }
+            $value = Interpret::dateOf($value, $this->getTimezone());
+        }
+
+        if (\is_null($value)) {
+            return $this->getFallback();
         }
 
         if ($this->isDiffForHumans()) {
             return $value->diffForHumans();
         }
 
-        return $value->format($this->getFormat() ?? 'Y-m-d H:i:s');
+        return $value->format($this->getBuildermat() ?? 'Y-m-d H:i:s');
     }
 
     /**
@@ -110,7 +112,7 @@ class DateColumn extends Column
      *
      * @return string|null
      */
-    public function getFormat()
+    public function getBuildermat()
     {
         return $this->format;
     }
