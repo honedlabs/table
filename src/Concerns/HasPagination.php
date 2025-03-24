@@ -274,16 +274,16 @@ trait HasPagination
             return $this->window;
         }
 
-        return static::fallbackWindow();
+        return static::getDefaultWindow();
     }
 
     /**
-     * Get the fallback number of page links to show either side of the current
-     * page from the config.
+     * Get the default number of page links to show either side of the current
+     * page.
      *
      * @return int
      */
-    public static function fallbackWindow()
+    public static function getDefaultWindow()
     {
         return type(config('table.window', 2))->asInt();
     }

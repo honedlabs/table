@@ -11,6 +11,8 @@ use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasParameterNames;
 use Honed\Refine\Pipelines\AfterRefining;
 use Honed\Refine\Pipelines\BeforeRefining;
+use Honed\Table\Pipelines\RefineFilters;
+use Honed\Table\Pipelines\RefineSearches;
 use Honed\Refine\Refine;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\HasColumns;
@@ -21,15 +23,11 @@ use Honed\Table\Concerns\IsToggleable;
 use Honed\Table\Pipelines\CleanupTable;
 use Honed\Table\Pipelines\Paginate;
 use Honed\Table\Pipelines\QueryColumns;
-use Honed\Table\Pipelines\RefineFilters;
-use Honed\Table\Pipelines\RefineSearches;
 use Honed\Table\Pipelines\RefineSorts;
 use Honed\Table\Pipelines\SelectColumns;
 use Honed\Table\Pipelines\ToggleColumns;
 use Honed\Table\Pipelines\TransformRecords;
 use Illuminate\Contracts\Routing\UrlRoutable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
@@ -51,7 +49,10 @@ class Table extends Refine implements UrlRoutable
     use HasMeta;
 
     /** @use HasPagination<TModel, TBuilder> */
-    use HasPagination;
+    use HasPagination {
+        getPageKey as protected getBasePageKey;
+        getRecordKey as protected getBaseRecordKey;
+    }
 
     /** @use HasParameterNames<TModel, TBuilder> */
     use HasParameterNames;
@@ -62,7 +63,9 @@ class Table extends Refine implements UrlRoutable
     use IsSelectable;
 
     /** @use IsToggleable<TModel, TBuilder> */
-    use IsToggleable;
+    use IsToggleable {
+        getColumnKey as protected getBaseColumnKey;
+    }
 
     /**
      * The unique identifier column for the table.
@@ -83,7 +86,7 @@ class Table extends Refine implements UrlRoutable
      *
      * @var bool|null
      */
-    protected $attributes;
+    protected $serialize;
 
     /**
      * The table records.
@@ -102,7 +105,7 @@ class Table extends Refine implements UrlRoutable
     /**
      * Create a new table instance.
      *
-     * @param  \Closure|null  $before
+     * @param  \Closure(TBuilder):void|null  $before
      * @return static
      */
     public static function make($before = null)
@@ -175,7 +178,7 @@ class Table extends Refine implements UrlRoutable
             return $this->endpoint;
         }
 
-        return static::fallbackEndpoint();
+        return static::getDefaultEndpoint();
     }
 
     /**
@@ -183,7 +186,7 @@ class Table extends Refine implements UrlRoutable
      *
      * @return string
      */
-    public static function fallbackEndpoint()
+    public static function getDefaultEndpoint()
     {
         return type(config('table.endpoint', '/actions'))->asString();
     }
@@ -191,12 +194,12 @@ class Table extends Refine implements UrlRoutable
     /**
      * Set whether the model attributes should serialized alongside columns.
      *
-     * @param  bool|null  $attributes
+     * @param  bool|null  $serialize
      * @return $this
      */
-    public function attributes($attributes = true)
+    public function serialize($serialize = true)
     {
-        $this->attributes = $attributes;
+        $this->serialize = $serialize;
 
         return $this;
     }
@@ -206,13 +209,13 @@ class Table extends Refine implements UrlRoutable
      *
      * @return bool
      */
-    public function hasAttributes()
+    public function isSerialized()
     {
-        if (isset($this->attributes)) {
-            return $this->attributes;
+        if (isset($this->serialize)) {
+            return $this->serialize;
         }
 
-        return static::fallbackAttributes();
+        return static::isSerializedByDefault();
     }
 
     /**
@@ -220,9 +223,9 @@ class Table extends Refine implements UrlRoutable
      *
      * @return bool
      */
-    public static function fallbackAttributes()
+    public static function isSerializedByDefault()
     {
-        return (bool) config('table.attributes', false);
+        return (bool) config('table.serialize', false);
     }
 
     /**
@@ -268,9 +271,39 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
+     * Get the query parameter for the page number.
+     *
+     * @return string
+     */
+    public function getPageKey()
+    {
+        return $this->formatScope($this->getBasePageKey());
+    }
+
+    /**
+     * Get the query parameter for the number of records to show per page.
+     *
+     * @return string
+     */
+    public function getRecordKey()
+    {
+        return $this->formatScope($this->getBaseRecordKey());
+    }
+
+    /**
+     * Get the query parameter for which columns to display.
+     *
+     * @return string
+     */
+    public function getColumnKey()
+    {
+        return $this->formatScope($this->getBaseColumnKey());
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public static function fallbackDelimiter()
+    public static function getDefaultDelimiter()
     {
         return type(config('table.delimiter', ','))->asString();
     }
@@ -352,10 +385,10 @@ class Table extends Refine implements UrlRoutable
     {
         return \array_merge(parent::configToArray(), [
             'endpoint' => $this->getEndpoint(),
-            'record' => $this->getKey(),
-            'records' => $this->formatScope($this->getRecordKey()),
-            'columns' => $this->formatScope($this->getColumnsKey()),
-            'pages' => $this->formatScope($this->getPageKey()),
+            'key' => $this->getKey(),
+            'record' => $this->getRecordKey(),
+            'column' => $this->getColumnKey(),
+            'page' => $this->getPageKey(),
         ]);
     }
 

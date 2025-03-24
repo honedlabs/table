@@ -33,7 +33,7 @@ class TransformRecords
                     $record,
                     $table->getCachedColumns(),
                     $table->getInlineActions(),
-                    $table->hasAttributes()
+                    $table->isSerialized()
                 ),
                 $records
             )
@@ -48,10 +48,10 @@ class TransformRecords
      * @param  TModel  $record
      * @param  array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  $columns
      * @param  array<int,\Honed\Action\InlineAction>  $actions
-     * @param  bool  $attr
+     * @param  bool  $serialize
      * @return array<string,mixed>
      */
-    public static function createRecord($record, $columns, $actions, $attr)
+    public static function createRecord($record, $columns, $actions, $serialize)
     {
         [$named, $typed] = Table::getModelParameters($record);
 
@@ -65,12 +65,12 @@ class TransformRecords
             )
         );
 
-        $entry = $attr ? $record->toArray() : [];
-
         $row = Arr::mapWithKeys(
             $columns,
             static fn (Column $column) => $column->createEntry($record, $named, $typed)
         );
+        
+        $entry = $serialize ? $record->toArray() : [];
 
         return \array_merge($entry, $row, ['actions' => $actions]);
     }

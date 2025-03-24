@@ -34,7 +34,7 @@ class ToggleColumns
 
         $params = Interpret::array(
             $request,
-            $table->formatScope($table->getColumnsKey()),
+            $table->formatScope($table->getColumnKey()),
             $table->getDelimiter(),
             'string'
         );

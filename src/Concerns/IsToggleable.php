@@ -27,7 +27,7 @@ trait IsToggleable
      *
      * @var string|null
      */
-    protected $columnsKey;
+    protected $columnKey;
 
     /**
      * Whether the table should remember the columns to display.
@@ -76,20 +76,20 @@ trait IsToggleable
             return $this->toggle;
         }
 
-        if ($this instanceof ShouldToggle || $this instanceof ShouldRemember) {
+        if ($this instanceof ShouldToggle) {
             return true;
         }
 
-        return static::fallbackToggleable();
+        return static::isToggleableByDefault();
     }
 
     /**
      * Determine whether the table should allow the user to toggle which columns
-     * are visible from the config.
+     * are visible by default.
      *
      * @return bool
      */
-    public static function fallbackToggleable()
+    public static function isToggleableByDefault()
     {
         return (bool) config('table.toggle', false);
     }
@@ -97,12 +97,12 @@ trait IsToggleable
     /**
      * Set the query parameter for which columns to display.
      *
-     * @param  string  $columnsKey
+     * @param  string  $columnKey
      * @return $this
      */
-    public function columnsKey($columnsKey): static
+    public function columnKey($columnKey): static
     {
-        $this->columnsKey = $columnsKey;
+        $this->columnKey = $columnKey;
 
         return $this;
     }
@@ -112,21 +112,21 @@ trait IsToggleable
      *
      * @return string
      */
-    public function getColumnsKey()
+    public function getColumnKey()
     {
-        if (isset($this->columnsKey)) {
-            return $this->columnsKey;
+        if (isset($this->columnKey)) {
+            return $this->columnKey;
         }
 
-        return static::fallbackColumnsKey();
+        return static::getDefaultColumnKey();
     }
 
     /**
-     * Get the query parameter for which columns to display from the config.
+     * Get the query parameter for which columns to display by default.
      *
      * @return string
      */
-    public static function fallbackColumnsKey()
+    public static function getDefaultColumnKey()
     {
         return type(config('table.column_key', 'columns'))->asString();
     }
@@ -159,16 +159,16 @@ trait IsToggleable
             return true;
         }
 
-        return static::fallbackRememberable();
+        return static::isRememberableByDefault();
     }
 
     /**
-     * Determine whether the table should remember the user preferences from
-     * the config.
+     * Determine whether the table should remember the user preferences by
+     * default.
      *
      * @return bool
      */
-    public static function fallbackRememberable()
+    public static function isRememberableByDefault()
     {
         return (bool) config('table.remember', false);
     }
@@ -241,16 +241,16 @@ trait IsToggleable
             return $this->duration;
         }
 
-        return static::fallbackDuration();
+        return static::getDefaultDuration();
     }
 
     /**
-     * Get the duration of the cookie to use for remembering the columns to
-     * display from the config.
+     * Get the default duration of the cookie to use for remembering the
+     * columns to display.
      *
      * @return int
      */
-    public static function fallbackDuration()
+    public static function getDefaultDuration()
     {
         return type(config('table.duration', 15768000))->asInt();
     }

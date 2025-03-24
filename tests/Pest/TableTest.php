@@ -26,15 +26,15 @@ it('has endpoint', function () {
         ->getEndpoint()->toBe(config('table.endpoint'))
         ->endpoint('/other')->toBe($this->table)
         ->getEndpoint()->toBe('/other')
-        ->fallbackEndpoint()->toBe(config('table.endpoint'));
+        ->getDefaultEndpoint()->toBe(config('table.endpoint'));
 });
 
-it('has attributes', function () {
+it('serializes', function () {
     expect($this->table)
-        ->hasAttributes()->toBe(config('table.attributes'))
-        ->attributes(true)->toBe($this->table)
-        ->hasAttributes()->toBe(true)
-        ->fallbackAttributes()->toBe(config('table.attributes'));
+        ->isSerialized()->toBe(config('table.serialize'))
+        ->serialize(true)->toBe($this->table)
+        ->isSerialized()->toBe(true)
+        ->isSerializedByDefault()->toBe(config('table.serialize'));
 });
 
 it('has records', function () {

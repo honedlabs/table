@@ -136,13 +136,13 @@ it('builds class', function () {
         )
         )->toArray()->scoped(fn ($array) => $array
             ->{'config'}->toEqual([
-                'record' => 'id',
+                'key' => 'id',
                 'delimiter' => config('table.delimiter'),
-                'records' => config('table.record_key'),
+                'record' => config('table.record_key'),
                 'sort' => config('table.sort_key'),
                 'search' => config('table.search_key'),
-                'columns' => config('table.column_key'),
-                'pages' => config('table.page_key'),
+                'column' => config('table.column_key'),
+                'page' => config('table.page_key'),
                 'endpoint' => config('table.endpoint'),
                 'term' => 'search term',
                 'match' => 'match',

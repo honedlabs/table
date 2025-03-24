@@ -57,7 +57,7 @@ it('has window', function () {
         ->getWindow()->toBe(config('table.window'))
         ->window(5)->toBe($this->table)
         ->getWindow()->toBe(5)
-        ->fallbackWindow()->toBe(config('table.window'));
+        ->getDefaultWindow()->toBe(config('table.window'));
 });
 
 it('has records per page', function () {

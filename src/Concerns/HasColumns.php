@@ -50,7 +50,17 @@ trait HasColumns
     }
 
     /**
-     * Get the columns for the table.
+     * Define the columns for the instance.
+     *
+     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
+     */
+    public function columns()
+    {
+        return [];
+    }
+
+    /**
+     * Retrieve the columns.
      *
      * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
      */
@@ -60,19 +70,12 @@ trait HasColumns
             return [];
         }
 
-        return once(function () {
-
-            $columns = \method_exists($this, 'columns') ? $this->columns() : [];
-
-            $columns = \array_merge($columns, $this->columns ?? []);
-
-            return \array_values(
-                \array_filter(
-                    $columns,
-                    static fn (Column $column) => $column->isAllowed()
-                )
-            );
-        });
+        return once(fn () => \array_values(
+            \array_filter(
+                \array_merge($this->columns(), $this->columns ?? []),
+                static fn (Column $column) => $column->isAllowed()
+            )
+        ));
     }
 
     /**

@@ -17,7 +17,7 @@ it('is toggleable', function () {
         ->isToggleable()->toBe(config('table.toggle'))
         ->toggle(true)->toBe($this->table)
         ->isToggleable()->toBe(true)
-        ->fallbackToggleable()->toBe(config('table.toggle'));
+        ->isToggleableByDefault()->toBe(config('table.toggle'));
 
     $class = new class extends Table implements ShouldToggle {
         public function __construct() {}
@@ -31,10 +31,10 @@ it('is toggleable', function () {
 
 it('has columns key', function () {
     expect($this->table)
-        ->getColumnsKey()->toBe(config('table.column_key'))
-        ->columnsKey('test')
-        ->getColumnsKey()->toBe('test')
-        ->fallbackColumnsKey()->toBe(config('table.column_key'));
+        ->getColumnKey()->toBe(config('table.column_key'))
+        ->columnKey('test')
+        ->getColumnKey()->toBe('test')
+        ->getDefaultColumnKey()->toBe(config('table.column_key'));
 });
 
 it('can remember', function () {
@@ -43,7 +43,7 @@ it('can remember', function () {
         ->isRememberable()->toBe(config('table.remember'))
         ->remember(true)->toBe($this->table)
         ->isRememberable()->toBe(true)
-        ->fallbackRememberable()->toBe(config('table.remember'));
+        ->isRememberableByDefault()->toBe(config('table.remember'));
 
     $class = new class extends Table implements ShouldRemember {
         public function __construct() {}
@@ -68,6 +68,6 @@ it('has duration', function () {
         ->getDuration()->toBe(config('table.duration'))
         ->duration(100)->toBe($this->table)
         ->getDuration()->toBe(100)
-        ->fallbackDuration()->toBe(config('table.duration'));
+        ->getDefaultDuration()->toBe(config('table.duration'));
 });
 

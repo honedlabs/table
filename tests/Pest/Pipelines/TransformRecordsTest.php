@@ -78,8 +78,8 @@ it('transforms records', function () {
         ->{'actions'}->toHaveCount(3);
 });
 
-it('uses attributes', function () {
-    $this->table->attributes(true);
+it('serializes', function () {
+    $this->table->serialize(true);
 
     $this->pipe->__invoke($this->table, $this->next);
     
