@@ -69,7 +69,7 @@ class TransformRecords
             $columns,
             static fn (Column $column) => $column->createEntry($record, $named, $typed)
         );
-        
+
         $entry = $serialize ? $record->toArray() : [];
 
         return \array_merge($entry, $row, ['actions' => $actions]);
