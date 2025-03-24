@@ -198,7 +198,6 @@ it('fails to paginate scope', function () {
         ->toHaveCount(3);
 });
 
-
 it('paginates scope', function () {
     $this->table->scope('scope')
         ->pagination([10, 25, 50]);
