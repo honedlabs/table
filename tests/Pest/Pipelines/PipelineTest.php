@@ -147,8 +147,8 @@ it('builds class', function () {
                 'term' => 'search term',
                 'match' => 'match',
             ])->{'actions'}->scoped(fn ($actions) => $actions
-                ->toHaveKeys([ 'hasInline', 'bulk', 'page'])
-                ->{'hasInline'}->toBeTrue()
+                ->toHaveKeys([ 'inline', 'bulk', 'page'])
+                ->{'inline'}->toBeTrue()
                 ->{'bulk'}->toHaveCount(1)
                 ->{'page'}->toHaveCount(2)
             )->{'toggleable'}->toBeTrue()

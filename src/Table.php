@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Honed\Action\Concerns\HasActions;
+use Honed\Action\Concerns\HasEncoder;
+use Honed\Action\Concerns\HasEndpoint;
 use Honed\Action\Handler;
-use Honed\Core\Concerns\Encodable;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasParameterNames;
 use Honed\Refine\Pipelines\AfterRefining;
@@ -40,11 +41,14 @@ use Illuminate\Support\Facades\App;
  */
 class Table extends Refine implements UrlRoutable
 {
-    use Encodable;
     use HasActions;
 
     /** @use HasColumns<TModel, TBuilder> */
     use HasColumns;
+
+    use HasEncoder;
+
+    use HasEndpoint;
 
     use HasMeta;
 
@@ -57,11 +61,10 @@ class Table extends Refine implements UrlRoutable
     /** @use HasParameterNames<TModel, TBuilder> */
     use HasParameterNames;
 
-    use HasTableBindings;
+    // use HasTableBindings;
 
     /** @use IsSelectable<TModel, TBuilder> */
     use IsSelectable;
-
     /** @use IsToggleable<TModel, TBuilder> */
     use IsToggleable {
         getColumnKey as protected getBaseColumnKey;
@@ -73,13 +76,6 @@ class Table extends Refine implements UrlRoutable
      * @var string|null
      */
     protected $key;
-
-    /**
-     * The endpoint to be used to handle table actions.
-     *
-     * @var string|null
-     */
-    protected $endpoint;
 
     /**
      * Whether the model should be serialized per record.
@@ -152,33 +148,6 @@ class Table extends Refine implements UrlRoutable
         throw new \RuntimeException(
             'The table must have a key column or a key property defined.'
         );
-    }
-
-    /**
-     * Set the endpoint to be used for actions.
-     *
-     * @param  string  $endpoint
-     * @return $this
-     */
-    public function endpoint($endpoint)
-    {
-        $this->endpoint = $endpoint;
-
-        return $this;
-    }
-
-    /**
-     * Get the endpoint to be used for table actions.
-     *
-     * @return string
-     */
-    public function getEndpoint()
-    {
-        if (isset($this->endpoint)) {
-            return $this->endpoint;
-        }
-
-        return static::getDefaultEndpoint();
     }
 
     /**
@@ -359,6 +328,45 @@ class Table extends Refine implements UrlRoutable
 
     /**
      * {@inheritdoc}
+     *
+     * @param  string  $value
+     * @return static|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        /** @var static|null */
+        return $this->getPrimitive($value, Table::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param  string  $value
+     * @return static|null
+     */
+    public function resolveChildRouteBinding($childType, $value, $field = null)
+    {
+        return $this->resolveRouteBinding($value, $field);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouteKeyName()
+    {
+        return 'table';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouteKey()
+    {
+        return static::encode(static::class);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function toArray()
     {
@@ -390,6 +398,20 @@ class Table extends Refine implements UrlRoutable
             'column' => $this->getColumnKey(),
             'page' => $this->getPageKey(),
         ]);
+    }
+
+    /**
+     * Get the actions for the table as an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function actionsToArray()
+    {
+        return [
+            'inline' => filled($this->getInlineActions()),
+            'bulk' => $this->getBulkActions(),
+            'page' => $this->getPageActions(),
+        ];
     }
 
     /**

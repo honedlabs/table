@@ -77,6 +77,46 @@ trait HasPagination
     }
 
     /**
+     * Set the paginator type to be 'length-aware'.
+     *
+     * @return $this
+     */
+    public function lengthAware()
+    {
+        return $this->paginator('length-aware');
+    }
+
+    /**
+     * Set the paginator type to be 'simple'.
+     *
+     * @return $this
+     */
+    public function simple()
+    {
+        return $this->paginator('simple');
+    }
+
+    /**
+     * Set the paginator type to be 'cursor'.
+     *
+     * @return $this
+     */
+    public function cursor()
+    {
+        return $this->paginator('cursor');
+    }
+
+    /**
+     * Set the paginator type to be 'collection'.
+     *
+     * @return $this
+     */
+    public function collection()
+    {
+        return $this->paginator('collection');
+    }
+
+    /**
      * Get the paginator type.
      *
      * @return 'cursor'|'simple'|'length-aware'|'collection'|string

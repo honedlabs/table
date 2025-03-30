@@ -17,7 +17,6 @@ use Honed\Core\Concerns\IsActive;
 use Honed\Core\Concerns\Transformable;
 use Honed\Core\Primitive;
 use Honed\Refine\Sort;
-use Honed\Table\Concerns\HasClass;
 use Honed\Table\Concerns\IsVisible;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -30,7 +29,6 @@ class Column extends Primitive
 {
     use Allowable;
     use HasAlias;
-    use HasClass;
     use HasExtra;
     use HasIcon;
     use HasLabel;
@@ -65,6 +63,13 @@ class Column extends Primitive
      * @var mixed
      */
     protected $fallback;
+
+    /**
+     * The class of the column header.
+     *
+     * @var string|null
+     */
+    protected $class;
 
     /**
      * The column sort.
@@ -183,6 +188,29 @@ class Column extends Primitive
     public function getFallback()
     {
         return $this->fallback;
+    }
+
+    /**
+     * Set the class for the column.
+     *
+     * @param  string  $class
+     * @return $this
+     */
+    public function class($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * Get the class for the column.
+     *
+     * @return string|null
+     */
+    public function getClass()
+    {
+        return $this->class;
     }
 
     /**
@@ -374,7 +402,7 @@ class Column extends Primitive
             $this->getParameter() => [
                 'value' => $value,
                 'extra' => $this->resolveExtra(
-                    \array_merge($named, ['value' => [$value]]),
+                    \array_merge($named, ['value' => $value]),
                     $typed,
                 ),
             ],

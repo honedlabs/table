@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Honed\Core\Contracts\DefinesExtra;
+use Honed\Core\Contracts\HasExtra;
 use Illuminate\Support\Arr;
 
 /**
@@ -13,7 +13,7 @@ use Illuminate\Support\Arr;
  *
  * @extends Column<TModel, TBuilder>
  */
-class BadgeColumn extends Column implements DefinesExtra
+class BadgeColumn extends Column implements HasExtra
 {
     /**
      * How to map the value to a badge variant.
@@ -44,7 +44,7 @@ class BadgeColumn extends Column implements DefinesExtra
      * @param  int|string  $value
      * @return array<string,mixed>
      */
-    public function defineExtra($value)
+    public function extraAs($value)
     {
         $variant = Arr::get(
             $this->getMap(),

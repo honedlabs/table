@@ -17,7 +17,15 @@ it('has paginator', function () {
         ->getPaginator()->toBe(config('table.paginator'))
         ->paginator('cursor')->toBe($this->table)
         ->getPaginator()->toBe('cursor')
-        ->getDefaultPaginator()->toBe(config('table.paginator'));
+        ->getDefaultPaginator()->toBe(config('table.paginator'))
+        ->cursor()->toBe($this->table)
+        ->getPaginator()->toBe('cursor')
+        ->simple()->toBe($this->table)
+        ->getPaginator()->toBe('simple')
+        ->lengthAware()->toBe($this->table)
+        ->getPaginator()->toBe('length-aware')
+        ->collection()->toBe($this->table)
+        ->getPaginator()->toBe('collection');
 });
 
 it('has pagination', function () {

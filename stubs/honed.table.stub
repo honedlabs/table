@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace {{ namespace }};
 
 use Honed\Core\Contracts\Builds;
-use Honed\Actions\BulkAction;
-use Honed\Actions\PageAction;
-use Honed\Actions\InlineAction;
+use Honed\Action\BulkAction;
+use Honed\Action\PageAction;
+use Honed\Action\InlineAction;
 use Honed\Refine\Filter;
 use Honed\Refine\Sort;
 use Honed\Refine\Search;
@@ -16,6 +16,7 @@ use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Table;
 use Honed\Table\Contracts\ShouldToggle;
 use Honed\Table\Contracts\ShouldRemember;
+use Honed\Table\Contracts\ShouldSelect;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
@@ -25,14 +26,8 @@ use Honed\Table\Contracts\ShouldRemember;
  */
 final class {{ class }} extends Table implements Builds
 {
-    /* The database column(s) to use for searching */
-    public $search = [];
-
-    /* The number of records to show per page */
-    public $pagination = 10;
-
     /**
-     * Provide the instance with any necessary setup
+     * Provide the table with any necessary setup
      *
      * @return void
      */
@@ -54,7 +49,7 @@ final class {{ class }} extends Table implements Builds
     /**
      * Define the columns to apply.
      * 
-     * @return array<int, \Honed\Table\Columns\Column>
+     * @return array<int, \Honed\Table\Columns\Column<TModel, TBuilder>>
      */
     public function columns()
     {
@@ -92,7 +87,7 @@ final class {{ class }} extends Table implements Builds
      * 
      * @return array<int, \Honed\Refine\Search<TModel, TBuilder>>
      */
-    protected function searches()
+    public function searches()
     {
         return [
             //

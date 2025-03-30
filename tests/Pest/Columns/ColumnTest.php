@@ -40,6 +40,13 @@ it('is key', function () {
         ->isKey()->toBeTrue();
 });
 
+it('has class', function () {
+    expect($this->test)
+        ->getClass()->toBeNull()
+        ->class('bg-red-500')->toBe($this->test)
+        ->getClass()->toBe('bg-red-500');
+});
+
 it('has fallback', function () {
     expect($this->test)
         ->getFallback()->toBeNull()

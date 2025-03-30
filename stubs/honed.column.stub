@@ -15,7 +15,9 @@ use Honed\Table\Columns\Column;
 final class {{ class }} extends Column
 {
     /**
-     * {@inheritdoc}
+     * Provide the column with any necessary setup
+     *
+     * @return void
      */
     public function setUp()
     {

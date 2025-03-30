@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Honed\Table\Table;
 use Honed\Table\Columns\KeyColumn;
+use Honed\Table\Tests\Fixtures\Table as FixturesTable;
 
 beforeEach(function () {
     $this->table = Table::make();
@@ -70,4 +71,37 @@ it('overrides refine fallbacks', function () {
         ->getSearchKey()->toBe(config('table.search_key'))
         ->getMatchKey()->toBe(config('table.match_key'))
         ->isMatching()->toBe(config('table.match'));
+});
+
+it('is url routable', function () {
+    // $key = $this->table->encode($this->table);
+
+    // expect($this->table)
+    //     ->getRouteKey()->toBe($key);
+
+    expect($this->table)
+        ->getRouteKeyName()->toBe('table');
+
+    expect($this->table)
+        ->resolveRouteBinding($this->table->getRouteKey())
+        ->toBeNull();
+
+    $table = FixturesTable::make();
+
+    expect($table)
+        ->resolveRouteBinding($table->getRouteKey())
+        ->toBeInstanceOf(FixturesTable::class);
+
+    expect($table)
+        ->resolveChildRouteBinding(null, $table->getRouteKey())
+        ->toBeInstanceOf(FixturesTable::class);
+});
+
+it('calls macro', function () {
+    Table::macro('test', function () {
+        return $this->getEndpoint();
+    });
+
+    expect($this->table)
+        ->test()->toBe(config('table.endpoint'));
 });

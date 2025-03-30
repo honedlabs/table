@@ -33,13 +33,13 @@ it('has default', function () {
 
 it('defines extra', function () {
     expect($this->column)
-        ->defineExtra(Status::Available->value)->toEqual([
+        ->extraAs(Status::Available->value)->toEqual([
             'variant' => 'default',
         ])
         ->map(['available' => 'success'])
-        ->defineExtra(Status::Available->value)->toEqual([
+        ->extraAs(Status::Available->value)->toEqual([
             'variant' => 'success',
-        ])->defineExtra(Status::Unavailable->value)->toEqual([
+        ])->extraAs(Status::Unavailable->value)->toEqual([
             'variant' => 'default',
         ]);
 });

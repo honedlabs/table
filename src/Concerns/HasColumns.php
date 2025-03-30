@@ -89,16 +89,6 @@ trait HasColumns
     }
 
     /**
-     * Get the cached columns.
-     *
-     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
-     */
-    public function getCachedColumns()
-    {
-        return $this->cachedColumns;
-    }
-
-    /**
      * Set the cached columns.
      *
      * @param  array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  $cachedColumns
@@ -109,6 +99,16 @@ trait HasColumns
         $this->cachedColumns = $cachedColumns;
 
         return $this;
+    }
+
+    /**
+     * Get the cached columns.
+     *
+     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
+     */
+    public function getCachedColumns()
+    {
+        return $this->cachedColumns;
     }
 
     /**

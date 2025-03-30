@@ -10,23 +10,23 @@ beforeEach(function () {
     };
 });
 
-it('is empty', function () {
-    expect($this->test)
-        ->hasClass()->toBeFalse()
-        ->getClass()->toBeNull();
-});
+// it('is empty', function () {
+//     expect($this->test)
+//         ->hasClass()->toBeFalse()
+//         ->getClass()->toBeNull();
+// });
 
-it('sets', function () {
-    expect($this->test)
-        ->class('bg-red-500')->toBe($this->test)
-        ->hasClass()->toBeTrue()
-        ->getClass()->toBe('bg-red-500');
-});
+// it('sets', function () {
+//     expect($this->test)
+//         ->class('bg-red-500')->toBe($this->test)
+//         ->hasClass()->toBeTrue()
+//         ->getClass()->toBe('bg-red-500');
+// });
 
-it('merges', function () {
-    expect($this->test)
-        ->class('bg-red-500')->toBe($this->test)
-        ->class('text-white')->toBe($this->test)
-        ->hasClass()->toBeTrue()
-        ->getClass()->toBe('bg-red-500 text-white');
-});
+// it('merges', function () {
+//     expect($this->test)
+//         ->class('bg-red-500')->toBe($this->test)
+//         ->class('text-white')->toBe($this->test)
+//         ->hasClass()->toBeTrue()
+//         ->getClass()->toBe('bg-red-500 text-white');
+// });
