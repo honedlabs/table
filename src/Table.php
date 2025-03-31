@@ -47,9 +47,7 @@ class Table extends Refine implements UrlRoutable
     use HasColumns;
 
     use HasEncoder;
-
     use HasEndpoint;
-
     use HasMeta;
 
     /** @use HasPagination<TModel, TBuilder> */
@@ -65,6 +63,7 @@ class Table extends Refine implements UrlRoutable
 
     /** @use IsSelectable<TModel, TBuilder> */
     use IsSelectable;
+
     /** @use IsToggleable<TModel, TBuilder> */
     use IsToggleable {
         getColumnKey as protected getBaseColumnKey;
