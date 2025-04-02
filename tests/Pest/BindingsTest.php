@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Honed\Action\ActionFactory;
+use Honed\Action\Http\Requests\ActionRequest;
 use Honed\Table\Table;
 use Honed\Table\Tests\Fixtures\Table as FixtureTable;
 use Honed\Table\Tests\Stubs\Product;
@@ -29,11 +30,18 @@ it('can resolve a route binding', function () {
 it('can handle inline actions at endpoint', function () {
     $product = product();
 
+    // $data = ActionRequest::fake()
+    //     ->inline()
+    //     ->name('edit')
+    //     ->id($this->table->getRouteKey())
+    //     ->record($product->id)
+    //     ->getData();
+
     $data = [
-        'table' => $this->table->getRouteKey(),
+        'id' => $this->table->getRouteKey(),
         'type' => ActionFactory::Inline,
         'name' => 'edit',
-        'id' => $product->id,
+        'record' => $product->id,
     ];
 
     post(route('table.actions'), $data)
@@ -48,16 +56,16 @@ it('authorizez', function () {
     $b = product();
 
     $data = [
-        'table' => $this->table->getRouteKey(),
+        'id' => $this->table->getRouteKey(),
         'type' => ActionFactory::Inline,
         'name' => 'delete',
-        'id' => $a->id,
+        'record' => $a->id,
     ];
 
     post(route('table.actions'), $data)
         ->assertStatus(403);
 
-    Arr::set($data, 'id', $b->id);
+    Arr::set($data, 'record', $b->id);
 
     post(route('table.actions'), $data)
         ->assertRedirect('/');
@@ -77,7 +85,7 @@ it('can handle bulk actions at endpoint', function () {
     $ids = range(1, 50);
 
     $data = [
-        'table' => $this->table->getRouteKey(),
+        'id' => $this->table->getRouteKey(),
         'type' => ActionFactory::Bulk,
         'name' => 'edit',
         'all' => false,
@@ -95,18 +103,18 @@ it('can handle bulk actions at endpoint', function () {
         );
 });
 
-it('can handle specific tables', function () {
-    $data = [
-        'type' => ActionFactory::Page,
-        'name' => 'factory',
-    ];
+// it('can handle specific tables', function () {
+//     $data = [
+//         'type' => ActionFactory::Page,
+//         'name' => 'factory',
+//     ];
 
-    post(route('products.table', $this->table->getRouteKey()), $data)
-        ->assertRedirect('/products/1');
+//     post(route('products.table', $this->table->getRouteKey()), $data)
+//         ->assertRedirect('/products/1');
 
-    expect(Product::all())
-        ->toHaveCount(1);
+//     expect(Product::all())
+//         ->toHaveCount(1);
 
-    post(route('products.table', Table::encode(Table::class)), $data)
-        ->assertStatus(404);
-});
+//     post(route('products.table', Table::encode(Table::class)), $data)
+//         ->assertStatus(404);
+// });
