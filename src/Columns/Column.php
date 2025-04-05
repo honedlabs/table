@@ -34,11 +34,11 @@ class Column extends Primitive
     use HasIcon;
     use HasLabel;
     use HasName;
+
     use HasQualifier;
 
     /** @use HasQuery<TModel, TBuilder> */
     use HasQuery;
-
     use HasType;
     use HasValue;
     use IsActive;
@@ -414,14 +414,14 @@ class Column extends Primitive
     /**
      * Get the sort instance as an array.
      *
-     * @return array<string,mixed>
+     * @return array<string,mixed>|null
      */
     public function sortToArray()
     {
         $sort = $this->getSort();
 
         if (! $sort) {
-            return [];
+            return null;
         }
 
         return [

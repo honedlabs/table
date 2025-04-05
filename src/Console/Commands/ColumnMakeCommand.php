@@ -88,7 +88,7 @@ class ColumnMakeCommand extends GeneratorCommand
         return [
             'name' => [
                 'What should the '.strtolower($this->type).' be named?',
-                'E.g. TextColumn',
+                'E.g. UserColumn',
             ],
         ];
     }
