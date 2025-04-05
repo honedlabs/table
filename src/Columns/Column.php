@@ -34,11 +34,11 @@ class Column extends Primitive
     use HasIcon;
     use HasLabel;
     use HasName;
-
     use HasQualifier;
 
     /** @use HasQuery<TModel, TBuilder> */
     use HasQuery;
+
     use HasType;
     use HasValue;
     use IsActive;
