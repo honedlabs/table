@@ -6,7 +6,7 @@ trait Refinable
 {
     /**
      * Whether the instance is sortable, and the sort itself.
-     *
+     * 
      * @var \Honed\Refine\Sort<TModel, TBuilder>|null
      */
     protected $sortable;

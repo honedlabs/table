@@ -94,4 +94,6 @@ class EmptyState extends Primitive
             'message' => $this->getMessage(),
         ];
     }
+    
+    
 }
