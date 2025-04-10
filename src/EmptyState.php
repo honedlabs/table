@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table;
 
 use Honed\Core\Concerns\HasIcon;
@@ -22,6 +24,42 @@ class EmptyState extends Primitive
      * @var string|null
      */
     protected $message;
+
+    /**
+     * The label of the empty state action.
+     *
+     * @var string|null
+     */
+    protected $label;
+
+    /**
+     * The route action of the empty state.
+     *
+     * @var string|null
+     */
+    protected $action;
+
+    /**
+     * The message or state to display when the empty state is because of refiners.
+     *
+     * @var string|\Closure(\Honed\Table\EmptyState):void
+     */
+    protected $refining;
+
+    /**
+     * The message or state to display when the empty state is because of filters.
+     *
+     * @var string|\Closure(\Honed\Table\EmptyState):void
+     */
+    protected $filtering;
+
+    /**
+     * The message or state to display when the empty state is because of searching.
+     *
+     * @var string|\Closure(\Honed\Table\EmptyState):void
+     */
+    protected $searching;
+    
 
     /**
      * Create a new empty state.
@@ -84,6 +122,90 @@ class EmptyState extends Primitive
     }
 
     /**
+     * Set the action of the empty state.
+     *
+     * @param  string  $label
+     * @param  string|null $action
+     * @return $this
+     */
+    public function action($label, $action = null)
+    {
+        $this->label = $label;
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * Set the state to display when refining.
+     * 
+     * @param  string|\Closure(\Honed\Table\EmptyState):void  $refining
+     * @return $this
+     */
+    public function whenRefining($refining)
+    {
+        $this->refining = $refining;
+
+        return $this;
+    }
+
+    /**
+     * Get the state to display when refining.
+     *
+     * @return string|\Closure(\Honed\Table\EmptyState):void
+     */
+    public function getRefiningState()
+    {
+        return $this->refining;
+    }
+
+    /**
+     * Set the state to display when filtering.
+     * 
+     * @param  string|\Closure(\Honed\Table\EmptyState):void  $filtering
+     * @return $this
+     */
+    public function whenFiltering($filtering)
+    {
+        $this->filtering = $filtering;
+
+        return $this;
+    }
+
+    /**
+     * Get the state to display when filtering.
+     *
+     * @return string|\Closure(\Honed\Table\EmptyState):void
+     */
+    public function getFilteringState()
+    {
+        return $this->filtering;
+    }
+
+    /**
+     * Set the state to display when searching.
+     * 
+     * @param  string|\Closure(\Honed\Table\EmptyState):void  $searching
+     * @return $this
+     */
+    public function whenSearching($searching)
+    {
+        $this->searching = $searching;
+
+        return $this;
+    }
+
+    /**
+     * Get the state to display when searching.
+     *
+     * @return string|\Closure(\Honed\Table\EmptyState):void
+     */
+    public function getSearchingState()
+    {
+        return $this->searching;
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -92,6 +214,8 @@ class EmptyState extends Primitive
             'icon' => $this->getIcon(),
             'title' => $this->getTitle(),
             'message' => $this->getMessage(),
+            'label' => $this->getLabel(),
+            'action' => $this->getAction(),
         ];
-    }
+    }    
 }

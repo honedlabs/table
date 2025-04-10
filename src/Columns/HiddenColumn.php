@@ -15,12 +15,18 @@ class HiddenColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function setUp()
-    {
-        parent::setUp();
+    protected $always = true;
 
-        $this->type('hidden');
-        $this->always();
-        $this->hidden();
+    /**
+     * {@inheritdoc}
+     */
+    protected $hidden = true;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function defineType()
+    {
+        return 'hidden';
     }
 }

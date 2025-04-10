@@ -36,11 +36,9 @@ class TextColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function defineType()
     {
-        parent::setUp();
-
-        $this->type('text');
+        return 'text';
     }
 
     /**

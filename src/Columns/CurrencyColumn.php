@@ -31,10 +31,9 @@ class CurrencyColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function defineType()
     {
-        parent::setUp();
-        $this->type('currency');
+        return 'currency';
     }
 
     /**

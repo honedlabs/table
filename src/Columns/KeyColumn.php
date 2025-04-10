@@ -15,12 +15,18 @@ class KeyColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function setUp()
-    {
-        parent::setUp();
+    protected $key = true;
 
-        $this->type('key');
-        $this->hidden();
-        $this->key();
+    /**
+     * {@inheritdoc}
+     */
+    protected $hidden = true;
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function defineType()
+    {
+        return 'key';
     }
 }

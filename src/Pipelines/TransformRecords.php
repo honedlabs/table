@@ -67,7 +67,7 @@ class TransformRecords
 
         $row = Arr::mapWithKeys(
             $columns,
-            static fn (Column $column) => $column->createEntry($record, $named, $typed)
+            static fn (Column $column) => $column->entry($record, $named, $typed)
         );
 
         $entry = $serialize ? $record->toArray() : [];

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-use Honed\Core\Contracts\Builds;
 use Honed\Action\BulkAction;
 use Honed\Action\PageAction;
 use Honed\Action\InlineAction;
@@ -22,9 +21,9 @@ use Honed\Table\Contracts\ShouldSelect;
  * @template TModel of \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
  *
- * @extends Table<TModel, TBuilder>
+ * @extends \Honed\Table\Table<TModel, TBuilder>
  */
-final class {{ class }} extends Table implements Builds
+final class {{ class }} extends Table
 {
     /**
      * Provide the table with any necessary setup
@@ -41,9 +40,9 @@ final class {{ class }} extends Table implements Builds
      * 
      * @return TBuilder|TModel|class-string<TModel>
      */
-    public function for()
+    public function defineResource()
     {
-        //
+        // return Model::query();
     }
 
     /**
@@ -51,8 +50,9 @@ final class {{ class }} extends Table implements Builds
      * 
      * @return array<int, \Honed\Table\Columns\Column<TModel, TBuilder>>
      */
-    public function columns()
+    public function defineColumns()
     {
+        /** @var array<int, \Honed\Table\Columns\Column<TModel, TBuilder>> */
         return [
             KeyColumn::make('id'),
         ];
@@ -63,8 +63,9 @@ final class {{ class }} extends Table implements Builds
      * 
      * @return array<int, \Honed\Refine\Filter<TModel, TBuilder>>
      */
-    public function filters()
+    public function defineFilters()
     {
+        /** @var array<int, \Honed\Refine\Filter<TModel, TBuilder>> */
         return [
             //
         ];
@@ -75,8 +76,9 @@ final class {{ class }} extends Table implements Builds
      * 
      * @return array<int, \Honed\Refine\Sort<TModel, TBuilder>>
      */
-    public function sorts()
+    public function defineSorts()
     {
+        /** @var array<int, \Honed\Refine\Sort<TModel, TBuilder>> */
         return [
             //
         ];
@@ -87,8 +89,9 @@ final class {{ class }} extends Table implements Builds
      * 
      * @return array<int, \Honed\Refine\Search<TModel, TBuilder>>
      */
-    public function searches()
+    public function defineSearches()
     {
+        /** @var array<int, \Honed\Refine\Search<TModel, TBuilder>> */
         return [
             //
         ];
@@ -97,12 +100,24 @@ final class {{ class }} extends Table implements Builds
     /**
      * Define the actions available on the records, or the page itself.
      * 
-     * @return array<int, \Honed\Actions\Action>
+     * @return array<int, \Honed\Action\Action>
      */
-    public function actions()
+    public function defineActions()
     {
         return [
 
         ];
+    }
+
+    /**
+     * Define the empty state configuration to be displayed when the table is
+     * not displaying any records.
+     *
+     * @param \Honed\Table\EmptyState $state
+     * @return \Honed\Table\EmptyState|void
+     */
+    public function defineEmptyState($state)
+    {
+        // $state->title()
     }
 }

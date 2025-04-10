@@ -32,10 +32,9 @@ class BadgeColumn extends Column implements HasExtra
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function defineType()
     {
-        parent::setUp();
-        $this->type('badge');
+        return 'badge';
     }
 
     /**

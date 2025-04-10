@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'endpoint' => '/actions',
+    'endpoint' => '/table',
 
     /*
     |--------------------------------------------------------------------------
@@ -143,4 +143,17 @@ return [
 
     /** The parameter name when selecting which columns to match on. */
     'match_key' => 'match',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Empty state
+    |--------------------------------------------------------------------------
+    |
+    | You can enable or disable the matches feature, which allows your users to
+    | select which columns they want to use to execute a search on the query.
+    |
+    | Enabling this will also provide a 'searches' property when serialized to
+    | allow you to bind the options to a form input.
+    |
+    */
 ];

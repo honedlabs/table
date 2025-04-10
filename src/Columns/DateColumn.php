@@ -39,10 +39,9 @@ class DateColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function defineType()
     {
-        parent::setUp();
-        $this->type('date');
+        return 'date';
     }
 
     /**

@@ -25,7 +25,7 @@ class ToggleColumns
     {
         if (! $table->isToggleable()) {
 
-            static::cacheColumns($table);
+            $this->cacheColumns($table);
 
             return $next($table);
         }
@@ -43,7 +43,7 @@ class ToggleColumns
             $params = $table->configureCookie($request, $params);
         }
 
-        static::cacheColumns($table, $params);
+        $this->cacheColumns($table, $params);
 
         return $next($table);
     }
@@ -55,7 +55,7 @@ class ToggleColumns
      * @param  array<int,string>|null  $params
      * @return void
      */
-    public static function cacheColumns($table, $params = null)
+    public function cacheColumns($table, $params = null)
     {
         $table->cacheColumns(
             \array_values(

@@ -35,10 +35,8 @@ class Column extends Primitive
     use HasLabel;
     use HasName;
     use HasQualifier;
-
     /** @use HasQuery<TModel, TBuilder> */
     use HasQuery;
-
     use HasType;
     use HasValue;
     use IsActive;
@@ -83,7 +81,7 @@ class Column extends Primitive
     /**
      * Whether to search on the column.
      *
-     * @var bool
+     * @var bool|string
      */
     protected $search = false;
 
@@ -102,6 +100,13 @@ class Column extends Primitive
     protected $select = true;
 
     /**
+     * Whether the column is active.
+     *
+     * @var bool
+     */
+    protected $active = true;
+
+    /**
      * Create a new column instance.
      *
      * @param  string  $name
@@ -113,14 +118,6 @@ class Column extends Primitive
         return resolve(static::class)
             ->name($name)
             ->label($label ?? static::makeLabel($name));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp()
-    {
-        $this->active(true);
     }
 
     /**
@@ -223,13 +220,7 @@ class Column extends Primitive
      */
     public function sort($sort = true)
     {
-        if (! $sort) {
-            $this->sort = null;
-
-            return $this;
-        }
-
-        if ($sort instanceof Sort) {
+        if (! $sort || $sort instanceof Sort) {
             $this->sort = $sort;
 
             return $this;
@@ -266,7 +257,7 @@ class Column extends Primitive
     /**
      * Set the column as searchable.
      *
-     * @param  bool  $search
+     * @param  bool|string  $search
      * @return $this
      */
     public function search($search = true)
@@ -283,7 +274,7 @@ class Column extends Primitive
      */
     public function isSearchable()
     {
-        return $this->search;
+        return (bool) $this->search;
     }
 
     /**
@@ -391,7 +382,7 @@ class Column extends Primitive
      * @param  array<class-string,mixed>  $typed
      * @return array<string,array{value:mixed, extra:array<string,mixed>}>
      */
-    public function createEntry($record, $named = [], $typed = [])
+    public function entry($record, $named = [], $typed = [])
     {
         $valueUsing = $this->getValue();
 
