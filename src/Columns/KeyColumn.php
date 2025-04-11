@@ -21,7 +21,7 @@ class KeyColumn extends Column
      * {@inheritdoc}
      */
     protected $hidden = true;
-    
+
     /**
      * {@inheritdoc}
      */
