@@ -24,4 +24,6 @@ trait HasEmptyState
     {
         return $this->emptyState ??= EmptyState::make();
     }
+    
+    
 }
