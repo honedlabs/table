@@ -61,7 +61,6 @@ class EmptyState extends Primitive
      * @var string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)|null
      */
     protected $searching;
-    
 
     /**
      * Create a new empty state.
@@ -102,7 +101,7 @@ class EmptyState extends Primitive
 
     /**
      * Get the default title of the empty state from the config.
-     * 
+     *
      * @return string
      */
     public static function getDefaultTitle()
@@ -135,7 +134,7 @@ class EmptyState extends Primitive
 
     /**
      * Get the default message of the empty state from the config.
-     * 
+     *
      * @return string
      */
     public static function getDefaultMessage()
@@ -155,7 +154,7 @@ class EmptyState extends Primitive
 
     /**
      * Get the default icon of the empty state from the config.
-     * 
+     *
      * @return string|null
      */
     public static function getDefaultIcon()
@@ -168,7 +167,7 @@ class EmptyState extends Primitive
      * Set the action of the empty state.
      *
      * @param  string  $label
-     * @param  string|null $action
+     * @param  string|null  $action
      * @return $this
      */
     public function action($label, $action = null)
@@ -201,7 +200,7 @@ class EmptyState extends Primitive
 
     /**
      * Set the state to display when refining.
-     * 
+     *
      * @param  string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $refining
      * @return $this
      */
@@ -224,7 +223,7 @@ class EmptyState extends Primitive
 
     /**
      * Get the default state to display when refining.
-     * 
+     *
      * @return string
      */
     public static function getDefaultRefiningState()
@@ -234,7 +233,7 @@ class EmptyState extends Primitive
 
     /**
      * Set the state to display when filtering.
-     * 
+     *
      * @param  string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $filtering
      * @return $this
      */
@@ -257,7 +256,7 @@ class EmptyState extends Primitive
 
     /**
      * Set the state to display when searching.
-     * 
+     *
      * @param  string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $searching
      * @return $this
      */
@@ -277,7 +276,7 @@ class EmptyState extends Primitive
     {
         return $this->searching;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -290,5 +289,5 @@ class EmptyState extends Primitive
             'label' => $this->getLabel(),
             'action' => $this->getAction(),
         ];
-    }    
+    }
 }

@@ -11,7 +11,7 @@ class TableController extends ActionController
 {
     /**
      * {@inheritdoc}
-     * 
+     *
      * @return class-string<\Honed\Action\Contracts\Handles>
      */
     public function baseClass()

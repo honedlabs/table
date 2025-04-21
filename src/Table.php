@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\App;
  *
  * @extends Refine<TModel, TBuilder>
  */
-class Table extends Refine implements UrlRoutable, Handles
+class Table extends Refine implements Handles, UrlRoutable
 {
     /** @use HasActions<TModel, TBuilder> */
     use HasActions;
@@ -50,9 +50,7 @@ class Table extends Refine implements UrlRoutable, Handles
     use HasColumns;
 
     use HasEncoder;
-
     use HasEndpoint;
-
     use HasMeta;
 
     /** @use HasPagination<TModel, TBuilder> */
@@ -68,6 +66,7 @@ class Table extends Refine implements UrlRoutable, Handles
 
     /** @use IsSelectable<TModel, TBuilder> */
     use IsSelectable;
+
     /** @use IsToggleable<TModel, TBuilder> */
     use IsToggleable {
         getColumnKey as protected getBaseColumnKey;
@@ -285,7 +284,7 @@ class Table extends Refine implements UrlRoutable, Handles
 
     /**
      * Set the empty state of the table.
-     * 
+     *
      * @param  \Honed\Table\EmptyState|string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $message
      * @param  string|null  $title
      * @return $this
@@ -317,7 +316,7 @@ class Table extends Refine implements UrlRoutable, Handles
 
     /**
      * Define the empty state of the table.
-     * 
+     *
      * @param  \Honed\Table\EmptyState  $emptyState
      * @return void|\Honed\Table\EmptyState
      */
@@ -492,9 +491,9 @@ class Table extends Refine implements UrlRoutable, Handles
 
     /**
      * Throw a missing key exception
-     * 
+     *
      * @return never
-     * 
+     *
      * @throws \RuntimeException
      */
     public static function throwMissingKeyException()

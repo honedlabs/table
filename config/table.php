@@ -55,7 +55,7 @@ return [
 
     'empty_state' => [
         'title' => 'No results found',
-        
+
         'message' => 'There are no results to display.',
 
         'icon' => null,

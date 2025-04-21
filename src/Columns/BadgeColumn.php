@@ -38,7 +38,7 @@ class BadgeColumn extends Column
 
     /**
      * {@inheritdoc}
-     * 
+     *
      * @return \Closure(mixed):array{variant:mixed}
      */
     public function defineExtra()

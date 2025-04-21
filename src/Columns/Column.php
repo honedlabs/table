@@ -35,8 +35,10 @@ class Column extends Primitive
     use HasLabel;
     use HasName;
     use HasQualifier;
+
     /** @use HasQuery<TModel, TBuilder> */
     use HasQuery;
+
     use HasType;
     use HasValue;
     use IsActive;
@@ -225,7 +227,7 @@ class Column extends Primitive
      */
     public function sorts($sort = true)
     {
-        if (!$sort || $sort instanceof Sort) {
+        if (! $sort || $sort instanceof Sort) {
             $this->sort = $sort;
 
             return $this;
