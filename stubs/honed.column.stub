@@ -12,7 +12,7 @@ use Honed\Table\Columns\Column;
  *
  * @extends Column<TModel, TBuilder>
  */
-final class {{ class }} extends Column
+class {{ class }} extends Column
 {
     /**
      * Provide the column with any necessary setup

@@ -21,7 +21,7 @@ class QueryColumns
      */
     public function __invoke($table, $next)
     {
-        $builder = $table->getBuilder();
+        $builder = $table->getResource();
 
         foreach ($table->getCachedColumns() as $column) {
             $column->modifyQuery($builder);

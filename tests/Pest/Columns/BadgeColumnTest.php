@@ -30,16 +30,3 @@ it('has default', function () {
         ->default('success')->toBe($this->column)
         ->getDefault()->toBe('success');
 });
-
-it('defines extra', function () {
-    expect($this->column)
-        ->extraAs(Status::Available->value)->toEqual([
-            'variant' => 'default',
-        ])
-        ->map(['available' => 'success'])
-        ->extraAs(Status::Available->value)->toEqual([
-            'variant' => 'success',
-        ])->extraAs(Status::Unavailable->value)->toEqual([
-            'variant' => 'default',
-        ]);
-});

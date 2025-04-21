@@ -4,29 +4,18 @@ declare(strict_types=1);
 
 namespace Honed\Table\Http\Controllers;
 
-use Honed\Action\Http\Requests\ActionRequest;
+use Honed\Action\Http\Controllers\ActionController;
 use Honed\Table\Table;
-use Illuminate\Routing\Controller;
 
-class TableController extends Controller
+class TableController extends ActionController
 {
     /**
-     * Delegate the incoming action request to the appropriate table.
-     *
-     * @return \Illuminate\Contracts\Support\Responsable|\Symfony\Component\HttpFoundation\RedirectResponse|void
+     * {@inheritdoc}
+     * 
+     * @return class-string<\Honed\Action\Contracts\Handles>
      */
-    public function __invoke(ActionRequest $request)
+    public function baseClass()
     {
-        /** @var string */
-        $key = $request->validated('id');
-
-        /**
-         * @var \Honed\Table\Table<\Illuminate\Database\Eloquent\Model, \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>>|null $table
-         */
-        $table = Table::getPrimitive($key, Table::class);
-
-        abort_unless((bool) $table, 404);
-
-        return $table->handle($request);
+        return Table::class;
     }
 }

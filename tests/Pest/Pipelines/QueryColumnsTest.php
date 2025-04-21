@@ -15,7 +15,7 @@ beforeEach(function () {
     $this->next = fn ($table) => $table;
 
     $this->table = Table::make()
-        ->builder(Product::query());
+        ->resource(Product::query());
 });
 
 it('does not modify by default', function () {
@@ -26,7 +26,7 @@ it('does not modify by default', function () {
 
     $this->pipe->__invoke($this->table, $this->next);
 
-    expect($this->table->getBuilder()->getQuery()->wheres)
+    expect($this->table->getResource()->getQuery()->wheres)
         ->toBeEmpty();
 });
 
@@ -44,7 +44,7 @@ describe('modifies', function () {
     it('only if cached', function () {
         $this->pipe->__invoke($this->table, $this->next);
 
-        expect($this->table->getBuilder()->getQuery()->wheres)
+        expect($this->table->getResource()->getQuery()->wheres)
             ->toBeEmpty();
     });
 
@@ -52,7 +52,7 @@ describe('modifies', function () {
         $this->table->cacheColumns($this->columns);
         $this->pipe->__invoke($this->table, $this->next);
 
-        expect($this->table->getBuilder()->getQuery()->wheres)
+        expect($this->table->getResource()->getQuery()->wheres)
             ->toHaveCount(1);
     });
 });

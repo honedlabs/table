@@ -7,6 +7,7 @@ namespace Honed\Table;
 use Honed\Action\Concerns\HasActions;
 use Honed\Action\Concerns\HasEncoder;
 use Honed\Action\Concerns\HasEndpoint;
+use Honed\Action\Contracts\Handles;
 use Honed\Action\Handler;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Concerns\HasParameterNames;
@@ -20,6 +21,7 @@ use Honed\Table\Concerns\HasTableBindings;
 use Honed\Table\Concerns\IsSelectable;
 use Honed\Table\Concerns\IsToggleable;
 use Honed\Table\Pipelines\CleanupTable;
+use Honed\Table\Pipelines\CreateEmptyState;
 use Honed\Table\Pipelines\Paginate;
 use Honed\Table\Pipelines\QueryColumns;
 use Honed\Table\Pipelines\RefineFilters;
@@ -39,15 +41,18 @@ use Illuminate\Support\Facades\App;
  *
  * @extends Refine<TModel, TBuilder>
  */
-class Table extends Refine implements UrlRoutable
+class Table extends Refine implements UrlRoutable, Handles
 {
+    /** @use HasActions<TModel, TBuilder> */
     use HasActions;
 
     /** @use HasColumns<TModel, TBuilder> */
     use HasColumns;
 
     use HasEncoder;
+
     use HasEndpoint;
+
     use HasMeta;
 
     /** @use HasPagination<TModel, TBuilder> */
@@ -63,7 +68,6 @@ class Table extends Refine implements UrlRoutable
 
     /** @use IsSelectable<TModel, TBuilder> */
     use IsSelectable;
-
     /** @use IsToggleable<TModel, TBuilder> */
     use IsToggleable {
         getColumnKey as protected getBaseColumnKey;
@@ -98,6 +102,13 @@ class Table extends Refine implements UrlRoutable
     protected $paginationData = [];
 
     /**
+     * The empty state of the table.
+     *
+     * @var \Honed\Table\EmptyState|null
+     */
+    protected $emptyState;
+
+    /**
      * Create a new table instance.
      *
      * @param  \Closure(TBuilder):void|null  $before
@@ -107,6 +118,52 @@ class Table extends Refine implements UrlRoutable
     {
         return resolve(static::class)
             ->before($before);
+    }
+
+    /**
+     * Build the table. Alias for `refine`.
+     *
+     * @return $this
+     */
+    public function build()
+    {
+        return $this->refine();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function baseClass()
+    {
+        return Table::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouteKeyName()
+    {
+        return 'table';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle($request)
+    {
+        if ($this->isntActionable()) {
+            abort(404);
+        }
+
+        try {
+            return Handler::make(
+                $this->getResource(),
+                $this->getActions(),
+                $this->getKey()
+            )->handle($request);
+        } catch (\RuntimeException $e) {
+            abort(404);
+        }
     }
 
     /**
@@ -144,19 +201,7 @@ class Table extends Refine implements UrlRoutable
             return $keyColumn->getName();
         }
 
-        throw new \RuntimeException(
-            'The table must have a key column or a key property defined.'
-        );
-    }
-
-    /**
-     * Get the endpoint to be used for table actions from the config.
-     *
-     * @return string
-     */
-    public static function getDefaultEndpoint()
-    {
-        return type(config('table.endpoint', '/actions'))->asString();
+        static::throwMissingKeyException();
     }
 
     /**
@@ -165,7 +210,7 @@ class Table extends Refine implements UrlRoutable
      * @param  bool|null  $serialize
      * @return $this
      */
-    public function serialize($serialize = true)
+    public function serializes($serialize = true)
     {
         $this->serialize = $serialize;
 
@@ -239,6 +284,49 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
+     * Set the empty state of the table.
+     * 
+     * @param  \Honed\Table\EmptyState|string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $message
+     * @param  string|null  $title
+     * @return $this
+     */
+    public function emptyState($message, $title = null)
+    {
+        $emptyState = $this->getEmptyState();
+
+        if (\is_string($message)) {
+            $emptyState->message($message)->title($title);
+        } elseif ($message instanceof \Closure) {
+            $message($emptyState);
+        } else {
+            $this->emptyState = $emptyState;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the empty state of the table.
+     *
+     * @return \Honed\Table\EmptyState
+     */
+    public function getEmptyState()
+    {
+        return $this->emptyState ??= EmptyState::make();
+    }
+
+    /**
+     * Define the empty state of the table.
+     * 
+     * @param  \Honed\Table\EmptyState  $emptyState
+     * @return void|\Honed\Table\EmptyState
+     */
+    public function defineEmptyState($emptyState)
+    {
+        return $emptyState;
+    }
+
+    /**
      * Get the query parameter for the page number.
      *
      * @return string
@@ -266,6 +354,16 @@ class Table extends Refine implements UrlRoutable
     public function getColumnKey()
     {
         return $this->formatScope($this->getBaseColumnKey());
+    }
+
+    /**
+     * Get the endpoint to be used for table actions from the config.
+     *
+     * @return string
+     */
+    public static function getDefaultEndpoint()
+    {
+        return type(config('table.endpoint', '/table'))->asString();
     }
 
     /**
@@ -301,102 +399,24 @@ class Table extends Refine implements UrlRoutable
     }
 
     /**
-     * Handle the incoming action request for this table.
-     *
-     * @param  \Honed\Action\Http\Requests\ActionRequest  $request
-     * @return \Illuminate\Contracts\Support\Responsable|\Symfony\Component\HttpFoundation\RedirectResponse|void
-     */
-    public function handle($request)
-    {
-        return Handler::make(
-            $this->getBuilder(),
-            $this->getActions(),
-            $this->getKey()
-        )->handle($request);
-    }
-
-    /**
-     * Build the table. Alias for `refine`.
-     *
-     * @return $this
-     */
-    public function build()
-    {
-        return $this->refine();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param  string  $value
-     * @return static|null
-     */
-    public function resolveRouteBinding($value, $field = null)
-    {
-        /** @var static|null */
-        return $this->getPrimitive($value, Table::class);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param  string  $value
-     * @return static|null
-     */
-    public function resolveChildRouteBinding($childType, $value, $field = null)
-    {
-        return $this->resolveRouteBinding($value, $field);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRouteKeyName()
-    {
-        return 'table';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRouteKey()
-    {
-        return static::encode(static::class);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray()
-    {
-        $this->build();
-
-        $id = $this->isWithoutActions() ? null : $this->getRouteKey();
-
-        return \array_merge(parent::toArray(), [
-            'id' => $id,
-            'records' => $this->getRecords(),
-            'paginator' => $this->getPaginationData(),
-            'columns' => $this->columnsToArray(),
-            'recordsPerPage' => $this->recordsPerPageToArray(),
-            'toggleable' => $this->isToggleable(),
-            'actions' => $this->actionsToArray(),
-            'meta' => $this->getMeta(),
-        ]);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function configToArray()
     {
-        return \array_merge(parent::configToArray(), [
-            'endpoint' => $this->getEndpoint(),
+        $config = \array_merge(parent::configToArray(), [
             'key' => $this->getKey(),
             'record' => $this->getRecordKey(),
             'column' => $this->getColumnKey(),
             'page' => $this->getPageKey(),
         ]);
+
+        if ($this->isExecutable(static::baseClass())) {
+            $config = \array_merge($config, [
+                'endpoint' => $this->getEndpoint(),
+            ]);
+        }
+
+        return $config;
     }
 
     /**
@@ -411,6 +431,32 @@ class Table extends Refine implements UrlRoutable
             'bulk' => $this->getBulkActions(),
             'page' => $this->getPageActions(),
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        $this->build();
+
+        $table = \array_merge(parent::toArray(), [
+            'records' => $this->getRecords(),
+            'paginator' => $this->getPaginationData(),
+            'columns' => $this->columnsToArray(),
+            'recordsPerPage' => $this->recordsPerPageToArray(),
+            'toggleable' => $this->isToggleable(),
+            'actions' => $this->actionsToArray(),
+            'meta' => $this->getMeta(),
+        ]);
+
+        if ($this->isExecutable(static::baseClass())) {
+            $table = \array_merge($table, [
+                'id' => $this->getRouteKey(),
+            ]);
+        }
+
+        return $table;
     }
 
     /**
@@ -431,6 +477,7 @@ class Table extends Refine implements UrlRoutable
                 AfterRefining::class,
                 Paginate::class,
                 TransformRecords::class,
+                CreateEmptyState::class,
                 CleanupTable::class,
             ])->thenReturn();
     }
@@ -441,5 +488,19 @@ class Table extends Refine implements UrlRoutable
     public function __call($method, $parameters)
     {
         return $this->macroCall($method, $parameters);
+    }
+
+    /**
+     * Throw a missing key exception
+     * 
+     * @return never
+     * 
+     * @throws \RuntimeException
+     */
+    public static function throwMissingKeyException()
+    {
+        throw new \RuntimeException(
+            'The table must have a key column or a key property defined.'
+        );
     }
 }

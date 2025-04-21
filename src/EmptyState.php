@@ -9,7 +9,9 @@ use Honed\Core\Primitive;
 
 class EmptyState extends Primitive
 {
-    use HasIcon;
+    use HasIcon {
+        getIcon as getBaseIcon;
+    }
 
     /**
      * The title of the empty state.
@@ -42,23 +44,24 @@ class EmptyState extends Primitive
     /**
      * The message or state to display when the empty state is because of refiners.
      *
-     * @var string|\Closure(\Honed\Table\EmptyState):void
+     * @var string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)|null
      */
     protected $refining;
 
     /**
      * The message or state to display when the empty state is because of filters.
      *
-     * @var string|\Closure(\Honed\Table\EmptyState):void
+     * @var string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)|null
      */
     protected $filtering;
 
     /**
      * The message or state to display when the empty state is because of searching.
      *
-     * @var string|\Closure(\Honed\Table\EmptyState):void
+     * @var string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)|null
      */
     protected $searching;
+    
 
     /**
      * Create a new empty state.
@@ -77,7 +80,7 @@ class EmptyState extends Primitive
     /**
      * Set the title of the empty state.
      *
-     * @param  string  $title
+     * @param  string|null  $title
      * @return $this
      */
     public function title($title)
@@ -94,13 +97,23 @@ class EmptyState extends Primitive
      */
     public function getTitle()
     {
-        return $this->title;
+        return $this->title ?? static::getDefaultTitle();
+    }
+
+    /**
+     * Get the default title of the empty state from the config.
+     * 
+     * @return string
+     */
+    public static function getDefaultTitle()
+    {
+        return type(config('table.empty_state.title', 'No results found'))->asString();
     }
 
     /**
      * Set the message of the empty state.
      *
-     * @param  string  $message
+     * @param  string|null  $message
      * @return $this
      */
     public function message($message)
@@ -117,14 +130,45 @@ class EmptyState extends Primitive
      */
     public function getMessage()
     {
-        return $this->message;
+        return $this->message ?? static::getDefaultMessage();
+    }
+
+    /**
+     * Get the default message of the empty state from the config.
+     * 
+     * @return string
+     */
+    public static function getDefaultMessage()
+    {
+        return type(config('table.empty_state.message', 'There are no results to display.'))->asString();
+    }
+
+    /**
+     * Get the icon of the empty state.
+     *
+     * @return string|null
+     */
+    public function getIcon()
+    {
+        return $this->getBaseIcon() ?? static::getDefaultIcon();
+    }
+
+    /**
+     * Get the default icon of the empty state from the config.
+     * 
+     * @return string|null
+     */
+    public static function getDefaultIcon()
+    {
+        /** @var string|null */
+        return config('table.empty_state.icon', null);
     }
 
     /**
      * Set the action of the empty state.
      *
      * @param  string  $label
-     * @param  string|null  $action
+     * @param  string|null $action
      * @return $this
      */
     public function action($label, $action = null)
@@ -136,9 +180,29 @@ class EmptyState extends Primitive
     }
 
     /**
-     * Set the state to display when refining.
+     * Get the label of the empty state action.
      *
-     * @param  string|\Closure(\Honed\Table\EmptyState):void  $refining
+     * @return string|null
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * Get the action route of the empty state.
+     *
+     * @return string|null
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * Set the state to display when refining.
+     * 
+     * @param  string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $refining
      * @return $this
      */
     public function whenRefining($refining)
@@ -151,17 +215,27 @@ class EmptyState extends Primitive
     /**
      * Get the state to display when refining.
      *
-     * @return string|\Closure(\Honed\Table\EmptyState):void
+     * @return string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)|null
      */
     public function getRefiningState()
     {
-        return $this->refining;
+        return $this->refining ?? static::getDefaultRefiningState();
+    }
+
+    /**
+     * Get the default state to display when refining.
+     * 
+     * @return string
+     */
+    public static function getDefaultRefiningState()
+    {
+        return type(config('table.empty_state.refining', 'There are no results matching your filters.'))->asString();
     }
 
     /**
      * Set the state to display when filtering.
-     *
-     * @param  string|\Closure(\Honed\Table\EmptyState):void  $filtering
+     * 
+     * @param  string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $filtering
      * @return $this
      */
     public function whenFiltering($filtering)
@@ -174,7 +248,7 @@ class EmptyState extends Primitive
     /**
      * Get the state to display when filtering.
      *
-     * @return string|\Closure(\Honed\Table\EmptyState):void
+     * @return string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)|null
      */
     public function getFilteringState()
     {
@@ -183,8 +257,8 @@ class EmptyState extends Primitive
 
     /**
      * Set the state to display when searching.
-     *
-     * @param  string|\Closure(\Honed\Table\EmptyState):void  $searching
+     * 
+     * @param  string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $searching
      * @return $this
      */
     public function whenSearching($searching)
@@ -197,24 +271,24 @@ class EmptyState extends Primitive
     /**
      * Get the state to display when searching.
      *
-     * @return string|\Closure(\Honed\Table\EmptyState):void
+     * @return string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)|null
      */
     public function getSearchingState()
     {
         return $this->searching;
     }
-
+    
     /**
      * {@inheritdoc}
      */
     public function toArray()
     {
         return [
-            'icon' => $this->getIcon(),
             'title' => $this->getTitle(),
             'message' => $this->getMessage(),
+            'icon' => $this->getIcon(),
             'label' => $this->getLabel(),
             'action' => $this->getAction(),
         ];
-    }
+    }    
 }

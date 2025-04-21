@@ -38,7 +38,7 @@ class RefineSearches extends BaseRefineSearches
             )
         );
 
-        $table->withSearches($searches);
+        $table->searches($searches);
 
         return parent::searches($table);
     }

@@ -7,7 +7,6 @@ namespace Honed\Table\Tests\Fixtures;
 use Honed\Action\BulkAction;
 use Honed\Action\InlineAction;
 use Honed\Action\PageAction;
-use Honed\Core\Contracts\Builds;
 use Honed\Refine\Filter;
 use Honed\Refine\Search;
 use Honed\Refine\Sort;
@@ -22,7 +21,7 @@ use Honed\Table\Table as BaseTable;
 use Honed\Table\Tests\Stubs\Product;
 use Honed\Table\Tests\Stubs\Status;
 
-class Table extends BaseTable implements Builds
+class Table extends BaseTable
 {
     protected $toggle = true;
 
@@ -30,23 +29,29 @@ class Table extends BaseTable implements Builds
 
     protected $pagination = [10, 25, 50];
 
-    public function for()
+    /**
+     * {@inheritdoc}
+     */
+    public function defineResource()
     {
         return Product::query()
             ->with(['seller', 'categories']);
     }
 
-    public function columns()
+    /**
+     * {@inheritdoc}
+     */
+    public function defineColumns()
     {
         return [
             KeyColumn::make('id'),
 
             TextColumn::make('name')
                 ->always()
-                ->search(),
+                ->searches(),
 
             TextColumn::make('description')
-                ->filter()
+                ->filters()
                 ->fallback('-'),
 
             BooleanColumn::make('best_seller', 'Favourite')
@@ -59,23 +64,26 @@ class Table extends BaseTable implements Builds
 
             NumberColumn::make('price')
                 ->alias('cost')
-                ->sort(),
+                ->sorts(),
 
             DateColumn::make('created_at')
                 ->sometimes()
-                ->sort(),
+                ->sorts(),
 
             HiddenColumn::make('public_id')
                 ->hidden()
                 ->always(),
 
             DateColumn::make('updated_at')
-                ->filter()
+                ->filters()
                 ->allow(false),
         ];
     }
 
-    public function filters()
+    /**
+     * {@inheritdoc}
+     */
+    public function defineFilters()
     {
         return [
             Filter::make('name')->operator('like'),
@@ -109,7 +117,10 @@ class Table extends BaseTable implements Builds
         ];
     }
 
-    public function sorts()
+    /**
+     * {@inheritdoc}
+     */
+    public function defineSorts()
     {
         return [
             Sort::make('name', 'A-Z')
@@ -129,14 +140,20 @@ class Table extends BaseTable implements Builds
         ];
     }
 
-    public function searches()
+    /**
+     * {@inheritdoc}
+     */
+    public function defineSearches()
     {
         return [
             Search::make('description'),
         ];
     }
 
-    public function actions()
+    /**
+     * {@inheritdoc}
+     */
+    public function defineActions()
     {
         return [
             InlineAction::make('edit')

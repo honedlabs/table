@@ -37,7 +37,7 @@ class RefineFilters extends BaseRefineFilters
             )
         );
 
-        $table->withFilters($filters);
+        $table->filters($filters);
 
         return parent::filters($table);
     }

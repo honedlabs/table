@@ -45,6 +45,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Empty State
+    |--------------------------------------------------------------------------
+    |
+    | You can specify the default empty state to be used when no results are
+    | found. This will be used as the default empty state for all tables.
+    |
+    */
+
+    'empty_state' => [
+        'title' => 'No results found',
+        
+        'message' => 'There are no results to display.',
+
+        'icon' => null,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Delimiter
     |--------------------------------------------------------------------------
     |

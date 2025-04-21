@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Honed\Action\ActionFactory;
+use Honed\Action\Support\Constants;
 use Honed\Action\Http\Requests\ActionRequest;
 use Honed\Table\Table;
 use Honed\Table\Tests\Fixtures\Table as FixtureTable;
@@ -39,12 +39,12 @@ it('can handle inline actions at endpoint', function () {
 
     $data = [
         'id' => $this->table->getRouteKey(),
-        'type' => ActionFactory::Inline,
+        'type' => Constants::INLINE,
         'name' => 'edit',
         'record' => $product->id,
     ];
 
-    post(route('table.actions'), $data)
+    post(route('table'), $data)
         ->assertRedirect('/');
 
     expect($product->refresh())
@@ -57,17 +57,17 @@ it('authorizez', function () {
 
     $data = [
         'id' => $this->table->getRouteKey(),
-        'type' => ActionFactory::Inline,
+        'type' => Constants::INLINE,
         'name' => 'delete',
         'record' => $a->id,
     ];
 
-    post(route('table.actions'), $data)
+    post(route('table'), $data)
         ->assertStatus(403);
 
     Arr::set($data, 'record', $b->id);
 
-    post(route('table.actions'), $data)
+    post(route('table'), $data)
         ->assertRedirect('/');
 
     $this->assertDatabaseHas('products', [
@@ -86,14 +86,14 @@ it('can handle bulk actions at endpoint', function () {
 
     $data = [
         'id' => $this->table->getRouteKey(),
-        'type' => ActionFactory::Bulk,
+        'type' => Constants::BULK,
         'name' => 'edit',
         'all' => false,
         'except' => [],
         'only' => $ids,
     ];
 
-    post(route('table.actions'), $data)
+    post(route('table'), $data)
         ->assertRedirect('/');
 
     $products = Product::whereIn('id', $ids)->get();
@@ -105,7 +105,7 @@ it('can handle bulk actions at endpoint', function () {
 
 // it('can handle specific tables', function () {
 //     $data = [
-//         'type' => ActionFactory::Page,
+//         'type' => Constants::Page,
 //         'name' => 'factory',
 //     ];
 

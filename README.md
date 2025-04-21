@@ -161,7 +161,7 @@ Columns are used exclusively in the `Table` class to define the data that is pas
 | `metadata(array $any)` | Sets any metadata of the column to be passed to the frontend. This can be used to store any additional information about the column. |
 | `fallback(mixed $fallback)` | Sets the fallback value of the column to be displayed when the column is empty. |
 | `transform(callable $transform)` | Sets a transformation function to be applied to the column data before it is passed to the frontend. |
-| `sort(?string $name, ?string $property)` | Sets the column to be sortable using a toggle sort. Both parameters can be ignored if the desired query term, and database column are the same as the column name. |
+| `sorts(?string $name, ?string $property)` | Sets the column to be sortable using a toggle sort. Both parameters can be ignored if the desired query term, and database column are the same as the column name. |
 | `exclude(bool\|Closure $condition)` | Sets the column to be excluded from the data passed to the frontend if the condition evaluates to true. |
 | `include(bool\|Closure $condition)` | Sets the column to be included in the data passed to the frontend if the condition evaluates to true. |
 | `hide()` | Sets the column to be hidden, these columns are still retrieved but are noted as not being table headers. |

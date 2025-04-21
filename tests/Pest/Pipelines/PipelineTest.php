@@ -57,7 +57,7 @@ it('builds class', function () {
     expect(FixtureTable::make()
         ->request($request)
         ->build()
-    )->getBuilder()->getQuery()->scoped(fn ($query) => $query
+    )->getResource()->getQuery()->scoped(fn ($query) => $query
         ->wheres->scoped(fn ($wheres) => $wheres
             ->toBeArray()
             ->toHaveCount(9)

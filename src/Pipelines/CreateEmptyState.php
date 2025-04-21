@@ -6,6 +6,10 @@ namespace Honed\Table\Pipelines;
 
 use Honed\Table\Table;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
+ */
 class CreateEmptyState
 {
     /**
@@ -17,6 +21,6 @@ class CreateEmptyState
      */
     public function __invoke($table, $next)
     {
-        dd($table->getPaginationData());
+        return $next($table);
     }
 }

@@ -33,7 +33,7 @@ it('has endpoint', function () {
 it('serializes', function () {
     expect($this->table)
         ->isSerialized()->toBe(config('table.serialize'))
-        ->serialize(true)->toBe($this->table)
+        ->serializes(true)->toBe($this->table)
         ->isSerialized()->toBe(true)
         ->isSerializedByDefault()->toBe(config('table.serialize'));
 });

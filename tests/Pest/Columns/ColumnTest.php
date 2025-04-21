@@ -58,21 +58,21 @@ it('has sort', function () {
     expect($this->test)
         ->isSortable()->toBeFalse()
         ->getSort()->toBeNull()
-        ->sort()->toBe($this->test)
+        ->sorts()->toBe($this->test)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
             ->toBeInstanceOf(Sort::class)
             ->getName()->toBe($this->test->getName())
             ->getLabel()->toBe($this->test->getLabel())
             ->getParameter()->toBe($this->test->getParameter())
-        )->sort(false)->toBe($this->test)
+        )->sorts(false)->toBe($this->test)
         ->isSortable()->toBeFalse()
         ->getSort()->toBeNull();
 });
 
 it('has sort on different column', function () {
     expect($this->test)
-        ->sort('description')->toBe($this->test)
+        ->sorts('description')->toBe($this->test)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
             ->toBeInstanceOf(Sort::class)
@@ -86,7 +86,7 @@ it('has sort instance', function () {
     expect($this->test)
         ->isSortable()->toBeFalse()
         ->getSort()->toBeNull()
-        ->sort(Sort::make('description'))->toBe($this->test)
+        ->sorts(Sort::make('description'))->toBe($this->test)
         ->isSortable()->toBeTrue()
         ->getSort()->scoped(fn ($sort) => $sort
             ->toBeInstanceOf(Sort::class)
@@ -99,24 +99,24 @@ it('has sort instance', function () {
 it('is searchable', function () {
     expect($this->test)
         ->isSearchable()->toBeFalse()
-        ->search()->toBe($this->test)
+        ->searches()->toBe($this->test)
         ->isSearchable()->toBeTrue();
 });
 
 it('is filterable', function () {
     expect($this->test)
         ->isFilterable()->toBeFalse()
-        ->filter()->toBe($this->test)
+        ->filters()->toBe($this->test)
         ->isFilterable()->toBeTrue();
 });
 
 it('is select', function () {
     expect($this->test)
         ->isSelectable()->toBeTrue()
-        ->select(false)->toBe($this->test)
+        ->selects(false)->toBe($this->test)
         ->isSelectable()->toBeFalse()
         ->getSelect()->toBe($this->test->getName())
-        ->select('test')->toBe($this->test)
+        ->selects('test')->toBe($this->test)
         ->isSelectable()->toBeTrue()
         ->getSelect()->toBe('test');
 });
@@ -146,13 +146,13 @@ it('has array representation', function () {
             'icon' => null,
             'toggleable' => true,
             'active' => true,
-            'sort' => [],
+            'sort' => null,
             'class' => null,
         ]);
 });
 
 it('has array representation with sort', function () {
-    expect($this->test->sort()->toArray())
+    expect($this->test->sorts()->toArray())
         ->toBeArray()
         ->toEqual([
             'name' => $this->param,

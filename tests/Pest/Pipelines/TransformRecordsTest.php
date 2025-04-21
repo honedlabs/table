@@ -54,7 +54,7 @@ beforeEach(function () {
     ];
 
     $this->table = Table::make()
-        ->withActions($this->actions);
+        ->actions($this->actions);
 
     $this->table->cacheColumns($this->columns);
 
@@ -79,7 +79,7 @@ it('transforms records', function () {
 });
 
 it('serializes', function () {
-    $this->table->serialize(true);
+    $this->table->serializes(true);
 
     $this->pipe->__invoke($this->table, $this->next);
     

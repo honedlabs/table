@@ -26,7 +26,7 @@ class Paginate
 
         $paginator = $table->getPaginator();
         $key = $table->getPageKey();
-        $builder = $table->getBuilder();
+        $builder = $table->getResource();
 
         switch (true) {
             case $table->isLengthAware($paginator):

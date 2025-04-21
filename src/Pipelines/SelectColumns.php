@@ -36,7 +36,7 @@ class SelectColumns
 
         $selects = \array_unique(Arr::flatten($selects), SORT_STRING);
 
-        $table->getBuilder()->select($selects);
+        $table->getResource()->select($selects);
 
         return $next($table);
     }

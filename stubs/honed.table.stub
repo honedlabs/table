@@ -23,7 +23,7 @@ use Honed\Table\Contracts\ShouldSelect;
  *
  * @extends \Honed\Table\Table<TModel, TBuilder>
  */
-final class {{ class }} extends Table
+class {{ class }} extends Table
 {
     /**
      * Provide the table with any necessary setup

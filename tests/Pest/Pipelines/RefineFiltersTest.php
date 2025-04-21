@@ -21,12 +21,12 @@ beforeEach(function () {
     ];
 
     $this->table = Table::make()
-        ->builder(Product::query())
+        ->resource(Product::query())
         ->withColumns($columns);
 });
 
 it('does not merge', function () {
-    $this->table->withFilters(Filter::make('name'));
+    $this->table->filters(Filter::make('name'));
 
     $this->pipe->__invoke($this->table, $this->next);
 
@@ -38,7 +38,7 @@ it('does not merge', function () {
 it('merges', function () {
     $this->table->withColumns(
         Column::make('price', 'Price')
-            ->filter()
+            ->filters()
     );
 
     $this->pipe->__invoke($this->table, $this->next);
@@ -55,7 +55,7 @@ it('merges', function () {
 it('merges as date', function () {
     $this->table->withColumns(
         DateColumn::make('created_at', 'Created At')
-            ->filter()
+            ->filters()
     ); 
 
     $this->pipe->__invoke($this->table, $this->next);
@@ -70,7 +70,7 @@ it('merges as date', function () {
 it('merges as boolean', function () {
     $this->table->withColumns(
         BooleanColumn::make('active', 'Active')
-            ->filter()
+            ->filters()
     );
 
     $this->pipe->__invoke($this->table, $this->next);
@@ -87,7 +87,7 @@ it('merges as boolean', function () {
 it('merges as number', function () {
     $this->table->withColumns(
         NumberColumn::make('price', 'Price')
-            ->filter()
+            ->filters()
     );
 
     $this->pipe->__invoke($this->table, $this->next);
@@ -104,7 +104,7 @@ it('merges as number', function () {
 it('merges as text', function () {
     $this->table->withColumns(
         TextColumn::make('description', 'Description')
-            ->filter()
+            ->filters()
     );
 
     $this->pipe->__invoke($this->table, $this->next);

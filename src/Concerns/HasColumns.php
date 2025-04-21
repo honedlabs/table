@@ -118,7 +118,7 @@ trait HasColumns
      */
     public function flushCachedColumns()
     {
-        unset($this->cachedColumns);
+        $this->cachedColumns = [];
     }
 
     /**

@@ -17,12 +17,12 @@ beforeEach(function () {
     ];
 
     $this->table = Table::make()
-        ->builder(Product::query())
+        ->resource(Product::query())
         ->withColumns($columns);
 });
 
 it('does not merge', function () {
-    $this->table->withSearches(Search::make('name'));
+    $this->table->searches(Search::make('name'));
 
     $this->pipe->__invoke($this->table, $this->next);
 
@@ -34,7 +34,7 @@ it('does not merge', function () {
 it('merges', function () {
     $this->table->withColumns(
         Column::make('description')
-            ->search()
+            ->searches()
     );
 
     $this->pipe->__invoke($this->table, $this->next);
