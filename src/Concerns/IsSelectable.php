@@ -76,6 +76,8 @@ trait IsSelectable
      */
     public function selects(...$selects)
     {
+        $this->select = true;
+
         $selects = Arr::flatten($selects);
 
         $this->selects = \array_merge($this->selects ?? [], $selects);

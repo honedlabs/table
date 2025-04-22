@@ -11,7 +11,7 @@ beforeEach(function () {
     $this->table = Table::make();
 });
 
-it('is select', function () {
+it('is selectable', function () {
     expect($this->table)
         ->isSelectable()->toBe(config('table.select'))
         ->selects(true)->toBe($this->table)
@@ -24,7 +24,7 @@ it('is select', function () {
 
     expect($class)
         ->isSelectable()->toBe(true)
-        ->selects(false)->toBe($class)
+        ->select(false)->toBe($class)
         ->isSelectable()->toBe(false);
 });
 

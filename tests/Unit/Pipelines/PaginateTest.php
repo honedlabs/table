@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Honed\Refine\Search;
 use Honed\Table\Columns\Column;
+use Honed\Table\Exceptions\InvalidPaginatorException;
 use Honed\Table\Pipelines\Paginate;
 use Honed\Table\Table;
 use Honed\Table\Tests\Stubs\Product;
@@ -102,7 +103,7 @@ it('paginate fails', function () {
 
     $this->pipe->__invoke($this->table, $this->next);
     
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidPaginatorException::class);
 
 it('changes per page', function () {
     $count = 25;

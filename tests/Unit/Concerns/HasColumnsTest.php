@@ -17,29 +17,29 @@ it('is empty by default', function () {
 
 it('adds columns', function () {
     expect($this->table)
-        ->withColumns([Column::make('id')])->toBe($this->table)
-        ->withColumns([Column::make('public_id')])->toBe($this->table)
+        ->columns([Column::make('id')])->toBe($this->table)
+        ->columns([Column::make('public_id')])->toBe($this->table)
         ->hasColumns()->toBeTrue()
         ->getColumns()->toHaveCount(2);
 });
 
 it('adds columns variadically', function () {
     expect($this->table)
-        ->withColumns(Column::make('id'), Column::make('public_id'))->toBe($this->table)
+        ->columns(Column::make('id'), Column::make('public_id'))->toBe($this->table)
         ->hasColumns()->toBeTrue()
         ->getColumns()->toHaveCount(2);
 });
 
 it('adds columns collection', function () {
     expect($this->table)
-        ->withColumns(collect([Column::make('id'), Column::make('public_id')]))->toBe($this->table)
+        ->columns(collect([Column::make('id'), Column::make('public_id')]))->toBe($this->table)
         ->hasColumns()->toBeTrue()
         ->getColumns()->toHaveCount(2);
 });
 
 it('retrieves with authorization', function () {
     expect($this->table)
-        ->withColumns([
+        ->columns([
             Column::make('id')->allow(false), 
             Column::make('public_id'),
         ])->toBe($this->table)
@@ -61,7 +61,7 @@ it('caches columns', function () {
 it('can be without columns', function () {
     expect($this->table)
         ->isWithoutColumns()->toBeFalse()
-        ->withColumns(Column::make('public_id'))->toBe($this->table)
+        ->columns(Column::make('public_id'))->toBe($this->table)
         ->hasColumns()->toBeTrue()
         ->getColumns()->toHaveCount(1)
         ->withoutColumns()->toBe($this->table)

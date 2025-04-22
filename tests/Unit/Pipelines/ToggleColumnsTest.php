@@ -31,7 +31,7 @@ beforeEach(function () {
 
     $this->table = Table::make()
         ->toggle(true)
-        ->withColumns($this->columns);
+        ->columns($this->columns);
 });
 
 it('toggles default if not toggleable', function () {

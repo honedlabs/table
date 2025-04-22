@@ -18,7 +18,7 @@ beforeEach(function () {
 
     $this->table = Table::make()
         ->resource(Product::query())
-        ->withColumns($columns);
+        ->columns($columns);
 });
 
 it('does not merge', function () {
@@ -32,7 +32,7 @@ it('does not merge', function () {
 });
 
 it('merges', function () {
-    $this->table->withColumns(
+    $this->table->columns(
         Column::make('description')
             ->searches()
     );

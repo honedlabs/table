@@ -227,16 +227,16 @@ class Column extends Primitive
      */
     public function sorts($sort = true)
     {
-        if (! $sort || $sort instanceof Sort) {
+        if (! $sort) {
+            $this->sort = null;
+        } elseif ($sort instanceof Sort) {
             $this->sort = $sort;
+        } else {
+            $name = \is_string($sort) ? $sort : $this->getName();
 
-            return $this;
+            $this->sort = Sort::make($name, $this->getLabel())
+                ->alias($this->getParameter());
         }
-
-        $name = \is_string($sort) ? $sort : $this->getName();
-
-        $this->sort = Sort::make($name, $this->getLabel())
-            ->alias($this->getParameter());
 
         return $this;
     }
@@ -440,7 +440,7 @@ class Column extends Primitive
             'type' => $this->getType(),
             'hidden' => $this->isHidden(),
             'active' => $this->isActive(),
-            'toggleable' => $this->isToggleable(),
+            'toggles' => $this->isToggleable(),
             'icon' => $this->getIcon(),
             'class' => $this->getClass(),
             'sort' => $this->sortToArray(),

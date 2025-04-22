@@ -20,6 +20,7 @@ use Honed\Table\Concerns\HasPagination;
 use Honed\Table\Concerns\HasTableBindings;
 use Honed\Table\Concerns\IsSelectable;
 use Honed\Table\Concerns\IsToggleable;
+use Honed\Table\Exceptions\KeyNotFoundException;
 use Honed\Table\Pipelines\CleanupTable;
 use Honed\Table\Pipelines\CreateEmptyState;
 use Honed\Table\Pipelines\Paginate;
@@ -36,8 +37,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 
 /**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  *
  * @extends Refine<TModel, TBuilder>
  */
@@ -183,7 +184,7 @@ class Table extends Refine implements Handles, UrlRoutable
      *
      * @return string
      *
-     * @throws \RuntimeException
+     * @throws \Honed\Table\Exceptions\KeyNotFoundException
      */
     public function getKey()
     {
@@ -200,7 +201,7 @@ class Table extends Refine implements Handles, UrlRoutable
             return $keyColumn->getName();
         }
 
-        static::throwMissingKeyException();
+        KeyNotFoundException::throw(static::class);
     }
 
     /**
@@ -285,7 +286,7 @@ class Table extends Refine implements Handles, UrlRoutable
     /**
      * Set the empty state of the table.
      *
-     * @param  \Honed\Table\EmptyState|string|(\Closure(\Honed\Table\EmptyState):\Honed\Table\EmptyState|void)  $message
+     * @param  \Honed\Table\EmptyState|string|\Closure  $message
      * @param  string|null  $title
      * @return $this
      */
@@ -298,7 +299,7 @@ class Table extends Refine implements Handles, UrlRoutable
         } elseif ($message instanceof \Closure) {
             $message($emptyState);
         } else {
-            $this->emptyState = $emptyState;
+            $this->emptyState = $message;
         }
 
         return $this;
@@ -443,14 +444,20 @@ class Table extends Refine implements Handles, UrlRoutable
             'records' => $this->getRecords(),
             'paginator' => $this->getPaginationData(),
             'columns' => $this->columnsToArray(),
-            'recordsPerPage' => $this->recordsPerPageToArray(),
-            'toggleable' => $this->isToggleable(),
+            'perPage' => $this->recordsPerPageToArray(),
+            'toggles' => $this->isToggleable(),
             'actions' => $this->actionsToArray(),
             'meta' => $this->getMeta(),
         ]);
 
-        if ($this->isExecutable(static::baseClass())) {
+        if (Arr::get($this->getPaginationData(), 'empty', false)) {
             $table = \array_merge($table, [
+                'empty' => $this->getEmptyState()->toArray(),
+            ]);
+        }
+
+        if ($this->isExecutable(static::baseClass())) {
+            return \array_merge($table, [
                 'id' => $this->getRouteKey(),
             ]);
         }
@@ -487,19 +494,5 @@ class Table extends Refine implements Handles, UrlRoutable
     public function __call($method, $parameters)
     {
         return $this->macroCall($method, $parameters);
-    }
-
-    /**
-     * Throw a missing key exception
-     *
-     * @return never
-     *
-     * @throws \RuntimeException
-     */
-    public static function throwMissingKeyException()
-    {
-        throw new \RuntimeException(
-            'The table must have a key column or a key property defined.'
-        );
     }
 }

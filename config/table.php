@@ -54,11 +54,17 @@ return [
     */
 
     'empty_state' => [
+        /** Specify the default title to display if the table is empty. */
         'title' => 'No results found',
 
+        /** Specify the default message to display if the table is empty. */
         'message' => 'There are no results to display.',
 
+        /** Specify an icon to display in the empty state. */
         'icon' => null,
+
+        /** Specify a message to display if the table is empty due to refining. */
+        'refining' => 'There are no results matching your filters.',
     ],
 
     /*

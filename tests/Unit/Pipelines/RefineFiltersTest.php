@@ -22,7 +22,7 @@ beforeEach(function () {
 
     $this->table = Table::make()
         ->resource(Product::query())
-        ->withColumns($columns);
+        ->columns($columns);
 });
 
 it('does not merge', function () {
@@ -36,7 +36,7 @@ it('does not merge', function () {
 });
 
 it('merges', function () {
-    $this->table->withColumns(
+    $this->table->columns(
         Column::make('price', 'Price')
             ->filters()
     );
@@ -53,7 +53,7 @@ it('merges', function () {
 });
 
 it('merges as date', function () {
-    $this->table->withColumns(
+    $this->table->columns(
         DateColumn::make('created_at', 'Created At')
             ->filters()
     ); 
@@ -68,7 +68,7 @@ it('merges as date', function () {
 });
 
 it('merges as boolean', function () {
-    $this->table->withColumns(
+    $this->table->columns(
         BooleanColumn::make('active', 'Active')
             ->filters()
     );
@@ -85,7 +85,7 @@ it('merges as boolean', function () {
 });
 
 it('merges as number', function () {
-    $this->table->withColumns(
+    $this->table->columns(
         NumberColumn::make('price', 'Price')
             ->filters()
     );
@@ -102,7 +102,7 @@ it('merges as number', function () {
 });
 
 it('merges as text', function () {
-    $this->table->withColumns(
+    $this->table->columns(
         TextColumn::make('description', 'Description')
             ->filters()
     );

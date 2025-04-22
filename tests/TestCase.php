@@ -101,7 +101,6 @@ class TestCase extends Orchestra
             $router->get('/products', fn () => Inertia::render('Products/Index'))->name('products.index');
             $router->get('/products/{product}', fn () => Inertia::render('Products/Show'))->name('products.show');
             $router->get('/products/create', fn () => Inertia::render('Products/Create'))->name('products.create');
-            $router->post('/table/{table}', [Controller::class, 'handle'])->name('products.table');
             $router->table();
         });
     }

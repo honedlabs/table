@@ -16,9 +16,9 @@ trait HasColumns
     /**
      * The columns to be used for the table.
      *
-     * @var array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>|null
+     * @var array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
      */
-    protected $columns;
+    protected $columns = [];
 
     /**
      * The cached columns to be used for pipelines.
@@ -40,11 +40,11 @@ trait HasColumns
      * @param  iterable<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  ...$columns
      * @return $this
      */
-    public function withColumns(...$columns)
+    public function columns(...$columns)
     {
         $columns = Arr::flatten($columns);
 
-        $this->columns = \array_merge($this->columns ?? [], $columns);
+        $this->columns = \array_merge($this->columns, $columns);
 
         return $this;
     }
@@ -54,7 +54,7 @@ trait HasColumns
      *
      * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
      */
-    public function columns()
+    public function defineColumns()
     {
         return [];
     }
@@ -72,7 +72,7 @@ trait HasColumns
 
         return once(fn () => \array_values(
             \array_filter(
-                \array_merge($this->columns(), $this->columns ?? []),
+                \array_merge($this->defineColumns(), $this->columns),
                 static fn (Column $column) => $column->isAllowed()
             )
         ));

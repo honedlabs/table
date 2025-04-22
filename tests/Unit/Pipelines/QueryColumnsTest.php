@@ -19,7 +19,7 @@ beforeEach(function () {
 });
 
 it('does not modify by default', function () {
-    $this->table->withColumns([
+    $this->table->columns([
         Column::make('name'),
         Column::make('price'),
     ]);
@@ -38,7 +38,7 @@ describe('modifies', function () {
                 ->query(fn ($query) => $query->where('price', '>', 100)),
         ];
 
-        $this->table->withColumns($this->columns);
+        $this->table->columns($this->columns);
     });
 
     it('only if cached', function () {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Pipelines;
 
 use Honed\Core\Interpret;
+use Honed\Table\Exceptions\InvalidPaginatorException;
 use Honed\Table\Table;
 
 /**
@@ -61,10 +62,8 @@ class Paginate
 
                 break;
             default:
-                throw new \InvalidArgumentException(\sprintf(
-                    'The provided paginator [%s] is invalid.',
-                    $paginator
-                ));
+                InvalidPaginatorException::throw($paginator);
+
         }
 
         return $next($table);

@@ -144,7 +144,7 @@ it('has array representation', function () {
             'type' => null,
             'hidden' => false,
             'icon' => null,
-            'toggleable' => true,
+            'toggles' => true,
             'active' => true,
             'sort' => null,
             'class' => null,
@@ -160,7 +160,7 @@ it('has array representation with sort', function () {
             'type' => null,
             'hidden' => false,
             'icon' => null,
-            'toggleable' => true,
+            'toggles' => true,
             'active' => true,
             'sort' => [
                 'active' => false,
