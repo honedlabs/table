@@ -4,37 +4,41 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
+use Honed\Refine\Refine;
+use Honed\Action\Handler;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Honed\Table\Columns\Column;
+use Honed\Core\Concerns\HasMeta;
+use Illuminate\Pipeline\Pipeline;
+use Honed\Action\Contracts\Handles;
+use Honed\Table\Pipelines\Paginate;
+use Illuminate\Support\Facades\App;
+use Honed\Table\Concerns\HasColumns;
 use Honed\Action\Concerns\HasActions;
 use Honed\Action\Concerns\HasEncoder;
 use Honed\Action\Concerns\HasEndpoint;
-use Honed\Action\Contracts\Handles;
-use Honed\Action\Handler;
-use Honed\Core\Concerns\HasMeta;
-use Honed\Core\Concerns\HasParameterNames;
-use Honed\Refine\Pipelines\AfterRefining;
-use Honed\Refine\Pipelines\BeforeRefining;
-use Honed\Refine\Refine;
-use Honed\Table\Columns\Column;
-use Honed\Table\Concerns\HasColumns;
-use Honed\Table\Concerns\HasPagination;
-use Honed\Table\Concerns\HasTableBindings;
 use Honed\Table\Concerns\IsSelectable;
 use Honed\Table\Concerns\IsToggleable;
-use Honed\Table\Exceptions\KeyNotFoundException;
+use Honed\Table\Pipelines\RefineSorts;
+use Honed\Table\Concerns\HasPagination;
 use Honed\Table\Pipelines\CleanupTable;
-use Honed\Table\Pipelines\CreateEmptyState;
-use Honed\Table\Pipelines\Paginate;
 use Honed\Table\Pipelines\QueryColumns;
 use Honed\Table\Pipelines\RefineFilters;
-use Honed\Table\Pipelines\RefineSearches;
-use Honed\Table\Pipelines\RefineSorts;
 use Honed\Table\Pipelines\SelectColumns;
 use Honed\Table\Pipelines\ToggleColumns;
+use Honed\Refine\Pipelines\AfterRefining;
+use Honed\Table\Pipelines\RefineSearches;
+use Honed\Core\Concerns\HasParameterNames;
+use Honed\Refine\Pipelines\BeforeRefining;
+use Honed\Table\Concerns\HasTableBindings;
+use Honed\Table\Contracts\ShouldSelect;
+use Honed\Table\Pipelines\CreateEmptyState;
 use Honed\Table\Pipelines\TransformRecords;
 use Illuminate\Contracts\Routing\UrlRoutable;
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
+use Honed\Table\Exceptions\KeyNotFoundException;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
@@ -60,14 +64,6 @@ class Table extends Refine implements Handles, UrlRoutable
         getRecordKey as protected getBaseRecordKey;
     }
 
-    /** @use HasParameterNames<TModel, TBuilder> */
-    use HasParameterNames;
-
-    // use HasTableBindings;
-
-    /** @use IsSelectable<TModel, TBuilder> */
-    use IsSelectable;
-
     /** @use IsToggleable<TModel, TBuilder> */
     use IsToggleable {
         getColumnKey as protected getBaseColumnKey;
@@ -79,13 +75,6 @@ class Table extends Refine implements Handles, UrlRoutable
      * @var string|null
      */
     protected $key;
-
-    /**
-     * Whether the model should be serialized per record.
-     *
-     * @var bool|null
-     */
-    protected $serialize;
 
     /**
      * The table records.
@@ -102,11 +91,46 @@ class Table extends Refine implements Handles, UrlRoutable
     protected $paginationData = [];
 
     /**
+     * Whether the model should be serialized per record.
+     *
+     * @var bool|null
+     */
+    protected $serialize;
+
+    /**
      * The empty state of the table.
      *
      * @var \Honed\Table\EmptyState|null
      */
     protected $emptyState;
+
+    /**
+     * Whether to do column selection.
+     *
+     * @var bool|null
+     */
+    protected $select;
+
+    /**
+     * The columns to always be selected.
+     *
+     * @var array<int,string>
+     */
+    protected $selects = [];
+
+    /**
+     * The default namespace where tables reside.
+     *
+     * @var string
+     */
+    public static $namespace = 'App\\Tables\\';
+
+    /**
+     * How to resolve the table for the given model name.
+     *
+     * @var (\Closure(class-string<\Illuminate\Database\Eloquent\Model>):class-string<\Honed\Table\Table>)|null
+     */
+    protected static $tableNameResolver;
 
     /**
      * Create a new table instance.
@@ -286,7 +310,7 @@ class Table extends Refine implements Handles, UrlRoutable
     /**
      * Set the empty state of the table.
      *
-     * @param  \Honed\Table\EmptyState|string|\Closure  $message
+     * @param  \Honed\Table\EmptyState|string|\Closure(\Honed\Table\EmptyState):mixed  $message
      * @param  string|null  $title
      * @return $this
      */
@@ -324,6 +348,74 @@ class Table extends Refine implements Handles, UrlRoutable
     public function defineEmptyState($emptyState)
     {
         return $emptyState;
+    }
+
+    /**
+     * Set whether to do column selection.
+     *
+     * @param  bool  $select
+     * @return $this
+     */
+    public function select($select = true)
+    {
+        $this->select = $select;
+
+        return $this;
+    }
+
+    /**
+     * Determine whether to do column selection.
+     *
+     * @return bool
+     */
+    public function isSelectable()
+    {
+        if (isset($this->select)) {
+            return $this->select;
+        }
+
+        if ($this instanceof ShouldSelect) {
+            return true;
+        }
+
+        return static::isSelectableByDefault();
+    }
+
+    /**
+     * Whether to do column selection by default.
+     *
+     * @return bool
+     */
+    public function isSelectableByDefault()
+    {
+        return (bool) config('table.select', false);
+    }
+
+    /**
+     * Set the columns to always have selected.
+     *
+     * @param  string|iterable<int,string>  $selects
+     * @return $this
+     */
+    public function selects(...$selects)
+    {
+        $this->select();
+
+        $selects = Arr::flatten($selects);
+
+        $this->selects = \array_merge($this->selects, $selects);
+
+        return $this;
+    }
+
+    /**
+     * Get the columns to always have selected.
+     *
+     * @return array<int,string>
+     */
+    public function getSelects()
+    {
+        return $this->selects;
     }
 
     /**
@@ -399,6 +491,94 @@ class Table extends Refine implements Handles, UrlRoutable
     }
 
     /**
+     * Get a new table instance for the given model name.
+     *
+     * @template TClass of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  class-string<TClass>  $modelName
+     * @param \Closure|null $before
+     * @return \Honed\Table\Table<TClass>
+     */
+    public static function tableForModel($modelName, $before = null)
+    {
+        $table = static::resolveTableName($modelName);
+
+        return $table::make($before);
+    }
+
+    /**
+     * Get the table name for the given model name.
+     *
+     * @template TClass of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  class-string<TClass>  $modelName
+     * @return class-string<\Honed\Table\Table<TClass>>
+     */
+    public static function resolveTableName($modelName)
+    {
+        $resolver = static::$tableNameResolver ?? function (string $modelName) {
+            $appNamespace = static::appNamespace();
+
+            $modelName = Str::startsWith($modelName, $appNamespace.'Models\\')
+                ? Str::after($modelName, $appNamespace.'Models\\')
+                : Str::after($modelName, $appNamespace);
+
+            return static::$namespace.$modelName.'Table';
+        };
+
+        return $resolver($modelName);
+    }
+
+    /**
+     * Get the application namespace for the application.
+     *
+     * @return string
+     */
+    protected static function appNamespace()
+    {
+        try {
+            return Container::getInstance()
+                ->make(Application::class)
+                ->getNamespace();
+        } catch (\Throwable) {
+            return 'App\\';
+        }
+    }
+
+    /**
+     * Specify the default namespace that contains the application's model tables.
+     *
+     * @param  string  $namespace
+     * @return void
+     */
+    public static function useNamespace($namespace)
+    {
+        static::$namespace = $namespace;
+    }
+
+    /**
+     * Specify the callback that should be invoked to guess the name of a model table.
+     *
+     * @param  \Closure(class-string<\Illuminate\Database\Eloquent\Model>):class-string<\Honed\Table\Table>  $callback
+     * @return void
+     */
+    public static function guessTableNamesUsing($callback)
+    {
+        static::$tableNameResolver = $callback;
+    }
+
+    /**
+     * Flush the table's global configuration state.
+     *
+     * @return void
+     */
+    public static function flushState()
+    {
+        static::$tableNameResolver = null;
+        static::$namespace = 'App\\Tables\\';
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function configToArray()
@@ -411,7 +591,7 @@ class Table extends Refine implements Handles, UrlRoutable
         ]);
 
         if ($this->isExecutable(static::baseClass())) {
-            $config = \array_merge($config, [
+            return \array_merge($config, [
                 'endpoint' => $this->getEndpoint(),
             ]);
         }

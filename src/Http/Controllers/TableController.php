@@ -4,31 +4,34 @@ declare(strict_types=1);
 
 namespace Honed\Table\Http\Controllers;
 
-use Honed\Action\Http\Requests\DispatchableRequest;
-use Honed\Action\Http\Requests\InvokableRequest;
 use Honed\Table\Table;
 use Illuminate\Routing\Controller;
+use Honed\Action\Http\Requests\InvokableRequest;
+use Honed\Action\Http\Requests\DispatchableRequest;
+use Honed\Action\Exceptions\CouldNotResolveHandlerException;
 
 class TableController extends Controller
 {
     /**
      * Find and execute the appropriate action from route binding.
      *
-     * @template TModel of \Illuminate\Database\Eloquent\Model
-     * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
-     *
-     * @param  \Honed\Action\Table<TModel, TBuilder>  $action
+     * @param  \Honed\Table\Table  $table
      * @return \Illuminate\Contracts\Support\Responsable|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function invoke(InvokableRequest $request, Table $action)
+    public function invoke(InvokableRequest $request, Table $table)
     {
-        return $action->handle($request);
+        return $table->handle($request);
     }
 
     /**
      * Find and execute the appropriate action from the request input.
      *
      * @return \Illuminate\Contracts\Support\Responsable|\Symfony\Component\HttpFoundation\RedirectResponse
+     * 
+     * @throws \Honed\Action\Exceptions\CouldNotResolveHandlerException
+     * @throws \Honed\Action\Exceptions\ActionNotFoundException
+     * @throws \Honed\Action\Exceptions\ActionNotAllowedException
+     * @throws \Honed\Action\Exceptions\InvalidActionException
      */
     public function dispatch(DispatchableRequest $request)
     {
@@ -36,11 +39,13 @@ class TableController extends Controller
         $key = $request->validated('id');
 
         /** @var \Honed\Action\Contracts\Handles|null */
-        $action = $this->baseClass()::tryFrom($key);
+        $table = $this->baseClass()::tryFrom($key);
 
-        abort_unless((bool) $action, 404);
+        if (! $table) {
+            CouldNotResolveHandlerException::throw();
+        }
 
-        return $action->handle($request);
+        return $table->handle($request);
     }
 
     /**
