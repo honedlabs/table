@@ -135,26 +135,26 @@ it('builds class', function () {
         ])
         )
     )->toArray()->scoped(fn ($array) => $array
-    ->{'config'}->toEqual([
-        'key' => 'id',
-        'delimiter' => config('table.delimiter'),
-        'record' => config('table.record_key'),
-        'sort' => config('table.sort_key'),
-        'search' => config('table.search_key'),
-        'column' => config('table.column_key'),
-        'page' => config('table.page_key'),
-        'endpoint' => config('table.endpoint'),
-        'term' => 'search term',
-        'match' => 'match',
-    ])->{'actions'}->scoped(fn ($actions) => $actions
-    ->toHaveKeys(['inline', 'bulk', 'page'])
-    ->{'inline'}->toBeTrue()
-    ->{'bulk'}->toHaveCount(1)
-    ->{'page'}->toHaveCount(2)
-    )->{'toggles'}->toBeTrue()
-    ->{'sorts'}->toHaveCount(4)
-    ->{'filters'}->toHaveCount(8)
-    ->{'columns'}->toHaveCount(9)
-    ->{'meta'}->toBeEmpty()
+        ->{'config'}->toEqual([
+            'key' => 'id',
+            'delimiter' => config('table.delimiter'),
+            'record' => config('table.record_key'),
+            'sort' => config('table.sort_key'),
+            'search' => config('table.search_key'),
+            'column' => config('table.column_key'),
+            'page' => config('table.page_key'),
+            'endpoint' => config('table.endpoint'),
+            'term' => 'search term',
+            'match' => 'match',
+        ])->{'actions'}->scoped(fn ($actions) => $actions
+        ->toHaveKeys(['inline', 'bulk', 'page'])
+        ->{'inline'}->toBeTrue()
+        ->{'bulk'}->toHaveCount(1)
+        ->{'page'}->toHaveCount(2)
+        )->{'toggles'}->toBeTrue()
+        ->{'sorts'}->toHaveCount(4)
+        ->{'filters'}->toHaveCount(8)
+        ->{'columns'}->toHaveCount(9)
+        ->{'meta'}->toBeEmpty()
     );
 });

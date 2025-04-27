@@ -4,41 +4,38 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Refine\Refine;
-use Honed\Action\Handler;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Honed\Table\Columns\Column;
-use Honed\Core\Concerns\HasMeta;
-use Illuminate\Pipeline\Pipeline;
-use Honed\Action\Contracts\Handles;
-use Honed\Table\Pipelines\Paginate;
-use Illuminate\Support\Facades\App;
-use Honed\Table\Concerns\HasColumns;
 use Honed\Action\Concerns\HasActions;
 use Honed\Action\Concerns\HasEncoder;
 use Honed\Action\Concerns\HasEndpoint;
-use Honed\Table\Concerns\IsSelectable;
-use Honed\Table\Concerns\IsToggleable;
-use Honed\Table\Pipelines\RefineSorts;
+use Honed\Action\Contracts\Handles;
+use Honed\Action\Handler;
+use Honed\Core\Concerns\HasMeta;
+use Honed\Refine\Pipelines\AfterRefining;
+use Honed\Refine\Pipelines\BeforeRefining;
+use Honed\Refine\Refine;
+use Honed\Table\Columns\Column;
+use Honed\Table\Concerns\HasColumns;
 use Honed\Table\Concerns\HasPagination;
+use Honed\Table\Concerns\IsToggleable;
+use Honed\Table\Contracts\ShouldSelect;
+use Honed\Table\Exceptions\KeyNotFoundException;
 use Honed\Table\Pipelines\CleanupTable;
+use Honed\Table\Pipelines\CreateEmptyState;
+use Honed\Table\Pipelines\Paginate;
 use Honed\Table\Pipelines\QueryColumns;
 use Honed\Table\Pipelines\RefineFilters;
+use Honed\Table\Pipelines\RefineSearches;
+use Honed\Table\Pipelines\RefineSorts;
 use Honed\Table\Pipelines\SelectColumns;
 use Honed\Table\Pipelines\ToggleColumns;
-use Honed\Refine\Pipelines\AfterRefining;
-use Honed\Table\Pipelines\RefineSearches;
-use Honed\Core\Concerns\HasParameterNames;
-use Honed\Refine\Pipelines\BeforeRefining;
-use Honed\Table\Concerns\HasTableBindings;
-use Honed\Table\Contracts\ShouldSelect;
-use Honed\Table\Pipelines\CreateEmptyState;
 use Honed\Table\Pipelines\TransformRecords;
-use Illuminate\Contracts\Routing\UrlRoutable;
-use Honed\Table\Exceptions\KeyNotFoundException;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\UrlRoutable;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
@@ -496,7 +493,7 @@ class Table extends Refine implements Handles, UrlRoutable
      * @template TClass of \Illuminate\Database\Eloquent\Model
      *
      * @param  class-string<TClass>  $modelName
-     * @param \Closure|null $before
+     * @param  \Closure|null  $before
      * @return \Honed\Table\Table<TClass>
      */
     public static function tableForModel($modelName, $before = null)

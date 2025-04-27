@@ -9,7 +9,7 @@ use Honed\Table\Table;
 
 /**
  * @template TTable of \Honed\Table\Table
- * 
+ *
  * @property string $tableClass
  */
 trait HasTable
@@ -22,14 +22,14 @@ trait HasTable
      */
     public static function table($before = null)
     {
-        return static::newTable($before) 
+        return static::newTable($before)
             ?? Table::tableForModel(static::class, $before);
     }
 
     /**
      * Create a new table instance for the model.
      *
-     * @param \Closure|null $before
+     * @param  \Closure|null  $before
      * @return TTable|null
      */
     protected static function newTable($before = null)

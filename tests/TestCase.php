@@ -6,7 +6,6 @@ namespace Honed\Table\Tests;
 
 use Carbon\Carbon;
 use Honed\Table\TableServiceProvider;
-use Honed\Table\Tests\Fixtures\Controller;
 use Honed\Table\Tests\Stubs\Status;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
