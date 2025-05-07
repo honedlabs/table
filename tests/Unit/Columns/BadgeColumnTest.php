@@ -30,3 +30,12 @@ it('has default', function () {
         ->default('success')->toBe($this->column)
         ->getDefault()->toBe('success');
 });
+
+it('has extra', function () {
+    expect($this->column)
+        ->defineExtra()->toBeInstanceOf(\Closure::class)
+        ->getExtra(['value' => 'value'])->toEqual([
+            'variant' => 'default',
+        ]);
+});
+

@@ -27,16 +27,25 @@ class SelectColumns
         }
 
         $selects = [];
+        $resource = $table->getResource();
 
         foreach ($table->getCachedColumns() as $column) {
             if ($column->isSelectable()) {
-                $selects[] = $column->getSelect();
+                $selecting = $column->getSelects();
+
+                $select = \array_map(
+                    static fn ($select) => $column
+                        ->qualifyColumn($select, $resource),
+                    Arr::wrap($selecting)
+                );
+
+                $selects = \array_merge($selects, $select);
             }
         }
 
         $selects = \array_unique(Arr::flatten($selects), SORT_STRING);
 
-        $table->getResource()->select($selects);
+        $resource->select($selects);
 
         return $next($table);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Honed\Table;
 
 use Honed\Table\Console\Commands\ColumnMakeCommand;
@@ -42,14 +44,17 @@ class TableServiceProvider extends ServiceProvider
     {
         Router::macro('table', function () {
             /** @var \Illuminate\Routing\Router $this */
-            $endpoint = type(config('table.endpoint', '/table'))->asString();
+            $endpoint = \trim(
+                type(config('table.endpoint', '/table'))->asString(),
+                '/'
+            );
 
             $methods = ['post', 'patch', 'put'];
 
             $this->match($methods, $endpoint, [TableController::class, 'dispatch'])
                 ->name('table');
 
-            $this->match($methods, $endpoint.'/{action}', [TableController::class, 'invoke'])
+            $this->match($methods, $endpoint.'/{table}', [TableController::class, 'invoke'])
                 ->name('table.invoke');
         });
     }

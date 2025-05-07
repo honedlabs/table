@@ -204,7 +204,7 @@ class EmptyState extends Primitive
      * @param  string|\Closure  $refining
      * @return $this
      */
-    public function whenRefining($refining)
+    public function refining($refining)
     {
         $this->refining = $refining;
 
@@ -237,7 +237,7 @@ class EmptyState extends Primitive
      * @param  string|\Closure  $filtering
      * @return $this
      */
-    public function whenFiltering($filtering)
+    public function filtering($filtering)
     {
         $this->filtering = $filtering;
 
@@ -260,7 +260,7 @@ class EmptyState extends Primitive
      * @param  string|\Closure  $searching
      * @return $this
      */
-    public function whenSearching($searching)
+    public function searching($searching)
     {
         $this->searching = $searching;
 

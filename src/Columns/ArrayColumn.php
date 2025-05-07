@@ -7,12 +7,6 @@ namespace Honed\Table\Columns;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 
-/**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
- *
- * @extends Column<TModel, TBuilder>
- */
 class ArrayColumn extends Column
 {
     /**

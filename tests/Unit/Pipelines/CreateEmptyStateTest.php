@@ -28,7 +28,7 @@ it('has default empty state', function () {
 
 it('has searching state', function () {
     $this->table->emptyState(fn ($emptyState) => $emptyState
-        ->whenSearching(fn ($emptyState) => $emptyState->title('Searching'))
+        ->searching(fn ($emptyState) => $emptyState->title('Searching'))
     );
 
     $this->pipe->__invoke($this->table->term('term'), $this->next);
@@ -39,7 +39,7 @@ it('has searching state', function () {
 
 it('has filtering state', function () {
     $this->table->emptyState(fn ($emptyState) => $emptyState
-        ->whenFiltering('A refining message')
+        ->filtering('A refining message')
     );
 
     $filter = Filter::make('filter')->value('non-null');
@@ -53,7 +53,7 @@ it('has filtering state', function () {
 
 it('has refining state', function () {
     $this->table->emptyState(fn ($emptyState) => $emptyState
-        ->whenRefining(fn ($emptyState) => $emptyState->title('Refining'))
+        ->refining(fn ($emptyState) => $emptyState->title('Refining'))
     );
 
     $this->pipe->__invoke($this->table->term('term'), $this->next);

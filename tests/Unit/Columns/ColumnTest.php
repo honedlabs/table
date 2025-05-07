@@ -115,10 +115,10 @@ it('is select', function () {
         ->isSelectable()->toBeTrue()
         ->selects(false)->toBe($this->test)
         ->isSelectable()->toBeFalse()
-        ->getSelect()->toBe($this->test->getName())
+        ->getSelects()->toBe($this->test->getName())
         ->selects('test')->toBe($this->test)
         ->isSelectable()->toBeTrue()
-        ->getSelect()->toBe('test');
+        ->getSelects()->toBe('test');
 });
 
 it('applies', function () {

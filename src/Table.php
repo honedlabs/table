@@ -125,7 +125,7 @@ class Table extends Refine implements Handles, UrlRoutable
     /**
      * How to resolve the table for the given model name.
      *
-     * @var (\Closure(class-string<\Illuminate\Database\Eloquent\Model>):class-string<\Honed\Table\Table>)|null
+     * @var (\Closure(class-string):class-string<\Honed\Table\Table>)|null
      */
     protected static $tableNameResolver;
 
@@ -340,11 +340,11 @@ class Table extends Refine implements Handles, UrlRoutable
      * Define the empty state of the table.
      *
      * @param  \Honed\Table\EmptyState  $emptyState
-     * @return void|\Honed\Table\EmptyState
+     * @return void
      */
     public function defineEmptyState($emptyState)
     {
-        return $emptyState;
+        //
     }
 
     /**
@@ -506,24 +506,23 @@ class Table extends Refine implements Handles, UrlRoutable
     /**
      * Get the table name for the given model name.
      *
-     * @template TClass of \Illuminate\Database\Eloquent\Model
-     *
-     * @param  class-string<TClass>  $modelName
-     * @return class-string<\Honed\Table\Table<TClass>>
+     * @param  class-string  $className
+     * @return class-string<\Honed\Table\Table>
      */
-    public static function resolveTableName($modelName)
+    public static function resolveTableName($className)
     {
-        $resolver = static::$tableNameResolver ?? function (string $modelName) {
+        $resolver = static::$tableNameResolver ?? function (string $className) {
             $appNamespace = static::appNamespace();
 
-            $modelName = Str::startsWith($modelName, $appNamespace.'Models\\')
-                ? Str::after($modelName, $appNamespace.'Models\\')
-                : Str::after($modelName, $appNamespace);
+            $className = Str::startsWith($className, $appNamespace.'Models\\')
+                ? Str::after($className, $appNamespace.'Models\\')
+                : Str::after($className, $appNamespace);
 
-            return static::$namespace.$modelName.'Table';
+            /** @var class-string<\Honed\Table\Table> */
+            return static::$namespace.$className.'Table';
         };
 
-        return $resolver($modelName);
+        return $resolver($className);
     }
 
     /**
@@ -556,7 +555,7 @@ class Table extends Refine implements Handles, UrlRoutable
     /**
      * Specify the callback that should be invoked to guess the name of a model table.
      *
-     * @param  \Closure(class-string<\Illuminate\Database\Eloquent\Model>):class-string<\Honed\Table\Table>  $callback
+     * @param  \Closure(class-string):class-string<\Honed\Table\Table>  $callback
      * @return void
      */
     public static function guessTableNamesUsing($callback)

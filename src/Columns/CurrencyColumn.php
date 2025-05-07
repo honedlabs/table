@@ -6,12 +6,6 @@ namespace Honed\Table\Columns;
 
 use Illuminate\Support\Number;
 
-/**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
- *
- * @extends Column<TModel, TBuilder>
- */
 class CurrencyColumn extends Column
 {
     /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Honed\Table\Tests\Fixtures\Table as FixtureTable;
+use Honed\Table\Tests\Stubs\ProductTable;
 use Honed\Table\Tests\Stubs\Status;
 use Illuminate\Http\Request;
 
@@ -54,7 +54,7 @@ it('builds class', function () {
         config('table.record_key') => 25,
     ]);
 
-    expect(FixtureTable::make()
+    expect(ProductTable::make()
         ->request($request)
         ->build()
     )->getResource()->getQuery()->scoped(fn ($query) => $query

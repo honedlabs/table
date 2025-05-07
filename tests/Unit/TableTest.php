@@ -6,7 +6,8 @@ use Honed\Table\Table;
 use Honed\Table\Columns\KeyColumn;
 use Honed\Table\EmptyState;
 use Honed\Table\Exceptions\KeyNotFoundException;
-use Honed\Table\Tests\Fixtures\Table as FixturesTable;
+use Honed\Table\Tests\Stubs\Product;
+use Honed\Table\Tests\Stubs\ProductTable;
 
 beforeEach(function () {
     $this->table = Table::make();
@@ -97,15 +98,38 @@ it('is url routable', function () {
         ->resolveRouteBinding($this->table->getRouteKey())
         ->toBeNull();
 
-    $table = FixturesTable::make();
+    $table = ProductTable::make();
 
     expect($table)
         ->resolveRouteBinding($table->getRouteKey())
-        ->toBeInstanceOf(FixturesTable::class);
+        ->toBeInstanceOf(ProductTable::class);
 
     expect($table)
         ->resolveChildRouteBinding(null, $table->getRouteKey())
-        ->toBeInstanceOf(FixturesTable::class);
+        ->toBeInstanceOf(ProductTable::class);
+});
+
+it('resolves cache model', function () {
+    ProductTable::guessTableNamesUsing(function ($class) {
+        return $class.'Table';
+    });
+
+    expect(ProductTable::resolveTableName(Product::class))
+        ->toBe('Honed\\Table\\Tests\\Stubs\\ProductTable');
+
+    expect(ProductTable::tableForModel(Product::class))
+        ->toBeInstanceOf(ProductTable::class);
+
+    ProductTable::flushState();
+});
+
+it('uses namespace', function () {
+    ProductTable::useNamespace('');
+
+    expect(ProductTable::resolveTableName(Product::class))
+        ->toBe('Honed\\Table\\Tests\\Stubs\\ProductTable');
+
+    ProductTable::flushState();
 });
 
 it('calls macro', function () {

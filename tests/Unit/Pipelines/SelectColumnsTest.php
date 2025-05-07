@@ -9,10 +9,13 @@ use Honed\Table\Tests\Stubs\Product;
 
 beforeEach(function () {
     $this->pipe = new SelectColumns();
+
     $this->next = fn ($table) => $table;
+    
+    $this->builder = Product::query();
 
     $this->table = Table::make()
-        ->resource(Product::query())
+        ->resource($this->builder)
         ->selects(true)
         ->cacheColumns([
             Column::make('name')
@@ -31,10 +34,10 @@ it('selects', function () {
 
     expect($this->table->getResource()->getQuery()->columns)
         ->toEqual([
-            'name',
-            'price',
-            'cost',
-            'description as content',
+            $this->builder->qualifyColumn('name'),
+            $this->builder->qualifyColumn('price'),
+            $this->builder->qualifyColumn('cost'),
+            $this->builder->qualifyColumn('description as content'),
         ]);
 });
 

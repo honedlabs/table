@@ -23,8 +23,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  */
 class Column extends Primitive
 {
@@ -36,7 +36,7 @@ class Column extends Primitive
     use HasName;
     use HasQualifier;
 
-    /** @use HasQuery<TModel, TBuilder> */
+    /** @use \Honed\Core\Concerns\HasQuery<TModel, TBuilder> */
     use HasQuery;
 
     use HasType;
@@ -235,6 +235,7 @@ class Column extends Primitive
             $name = \is_string($sort) ? $sort : $this->getName();
 
             $this->sort = Sort::make($name, $this->getLabel())
+                ->qualifies($this->getQualifier())
                 ->alias($this->getParameter());
         }
 
@@ -310,7 +311,7 @@ class Column extends Primitive
     /**
      * Set how to select this column.
      *
-     * @param  string|bool|array<int,string>  $select
+     * @param  bool|string|array<int,string>  $select
      * @return $this
      */
     public function selects($select = true)
@@ -325,7 +326,7 @@ class Column extends Primitive
      *
      * @return string|array<int,string>
      */
-    public function getSelect()
+    public function getSelects()
     {
         if (\is_bool($this->select)) {
             return $this->getName();

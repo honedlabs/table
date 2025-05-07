@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 use Honed\Action\Testing\InlineRequest;
-use Honed\Table\Tests\Fixtures\Table;
+use Honed\Table\Tests\Stubs\ProductTable;
 
 use function Pest\Laravel\post;
 
 beforeEach(function () {
     $this->product = product();
 
-    $this->table = Table::make();
+    $this->table = ProductTable::make();
 
     $this->request = InlineRequest::fake()
         ->for($this->table)

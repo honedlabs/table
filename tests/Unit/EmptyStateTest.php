@@ -41,21 +41,21 @@ it('has action', function () {
 it('has refining state', function () {
     expect($this->state)
         ->getRefiningState()->toBe(config('table.empty_state.refining'))
-        ->whenRefining(fn ($state) => $state->title('Refining'))->toBe($this->state)
+        ->refining(fn ($state) => $state->title('Refining'))->toBe($this->state)
         ->getRefiningState()->toBeInstanceOf(\Closure::class);
 });
 
 it('has filtering state', function () {
     expect($this->state)
         ->getFilteringState()->toBeNull()
-        ->whenFiltering(fn ($state) => $state->title('Filtering'))->toBe($this->state)
+        ->filtering(fn ($state) => $state->title('Filtering'))->toBe($this->state)
         ->getFilteringState()->toBeInstanceOf(\Closure::class);
 });
 
 it('has searching state', function () {
     expect($this->state)
         ->getSearchingState()->toBe(config('table.empty_state.searching'))
-        ->whenSearching(fn ($state) => $state->title('Searching'))->toBe($this->state)
+        ->searching(fn ($state) => $state->title('Searching'))->toBe($this->state)
         ->getSearchingState()->toBeInstanceOf(\Closure::class);
 });
 

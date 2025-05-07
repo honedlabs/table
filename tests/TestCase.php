@@ -95,7 +95,11 @@ class TestCase extends Orchestra
      */
     protected function defineRoutes($router)
     {
-        $router->middleware(SubstituteBindings::class, EncryptCookies::class, AddQueuedCookiesToResponse::class)->group(function ($router) {
+        $router->middleware([
+            SubstituteBindings::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+        ])->group(function ($router) {
             $router->get('/', fn () => Inertia::render('Home'))->name('home.index');
             $router->get('/products', fn () => Inertia::render('Products/Index'))->name('products.index');
             $router->get('/products/{product}', fn () => Inertia::render('Products/Show'))->name('products.show');

@@ -7,12 +7,6 @@ namespace Honed\Table\Columns;
 use Carbon\Carbon;
 use Honed\Core\Interpret;
 
-/**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
- *
- * @extends Column<TModel, TBuilder>
- */
 class DateColumn extends Column
 {
     /**
