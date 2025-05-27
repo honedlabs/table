@@ -12,10 +12,10 @@ enum Paginator: string
     public static function coalesce($value)
     {
         return match ($value) {
-            'length-aware' => static::LengthAware,
-            'simple' => static::Simple,
-            'cursor' => static::Cursor,
-            'collection' => static::Collection,
+            'length-aware' => self::LengthAware,
+            'simple' => self::Simple,
+            'cursor' => self::Cursor,
+            'collection' => self::Collection,
             default => null,
         };
     }
