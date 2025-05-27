@@ -25,10 +25,7 @@ class BadgeColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'badge';
-    }
+    protected $type = 'badge';
 
     /**
      * {@inheritdoc}

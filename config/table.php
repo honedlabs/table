@@ -180,4 +180,6 @@ return [
     | allow you to bind the options to a form input.
     |
     */
+
+    'exporter' => \Honed\Table\Exports\TableExport::class,
 ];

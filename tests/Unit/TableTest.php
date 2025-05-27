@@ -109,7 +109,7 @@ it('is url routable', function () {
         ->toBeInstanceOf(ProductTable::class);
 });
 
-it('resolves cache model', function () {
+it('resolves table', function () {
     ProductTable::guessTableNamesUsing(function ($class) {
         return $class.'Table';
     });

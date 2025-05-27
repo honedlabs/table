@@ -30,10 +30,7 @@ class TextColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'text';
-    }
+    protected $type = 'text';
 
     /**
      * {@inheritdoc}

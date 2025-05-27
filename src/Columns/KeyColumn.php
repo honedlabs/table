@@ -24,8 +24,5 @@ class KeyColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'key';
-    }
+    protected $type = 'key';
 }

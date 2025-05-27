@@ -25,10 +25,7 @@ class NumberColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'number';
-    }
+    protected $type = 'number';
 
     /**
      * {@inheritdoc}

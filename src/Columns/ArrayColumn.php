@@ -26,10 +26,7 @@ class ArrayColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'array';
-    }
+    protected $type = 'array';
 
     /**
      * {@inheritdoc}

@@ -25,10 +25,7 @@ class CurrencyColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'currency';
-    }
+    protected $type = 'currency';
 
     /**
      * {@inheritdoc}

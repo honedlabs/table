@@ -19,8 +19,5 @@ class HiddenColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'hidden';
-    }
+    protected $type = 'hidden';
 }

@@ -22,18 +22,39 @@ trait HasPagination
     protected $paginator;
 
     /**
+     * The default paginator to use.
+     *
+     * @var 'cursor'|'simple'|'length-aware'|'collection'|string|null
+     */
+    protected static $usePaginator = 'length-aware';
+
+    /**
      * The pagination options.
      *
      * @var int|array<int,int>|null
      */
-    protected $pagination;
+    protected $perPage;
+
+    /**
+     * The default number of records per page.
+     *
+     * @var int|array<int,int>
+     */
+    protected static $usePerPage = 10;
 
     /**
      * The default pagination amount if pagination is an array.
      *
      * @var int|null
      */
-    protected $defaultPagination;
+    protected $defaultPerPage;
+
+    /**
+     * The default number of records per page to use.
+     * 
+     * @var int
+     */
+    protected static $useDefaultPerPage = 10;
 
     /**
      * The query parameter for the page number.
@@ -43,6 +64,13 @@ trait HasPagination
     protected $pageKey;
 
     /**
+     * The default query parameter for the page number.
+     *
+     * @var string
+     */
+    protected static $defaultPageKey = 'page';
+
+    /**
      * The query parameter for the number of records to show per page.
      *
      * @var string|null
@@ -50,11 +78,26 @@ trait HasPagination
     protected $recordKey;
 
     /**
+     * The default query parameter for the number of records to show per page.
+     *
+     * @var string
+     */
+    protected static $defaultRecordKey = 'rows';
+
+    /**
      * The number of page links to show either side of the current page.
      *
      * @var int|null
      */
     protected $window;
+
+    /**
+     * The default number of page links to show either side of the current
+     * page.
+     *
+     * @var int
+     */
+    protected static $defaultWindow = 2;
 
     /**
      * The records per page options if dynamic.

@@ -23,10 +23,7 @@ class BooleanColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'boolean';
-    }
+    protected $type = 'boolean';
 
     /**
      * {@inheritdoc}

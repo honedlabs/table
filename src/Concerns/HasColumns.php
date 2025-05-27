@@ -8,8 +8,8 @@ use Honed\Table\Columns\Column;
 use Illuminate\Support\Arr;
 
 /**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  */
 trait HasColumns
 {
@@ -40,7 +40,7 @@ trait HasColumns
      * @param  iterable<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  ...$columns
      * @return $this
      */
-    public function columns(...$columns)
+    public function withColumns(...$columns)
     {
         $columns = Arr::flatten($columns);
 
@@ -54,7 +54,7 @@ trait HasColumns
      *
      * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
      */
-    public function defineColumns()
+    public function columns()
     {
         return [];
     }

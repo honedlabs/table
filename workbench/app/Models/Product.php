@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Honed\Table\Tests\Stubs;
+namespace Workbench\App\Models;
 
 use Honed\Table\Attributes\Table;
 use Honed\Table\Concerns\HasTable;

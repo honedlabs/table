@@ -1,3 +1,10 @@
+<a href="https://honed.dev/table">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="art/header-dark.png">
+    <img alt="" src="art/header-light.png">
+  </picture>
+</a>
+
 # Table
 Honed is a fullstack datatable and search query builder package for Laravel, with a companion Vue frontend composable using the InertiaJS HTTP protocol specification. It provides an elegant API to define tables, columns, actions and refiners for your data.
 

@@ -10,7 +10,7 @@ use Honed\Table\Table;
 /**
  * @template TTable of \Honed\Table\Table
  *
- * @property string $tableClass The class string of the table for this model.
+ * @property-read string $tableClass The class string of the table for this model.
  */
 trait HasTable
 {

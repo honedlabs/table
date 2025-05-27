@@ -67,6 +67,13 @@ class Column extends Primitive
     protected $fallback;
 
     /**
+     * The default fallback value for the columns.
+     *
+     * @var mixed
+     */
+    protected static $useFallback;
+
+    /**
      * The class of the column header.
      *
      * @var string|null
@@ -81,18 +88,11 @@ class Column extends Primitive
     protected $sort;
 
     /**
-     * Whether to search on the column.
+     * The database columns to search on.
      *
-     * @var bool|string
+     * @var bool|string|array<int, string>
      */
     protected $search = false;
-
-    /**
-     * Whether to have a simple filter on the column.
-     *
-     * @var bool
-     */
-    protected $filter = false;
 
     /**
      * How to select this column
@@ -101,12 +101,26 @@ class Column extends Primitive
      */
     protected $select = true;
 
-    // /**
-    //  * Whether it is active.
-    //  *
-    //  * @var bool
-    //  */
-    // protected $active = true;
+    /**
+     * How this column should be exported.
+     *
+     * @var bool|array<int,string>
+     */
+    protected $export = true;
+
+    /**
+     * The format to export the column in.
+     * 
+     * @var string|null
+     */
+    protected $exportFormat;
+
+    /**
+     * The style to export the column in.
+     * 
+     * @var array<string,mixed>|(\Closure(\PhpOffice\PhpSpreadsheet\Style\Style):void)|null
+     */
+    protected $exportStyle;
 
     /**
      * Create a new column instance.
@@ -122,6 +136,9 @@ class Column extends Primitive
             ->label($label ?? static::makeLabel($name));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         $this->active(true);
@@ -193,7 +210,18 @@ class Column extends Primitive
      */
     public function getFallback()
     {
-        return $this->fallback;
+        return $this->fallback ?? static::$useFallback;
+    }
+
+    /**
+     * Set the default fallback value for the column.
+     *
+     * @param  mixed  $default
+     * @return void
+     */
+    public function useFallback($default)
+    {
+        static::$useFallback = $default;
     }
 
     /**
@@ -225,21 +253,30 @@ class Column extends Primitive
      * @param  \Honed\Refine\Sort<TModel, TBuilder>|string|bool  $sort
      * @return $this
      */
-    public function sorts($sort = true)
+    public function sort($sort = true)
     {
-        if (! $sort) {
-            $this->sort = null;
-        } elseif ($sort instanceof Sort) {
-            $this->sort = $sort;
-        } else {
-            $name = \is_string($sort) ? $sort : $this->getName();
-
-            $this->sort = Sort::make($name, $this->getLabel())
-                ->qualifies($this->getQualifier())
-                ->alias($this->getParameter());
-        }
+        $this->sort = match (true) {
+            ! $sort => null,
+            $sort instanceof Sort => $sort,
+            default => $this->newSort($sort),
+        };
 
         return $this;
+    }
+
+    /**
+     * Create a new sort instance using the column properties.
+     *
+     * @param  string|bool  $sort
+     * @return \Honed\Refine\Sort<TModel, TBuilder>
+     */
+    protected function newSort($sort)
+    {
+        $sort = \is_string($sort) ? $sort : $this->getName();
+
+        return Sort::make($sort, $this->getLabel())
+            ->qualifies($this->getQualifier())
+            ->alias($this->getParameter());
     }
 
     /**
@@ -257,7 +294,7 @@ class Column extends Primitive
      *
      * @return bool
      */
-    public function isSortable()
+    public function sorts()
     {
         return (bool) $this->sort;
     }
@@ -265,10 +302,10 @@ class Column extends Primitive
     /**
      * Set the column as searchable.
      *
-     * @param  bool|string  $search
+     * @param  bool|string|array<int, string>  $search
      * @return $this
      */
-    public function searches($search = true)
+    public function search($search = true)
     {
         $this->search = $search;
 
@@ -276,36 +313,27 @@ class Column extends Primitive
     }
 
     /**
+     * Get the search columns.
+     *
+     * @return bool|string|array<int, string>
+     */
+    public function getSearch()
+    {
+        if (! $this->search) {
+            return false;
+        }
+
+        return $this->search;
+    }
+
+    /**
      * Determine if the column is searchable.
      *
      * @return bool
      */
-    public function isSearchable()
+    public function searches()
     {
         return (bool) $this->search;
-    }
-
-    /**
-     * Set the column as filterable.
-     *
-     * @param  bool  $filter
-     * @return $this
-     */
-    public function filters($filter = true)
-    {
-        $this->filter = $filter;
-
-        return $this;
-    }
-
-    /**
-     * Determine if the column is filterable.
-     *
-     * @return bool
-     */
-    public function isFilterable()
-    {
-        return $this->filter;
     }
 
     /**
@@ -314,11 +342,31 @@ class Column extends Primitive
      * @param  bool|string|array<int,string>  $select
      * @return $this
      */
-    public function selects($select = true)
+    public function select($select = true)
     {
         $this->select = $select;
 
         return $this;
+    }
+
+    /**
+     * Set the column to not be selectable.
+     *
+     * @return $this
+     */
+    public function doNotSelect()
+    {
+        return $this->select(false);
+    }
+
+    /**
+     * Set the column to not be selectable.
+     *
+     * @return $this
+     */
+    public function dontSelect()
+    {
+        return $this->doNotSelect();
     }
 
     /**
@@ -340,9 +388,85 @@ class Column extends Primitive
      *
      * @return bool
      */
-    public function isSelectable()
+    public function selects()
     {
         return (bool) $this->select;
+    }
+
+    /**
+     * Set whether, and how, the column should be exported.
+     * 
+     * @param  bool|(\Closure(mixed, TModel):mixed)  $as
+     * @param  string|null  $format
+     * @param  array<string,mixed>|(\Closure(\PhpOffice\PhpSpreadsheet\Style\Style):void)|null  $style
+     * @return $this
+     */
+    public function export($as = true, $format = null, $style = null)
+    {
+        $this->export = $as;
+
+        if ($format) {
+            $this->exportFormat($format);
+        }
+
+        if ($style) {
+            $this->exportStyle($style);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Register the callback to be used to export the content of a column.
+     * 
+     * @param  \Closure(mixed, TModel):mixed  $callback
+     * @return $this
+     */
+    public function exportUsing($callback)
+    {
+        $this->export = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Set the column to not be exportable.
+     *
+     * @return $this
+     */
+    public function doNotExport()
+    {
+        return $this->export(false);
+    }
+
+    /**
+     * Set the column to not be exportable.
+     *
+     * @return $this
+     */
+    public function dontExport()
+    {
+        return $this->doNotExport();
+    }
+
+    /**
+     * Get the exporter for the column.
+     * 
+     * @return bool|\Closure(mixed, TModel):mixed|null
+     */
+    public function getExporter()
+    {
+        return $this->export;
+    }
+
+    /**
+     * Determine if this column is exportable.
+     * 
+     * @return bool
+     */
+    public function exports()
+    {
+        return (bool) $this->export;
     }
 
     /**
@@ -408,6 +532,16 @@ class Column extends Primitive
                 ),
             ],
         ];
+    }
+
+    /**
+     * Flush the column's global configuration state.
+     * 
+     * @return void
+     */
+    public static function flushState()
+    {
+        static::$useFallback = null;
     }
 
     /**

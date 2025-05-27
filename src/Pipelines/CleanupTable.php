@@ -6,18 +6,16 @@ namespace Honed\Table\Pipelines;
 
 use Honed\Table\Table;
 
-/**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
- */
 class CleanupTable
 {
     /**
      * Cleanup the table.
      *
-     * @param  \Honed\Table\Table<TModel, TBuilder>  $table
-     * @param  \Closure(Table<TModel, TBuilder>): Table<TModel, TBuilder>  $next
-     * @return \Honed\Table\Table<TModel, TBuilder>
+     * @template T of \Honed\Table\Table
+     * 
+     * @param  T  $table
+     * @param  \Closure(T):T  $next
+     * @return T
      */
     public function __invoke($table, $next)
     {

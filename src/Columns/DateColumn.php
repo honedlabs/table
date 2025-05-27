@@ -33,10 +33,7 @@ class DateColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function defineType()
-    {
-        return 'date';
-    }
+    protected $type = 'date';
 
     /**
      * {@inheritdoc}

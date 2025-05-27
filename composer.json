@@ -9,7 +9,7 @@
     "homepage": "https://github.com/honedlabs/table",
     "license": "MIT",
     "authors": [
-        {   
+        {
             "name": "Joshua Wallace",
             "email": "josh@joshua-wallace.com",
             "homepage": "https://joshua-wallace.com"
@@ -22,7 +22,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Honed\\Table\\Tests\\": "tests/"
+            "Honed\\Table\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "require": {
@@ -33,7 +36,8 @@
         "illuminate/contracts": "^11.0||^12.0",
         "honed/core": "^0.24.0",
         "honed/refine": "^0.14.0",
-        "honed/action": "^0.15.0"
+        "honed/action": "^0.15.0",
+        "maatwebsite/excel": "^3.1"
     },
     "require-dev": {
         "inertiajs/inertia-laravel": "^1.2||^2.0",
@@ -56,14 +60,11 @@
         ],
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "build": [
-            "@composer run prepare",
-            "@php vendor/bin/testbench workbench:build --ansi"
-        ],        
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
-            "@composer run build",
-            "@php vendor/bin/testbench serve"
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
         ],
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
@@ -74,6 +75,10 @@
             "@composer run analyse",
             "@composer run test",
             "@composer run format"
+        ],
+        "lint": [
+            "@php vendor/bin/pint --ansi",
+            "@php vendor/bin/phpstan analyse --verbose --ansi"
         ]
     },
     "config": {
