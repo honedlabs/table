@@ -51,7 +51,7 @@ trait HasPagination
 
     /**
      * The default number of records per page to use.
-     *
+     * 
      * @var int
      */
     protected static $useDefaultPerPage = 10;
