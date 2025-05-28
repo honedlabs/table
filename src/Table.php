@@ -117,7 +117,7 @@ class Table extends Refine implements Handles, UrlRoutable
 
     /**
      * Whether to do column selection by default.
-     * 
+     *
      * @var bool
      */
     protected static $shouldSelect = false;
@@ -381,7 +381,6 @@ class Table extends Refine implements Handles, UrlRoutable
 
         return false; // TODO
     }
-
 
     /**
      * Set the columns to always have selected.

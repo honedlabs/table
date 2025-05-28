@@ -17,11 +17,11 @@ class Table
      */
     public function __construct(
         public string $table
-    ) { }
+    ) {}
 
     /**
      * Get the table class.
-     * 
+     *
      * @return class-string<\Honed\Table\Table>
      */
     public function getTable()
