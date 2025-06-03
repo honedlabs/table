@@ -9,6 +9,11 @@ use Illuminate\Support\Number;
 class NumberColumn extends Column
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $type = 'number';
+    
+    /**
      * The number of decimal places to display.
      *
      * @var int|null
@@ -21,11 +26,6 @@ class NumberColumn extends Column
      * @var bool
      */
     protected $abbreviate = false;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'number';
 
     /**
      * {@inheritdoc}

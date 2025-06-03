@@ -9,6 +9,11 @@ use Illuminate\Support\Arr;
 class BadgeColumn extends Column
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $type = 'badge';
+    
+    /**
      * How to map the value to a badge variant.
      *
      * @var array<string,string>|null
@@ -21,11 +26,6 @@ class BadgeColumn extends Column
      * @var string
      */
     protected $default = 'default';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'badge';
 
     /**
      * {@inheritdoc}

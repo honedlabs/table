@@ -9,6 +9,11 @@ class KeyColumn extends Column
     /**
      * {@inheritdoc}
      */
+    protected $type = 'key';
+    
+    /**
+     * {@inheritdoc}
+     */
     protected $key = true;
 
     /**
@@ -20,9 +25,4 @@ class KeyColumn extends Column
      * {@inheritdoc}
      */
     protected $qualify = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'key';
 }

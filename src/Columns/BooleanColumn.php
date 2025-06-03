@@ -7,6 +7,11 @@ namespace Honed\Table\Columns;
 class BooleanColumn extends Column
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $type = 'boolean';
+    
+    /**
      * The label to display when the value evaluates to true.
      *
      * @var string
@@ -19,11 +24,6 @@ class BooleanColumn extends Column
      * @var string
      */
     protected $falseLabel = 'False';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'boolean';
 
     /**
      * {@inheritdoc}

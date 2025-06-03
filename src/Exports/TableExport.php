@@ -7,20 +7,20 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-class TableExport implements ExportsTable, ShouldAutoSize, WithStrictNullComparison
+class TableExport implements ExportsTable, WithStrictNullComparison, ShouldAutoSize
 {
     use Exportable;
 
     /**
      * The query to export.
-     *
+     * 
      * @var \Honed\Table\Table
      */
     protected $table;
 
     /**
      * Create a new table exporter.
-     *
+     * 
      * @param  \Honed\Table\Table  $table
      * @return static
      */
@@ -32,7 +32,7 @@ class TableExport implements ExportsTable, ShouldAutoSize, WithStrictNullCompari
 
     /**
      * Set the table to export.
-     *
+     * 
      * @param  \Honed\Table\Table  $table
      * @return $this
      */
@@ -46,7 +46,10 @@ class TableExport implements ExportsTable, ShouldAutoSize, WithStrictNullCompari
     /**
      * {@inheritdoc}
      */
-    public function query() {}
+    public function query()
+    {
+        return;
+    }
 
     public function map($row): array
     {
@@ -58,12 +61,18 @@ class TableExport implements ExportsTable, ShouldAutoSize, WithStrictNullCompari
         return [];
     }
 
-    public function events() {}
+    public function events()
+    {
+        
+    }
 
     public function registerEvents(): array
     {
         return [];
     }
 
-    public function columns($columns) {}
+    public function columns($columns)
+    {
+        return;
+    }
 }

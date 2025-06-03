@@ -7,6 +7,11 @@ namespace Honed\Table\Columns;
 class TextColumn extends Column
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $type = 'text';
+    
+    /**
      * The prefix to display.
      *
      * @var string|null
@@ -26,11 +31,6 @@ class TextColumn extends Column
      * @var int|null
      */
     protected $length;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'text';
 
     /**
      * {@inheritdoc}

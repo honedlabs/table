@@ -58,7 +58,7 @@ trait HasTable
         if ($attributes !== []) {
             $table = $attributes[0]->newInstance();
 
-            return $table->table;
+            return $table->getTable();
         }
 
         return null;

@@ -9,12 +9,25 @@ use Honed\Core\Interpret;
 
 class DateColumn extends Column
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $type = 'date';
+    
     /**
      * Whether to use diffForHumans.
      *
+     * @var bool|null
+     */
+    protected $diffForHumans;
+
+    /**
+     * Whether to use the date difference by default.
+     *
      * @var bool
      */
-    protected $diffForHumans = false;
+    protected static $useDefaultFormat = false;
 
     /**
      * A format to use for the date.
@@ -24,6 +37,13 @@ class DateColumn extends Column
     protected $format;
 
     /**
+     * The default format to use for the date.
+     *
+     * @var string|null
+     */
+    protected static $useFormat;
+
+    /**
      * The timezone to use for date parsing.
      *
      * @var string|null
@@ -31,9 +51,12 @@ class DateColumn extends Column
     protected $timezone;
 
     /**
-     * {@inheritdoc}
+     * The default timezone to use for date parsing.
+     *
+     * @var string|null
      */
-    protected $type = 'date';
+    protected static $useTimezone;
+
 
     /**
      * {@inheritdoc}

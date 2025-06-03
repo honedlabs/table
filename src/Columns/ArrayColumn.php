@@ -10,6 +10,11 @@ use Illuminate\Support\Arr;
 class ArrayColumn extends Column
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $type = 'array';
+    
+    /**
      * The property to use for the values.
      *
      * @var string|null
@@ -22,11 +27,6 @@ class ArrayColumn extends Column
      * @var string|null
      */
     protected $glue;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'array';
 
     /**
      * {@inheritdoc}

@@ -19,6 +19,7 @@ use Honed\Core\Primitive;
 use Honed\Refine\Concerns\HasQualifier;
 use Honed\Refine\Sort;
 use Honed\Table\Concerns\IsVisible;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -110,14 +111,14 @@ class Column extends Primitive
 
     /**
      * The format to export the column in.
-     *
+     * 
      * @var string|null
      */
     protected $exportFormat;
 
     /**
      * The style to export the column in.
-     *
+     * 
      * @var array<string,mixed>|(\Closure(\PhpOffice\PhpSpreadsheet\Style\Style):void)|null
      */
     protected $exportStyle;
@@ -395,7 +396,7 @@ class Column extends Primitive
 
     /**
      * Set whether, and how, the column should be exported.
-     *
+     * 
      * @param  bool|(\Closure(mixed, TModel):mixed)  $as
      * @param  string|null  $format
      * @param  array<string,mixed>|(\Closure(\PhpOffice\PhpSpreadsheet\Style\Style):void)|null  $style
@@ -418,7 +419,7 @@ class Column extends Primitive
 
     /**
      * Register the callback to be used to export the content of a column.
-     *
+     * 
      * @param  \Closure(mixed, TModel):mixed  $callback
      * @return $this
      */
@@ -446,12 +447,12 @@ class Column extends Primitive
      */
     public function dontExport()
     {
-        return $this->doNotExport();
+        return $this->export(false);
     }
 
     /**
      * Get the exporter for the column.
-     *
+     * 
      * @return bool|\Closure(mixed, TModel):mixed|null
      */
     public function getExporter()
@@ -461,7 +462,7 @@ class Column extends Primitive
 
     /**
      * Determine if this column is exportable.
-     *
+     * 
      * @return bool
      */
     public function exports()
@@ -534,9 +535,46 @@ class Column extends Primitive
         ];
     }
 
+    public function count()
+    {
+        // $this->query(fn (Builder $query) => $query->withCount())
+    }
+
+    public function exists()
+    {
+
+    }
+
+    public function avg()
+    {
+
+    }
+
+    public function average()
+    {
+
+    }
+
+    public function sum()
+    {
+
+    }
+
+    public function min()
+    {
+
+    }
+
+    public function max()
+    {
+
+    }
+    
+
+
     /**
      * Flush the column's global configuration state.
-     *
+     * 
      * @return void
      */
     public static function flushState()

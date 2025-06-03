@@ -16,16 +16,16 @@ class Table
      * @return void
      */
     public function __construct(
-        public string $table
-    ) {}
+        public string $name
+    ) { }
 
     /**
      * Get the table class.
-     *
+     * 
      * @return class-string<\Honed\Table\Table>
      */
     public function getTable()
     {
-        return $this->table;
+        return $this->name;
     }
 }

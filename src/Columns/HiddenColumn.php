@@ -9,15 +9,15 @@ class HiddenColumn extends Column
     /**
      * {@inheritdoc}
      */
+    protected $type = 'hidden';
+    
+    /**
+     * {@inheritdoc}
+     */
     protected $always = true;
 
     /**
      * {@inheritdoc}
      */
     protected $hidden = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'hidden';
 }

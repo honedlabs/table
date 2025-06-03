@@ -9,6 +9,11 @@ use Illuminate\Support\Number;
 class CurrencyColumn extends Column
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $type = 'currency';
+    
+    /**
      * The currency to use.
      *
      * @var string|null
@@ -21,11 +26,6 @@ class CurrencyColumn extends Column
      * @var string|null
      */
     protected $locale;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $type = 'currency';
 
     /**
      * {@inheritdoc}

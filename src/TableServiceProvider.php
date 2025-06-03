@@ -15,7 +15,7 @@ class TableServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services
-     *
+     * 
      * @return void
      */
     public function register()
@@ -30,7 +30,7 @@ class TableServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application services.
-     *
+     * 
      * @return void
      */
     public function boot()
