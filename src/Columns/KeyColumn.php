@@ -10,7 +10,7 @@ class KeyColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'key';
-    
+
     /**
      * {@inheritdoc}
      */

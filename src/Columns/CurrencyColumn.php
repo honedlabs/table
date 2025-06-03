@@ -12,7 +12,7 @@ class CurrencyColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'currency';
-    
+
     /**
      * The currency to use.
      *

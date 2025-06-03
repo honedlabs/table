@@ -10,7 +10,7 @@ class ImageColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'image';
-    
+
     /**
      * The disk to retrieve the image from.
      *
@@ -50,7 +50,7 @@ class ImageColumn extends Column
 
     /**
      * Set the default disk to retrieve images from.
-     * 
+     *
      * @param  string|null  $disk
      * @return void
      */

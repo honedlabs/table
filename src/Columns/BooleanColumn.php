@@ -10,7 +10,7 @@ class BooleanColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'boolean';
-    
+
     /**
      * The label to display when the value evaluates to true.
      *

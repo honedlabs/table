@@ -10,7 +10,7 @@ class CreateEmptyState
      * Create the empty state of the table considering the refiners, filters and search.
      *
      * @template T of \Honed\Table\Table
-     * 
+     *
      * @param  T  $table
      * @param  \Closure(T):T  $next
      * @return T

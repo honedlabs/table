@@ -9,12 +9,11 @@ use Honed\Core\Interpret;
 
 class DateColumn extends Column
 {
-
     /**
      * {@inheritdoc}
      */
     protected $type = 'date';
-    
+
     /**
      * Whether to use diffForHumans.
      *
@@ -56,7 +55,6 @@ class DateColumn extends Column
      * @var string|null
      */
     protected static $useTimezone;
-
 
     /**
      * {@inheritdoc}
