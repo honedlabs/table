@@ -12,7 +12,7 @@ class BadgeColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'badge';
-    
+
     /**
      * How to map the value to a badge variant.
      *
