@@ -280,7 +280,7 @@ class EmptyState extends Primitive
     /**
      * {@inheritdoc}
      */
-    public function toArray()
+    public function toArray($named = [], $typed = [])
     {
         return [
             'title' => $this->getTitle(),

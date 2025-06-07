@@ -13,19 +13,8 @@ class Select
      * Create a new attribute instance.
      *
      * @param  string|array<int, string>  $select
-     * @return void
      */
     public function __construct(
         public string|array $select
-    ) {}
-
-    /**
-     * Get the select value.
-     *
-     * @return string|array<int, string>
-     */
-    public function getSelect()
-    {
-        return $this->select;
-    }
+    ) { }
 }

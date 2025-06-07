@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
-use Honed\Table\Attributes\Table as TableAttribute;
+use Honed\Table\Attributes\UseTable;
 use Honed\Table\Table;
 
 /**
@@ -38,7 +38,7 @@ trait HasTable
             return static::$tableClass::make($before);
         }
 
-        if ($table = static::getTableAttribute()) {
+        if ($table = static::getUseTableAttribute()) {
             return $table::make($before);
         }
 
@@ -50,15 +50,19 @@ trait HasTable
      *
      * @return class-string<\Honed\Table\Table>|null
      */
-    protected static function getTableAttribute()
+    protected static function getUseTableAttribute()
     {
         $attributes = (new \ReflectionClass(static::class))
-            ->getAttributes(TableAttribute::class);
+            ->getAttributes(UseTable::class);
 
         if ($attributes !== []) {
-            $table = $attributes[0]->newInstance();
+            $useTable = $attributes[0]->newInstance();
 
-            return $table->getTable();
+            $table = new $useTable->tableClass;
+
+            $table->guessModelNamesUsing(fn () => static::class);
+
+            return $table;
         }
 
         return null;

@@ -63,7 +63,7 @@ class ColumnMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Tables\Columns';
+        return $rootNamespace.'\Columns';
     }
 
     /**

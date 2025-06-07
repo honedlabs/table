@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
+use Closure;
+
 class ImageColumn extends Column
 {
     /**
      * {@inheritdoc}
      */
     protected $type = 'image';
-
+    
     /**
      * The disk to retrieve the image from.
      *
@@ -21,7 +23,7 @@ class ImageColumn extends Column
     /**
      * The default disk to retrieve the image from.
      *
-     * @var string|null
+     * @var string|\Closure(mixed...):string|null
      */
     protected static $useDisk;
 
@@ -45,17 +47,35 @@ class ImageColumn extends Column
      */
     public function getDisk()
     {
-        return $this->disk ?? static::$useDisk;
+        return $this->disk ??= $this->usesDisk();
     }
 
     /**
      * Set the default disk to retrieve images from.
-     *
-     * @param  string|null  $disk
+     * 
+     * @param  string|\Closure(mixed...):string $disk
      * @return void
      */
-    public static function useDisk($disk)
+    public static function useDisk($disk = 'public')
     {
         static::$useDisk = $disk;
+    }
+
+    /**
+     * Get the default disk to retrieve images from.
+     *
+     * @return string|null
+     */
+    protected function usesDisk()
+    {
+        if (is_null(static::$useDisk)) {
+            return null;
+        }
+
+        if (static::$useDisk instanceof Closure) {
+            static::$useDisk = $this->evaluate($this->useDisk);
+        }
+
+        return static::$useDisk;
     }
 }

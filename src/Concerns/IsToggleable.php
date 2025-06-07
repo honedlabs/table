@@ -22,6 +22,8 @@ trait IsToggleable
      */
     protected $toggle;
 
+    protected static $shouldToggle;
+
     /**
      * The query parameter for which columns to display.
      *
@@ -29,12 +31,17 @@ trait IsToggleable
      */
     protected $columnKey;
 
+    protected static $useColumnKey;
+
     /**
      * Whether the table should remember the columns to display.
      *
      * @var bool|null
      */
     protected $remember;
+
+
+    protected static $shouldRemember;
 
     /**
      * The name of the cookie to use for remembering the columns to display.
@@ -49,6 +56,8 @@ trait IsToggleable
      * @var int|null
      */
     protected $duration;
+
+    protected static $useDuration;
 
     /**
      * Set whether the table should allow the user to toggle which columns are

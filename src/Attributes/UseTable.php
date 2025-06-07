@@ -7,14 +7,14 @@ namespace Honed\Table\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class PerPage
+class UseTable
 {
     /**
      * Create a new attribute instance.
      *
-     * @param  int|array<int, int>  $perPage
+     * @param  class-string<\Honed\Table\Table>  $tableClass
      */
-    public function __construct(
-        public int|array $perPage
-    ) { }
+    public function __construct(public string $tableClass)
+    {
+    }
 }

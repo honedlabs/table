@@ -15,11 +15,10 @@ class KeyNotFoundException extends \Exception
      */
     public function __construct($table)
     {
+        $table = $table instanceof Table ? $table::class : $table;
+
         parent::__construct(
-            \sprintf(
-                'The table [%s] must have a key column or a key property defined.',
-                $table instanceof Table ? $table::class : $table
-            )
+            "The table {$table} must have a key column or a key property defined.",
         );
     }
 

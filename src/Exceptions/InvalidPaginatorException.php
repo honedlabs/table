@@ -16,10 +16,7 @@ class InvalidPaginatorException extends InvalidArgumentException
     public function __construct($paginator)
     {
         parent::__construct(
-            \sprintf(
-                'The provided paginator [%s] is invalid.',
-                $paginator
-            )
+            "The provided paginator {$paginator} is invalid.",
         );
     }
 
