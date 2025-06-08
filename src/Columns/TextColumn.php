@@ -10,7 +10,7 @@ class TextColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'text';
-    
+
     /**
      * The prefix to display.
      *

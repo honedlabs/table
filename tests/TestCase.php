@@ -11,8 +11,8 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
-    use WithWorkbench;
     use RefreshDatabase;
+    use WithWorkbench;
 
     /**
      * Setup the test environment.

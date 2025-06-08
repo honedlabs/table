@@ -12,7 +12,7 @@ class CleanupTable
      * Cleanup the table.
      *
      * @template T of \Honed\Table\Table
-     * 
+     *
      * @param  T  $table
      * @param  \Closure(T):T  $next
      * @return T
