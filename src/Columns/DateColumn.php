@@ -19,7 +19,7 @@ class DateColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'date';
-
+    
     /**
      * Whether to use diffForHumans.
      *
@@ -55,6 +55,7 @@ class DateColumn extends Column
      */
     protected static $useTimezone;
 
+
     /**
      * {@inheritdoc}
      *
@@ -68,7 +69,7 @@ class DateColumn extends Column
 
         if (! $value instanceof CarbonInterface) {
             $value = Interpret::dateOf($value);
-
+            
             if (\is_null($value)) {
                 return $this->getFallback();
             }
@@ -79,7 +80,7 @@ class DateColumn extends Column
         }
 
         $timezone = $this->getTimezone();
-
+        
         if ($timezone) {
             $value = $value->shiftTimezone($timezone);
         }
@@ -150,8 +151,8 @@ class DateColumn extends Column
 
     /**
      * Set the default format to use for formatting dates.
-     *
-     * @param  string|\Closure():string  $format
+     * 
+     * @param string|\Closure():string $format
      * @return void
      */
     public static function useFormat($format = 'Y-m-d H:i:s')
@@ -161,7 +162,7 @@ class DateColumn extends Column
 
     /**
      * Get the default format to use for formatting dates.
-     *
+     * 
      * @return string
      */
     protected function usesFormat()
@@ -198,14 +199,14 @@ class DateColumn extends Column
     public function getTimezone()
     {
         /** @var string|null */
-        return $this->timezone
+        return $this->timezone 
             ??= $this->usesTimezone() ?? Config::get('app.timezone');
     }
 
     /**
      * Set the default timezone for all date columns.
      *
-     * @param  string|\Closure(mixed...):string  $timezone
+     * @param string|\Closure(mixed...):string $timezone
      * @return void
      */
     public static function useTimezone($timezone)

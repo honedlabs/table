@@ -12,7 +12,7 @@ class ImageColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'image';
-
+    
     /**
      * The disk to retrieve the image from.
      *
@@ -52,8 +52,8 @@ class ImageColumn extends Column
 
     /**
      * Set the default disk to retrieve images from.
-     *
-     * @param  string|\Closure(mixed...):string  $disk
+     * 
+     * @param  string|\Closure(mixed...):string $disk
      * @return void
      */
     public static function useDisk($disk = 'public')

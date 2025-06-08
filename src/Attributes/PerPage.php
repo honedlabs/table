@@ -16,5 +16,5 @@ class PerPage
      */
     public function __construct(
         public int|array $perPage
-    ) {}
+    ) { }
 }

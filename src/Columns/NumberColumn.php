@@ -12,7 +12,7 @@ class NumberColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'number';
-
+    
     /**
      * The number of decimal places to display.
      *

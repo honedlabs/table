@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Workbench\App\Models;
 
+use Workbench\Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Workbench\Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {

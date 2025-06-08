@@ -13,7 +13,7 @@ class ArrayColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'array';
-
+    
     /**
      * The property to use for the values.
      *
