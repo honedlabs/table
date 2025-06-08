@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
+use Workbench\App\Enums\Status;
+use Workbench\App\Models\Product;
 use Honed\Action\BulkAction;
 use Honed\Action\InlineAction;
 use Honed\Action\PageAction;
@@ -18,8 +20,6 @@ use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Columns\NumberColumn;
 use Honed\Table\Columns\TextColumn;
 use Honed\Table\Table;
-use Workbench\App\Enums\Status;
-use Workbench\App\Models\Product;
 
 class ProductTable extends Table
 {

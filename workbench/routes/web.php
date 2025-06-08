@@ -15,3 +15,4 @@ Route::get('/products/{product}', fn () => view('welcome'))
 
 Route::get('/products/create', fn () => view('welcome'))
     ->name('products.create');
+    

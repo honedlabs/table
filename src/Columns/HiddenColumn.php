@@ -10,7 +10,7 @@ class HiddenColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'hidden';
-
+    
     /**
      * {@inheritdoc}
      */
