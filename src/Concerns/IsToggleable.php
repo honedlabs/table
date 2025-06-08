@@ -40,7 +40,6 @@ trait IsToggleable
      */
     protected $remember;
 
-
     protected static $shouldRemember;
 
     /**

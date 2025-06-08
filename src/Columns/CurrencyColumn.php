@@ -13,7 +13,7 @@ class CurrencyColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'currency';
-    
+
     /**
      * The currency to use.
      *
@@ -98,7 +98,7 @@ class CurrencyColumn extends Column
     /**
      * Set the default currency to use.
      *
-     * @param  string|\Closure(mixed...):string $currency
+     * @param  string|\Closure(mixed...):string  $currency
      */
     public static function useCurrency($currency)
     {
@@ -149,7 +149,7 @@ class CurrencyColumn extends Column
     /**
      * Set the default locale to use.
      *
-     * @param  string|\Closure(mixed...):string $locale
+     * @param  string|\Closure(mixed...):string  $locale
      */
     public static function useLocale($locale)
     {

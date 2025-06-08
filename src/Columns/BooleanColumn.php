@@ -12,7 +12,7 @@ class BooleanColumn extends Column
      * {@inheritdoc}
      */
     protected $type = 'boolean';
-    
+
     /**
      * The label to display when the value evaluates to true.
      *
@@ -75,7 +75,7 @@ class BooleanColumn extends Column
     /**
      * Set the default label to use for the true value.
      *
-     * @param  string|\Closure(mixed...):string $trueLabel
+     * @param  string|\Closure(mixed...):string  $trueLabel
      * @return void
      */
     public static function useTrueLabel($trueLabel)
@@ -127,7 +127,7 @@ class BooleanColumn extends Column
     /**
      * Set the default label to use for the false value.
      *
-     * @param  string|\Closure(mixed...):string $falseLabel
+     * @param  string|\Closure(mixed...):string  $falseLabel
      * @return void
      */
     public static function useFalseLabel($falseLabel)
@@ -169,8 +169,8 @@ class BooleanColumn extends Column
     /**
      * Set the default labels to use for the true and false values.
      *
-     * @param  string|\Closure(mixed...):string $true
-     * @param  string|\Closure(mixed...):string $false
+     * @param  string|\Closure(mixed...):string  $true
+     * @param  string|\Closure(mixed...):string  $false
      * @return void
      */
     public static function useLabels($true = 'True', $false = 'False')
