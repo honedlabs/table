@@ -49,6 +49,14 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Create testbench directories
+        run: |
+          mkdir -p @testbench/bootstrap/cache
+          mkdir -p @testbench/storage/framework/cache
+          mkdir -p @testbench/storage/framework/sessions
+          mkdir -p @testbench/storage/framework/views
+          mkdir -p @testbench/storage/logs
+
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.os == 'windows-latest' && '^^^' || '' }}${{ matrix.carbon }}" --no-interaction --no-update
