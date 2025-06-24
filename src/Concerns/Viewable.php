@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Honed\Table\Contracts\IsViewable;
 use Honed\Table\Facades\Views;
 use Honed\Table\PendingViewInteraction;
 
@@ -39,7 +40,7 @@ trait Viewable
      */
     public function isViewable()
     {
-        return (bool) $this->viewable;
+        return (bool) $this->viewable || $this instanceof IsViewable;
     }
 
     /**
@@ -50,9 +51,9 @@ trait Viewable
     public function getViews()
     {
         return match (true) {
-            ! $this->viewable => null,
-            $this->viewable === true => Views::for(),
+            ! $this->isViewable() => null,
             is_array($this->viewable) => Views::for($this->viewable),
+            default => Views::for(),
         };
     }
 

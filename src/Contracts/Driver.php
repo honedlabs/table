@@ -9,7 +9,7 @@ interface Driver
     /**
      * Retrieve the view for the given table, name, and scope from storage.
      *
-     * @param  string  $table
+     * @param  mixed  $table
      * @param  string  $name
      * @param  mixed  $scope
      * @return object|null
@@ -19,7 +19,7 @@ interface Driver
     /**
      * Retrieve the views for the given table and scopes from storage.
      *
-     * @param  string  $table
+     * @param  mixed  $table
      * @param  array<int, mixed>  $scopes
      * @return array<int, object>
      */
@@ -28,18 +28,18 @@ interface Driver
     /**
      * Set the view for the given table and scope.
      *
-     * @param  string  $table
+     * @param  mixed  $table
      * @param  string  $name
      * @param  mixed  $scope
-     * @param  array<string, mixed>  $value
+     * @param  mixed  $view
      * @return void
      */
-    public function set($table, $name, $scope, $value);
+    public function set($table, $name, $scope, $view);
 
     /**
      * Delete the view for the given table and scope from storage.
      *
-     * @param  string  $table
+     * @param  mixed  $table
      * @param  string  $name
      * @param  mixed  $scope
      * @return void
@@ -49,7 +49,7 @@ interface Driver
     /**
      * Purge all views for the given table.
      *
-     * @param  string|array<int, string>|null  $table
+     * @param  mixed|array<int, mixed>|null  $table
      * @return void
      */
     public function purge($table = null);

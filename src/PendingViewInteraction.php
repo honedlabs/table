@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Table\Facades\Views;
-
 class PendingViewInteraction
 {
     /**
      * The view driver.
      *
-     * @var Contracts\Driver
+     * @var Drivers\Decorator
      */
     protected $driver;
 
@@ -25,7 +23,7 @@ class PendingViewInteraction
     /**
      * Create a new pending view interaction.
      *
-     * @param  Contracts\Driver  $driver
+     * @param  Drivers\Decorator  $driver
      */
     public function __construct($driver)
     {
@@ -60,13 +58,11 @@ class PendingViewInteraction
     /**
      * Load the pending view interaction for the given table.
      *
-     * @param  Table|class-string<Table>  $table
+     * @param  mixed  $table
      * @return array<int, object>
      */
     public function load($table)
     {
-        $views = $this->driver->list(Views::serializeTable($table), $this->scope);
-
-        return $views;
+        return $this->driver->list($table, $this->scope);
     }
 }

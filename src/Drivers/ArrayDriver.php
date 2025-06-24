@@ -47,15 +47,13 @@ class ArrayDriver implements Driver
      *
      * @param  string  $table
      * @param  string  $name
-     * @param  mixed  $scope
+     * @param  string  $scope
      * @return object|null
      */
     public function get($table, $name, $scope)
     {
-        $scopeKey = Views::serializeScope($scope);
-
-        if (isset($this->resolved[$table][$scopeKey][$name])) {
-            $view = $this->resolved[$table][$scopeKey][$name];
+        if (isset($this->resolved[$table][$scope][$name])) {
+            $view = $this->resolved[$table][$scope][$name];
 
             return (object) [
                 'name' => $name,
@@ -72,20 +70,15 @@ class ArrayDriver implements Driver
      * Retrieve the views for the given table and scopes from storage.
      *
      * @param  string  $table
-     * @param  mixed|array<int, mixed>  $scopes
+     * @param  string|array<int, string>  $scopes
      * @return array<int, object>
      */
     public function list($table, $scopes)
     {
-        $scopes = array_map(
-            static fn ($scope) => Views::serializeScope($scope),
-            (array) $scopes
-        );
-
         $views = [];
 
-        foreach ($this->resolved[$table] ?? [] as $scopeKeys => $scoped) {
-            if (in_array($scopeKeys, $scopes)) {
+        foreach ($this->resolved[$table] ?? [] as $scope => $scoped) {
+            if (in_array($scope, (array) $scopes)) {
                 foreach ($scoped as $name => $view) {
                     $views[] = (object) [
                         'name' => $name,
@@ -103,15 +96,13 @@ class ArrayDriver implements Driver
      *
      * @param  string  $table
      * @param  string  $name
-     * @param  mixed  $scope
-     * @param  array<string, mixed>  $value
+     * @param  string  $scope
+     * @param  array<string, mixed>  $view
      * @return void
      */
-    public function set($table, $name, $scope, $value)
+    public function set($table, $name, $scope, $view)
     {
-        $scopeKey = Views::serializeScope($scope);
-
-        $this->resolved[$table][$scopeKey][$name] = $value;
+        $this->resolved[$table][$scope][$name] = $view;
     }
 
     /**
@@ -119,14 +110,12 @@ class ArrayDriver implements Driver
      *
      * @param  string  $table
      * @param  string  $name
-     * @param  mixed  $scope
+     * @param  string  $scope
      * @return void
      */
     public function delete($table, $name, $scope)
     {
-        $scopeKey = Views::serializeScope($scope);
-
-        unset($this->resolved[$table][$scopeKey][$name]);
+        unset($this->resolved[$table][$scope][$name]);
     }
 
     /**
@@ -140,11 +129,8 @@ class ArrayDriver implements Driver
         if ($table === null) {
             $this->resolved = [];
         } else {
-            /** @var array<int, string> */
-            $tables = is_array($table) ? $table : func_get_args();
-
-            foreach ($tables as $table) {
-                unset($this->resolved[$table]);
+            foreach ((array) $table as $t) {
+                unset($this->resolved[$t]);
             }
         }
     }

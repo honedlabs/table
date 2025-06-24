@@ -342,8 +342,8 @@ class Table extends Primitive implements HandlesOperations, NullsAsUndefined, Re
     {
         return [
             'inline' => filled($this->getInlineOperations()),
-            'bulk' => $this->getBulkOperations(),
-            'page' => $this->getPageOperations(),
+            'bulk' => $this->bulkOperationsToArray(),
+            'page' => $this->pageOperationsToArray(),
         ];
     }
 

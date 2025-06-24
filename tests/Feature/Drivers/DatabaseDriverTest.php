@@ -10,7 +10,7 @@ use Workbench\App\Tables\UserTable;
 
 beforeEach(function () {
     /** @var Honed\Table\Drivers\DatabaseDriver */
-    $this->driver = Views::store('database');
+    $this->driver = Views::store('database')->getDriver();
 
     $this->table = Views::serializeTable(ProductTable::make());
 
@@ -41,6 +41,32 @@ it('gets first matching view', function () {
 
 it('lists views', function () {
     $views = $this->driver->list($this->table, $this->scope);
+
+    expect($views)
+        ->toBeArray()
+        ->toHaveCount(1)
+        ->{0}
+        ->scoped(fn ($view) => $view
+            ->name->toBe('Filter view')
+            ->view->toBe(json_encode(['name' => 'test']))
+        );
+});
+
+it('gets stored views', function () {
+    $views = $this->driver->stored($this->table);
+
+    expect($views)
+        ->toBeArray()
+        ->toHaveCount(1)
+        ->{0}
+        ->scoped(fn ($view) => $view
+            ->name->toBe('Filter view')
+            ->view->toBe(json_encode(['name' => 'test']))
+        );
+});
+
+it('gets scoped views', function () {
+    $views = $this->driver->scoped($this->scope);
 
     expect($views)
         ->toBeArray()
@@ -87,7 +113,6 @@ it('inserts a view', function () {
         'name' => 'Search view',
         'table' => $this->table,
         'scope' => $this->scope,
-        'view' => json_encode(['name' => 'created']),
     ]);
 });
 

@@ -70,12 +70,14 @@ class TableMakeCommand extends GeneratorCommand
     }
 
     /**
+     * Get the console command options
+     *
      * @return array<int,array<int,mixed>>
      */
-    protected function getOptions(): array
+    protected function getOptions()
     {
         return [
-            ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the table already exists'],
+            ['force', null, InputOption::VALUE_NONE, 'Create the class even if the table already exists'],
         ];
     }
 

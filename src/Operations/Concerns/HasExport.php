@@ -7,7 +7,7 @@ namespace Honed\Table\Operations\Concerns;
 use Closure;
 use Maatwebsite\Excel\Excel;
 
-trait Exportable
+trait HasExport
 {
     /**
      * The name of the file to be generated.
@@ -28,7 +28,7 @@ trait Exportable
      *
      * @var bool
      */
-    protected $download = true;
+    protected $download = false;
 
     /**
      * Whether the export is stored on disk.

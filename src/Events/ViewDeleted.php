@@ -6,16 +6,16 @@ namespace Honed\Table\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 
-class ViewsPurged
+class ViewDeleted
 {
     use Dispatchable;
 
     /**
-     * Create a new views purged event.
-     *
-     * @param  array<int, string>|null  $tables
+     * Create a new view deleted event.
      */
     public function __construct(
-        public ?array $tables = null,
+        public string $table,
+        public string $name,
+        public string $scope,
     ) {}
 }

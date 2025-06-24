@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Honed\Table\Facades\Views;
 use Illuminate\Http\Request;
 use Workbench\App\Enums\Status;
 use Workbench\App\Models\Product;
@@ -33,6 +34,10 @@ beforeEach(function () {
     ]);
 
     $this->table->request($this->request);
+
+    Views::set($this->table::class, 'Filter view', null, [
+        'name' => 'joshua',
+    ]);
 });
 
 it('builds class', function () {
@@ -117,4 +122,7 @@ it('builds class', function () {
                 'direction' => 'desc',
             ])
         );
+
+    // expect($this->table->toArray())
+    //     ->dd();
 });

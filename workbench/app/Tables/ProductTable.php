@@ -20,6 +20,7 @@ use Honed\Table\Contracts\IsOrderable;
 use Honed\Table\Contracts\IsSelectable;
 use Honed\Table\Contracts\IsToggleable;
 use Honed\Table\Contracts\IsViewable;
+use Honed\Table\Operations\Export;
 use Honed\Table\Table;
 use Workbench\App\Enums\Status;
 use Workbench\App\Models\Product;
@@ -80,8 +81,8 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                     ->allow(false),
             ])
             ->persistColumnsInCookie()
-            // ->perPage([10, 25, 50])
-            // ->defaultPerPage(15)
+            ->perPage([10, 25, 50])
+            ->defaultPerPage(15)
             ->filters([
                 Filter::make('name')->operator('like'),
 
@@ -151,6 +152,10 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                 BulkOperation::make('delete')
                     ->action(fn ($record) => $record->delete())
                     ->allow(false),
+
+                Export::make('export')
+                    ->download()
+                    ->bulk(),
 
                 PageOperation::make('create')
                     ->route('products.create'),

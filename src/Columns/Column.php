@@ -106,14 +106,6 @@ class Column extends Primitive implements NullsAsUndefined
     }
 
     /**
-     * @experimental
-     */
-    public function getResolvedState()
-    {
-        return $this->state;
-    }
-
-    /**
      * Get the parameter for the column.
      *
      * @return string
@@ -240,7 +232,7 @@ class Column extends Primitive implements NullsAsUndefined
             $this->state($this->getName());
         }
 
-        return $this->apply($this->getResolvedState());
+        return $this->apply($this->getState());
     }
 
     /**

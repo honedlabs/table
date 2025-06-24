@@ -90,6 +90,16 @@ it('requires a column when using aggregate relationships', function () {
     Column::make('users_avg_age')->avg('users');
 })->throws(InvalidArgumentException::class);
 
+it('creates a value', function () {
+    expect($this->column->value(null))
+        ->toEqual([null, false]);
+
+    $user = User::factory()->create();
+
+    expect($this->column->value($user))
+        ->toEqual([$user->name, false]);
+});
+
 it('has array representation', function () {
     expect($this->column->toArray())
         ->toBeArray()

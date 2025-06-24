@@ -30,9 +30,9 @@ it('sets file type', function () {
 
 it('can be downloaded', function () {
     expect($this->export)
-        ->isDownload()->toBeTrue()
-        ->download(false)->toBe($this->export)
-        ->isDownload()->toBeFalse();
+        ->isDownload()->toBeFalse()
+        ->download()->toBe($this->export)
+        ->isDownload()->toBeTrue();
 });
 
 it('can be stored', function () {

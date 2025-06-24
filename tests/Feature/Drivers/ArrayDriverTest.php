@@ -9,7 +9,7 @@ use Workbench\App\Tables\UserTable;
 
 beforeEach(function () {
     /** @var Honed\Table\Drivers\ArrayDriver */
-    $this->driver = Views::store('array');
+    $this->driver = Views::store('array')->getDriver();
 
     $this->table = Views::serializeTable(ProductTable::make());
 
@@ -17,7 +17,9 @@ beforeEach(function () {
 
     $this->scope = Views::serializeScope($this->user);
 
-    $this->driver->set($this->table, 'Filter view', $this->scope, ['name' => 'test']);
+    $this->driver->set(
+        $this->table, 'Filter view', $this->scope, ['name' => 'test']
+    );
 });
 
 it('gets first matching view', function () {
@@ -37,10 +39,11 @@ it('lists views', function () {
     expect($views)
         ->toBeArray()
         ->toHaveCount(1)
-        ->{0}->scoped(fn ($view) => $view
-        ->toBeObject()
-        ->name->toBe('Filter view')
-        ->view->toEqual(['name' => 'test'])
+        ->{0}
+        ->scoped(fn ($view) => $view
+            ->toBeObject()
+            ->name->toBe('Filter view')
+            ->view->toEqual(['name' => 'test'])
         );
 });
 
