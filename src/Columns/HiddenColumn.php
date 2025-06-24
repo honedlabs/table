@@ -7,17 +7,14 @@ namespace Honed\Table\Columns;
 class HiddenColumn extends Column
 {
     /**
-     * {@inheritdoc}
+     * Provide the instance with any necessary setup.
+     *
+     * @return void
      */
-    protected $type = 'hidden';
+    protected function setUp()
+    {
+        parent::setUp();
 
-    /**
-     * {@inheritdoc}
-     */
-    protected $always = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $hidden = true;
+        $this->hidden();
+    }
 }

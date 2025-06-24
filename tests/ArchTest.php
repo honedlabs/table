@@ -36,4 +36,4 @@ arch('commands')
 
 arch('exceptions')
     ->expect('Honed\Table\Exceptions')
-    ->toExtend(\Exception::class);
+    ->toExtend(Exception::class);

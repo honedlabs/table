@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Honed\Table\Commands\ColumnMakeCommand;
+use Honed\Table\Commands\PurgeCommand;
 use Honed\Table\Commands\TableMakeCommand;
-use Honed\Table\Contracts\ExportsTable;
 use Honed\Table\Http\Controllers\TableController;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+
+use function trim;
 
 class TableServiceProvider extends ServiceProvider
 {
@@ -22,11 +23,6 @@ class TableServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/table.php', 'table');
-
-        /** @var string */
-        $exporter = Config::get('table.exporter');
-
-        $this->app->bind(ExportsTable::class, $exporter);
     }
 
     /**
@@ -42,8 +38,9 @@ class TableServiceProvider extends ServiceProvider
             $this->offerPublishing();
 
             $this->commands([
-                TableMakeCommand::class,
                 ColumnMakeCommand::class,
+                PurgeCommand::class,
+                TableMakeCommand::class,
             ]);
         }
     }
@@ -62,6 +59,10 @@ class TableServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/table.php' => config_path('table.php'),
         ], 'table-config');
+
+        $this->publishes([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'table-migrations');
     }
 
     /**
@@ -72,12 +73,12 @@ class TableServiceProvider extends ServiceProvider
     protected function registerMacros()
     {
         Router::macro('table', function () {
-            /** @var \Illuminate\Routing\Router $this */
+            /** @var Router $this */
 
             /** @var string $endpoint */
             $endpoint = config('table.endpoint', 'table');
 
-            $endpoint = \trim($endpoint, '/');
+            $endpoint = trim($endpoint, '/');
 
             $methods = ['post', 'patch', 'put'];
 

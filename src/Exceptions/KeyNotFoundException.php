@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Honed\Table\Exceptions;
 
+use Exception;
 use Honed\Table\Table;
 
-class KeyNotFoundException extends \Exception
+class KeyNotFoundException extends Exception
 {
     /**
      * Create a new key not found exception.
      *
-     * @param  \Honed\Table\Table|class-string<\Honed\Table\Table>  $table
+     * @param  Table|class-string<Table>  $table
      */
     public function __construct($table)
     {
@@ -25,10 +26,10 @@ class KeyNotFoundException extends \Exception
     /**
      * Throw a new key not found exception.
      *
-     * @param  class-string<\Honed\Table\Table>  $table
+     * @param  class-string<Table>  $table
      * @return never
      *
-     * @throws \Honed\Table\Exceptions\KeyNotFoundException
+     * @throws KeyNotFoundException
      */
     public static function throw($table)
     {

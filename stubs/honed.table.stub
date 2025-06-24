@@ -7,9 +7,9 @@ namespace {{ namespace }};
 use Honed\Action\BulkAction;
 use Honed\Action\PageAction;
 use Honed\Action\InlineAction;
-use Honed\Refine\Filter;
-use Honed\Refine\Sort;
-use Honed\Refine\Search;
+use Honed\Refine\Filters\Filter;
+use Honed\Refine\Sorts\Sort;
+use Honed\Refine\Searches\Search;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Table;
@@ -26,98 +26,13 @@ use Honed\Table\Contracts\ShouldSelect;
 class {{ class }} extends Table
 {
     /**
-     * Provide the table with any necessary setup
+     * Define the table.
      *
-     * @return void
+     * @param  $this  $table
+     * @return $this
      */
-    public function setUp()
+    protected function definition(Table $table): Table
     {
-        //
-    }
-
-    /**
-     * Define the database resource to use.
-     * 
-     * @return TBuilder|TModel|class-string<TModel>
-     */
-    public function defineResource()
-    {
-        // return Model::query();
-    }
-
-    /**
-     * Define the columns to apply.
-     * 
-     * @return array<int, \Honed\Table\Columns\Column<TModel, TBuilder>>
-     */
-    public function defineColumns()
-    {
-        /** @var array<int, \Honed\Table\Columns\Column<TModel, TBuilder>> */
-        return [
-            KeyColumn::make('id'),
-        ];
-    }
-
-    /**
-     * Define the filters available to refine the query.
-     * 
-     * @return array<int, \Honed\Refine\Filter<TModel, TBuilder>>
-     */
-    public function defineFilters()
-    {
-        /** @var array<int, \Honed\Refine\Filter<TModel, TBuilder>> */
-        return [
-            //
-        ];
-    }
-
-    /**
-     * Define the sorts available to order the records.
-     * 
-     * @return array<int, \Honed\Refine\Sort<TModel, TBuilder>>
-     */
-    public function defineSorts()
-    {
-        /** @var array<int, \Honed\Refine\Sort<TModel, TBuilder>> */
-        return [
-            //
-        ];
-    }
-
-    /**
-     * Define the columns to search on.
-     * 
-     * @return array<int, \Honed\Refine\Search<TModel, TBuilder>>
-     */
-    public function defineSearches()
-    {
-        /** @var array<int, \Honed\Refine\Search<TModel, TBuilder>> */
-        return [
-            //
-        ];
-    }
-
-    /**
-     * Define the actions available on the records, or the page itself.
-     * 
-     * @return array<int, \Honed\Action\Action>
-     */
-    public function defineActions()
-    {
-        return [
-
-        ];
-    }
-
-    /**
-     * Define the empty state configuration to be displayed when the table is
-     * not displaying any records.
-     *
-     * @param \Honed\Table\EmptyState $state
-     * @return \Honed\Table\EmptyState|void
-     */
-    public function defineEmptyState($state)
-    {
-        // $state->title()
+        return $table;
     }
 }

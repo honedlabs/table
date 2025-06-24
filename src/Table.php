@@ -4,130 +4,69 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Action\Concerns\HasActions;
-use Honed\Action\Concerns\HasEncoder;
-use Honed\Action\Concerns\HasEndpoint;
-use Honed\Action\Contracts\Handles;
+use Closure;
+use Honed\Action\Concerns\CanHandleOperations;
+use Honed\Action\Contracts\HandlesOperations;
 use Honed\Action\Handler;
+use Honed\Action\Handlers\BatchHandler;
 use Honed\Core\Concerns\HasMeta;
-use Honed\Refine\Pipelines\AfterRefining;
-use Honed\Refine\Pipelines\BeforeRefining;
-use Honed\Refine\Refine;
+use Honed\Core\Contracts\NullsAsUndefined;
+use Honed\Core\Primitive;
+use Honed\Refine\Concerns\CanBeRefined;
+use Honed\Refine\Contracts\RefinesData;
+use Honed\Refine\Pipes\AfterRefining;
+use Honed\Refine\Pipes\BeforeRefining;
+use Honed\Refine\Pipes\FilterQuery;
+use Honed\Refine\Pipes\PersistData;
+use Honed\Refine\Pipes\SearchQuery;
+use Honed\Refine\Pipes\SortQuery;
+use Honed\Refine\Stores\CookieStore;
+use Honed\Refine\Stores\SessionStore;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\HasColumns;
-use Honed\Table\Concerns\HasPagination;
-use Honed\Table\Concerns\IsToggleable;
-use Honed\Table\Contracts\ShouldSelect;
+use Honed\Table\Concerns\HasEmptyState;
+use Honed\Table\Concerns\HasRecords;
+use Honed\Table\Concerns\Orderable;
+use Honed\Table\Concerns\Paginable;
+use Honed\Table\Concerns\Selectable;
+use Honed\Table\Concerns\Toggleable;
+use Honed\Table\Concerns\Viewable;
 use Honed\Table\Exceptions\KeyNotFoundException;
-use Honed\Table\Pipelines\CleanupTable;
-use Honed\Table\Pipelines\CreateEmptyState;
-use Honed\Table\Pipelines\Paginate;
-use Honed\Table\Pipelines\QueryColumns;
-use Honed\Table\Pipelines\RefineFilters;
-use Honed\Table\Pipelines\RefineSearches;
-use Honed\Table\Pipelines\RefineSorts;
-use Honed\Table\Pipelines\SelectColumns;
-use Honed\Table\Pipelines\ToggleColumns;
-use Honed\Table\Pipelines\TransformRecords;
+use Honed\Table\Pipes\CreateEmptyState;
+use Honed\Table\Pipes\Paginate;
+use Honed\Table\Pipes\PrepareColumns;
+use Honed\Table\Pipes\Query;
+use Honed\Table\Pipes\Select;
+use Honed\Table\Pipes\Toggle;
+use Honed\Table\Pipes\TransformRecords;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\UrlRoutable;
-use Illuminate\Pipeline\Pipeline;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
+use Throwable;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  *
- * @extends Refine<TModel, TBuilder>
+ * @extends Primitive<string, mixed>
  */
-class Table extends Refine implements Handles, UrlRoutable
+class Table extends Primitive implements HandlesOperations, NullsAsUndefined, RefinesData
 {
-    /** @use HasActions<TModel, TBuilder> */
-    use HasActions;
-
-    /** @use HasColumns<TModel, TBuilder> */
+    use CanBeRefined;
+    use CanHandleOperations;
     use HasColumns;
-
-    use HasEncoder;
-    use HasEndpoint;
+    use HasEmptyState;
     use HasMeta;
-
-    /** @use HasPagination<TModel, TBuilder> */
-    use HasPagination {
-        getPageKey as protected getBasePageKey;
-        getRecordKey as protected getBaseRecordKey;
-    }
-
-    /** @use IsToggleable<TModel, TBuilder> */
-    use IsToggleable {
-        getColumnKey as protected getBaseColumnKey;
-    }
-
-    /**
-     * The unique identifier column for the table.
-     *
-     * @var string|null
-     */
-    protected $key;
-
-    /**
-     * The table records.
-     *
-     * @var array<int,mixed>
-     */
-    protected $records = [];
-
-    /**
-     * The pagination data of the table.
-     *
-     * @var array<string,mixed>
-     */
-    protected $paginationData = [];
-
-    /**
-     * Whether the model should be serialized per record.
-     *
-     * @var bool|null
-     */
-    protected $serialize;
-
-    /**
-     * Whether the model attributes should be serialized by default.
-     *
-     * @var bool
-     */
-    protected static $shouldSerialize = false;
-
-    /**
-     * The empty state of the table.
-     *
-     * @var \Honed\Table\EmptyState|null
-     */
-    protected $emptyState;
-
-    /**
-     * Whether to do column selection.
-     *
-     * @var bool|null
-     */
-    protected $select;
-
-    /**
-     * Whether to do column selection by default.
-     *
-     * @var bool
-     */
-    protected static $shouldSelect = false;
-
-    /**
-     * The columns to always be selected.
-     *
-     * @var array<int,string>
-     */
-    protected $selects = [];
+    use HasRecords;
+    use Orderable;
+    use Paginable;
+    use Selectable;
+    use Toggleable;
+    use Viewable;
 
     /**
      * The default namespace where tables reside.
@@ -137,306 +76,55 @@ class Table extends Refine implements Handles, UrlRoutable
     public static $namespace = 'App\\Tables\\';
 
     /**
+     * The identifier to use for evaluation.
+     *
+     * @var string
+     */
+    protected $evaluationIdentifier = 'table';
+
+    /**
+     * The unique identifier key for table records.
+     *
+     * @var string|null
+     */
+    protected $key;
+
+    /**
+     * The store to use for persisting the toggled columns.
+     *
+     * @var bool|string|null
+     */
+    protected $persistColumns = null;
+
+    /**
      * How to resolve the table for the given model name.
      *
-     * @var (\Closure(class-string):class-string<\Honed\Table\Table>)|null
+     * @var (Closure(class-string<\Illuminate\Database\Eloquent\Model>):class-string<Table>)|null
      */
     protected static $tableNameResolver;
 
     /**
      * Create a new table instance.
+     */
+    public function __construct(Request $request)
+    {
+        parent::__construct();
+
+        $this->request($request);
+
+        $this->definition($this);
+    }
+
+    /**
+     * Create a new table instance.
      *
-     * @param  \Closure(TBuilder):void|null  $before
+     * @param  Closure(TBuilder):void|null  $before
      * @return static
      */
     public static function make($before = null)
     {
         return resolve(static::class)
-            ->before($before);
-    }
-
-    /**
-     * Build the table. Alias for `refine`.
-     *
-     * @return $this
-     */
-    public function build()
-    {
-        return $this->refine();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function baseClass()
-    {
-        return Table::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRouteKeyName()
-    {
-        return 'table';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function handle($request)
-    {
-        if ($this->isntActionable()) {
-            abort(404);
-        }
-
-        try {
-            return Handler::make(
-                $this->getResource(),
-                $this->getActions(),
-                $this->getKey()
-            )->handle($request);
-        } catch (\RuntimeException $e) {
-            abort(404);
-        }
-    }
-
-    /**
-     * Set the record key to use.
-     *
-     * @param  string  $key
-     * @return $this
-     */
-    public function key($key)
-    {
-        $this->key = $key;
-
-        return $this;
-    }
-
-    /**
-     * Get the unique identifier key for table records.
-     *
-     * @return string
-     *
-     * @throws \Honed\Table\Exceptions\KeyNotFoundException
-     */
-    public function getKey()
-    {
-        if (isset($this->key)) {
-            return $this->key;
-        }
-
-        $keyColumn = Arr::first(
-            $this->getColumns(),
-            static fn (Column $column): bool => $column->isKey()
-        );
-
-        if ($keyColumn) {
-            return $keyColumn->getName();
-        }
-
-        KeyNotFoundException::throw(static::class);
-    }
-
-    /**
-     * Set whether the model attributes should serialized alongside columns.
-     *
-     * @param  bool|null  $serialize
-     * @return $this
-     */
-    public function serializes($serialize = true)
-    {
-        $this->serialize = $serialize;
-
-        return $this;
-    }
-
-    /**
-     * Get whether the model should be serialized per record.
-     *
-     * @return bool
-     */
-    public function isSerialized()
-    {
-        if (isset($this->serialize)) {
-            return $this->serialize;
-        }
-
-        return false; // TODO
-    }
-
-    /**
-     * Set the records for the table.
-     *
-     * @param  array<int,mixed>  $records
-     * @return void
-     */
-    public function setRecords($records)
-    {
-        $this->records = $records;
-    }
-
-    /**
-     * Get the records from the table.
-     *
-     * @return array<int,mixed>
-     */
-    public function getRecords()
-    {
-        return $this->records;
-    }
-
-    /**
-     * Set the pagination data for the table.
-     *
-     * @param  array<string,mixed>  $paginationData
-     * @return void
-     */
-    public function setPaginationData($paginationData)
-    {
-        $this->paginationData = $paginationData;
-    }
-
-    /**
-     * Get the pagination data from the table.
-     *
-     * @return array<string,mixed>
-     */
-    public function getPaginationData()
-    {
-        return $this->paginationData;
-    }
-
-    /**
-     * Set the empty state of the table.
-     *
-     * @param  \Honed\Table\EmptyState|string|\Closure(\Honed\Table\EmptyState):mixed  $message
-     * @param  string|null  $title
-     * @return $this
-     */
-    public function withEmptyState($message, $title = null)
-    {
-        $emptyState = $this->getEmptyState();
-
-        if (\is_string($message)) {
-            $emptyState->message($message)->title($title);
-        } elseif ($message instanceof \Closure) {
-            $message($emptyState);
-        } else {
-            $this->emptyState = $message;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get the empty state of the table.
-     *
-     * @return \Honed\Table\EmptyState
-     */
-    public function getEmptyState()
-    {
-        return $this->emptyState ??= EmptyState::make();
-    }
-
-    /**
-     * Define the empty state of the table.
-     *
-     * @param  \Honed\Table\EmptyState  $emptyState
-     * @return void
-     */
-    public function emptyState($emptyState)
-    {
-        //
-    }
-
-    /**
-     * Set whether to do column selection.
-     *
-     * @param  bool  $select
-     * @return $this
-     */
-    public function select($select = true)
-    {
-        $this->select = $select;
-
-        return $this;
-    }
-
-    /**
-     * Determine whether to do column selection.
-     *
-     * @return bool
-     */
-    public function isSelectable()
-    {
-        if (isset($this->select)) {
-            return $this->select;
-        }
-
-        if ($this instanceof ShouldSelect) {
-            return true;
-        }
-
-        return false; // TODO
-    }
-
-    /**
-     * Set the columns to always have selected.
-     *
-     * @param  string|iterable<int,string>  $selects
-     * @return $this
-     */
-    public function selects(...$selects)
-    {
-        $this->select();
-
-        $selects = Arr::flatten($selects);
-
-        $this->selects = \array_merge($this->selects, $selects);
-
-        return $this;
-    }
-
-    /**
-     * Get the columns to always have selected.
-     *
-     * @return array<int,string>
-     */
-    public function getSelects()
-    {
-        return $this->selects;
-    }
-
-    /**
-     * Get the query parameter for the page number.
-     *
-     * @return string
-     */
-    public function getPageKey()
-    {
-        return $this->formatScope($this->getBasePageKey());
-    }
-
-    /**
-     * Get the query parameter for the number of records to show per page.
-     *
-     * @return string
-     */
-    public function getRecordKey()
-    {
-        return $this->formatScope($this->getBaseRecordKey());
-    }
-
-    /**
-     * Get the query parameter for which columns to display.
-     *
-     * @return string
-     */
-    public function getColumnKey()
-    {
-        return $this->formatScope($this->getBaseColumnKey());
+            ->when($before, fn ($table, $before) => $table->before($before));
     }
 
     /**
@@ -445,8 +133,8 @@ class Table extends Refine implements Handles, UrlRoutable
      * @template TClass of \Illuminate\Database\Eloquent\Model
      *
      * @param  class-string<TClass>  $modelName
-     * @param  \Closure|null  $before
-     * @return \Honed\Table\Table<TClass>
+     * @param  Closure|null  $before
+     * @return Table<TClass>
      */
     public static function tableForModel($modelName, $before = null)
     {
@@ -458,8 +146,8 @@ class Table extends Refine implements Handles, UrlRoutable
     /**
      * Get the table name for the given model name.
      *
-     * @param  class-string  $className
-     * @return class-string<\Honed\Table\Table>
+     * @param  class-string<\Illuminate\Database\Eloquent\Model>  $className
+     * @return class-string<Table>
      */
     public static function resolveTableName($className)
     {
@@ -470,27 +158,11 @@ class Table extends Refine implements Handles, UrlRoutable
                 ? Str::after($className, $appNamespace.'Models\\')
                 : Str::after($className, $appNamespace);
 
-            /** @var class-string<\Honed\Table\Table> */
+            /** @var class-string<Table> */
             return static::$namespace.$className.'Table';
         };
 
         return $resolver($className);
-    }
-
-    /**
-     * Get the application namespace for the application.
-     *
-     * @return string
-     */
-    protected static function appNamespace()
-    {
-        try {
-            return Container::getInstance()
-                ->make(Application::class)
-                ->getNamespace();
-        } catch (\Throwable) {
-            return 'App\\';
-        }
     }
 
     /**
@@ -507,7 +179,7 @@ class Table extends Refine implements Handles, UrlRoutable
     /**
      * Specify the callback that should be invoked to guess the name of a model table.
      *
-     * @param  \Closure(class-string):class-string<\Honed\Table\Table>  $callback
+     * @param  Closure(class-string<\Illuminate\Database\Eloquent\Model>):class-string<Table>  $callback
      * @return void
      */
     public static function guessTableNamesUsing($callback)
@@ -516,113 +188,273 @@ class Table extends Refine implements Handles, UrlRoutable
     }
 
     /**
-     * Flush the table class global configuration state.
+     * Flush the global configuration state.
      *
      * @return void
      */
     public static function flushState()
     {
+        static::$encoder = null;
+        static::$decoder = null;
         static::$tableNameResolver = null;
         static::$namespace = 'App\\Tables\\';
-        static::$shouldSerialize = false;
-        static::$shouldSelect = false;
     }
 
     /**
-     * {@inheritdoc}
+     * Get the parent class for the instance.
+     *
+     * @return class-string<Table>
      */
-    public function configToArray()
+    public static function getParentClass()
     {
-        $config = \array_merge(parent::configToArray(), [
-            'key' => $this->getKey(),
-            'record' => $this->getRecordKey(),
-            'column' => $this->getColumnKey(),
-            'page' => $this->getPageKey(),
-        ]);
+        return self::class;
+    }
 
-        if ($this->isExecutable(static::baseClass())) {
-            return \array_merge($config, [
-                'endpoint' => $this->getEndpoint(),
-            ]);
+    /**
+     * Get the route key for the instance.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'table';
+    }
+
+    /**
+     * Get the handler for the instance.
+     *
+     * @return class-string<\Honed\Action\Handlers\Handler<self>>
+     */
+    public function getHandler() // @phpstan-ignore-line
+    {
+        /** @var class-string<\Honed\Action\Handlers\Handler<self>> */
+        return config('table.handler', BatchHandler::class);
+    }
+
+    /**
+     * Set the record key to use.
+     *
+     * @param  string|null  $key
+     * @return $this
+     */
+    public function key($key)
+    {
+        $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * Get the unique identifier key for table records.
+     *
+     * @return string
+     *
+     * @throws KeyNotFoundException
+     */
+    public function getKey()
+    {
+        if (isset($this->key)) {
+            return $this->key;
         }
 
-        return $config;
+        $keyColumn = Arr::first(
+            $this->getColumns(),
+            static fn (Column $column): bool => $column->isKey()
+        );
+
+        if ($keyColumn) {
+            /** @var string */
+            return $keyColumn->getName();
+        }
+
+        KeyNotFoundException::throw(static::class);
     }
 
     /**
-     * Get the actions for the table as an array.
+     * Set the store to use for persisting toggled columns.
+     *
+     * @param  bool|string|null  $store
+     * @return $this
+     */
+    public function persistColumns($store = true)
+    {
+        $this->persistColumns = $store;
+
+        return $this;
+    }
+
+    /**
+     * Set the session store to be used for persisting toggled columns.
+     *
+     * @return $this
+     */
+    public function persistColumnsInSession()
+    {
+        return $this->persistColumns(SessionStore::NAME);
+    }
+
+    /**
+     * Set the cookie store to be used for persisting toggled columns.
+     *
+     * @return $this
+     */
+    public function persistColumnsInCookie()
+    {
+        return $this->persistColumns(CookieStore::NAME);
+    }
+
+    /**
+     * Determine if the toggled columns should be persisted.
+     *
+     * @return bool
+     */
+    public function shouldPersistColumns()
+    {
+        return (bool) $this->persistColumns;
+    }
+
+    /**
+     * Get the store to use for persisting toggled columns.
+     *
+     * @return \Honed\Refine\Stores\Store|null
+     */
+    public function getColumnStore()
+    {
+        return $this->getStore($this->persistColumns);
+    }
+
+    /**
+     * Determine if the table is empty using the pagination metadata.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return (bool) Arr::get($this->getPagination(), 'empty', true);
+    }
+
+    /**
+     * Get the operations for the table as an array.
      *
      * @return array<string, mixed>
      */
-    public function actionsToArray()
+    public function operationsToArray()
     {
         return [
-            'inline' => filled($this->getInlineActions()),
-            'bulk' => $this->getBulkActions(),
-            'page' => $this->getPageActions(),
+            'inline' => filled($this->getInlineOperations()),
+            'bulk' => $this->getBulkOperations(),
+            'page' => $this->getPageOperations(),
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * Get the instance as an array.
+     *
+     * @return array<string, mixed>
      */
     public function toArray()
     {
         $this->build();
 
-        $table = \array_merge(parent::toArray(), [
+        return [
+            ...$this->refineToArray(),
             'records' => $this->getRecords(),
-            'paginator' => $this->getPaginationData(),
+            'paginate' => $this->getPagination(),
             'columns' => $this->columnsToArray(),
-            'perPage' => $this->recordsPerPageToArray(),
-            'toggles' => $this->isToggleable(),
-            'actions' => $this->actionsToArray(),
+            'pages' => $this->pageOptionsToArray(),
+            'toggleable' => $this->isToggleable(),
+            'operations' => $this->operationsToArray(),
+            'emptyState' => $this->getEmptyState()?->toArray(),
+            'views' => $this->loadViews(),
             'meta' => $this->getMeta(),
-        ]);
+        ];
+    }
 
-        if (Arr::get($this->getPaginationData(), 'empty', false)) {
-            $table = \array_merge($table, [
-                'empty' => $this->getEmptyState()->toArray(),
-            ]);
+    /**
+     * Get the application namespace for the application.
+     *
+     * @return string
+     */
+    protected static function appNamespace()
+    {
+        try {
+            return Container::getInstance()
+                ->make(Application::class)
+                ->getNamespace();
+        } catch (Throwable) {
+            return 'App\\';
         }
+    }
 
-        if ($this->isExecutable(static::baseClass())) {
-            return \array_merge($table, [
-                'id' => $this->getRouteKey(),
-            ]);
-        }
-
+    /**
+     * Define the table.
+     *
+     * @param  $this  $table
+     * @return $this
+     */
+    protected function definition(self $table): self
+    {
         return $table;
     }
 
     /**
-     * {@inheritdoc}
+     * Get the pipes to be used for refining.
+     *
+     * @return array<int,class-string<\Honed\Core\Pipe<Table>>>
      */
-    protected function pipeline()
+    protected function pipes()
     {
-        App::make(Pipeline::class)
-            ->send($this)
-            ->through([
-                BeforeRefining::class,
-                ToggleColumns::class,
-                RefineSearches::class,
-                RefineFilters::class,
-                RefineSorts::class,
-                SelectColumns::class,
-                QueryColumns::class,
-                AfterRefining::class,
-                Paginate::class,
-                TransformRecords::class,
-                CreateEmptyState::class,
-                CleanupTable::class,
-            ])->thenReturn();
+        // @phpstan-ignore-next-line
+        return [
+            Toggle::class,
+            BeforeRefining::class,
+            PrepareColumns::class,
+            Select::class,
+            SearchQuery::class,
+            FilterQuery::class,
+            SortQuery::class,
+            Query::class, // Must be applied after the select statement
+            AfterRefining::class,
+            Paginate::class,
+            TransformRecords::class,
+            CreateEmptyState::class,
+            PersistData::class,
+        ];
     }
 
     /**
-     * {@inheritdoc}
+     * Provide a selection of default dependencies for evaluation by name.
+     *
+     * @param  string  $parameterName
+     * @return array<int, mixed>
      */
-    public function __call($method, $parameters)
+    protected function resolveDefaultClosureDependencyForEvaluationByName($parameterName)
     {
-        return $this->macroCall($method, $parameters);
+        return match ($parameterName) {
+            'columns' => [$this->getColumns()],
+            'headings' => [$this->getHeadings()],
+            'emptyState' => [$this->newEmptyState()],
+            'request' => [$this->getRequest()],
+            'builder', 'query', 'q' => [$this->getBuilder()],
+            default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
+        };
+    }
+
+    /**
+     * Provide a selection of default dependencies for evaluation by type.
+     *
+     * @param  string  $parameterType
+     * @return array<int, mixed>
+     */
+    protected function resolveDefaultClosureDependencyForEvaluationByType($parameterType)
+    {
+        $builder = $this->getBuilder();
+
+        return match ($parameterType) {
+            EmptyState::class => [$this->newEmptyState()],
+            Request::class => [$this->getRequest()],
+            $builder::class, Builder::class, BuilderContract::class => [$builder],
+            default => parent::resolveDefaultClosureDependencyForEvaluationByType($parameterType),
+        };
     }
 }

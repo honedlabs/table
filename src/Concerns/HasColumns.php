@@ -5,143 +5,97 @@ declare(strict_types=1);
 namespace Honed\Table\Concerns;
 
 use Honed\Table\Columns\Column;
-use Illuminate\Support\Arr;
 
-/**
- * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
- */
 trait HasColumns
 {
     /**
      * The columns to be used for the table.
      *
-     * @var array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
+     * @var array<int,Column>
      */
     protected $columns = [];
 
     /**
-     * The cached columns to be used for pipelines.
+     * The cached column headings.
      *
-     * @var array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
+     * @var array<int,Column>|null
      */
-    protected $cachedColumns = [];
-
-    /**
-     * Whether the columns should be retrievable.
-     *
-     * @var bool
-     */
-    protected $withoutColumns = false;
+    protected $headings;
 
     /**
      * Merge a set of columns with the existing columns.
      *
-     * @param  iterable<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  ...$columns
+     * @param  Column|array<int,Column>  $columns
      * @return $this
      */
-    public function withColumns(...$columns)
+    public function columns($columns)
     {
-        $columns = Arr::flatten($columns);
+        /** @var array<int,Column> */
+        $columns = is_array($columns) ? $columns : func_get_args();
 
-        $this->columns = \array_merge($this->columns, $columns);
+        $this->columns = [...$this->columns, ...$columns];
 
         return $this;
     }
 
     /**
-     * Define the columns for the instance.
+     * Insert a column.
      *
-     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
+     * @param  Column  $column
+     * @return $this
      */
-    public function columns()
+    public function column($column)
     {
-        return [];
+        $this->columns[] = $column;
+
+        return $this;
     }
 
     /**
      * Retrieve the columns.
      *
-     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
+     * @return array<int,Column>
      */
     public function getColumns()
     {
-        if ($this->isWithoutColumns()) {
-            return [];
-        }
-
-        return once(fn () => \array_values(
-            \array_filter(
-                \array_merge($this->defineColumns(), $this->columns),
+        return array_values(
+            array_filter(
+                $this->columns,
                 static fn (Column $column) => $column->isAllowed()
             )
-        ));
+        );
     }
 
     /**
-     * Determine if the table has columns.
+     * Set the cached headings.
      *
-     * @return bool
-     */
-    public function hasColumns()
-    {
-        return filled($this->getColumns());
-    }
-
-    /**
-     * Set the cached columns.
-     *
-     * @param  array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>  $cachedColumns
-     * @return $this
-     */
-    public function cacheColumns($cachedColumns)
-    {
-        $this->cachedColumns = $cachedColumns;
-
-        return $this;
-    }
-
-    /**
-     * Get the cached columns.
-     *
-     * @return array<int,\Honed\Table\Columns\Column<TModel, TBuilder>>
-     */
-    public function getCachedColumns()
-    {
-        return $this->cachedColumns;
-    }
-
-    /**
-     * Flush the cached columns.
-     *
+     * @param  array<int,Column>  $headings
      * @return void
      */
-    public function flushCachedColumns()
+    public function setHeadings($headings)
     {
-        $this->cachedColumns = [];
+        $this->headings = $headings;
     }
 
     /**
-     * Set the instance to not provide the columns.
+     * Set the columns by overriding the existing columns.
      *
-     * @param  bool  $withoutColumns
-     * @return $this
+     * @param  array<int,Column>  $columns
+     * @return void
      */
-    public function withoutColumns($withoutColumns = true)
+    public function setColumns($columns)
     {
-        $this->withoutColumns = $withoutColumns;
-
-        return $this;
+        $this->columns = $columns;
     }
 
     /**
-     * Determine if the instance should not provide the columns.
+     * Get the cached heading columns.
      *
-     * @return bool
+     * @return array<int,Column>
      */
-    public function isWithoutColumns()
+    public function getHeadings()
     {
-        return $this->withoutColumns;
+        return $this->headings ?? $this->getColumns();
     }
 
     /**
@@ -151,7 +105,7 @@ trait HasColumns
      */
     public function columnsToArray()
     {
-        return \array_map(
+        return array_map(
             static fn (Column $column) => $column->toArray(),
             $this->getColumns()
         );

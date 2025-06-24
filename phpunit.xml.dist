@@ -25,9 +25,6 @@
         <testsuite name="Http">
             <directory>tests/Http</directory>
         </testsuite>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
     </testsuites>
     <logging>
         <junit outputFile="build/report.junit.xml"/>
@@ -37,4 +34,7 @@
             <directory suffix=".php">./src</directory>
         </include>
     </source>
+    <php>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF" />
+    </php>
 </phpunit>

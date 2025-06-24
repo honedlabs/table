@@ -14,5 +14,7 @@ class UseTable
      *
      * @param  class-string<\Honed\Table\Table>  $tableClass
      */
-    public function __construct(public string $tableClass) {}
+    public function __construct(
+        public string $tableClass
+    ) {}
 }

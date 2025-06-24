@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 use Honed\Action\Testing\InlineRequest;
-use Honed\Table\Tests\Stubs\ProductTable;
+use Workbench\App\Models\Product;
+use Workbench\App\Tables\ProductTable;
 
 use function Pest\Laravel\post;
 
 beforeEach(function () {
-    $this->product = product();
+    $this->product = Product::factory()->create();
 
     $this->table = ProductTable::make();
 
@@ -22,7 +23,7 @@ beforeEach(function () {
 it('executes the action', function () {
     $data = $this->request->getData();
 
-    $response = post(route('table.invoke', $this->table), $data);
+    $response = post(route('actions.invoke', $this->table), $data);
 
     $response->assertRedirect();
 

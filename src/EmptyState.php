@@ -4,290 +4,204 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
+use Honed\Action\Operations\PageOperation;
 use Honed\Core\Concerns\HasIcon;
+use Honed\Core\Contracts\NullsAsUndefined;
 use Honed\Core\Primitive;
 
-class EmptyState extends Primitive
+class EmptyState extends Primitive implements NullsAsUndefined
 {
-    use HasIcon {
-        getIcon as getBaseIcon;
+    use Concerns\AdaptsToRefinements;
+    use HasIcon;
+
+    public const DEFAULT_HEADING = 'No results found';
+
+    public const DEFAULT_DESCRIPTION = 'There are no results to display.';
+
+    /**
+     * The identifier to use for evaluation.
+     *
+     * @var string
+     */
+    protected $evaluationIdentifier = 'emptyState';
+
+    /**
+     * The heading of the empty state.
+     *
+     * @var string
+     */
+    protected $heading = self::DEFAULT_HEADING;
+
+    /**
+     * The description of the empty state.
+     *
+     * @var string
+     */
+    protected $description = self::DEFAULT_DESCRIPTION;
+
+    /**
+     * The operations of the empty state.
+     *
+     * @var array<int, PageOperation>
+     */
+    protected $operations = [];
+
+    /**
+     * Provide the instance with any necessary setup.
+     *
+     * @return void
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->definition($this);
     }
-
-    /**
-     * The title of the empty state.
-     *
-     * @var string|null
-     */
-    protected $title;
-
-    /**
-     * The message of the empty state.
-     *
-     * @var string|null
-     */
-    protected $message;
-
-    /**
-     * The label of the empty state action.
-     *
-     * @var string|null
-     */
-    protected $label;
-
-    /**
-     * The route action of the empty state.
-     *
-     * @var string|null
-     */
-    protected $action;
-
-    /**
-     * The message or state to display when the empty state is because of refiners.
-     *
-     * @var string|\Closure|null
-     */
-    protected $refining;
-
-    /**
-     * The message or state to display when the empty state is because of filters.
-     *
-     * @var string|\Closure|null
-     */
-    protected $filtering;
-
-    /**
-     * The message or state to display when the empty state is because of searching.
-     *
-     * @var string|\Closure|null
-     */
-    protected $searching;
 
     /**
      * Create a new empty state.
      *
-     * @param  string|null  $title
-     * @param  string|null  $message
+     * @param  string|null  $heading
+     * @param  string|null  $description
      * @return static
      */
-    public static function make($title = null, $message = null)
+    public static function make($heading = null, $description = null)
     {
         return resolve(static::class)
-            ->title($title)
-            ->message($message);
+            ->when($heading,
+                fn ($emptyState, $heading) => $emptyState->heading($heading)
+            )
+            ->when($description,
+                fn ($emptyState, $description) => $emptyState->description($description)
+            );
     }
 
     /**
-     * Set the title of the empty state.
+     * Set the heading of the empty state.
      *
-     * @param  string|null  $title
+     * @param  string  $heading
      * @return $this
      */
-    public function title($title)
+    public function heading($heading)
     {
-        $this->title = $title;
+        $this->heading = $heading;
 
         return $this;
     }
 
     /**
-     * Get the title of the empty state.
+     * Get the heading of the empty state.
      *
      * @return string
      */
-    public function getTitle()
+    public function getHeading()
     {
-        return $this->title ?? static::getDefaultTitle();
+        return $this->heading;
     }
 
     /**
-     * Get the default title of the empty state from the config.
+     * Set the description of the empty state.
+     *
+     * @param  string  $description
+     * @return $this
+     */
+    public function description($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get the description of the empty state.
      *
      * @return string
      */
-    public static function getDefaultTitle()
+    public function getDescription()
     {
-        return type(config('table.empty_state.title', 'No results found'))->asString();
+        return $this->description;
     }
 
     /**
-     * Set the message of the empty state.
+     * Sets the operations of the empty state. This will replace any existing actions.
      *
-     * @param  string|null  $message
+     * @param  PageOperation|array<int, PageOperation>  $operations
      * @return $this
      */
-    public function message($message)
+    public function operations($operations)
     {
-        $this->message = $message;
+        /** @var array<int, PageOperation> */
+        $operations = is_array($operations) ? $operations : func_get_args();
+
+        $this->operations = [...$this->operations, ...$operations];
 
         return $this;
     }
 
     /**
-     * Get the message of the empty state.
+     * Add an operation to the empty state.
      *
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->message ?? static::getDefaultMessage();
-    }
-
-    /**
-     * Get the default message of the empty state from the config.
-     *
-     * @return string
-     */
-    public static function getDefaultMessage()
-    {
-        return type(config('table.empty_state.message', 'There are no results to display.'))->asString();
-    }
-
-    /**
-     * Get the icon of the empty state.
-     *
-     * @return string|null
-     */
-    public function getIcon()
-    {
-        return $this->getBaseIcon() ?? static::getDefaultIcon();
-    }
-
-    /**
-     * Get the default icon of the empty state from the config.
-     *
-     * @return string|null
-     */
-    public static function getDefaultIcon()
-    {
-        /** @var string|null */
-        return config('table.empty_state.icon', null);
-    }
-
-    /**
-     * Set the action of the empty state.
-     *
-     * @param  string  $label
-     * @param  string|null  $action
+     * @param  PageOperation  $operation
      * @return $this
      */
-    public function action($label, $action = null)
+    public function operation($operation)
     {
-        $this->label = $label;
-        $this->action = $action;
+        $this->operations[] = $operation;
 
         return $this;
     }
 
     /**
-     * Get the label of the empty state action.
+     * Get the operations of the empty state.
      *
-     * @return string|null
+     * @return array<int, PageOperation>
      */
-    public function getLabel()
+    public function getOperations()
     {
-        return $this->label;
+        return $this->operations;
     }
 
     /**
-     * Get the action route of the empty state.
+     * Get the instance as an array.
      *
-     * @return string|null
+     * @return array<string, mixed>
      */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * Set the state to display when refining.
-     *
-     * @param  string|\Closure  $refining
-     * @return $this
-     */
-    public function refining($refining)
-    {
-        $this->refining = $refining;
-
-        return $this;
-    }
-
-    /**
-     * Get the state to display when refining.
-     *
-     * @return string|\Closure|null
-     */
-    public function getRefiningState()
-    {
-        return $this->refining ?? static::getDefaultRefiningState();
-    }
-
-    /**
-     * Get the default state to display when refining.
-     *
-     * @return string
-     */
-    public static function getDefaultRefiningState()
-    {
-        return type(config('table.empty_state.refining', 'There are no results matching your filters.'))->asString();
-    }
-
-    /**
-     * Set the state to display when filtering.
-     *
-     * @param  string|\Closure  $filtering
-     * @return $this
-     */
-    public function filtering($filtering)
-    {
-        $this->filtering = $filtering;
-
-        return $this;
-    }
-
-    /**
-     * Get the state to display when filtering.
-     *
-     * @return string|\Closure|null
-     */
-    public function getFilteringState()
-    {
-        return $this->filtering;
-    }
-
-    /**
-     * Set the state to display when searching.
-     *
-     * @param  string|\Closure  $searching
-     * @return $this
-     */
-    public function searching($searching)
-    {
-        $this->searching = $searching;
-
-        return $this;
-    }
-
-    /**
-     * Get the state to display when searching.
-     *
-     * @return string|\Closure|null
-     */
-    public function getSearchingState()
-    {
-        return $this->searching;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray($named = [], $typed = [])
+    public function toArray()
     {
         return [
-            'title' => $this->getTitle(),
-            'message' => $this->getMessage(),
+            'heading' => $this->getHeading(),
+            'description' => $this->getDescription(),
             'icon' => $this->getIcon(),
-            'label' => $this->getLabel(),
-            'action' => $this->getAction(),
+            'operations' => $this->operationsToArray(),
         ];
+    }
+
+    /**
+     * Get the operations of the empty state as an array.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function operationsToArray()
+    {
+        return array_map(
+            static fn (PageOperation $operation) => $operation->toArray(),
+            array_values(
+                array_filter(
+                    $this->getOperations(),
+                    static fn (PageOperation $operation) => $operation->isAllowed()
+                )
+            )
+        );
+    }
+
+    /**
+     * Define the empty state.
+     *
+     * @param  $this  $emptyState
+     * @return $this
+     */
+    protected function definition(self $emptyState): self
+    {
+        return $emptyState;
     }
 }

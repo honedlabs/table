@@ -4,97 +4,30 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Arr;
+use function is_null;
 
 class ArrayColumn extends Column
 {
     /**
-     * {@inheritdoc}
-     */
-    protected $type = 'array';
-
-    /**
-     * The property to use for the values.
+     * Provide the instance with any necessary setup.
      *
-     * @var string|null
+     * @return void
      */
-    protected $pluck;
-
-    /**
-     * The glue to use when joining the array values.
-     *
-     * @var string|null
-     */
-    protected $glue;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function formatValue($value)
+    protected function setUp()
     {
-        if ($value instanceof Arrayable) {
-            $value = $value->toArray();
-        }
+        parent::setUp();
 
-        if (\is_null($value) || ! \is_array($value)) {
-            return $this->getFallback();
-        }
-
-        if ($pluck = $this->getPluck()) {
-            $value = Arr::pluck($value, $pluck);
-        }
-
-        if ($glue = $this->getGlue()) {
-            return \implode($glue, $value);
-        }
-
-        return $value;
+        $this->type(self::ARRAY);
     }
 
     /**
-     * Set the glue to use when joining the array values.
+     * Format the value of the entry.
      *
-     * @param  string  $glue
-     * @return $this
+     * @param  array<int, mixed>|\Illuminate\Support\Collection<int, mixed>|null  $value
+     * @return array<int, mixed>|string|null
      */
-    public function glue($glue)
+    public function format($value)
     {
-        $this->glue = $glue;
-
-        return $this;
-    }
-
-    /**
-     * Get the glue to use when joining the array values.
-     *
-     * @return string|null
-     */
-    public function getGlue()
-    {
-        return $this->glue;
-    }
-
-    /**
-     * Set the column to pluck from the model.
-     *
-     * @param  string  $pluck
-     * @return $this
-     */
-    public function pluck($pluck)
-    {
-        $this->pluck = $pluck;
-
-        return $this;
-    }
-
-    /**
-     * Get the column to pluck from the model.
-     *
-     * @return string|null
-     */
-    public function getPluck()
-    {
-        return $this->pluck;
+        return is_null($value) ? null : $this->formatArray($value);
     }
 }

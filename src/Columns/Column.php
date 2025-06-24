@@ -4,124 +4,92 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Honed\Core\Concerns\Allowable;
+use Closure;
+use Honed\Core\Primitive;
+use Illuminate\Support\Str;
+use Honed\Refine\Sorts\Sort;
+use InvalidArgumentException;
+use Honed\Core\Concerns\HasIcon;
+use Honed\Core\Concerns\HasName;
+use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\HasAlias;
 use Honed\Core\Concerns\HasExtra;
-use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Concerns\HasLabel;
-use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasQuery;
-use Honed\Core\Concerns\HasType;
-use Honed\Core\Concerns\HasValue;
 use Honed\Core\Concerns\IsActive;
-use Honed\Core\Concerns\Transformable;
-use Honed\Core\Primitive;
+use Honed\Core\Concerns\Allowable;
+use Honed\Table\Concerns\Selectable;
+use Honed\Refine\Concerns\CanBeHidden;
 use Honed\Refine\Concerns\HasQualifier;
-use Honed\Refine\Sort;
-use Honed\Table\Concerns\IsVisible;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Honed\Core\Contracts\NullsAsUndefined;
+use Honed\Infolist\Entries\Concerns\HasState;
+use Honed\Infolist\Entries\Concerns\CanBeBadge;
+use Honed\Infolist\Entries\Concerns\HasPlaceholder;
+use Honed\Infolist\Entries\Concerns\CanBeAggregated;
+use Honed\Infolist\Entries\Concerns\CanFormatValues;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  */
-class Column extends Primitive
+class Column extends Primitive implements NullsAsUndefined
 {
     use Allowable;
+    use CanBeAggregated;
+    use CanBeHidden;
+    use CanFormatValues;
+    use CanBeBadge;
+    use Concerns\CanBeKey;
+    use Concerns\Exportable;
+    use Concerns\Filterable;
+    use Concerns\HasClasses;
+    use Concerns\Searchable;
+    use Concerns\Sortable;
+    use Concerns\Toggleable;
     use HasAlias;
     use HasExtra;
     use HasIcon;
     use HasLabel;
     use HasName;
+    use HasPlaceholder;
     use HasQualifier;
 
     /** @use \Honed\Core\Concerns\HasQuery<TModel, TBuilder> */
     use HasQuery;
 
+    use HasState;
     use HasType;
-    use HasValue;
     use IsActive;
-    use IsVisible;
-    use Transformable;
+    use Selectable;
+
+    public const BADGE = 'badge';
+
+    public const COLOR = 'color';
+
+    public const ICON = 'icon';
 
     /**
-     * Whether this column represents the record key.
+     * The identifier to use for evaluation.
      *
-     * @var bool
+     * @var string
      */
-    protected $key = false;
+    protected $evaluationIdentifier = 'column';
 
     /**
-     * Whether this column is hidden.
+     * Provide the instance with any necessary setup.
      *
-     * @var bool
+     * @return void
      */
-    protected $hidden = false;
+    protected function setUp()
+    {
+        parent::setUp();
 
-    /**
-     * The value to display when the column is empty.
-     *
-     * @var mixed
-     */
-    protected $fallback;
+        $this->active();
 
-    /**
-     * The default fallback value for the columns.
-     *
-     * @var mixed
-     */
-    protected static $useFallback;
-
-    /**
-     * The class of the column header.
-     *
-     * @var string|null
-     */
-    protected $class;
-
-    /**
-     * The column sort.
-     *
-     * @var \Honed\Refine\Sort<TModel, TBuilder>|null
-     */
-    protected $sort;
-
-    /**
-     * The database columns to search on.
-     *
-     * @var bool|string|array<int, string>
-     */
-    protected $search = false;
-
-    /**
-     * How to select this column
-     *
-     * @var string|bool|array<int,string>
-     */
-    protected $select = true;
-
-    /**
-     * How this column should be exported.
-     *
-     * @var bool|array<int,string>
-     */
-    protected $export = true;
-
-    /**
-     * The format to export the column in.
-     *
-     * @var string|null
-     */
-    protected $exportFormat;
-
-    /**
-     * The style to export the column in.
-     *
-     * @var array<string,mixed>|(\Closure(\PhpOffice\PhpSpreadsheet\Style\Style):void)|null
-     */
-    protected $exportStyle;
+        $this->definition($this);
+    }
 
     /**
      * Create a new column instance.
@@ -138,336 +106,11 @@ class Column extends Primitive
     }
 
     /**
-     * {@inheritdoc}
+     * @experimental
      */
-    public function setUp()
+    public function getResolvedState()
     {
-        $this->active(true);
-    }
-
-    /**
-     * Set this column to represent the record key.
-     *
-     * @param  bool  $key
-     * @return $this
-     */
-    public function key($key = true)
-    {
-        $this->key = $key;
-
-        return $this;
-    }
-
-    /**
-     * Determine whether this column represents the record key.
-     *
-     * @return bool
-     */
-    public function isKey()
-    {
-        return $this->key;
-    }
-
-    /**
-     * Set the column as hidden.
-     *
-     * @param  bool  $hidden
-     * @return $this
-     */
-    public function hidden($hidden = true)
-    {
-        $this->hidden = $hidden;
-
-        return $this;
-    }
-
-    /**
-     * Determine if the column is hidden.
-     *
-     * @return bool
-     */
-    public function isHidden()
-    {
-        return $this->hidden;
-    }
-
-    /**
-     * Set the fallback value for the column.
-     *
-     * @param  mixed  $fallback
-     * @return $this
-     */
-    public function fallback($fallback)
-    {
-        $this->fallback = $fallback;
-
-        return $this;
-    }
-
-    /**
-     * Get the fallback value for the column.
-     *
-     * @return mixed
-     */
-    public function getFallback()
-    {
-        return $this->fallback ?? static::$useFallback;
-    }
-
-    /**
-     * Set the default fallback value for the column.
-     *
-     * @param  mixed  $default
-     * @return void
-     */
-    public function useFallback($default)
-    {
-        static::$useFallback = $default;
-    }
-
-    /**
-     * Set the class for the column.
-     *
-     * @param  string  $class
-     * @return $this
-     */
-    public function class($class)
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * Get the class for the column.
-     *
-     * @return string|null
-     */
-    public function getClass()
-    {
-        return $this->class;
-    }
-
-    /**
-     * Set the column as sortable.
-     *
-     * @param  \Honed\Refine\Sort<TModel, TBuilder>|string|bool  $sort
-     * @return $this
-     */
-    public function sort($sort = true)
-    {
-        $this->sort = match (true) {
-            ! $sort => null,
-            $sort instanceof Sort => $sort,
-            default => $this->newSort($sort),
-        };
-
-        return $this;
-    }
-
-    /**
-     * Create a new sort instance using the column properties.
-     *
-     * @param  string|bool  $sort
-     * @return \Honed\Refine\Sort<TModel, TBuilder>
-     */
-    protected function newSort($sort)
-    {
-        $sort = \is_string($sort) ? $sort : $this->getName();
-
-        return Sort::make($sort, $this->getLabel())
-            ->qualifies($this->getQualifier())
-            ->alias($this->getParameter());
-    }
-
-    /**
-     * Get the sort.
-     *
-     * @return \Honed\Refine\Sort<TModel, TBuilder>|null
-     */
-    public function getSort()
-    {
-        return $this->sort;
-    }
-
-    /**
-     * Determine if the column is sortable.
-     *
-     * @return bool
-     */
-    public function sorts()
-    {
-        return (bool) $this->sort;
-    }
-
-    /**
-     * Set the column as searchable.
-     *
-     * @param  bool|string|array<int, string>  $search
-     * @return $this
-     */
-    public function search($search = true)
-    {
-        $this->search = $search;
-
-        return $this;
-    }
-
-    /**
-     * Get the search columns.
-     *
-     * @return bool|string|array<int, string>
-     */
-    public function getSearch()
-    {
-        if (! $this->search) {
-            return false;
-        }
-
-        return $this->search;
-    }
-
-    /**
-     * Determine if the column is searchable.
-     *
-     * @return bool
-     */
-    public function searches()
-    {
-        return (bool) $this->search;
-    }
-
-    /**
-     * Set how to select this column.
-     *
-     * @param  bool|string|array<int,string>  $select
-     * @return $this
-     */
-    public function select($select = true)
-    {
-        $this->select = $select;
-
-        return $this;
-    }
-
-    /**
-     * Set the column to not be selectable.
-     *
-     * @return $this
-     */
-    public function doNotSelect()
-    {
-        return $this->select(false);
-    }
-
-    /**
-     * Set the column to not be selectable.
-     *
-     * @return $this
-     */
-    public function dontSelect()
-    {
-        return $this->doNotSelect();
-    }
-
-    /**
-     * Get the properties to select.
-     *
-     * @return string|array<int,string>
-     */
-    public function getSelects()
-    {
-        if (\is_bool($this->select)) {
-            return $this->getName();
-        }
-
-        return $this->select;
-    }
-
-    /**
-     * Determine if the column can be selected.
-     *
-     * @return bool
-     */
-    public function selects()
-    {
-        return (bool) $this->select;
-    }
-
-    /**
-     * Set whether, and how, the column should be exported.
-     *
-     * @param  bool|(\Closure(mixed, TModel):mixed)  $as
-     * @param  string|null  $format
-     * @param  array<string,mixed>|(\Closure(\PhpOffice\PhpSpreadsheet\Style\Style):void)|null  $style
-     * @return $this
-     */
-    public function export($as = true, $format = null, $style = null)
-    {
-        $this->export = $as;
-
-        if ($format) {
-            $this->exportFormat($format);
-        }
-
-        if ($style) {
-            $this->exportStyle($style);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Register the callback to be used to export the content of a column.
-     *
-     * @param  \Closure(mixed, TModel):mixed  $callback
-     * @return $this
-     */
-    public function exportUsing($callback)
-    {
-        $this->export = $callback;
-
-        return $this;
-    }
-
-    /**
-     * Set the column to not be exportable.
-     *
-     * @return $this
-     */
-    public function doNotExport()
-    {
-        return $this->export(false);
-    }
-
-    /**
-     * Set the column to not be exportable.
-     *
-     * @return $this
-     */
-    public function dontExport()
-    {
-        return $this->export(false);
-    }
-
-    /**
-     * Get the exporter for the column.
-     *
-     * @return bool|\Closure(mixed, TModel):mixed|null
-     */
-    public function getExporter()
-    {
-        return $this->export;
-    }
-
-    /**
-     * Determine if this column is exportable.
-     *
-     * @return bool
-     */
-    public function exports()
-    {
-        return (bool) $this->export;
+        return $this->state;
     }
 
     /**
@@ -478,88 +121,89 @@ class Column extends Primitive
     public function getParameter()
     {
         return $this->getAlias()
-            ?? Str::of($this->getName())
-                ->replace('.', '_')
-                ->value();
+            ?? str_replace('.', '-', $this->getName());
     }
 
     /**
-     * Apply the column's transform and format value.
+     * Add a count of the related recordss the column state.
      *
-     * @param  mixed  $value
-     * @return mixed
+     * @param  string|array<string, Closure>|null  $relationship
+     * @return $this
      */
-    public function apply($value)
+    public function count($relationship = null)
     {
-        $value = $this->transform($value);
-
-        return $this->formatValue($value);
+        return $this->addSimpleRelationship($relationship, 'count');
     }
 
     /**
-     * Format the value of the column.
+     * Add a relationship exists as the column state.
      *
-     * @param  mixed  $value
-     * @return mixed
+     * @param  string|array<string, Closure>|null  $relationship
+     * @return $this
      */
-    public function formatValue($value)
+    public function exists($relationship = null)
     {
-        return $value ?? $this->getFallback();
+        return $this->addSimpleRelationship($relationship, 'exists');
     }
 
     /**
-     * Create a record entry for the column.
+     * Add an average aggregate to the column state.
      *
-     * @param  TModel  $record
-     * @param  array<string,mixed>  $named
-     * @param  array<class-string,mixed>  $typed
-     * @return array<string,array{value:mixed, extra:array<string,mixed>}>
+     * @param  string|array<string, Closure>|null  $relationship
+     * @param  string|null  $column
+     * @return $this
      */
-    public function entry($record, $named = [], $typed = [])
+    public function avg($relationship = null, $column = null)
     {
-        $valueUsing = $this->getValue();
-
-        $value = $this->apply((bool) $valueUsing
-            ? $this->evaluate($valueUsing, $named, $typed)
-            : Arr::get($record, $this->getName())
-        );
-
-        return [
-            $this->getParameter() => [
-                'value' => $value,
-                'extra' => $this->getExtra(
-                    \array_merge($named, ['value' => $value]),
-                    $typed,
-                ),
-            ],
-        ];
+        return $this->addAggregateRelationship($relationship, $column, 'avg');
     }
-
-    public function count()
-    {
-        // $this->query(fn (Builder $query) => $query->withCount())
-    }
-
-    public function exists() {}
-
-    public function avg() {}
-
-    public function average() {}
-
-    public function sum() {}
-
-    public function min() {}
-
-    public function max() {}
 
     /**
-     * Flush the column's global configuration state.
+     * Add an average aggregate to the column state.
      *
-     * @return void
+     * @param  string|array<string, Closure>|null  $relationship
+     * @param  string|null  $column
+     * @return $this
      */
-    public static function flushState()
+    public function average($relationship = null, $column = null)
     {
-        static::$useFallback = null;
+        return $this->avg($relationship, $column);
+    }
+
+    /**
+     * Add a sum aggregate to the column state.
+     *
+     * @param  string|array<string, Closure>|null  $relationship
+     * @param  string|null  $column
+     * @return $this
+     */
+    public function sum($relationship = null, $column = null)
+    {
+        return $this->addAggregateRelationship($relationship, $column, 'sum');
+    }
+
+    /**
+     * Add a maximum aggregate to the column state.
+     *
+     * @param  string|array<string, Closure>|null  $relationship
+     * @param  string|null  $column
+     * @return $this
+     */
+    public function max($relationship = null, $column = null)
+    {
+        return $this->addAggregateRelationship($relationship, $column, 'max');
+    }
+
+    /**
+     * Add a minimum aggregate to the column state.
+     *
+     * @param  string|array<string, Closure>|null  $relationship
+     * @param  string|null  $column
+     * @return $this
+     */
+    public function min($relationship = null, $column = null)
+    {
+        return $this->addAggregateRelationship($relationship, $column, 'min');
     }
 
     /**
@@ -583,7 +227,26 @@ class Column extends Primitive
     }
 
     /**
-     * {@inheritdoc}
+     * Get the column value for a record.
+     *
+     * @param  array<string, mixed>|Model  $value
+     * @return array{mixed, bool}
+     */
+    public function value($value)
+    {
+        $this->record($value);
+
+        if (! $this->getState()) {
+            $this->state($this->getName());
+        }
+
+        return $this->apply($this->getResolvedState());
+    }
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array<string,mixed>
      */
     public function toArray()
     {
@@ -593,10 +256,100 @@ class Column extends Primitive
             'type' => $this->getType(),
             'hidden' => $this->isHidden(),
             'active' => $this->isActive(),
-            'toggles' => $this->isToggleable(),
+            'badge' => $this->isBadge(),
+            'toggleable' => $this->isToggleable(),
+            'class' => $this->getClasses(),
+            'record_class' => $this->getRecordClasses(),
             'icon' => $this->getIcon(),
-            'class' => $this->getClass(),
             'sort' => $this->sortToArray(),
         ];
+    }
+
+    /**
+     * Define the column.
+     *
+     * @param  $this  $column
+     * @return $this
+     */
+    protected function definition(self $column): self
+    {
+        return $column;
+    }
+
+    /**
+     * Add a simple relationship to the column state.
+     *
+     * @param  string|array<string, Closure>|null  $relationship
+     * @param  string  $method
+     * @return $this
+     */
+    protected function addSimpleRelationship($relationship, $method)
+    {
+        return $this->query(match (true) {
+            (bool) $relationship => fn (Builder $query) => $query->{'with'.Str::studly($method)}($relationship),
+            default => fn (Builder $query) => $query->{'with'.Str::studly($method)}(
+                Str::beforeLast($this->getName(), '_'.$method),
+            ),
+        });
+    }
+
+    /**
+     * Add an aggregate relationship to the column state.
+     *
+     * @param  string|array<string, Closure>|null  $relationship
+     * @param  string|null  $column
+     * @param  string  $method
+     * @return $this
+     */
+    protected function addAggregateRelationship($relationship, $column, $method)
+    {
+        if ($relationship && ! $column) {
+            throw new InvalidArgumentException(
+                'A column must be specified when an aggregate relationship is used.'
+            );
+        }
+
+        return $this->query(match (true) {
+            (bool) $relationship => fn (Builder $query) => $query->{'with'.Str::studly($method)}($relationship, $column),
+            default => fn (Builder $query) => $query->{'with'.Str::studly($method)}(
+                Str::beforeLast($this->getName(), '_'.$method),
+                Str::afterLast($this->getName(), $method.'_'),
+            ),
+        });
+    }
+
+    /**
+     * Provide a selection of default dependencies for evaluation by name.
+     *
+     * @param  string  $parameterName
+     * @return array<int, mixed>
+     */
+    protected function resolveDefaultClosureDependencyForEvaluationByName($parameterName)
+    {
+        return match ($parameterName) {
+            'state' => [$this->getState()],
+            'model', 'record', 'row' => [$this->getRecord()],
+            default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
+        };
+    }
+
+    /**
+     * Provide a selection of default dependencies for evaluation by type.
+     *
+     * @param  class-string  $parameterType
+     * @return array<mixed>
+     */
+    protected function resolveDefaultClosureDependencyForEvaluationByType($parameterType)
+    {
+        $record = $this->getRecord();
+
+        if (! $record instanceof Model) {
+            return parent::resolveDefaultClosureDependencyForEvaluationByType($parameterType);
+        }
+
+        return match ($parameterType) {
+            Model::class, $record::class => [$record],
+            default => parent::resolveDefaultClosureDependencyForEvaluationByType($parameterType),
+        };
     }
 }

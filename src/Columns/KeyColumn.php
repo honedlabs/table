@@ -7,22 +7,16 @@ namespace Honed\Table\Columns;
 class KeyColumn extends Column
 {
     /**
-     * {@inheritdoc}
+     * Provide the instance with any necessary setup.
+     *
+     * @return void
      */
-    protected $type = 'key';
+    protected function setUp()
+    {
+        parent::setUp();
 
-    /**
-     * {@inheritdoc}
-     */
-    protected $key = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $hidden = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $qualify = true;
+        $this->key();
+        $this->hidden();
+        $this->qualify();
+    }
 }

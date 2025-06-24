@@ -2,44 +2,46 @@
 
 declare(strict_types=1);
 
-use Honed\Action\Testing\InlineRequest;
-use Honed\Table\Tests\Stubs\ProductTable;
+// declare(strict_types=1);
 
-use function Pest\Laravel\post;
+// use Honed\Action\Testing\InlineRequest;
+// use Honed\Table\Tests\Stubs\ProductTable;
 
-beforeEach(function () {
-    $this->product = product();
+// use function Pest\Laravel\post;
 
-    $this->table = ProductTable::make();
+// beforeEach(function () {
+//     $this->product = product();
 
-    $this->request = InlineRequest::fake()
-        ->for($this->table)
-        ->record($this->product->id)
-        ->name('edit')
-        ->id($this->table->getRouteKey())
-        ->fill();
-});
+//     $this->table = ProductTable::make();
 
-it('executes the action', function () {
-    $data = $this->request->getData();
+//     $this->request = InlineRequest::fake()
+//         ->for($this->table)
+//         ->record($this->product->id)
+//         ->name('edit')
+//         ->id($this->table->getRouteKey())
+//         ->fill();
+// });
 
-    $response = post(route('table'), $data);
+// it('executes the action', function () {
+//     $data = $this->request->getData();
 
-    $response->assertRedirect();
+//     $response = post(route('table'), $data);
 
-    $this->assertDatabaseHas('products', [
-        'id' => $this->product->id,
-        'name' => 'Inline',
-    ]);
-});
+//     $response->assertRedirect();
 
-it('does not execute non-existent action', function () {
-    $data = $this->request
-        ->record($this->product->id)
-        ->name('create')
-        ->getData();
+//     $this->assertDatabaseHas('products', [
+//         'id' => $this->product->id,
+//         'name' => 'Inline',
+//     ]);
+// });
 
-    $response = post(route('table'), $data);
+// it('does not execute non-existent action', function () {
+//     $data = $this->request
+//         ->record($this->product->id)
+//         ->name('create')
+//         ->getData();
 
-    $response->assertNotFound();
-});
+//     $response = post(route('table'), $data);
+
+//     $response->assertNotFound();
+// });

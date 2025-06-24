@@ -1,57 +1,65 @@
 <?php
 
-use Honed\Table\Tests\Stubs\Category;
-use Honed\Table\Tests\Stubs\Product;
-use Honed\Table\Tests\Stubs\Seller;
-use Honed\Table\Tests\Stubs\Status;
+declare(strict_types=1);
+
+use Honed\Table\Table;
 use Honed\Table\Tests\TestCase;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 uses(TestCase::class)->in(__DIR__);
 
-function product(?string $name = null): Product
+function getColumn(Table $table, string $name)
 {
-    return seller()->products()->create([
-        'public_id' => Str::uuid(),
-        'name' => $name ?? fake()->unique()->words(2, true),
-        'description' => fake()->sentence(),
-        'price' => fake()->randomNumber(4),
-        'best_seller' => fake()->boolean(),
-        'status' => fake()->randomElement(Status::cases()),
-        'created_at' => now()->subDays(fake()->randomNumber(2)),
-    ]);
+    return Arr::first(
+        $table->getColumns(),
+        fn ($column) => $column->getName() === $name
+    );
 }
 
-function category(?string $name = null): Category
-{
-    return Category::create([
-        'name' => $name ?? fake()->unique()->word(),
-    ]);
-}
+expect()->extend('toBeWhere', function (string $column, mixed $value, string $operator = '=', string $boolean = 'and') {
+    return $this->toBeArray()
+        ->toHaveKeys(['type', 'column', 'value', 'operator', 'boolean'])
+        ->{'type'}->toBe('Basic')
+        ->{'column'}->toBe($column)
+        ->{'value'}->toBe($value)
+        ->{'operator'}->toBe($operator)
+        ->{'boolean'}->toBe($boolean);
+});
 
-function populate(int $count = 100)
-{
-    foreach (\range(1, $count) as $i) {
-        product();
-    }
-}
+expect()->extend('toBeOnlyWhere', function (string $column, mixed $value, string $operator = '=', string $boolean = 'and') {
+    return $this->toBeArray()
+        ->toHaveCount(1)
+        ->{0}->toBeWhere($column, $value, $operator, $boolean);
+});
 
-function seller(?string $name = null): Seller
-{
-    return Seller::create([
-        'name' => $name ?? fake()->unique()->name(),
-    ]);
-}
+expect()->extend('toBeWhereIn', function (string $column, array $values, string $boolean = 'and') {
+    return $this->toBeArray()
+        ->toHaveKeys(['type', 'column', 'values', 'boolean'])
+        ->{'type'}->toBe('In')
+        ->{'column'}->toBe($column)
+        ->{'values'}->toEqual($values)
+        ->{'boolean'}->toBe($boolean);
+});
 
-function qualifyProduct(string $column)
-{
-    return Product::query()->qualifyColumn($column);
-}
+expect()->extend('toBeOnlyWhereIn', function (string $column, array $values, string $boolean = 'and') {
+    return $this->toBeArray()
+        ->toHaveCount(1)
+        ->{0}->toBeWhereIn($column, $values, $boolean);
+});
 
-function searchSql(string $column)
-{
-    return \sprintf('LOWER(%s) LIKE ?', qualifyProduct($column));
-}
+expect()->extend('toBeSearch', function (string $column, string $boolean = 'and') {
+    return $this->toBeArray()
+        ->toHaveKeys(['type', 'sql', 'boolean'])
+        ->{'type'}->toBe('raw')
+        ->{'sql'}->toBe(\sprintf('LOWER(%s) LIKE ?', $column))
+        ->{'boolean'}->toBe($boolean);
+});
+
+expect()->extend('toBeOnlySearch', function (string $column, string $boolean = 'and') {
+    return $this->toBeArray()
+        ->toHaveCount(1)
+        ->{0}->toBeSearch($column, $boolean);
+});
 
 expect()->extend('toBeOrder', function (string $column, string $direction = 'asc') {
     return $this->toBeArray()
@@ -63,7 +71,5 @@ expect()->extend('toBeOrder', function (string $column, string $direction = 'asc
 expect()->extend('toBeOnlyOrder', function (string $column, string $direction = 'asc') {
     return $this->toBeArray()
         ->toHaveCount(1)
-        ->{0}->scoped(fn ($order) => $order
-        ->toBeOrder($column, $direction)
-        );
+        ->{0}->toBeOrder($column, $direction);
 });

@@ -4,130 +4,32 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
+use function is_null;
+
 class TextColumn extends Column
 {
     /**
-     * {@inheritdoc}
-     */
-    protected $type = 'text';
-
-    /**
-     * The prefix to display.
+     * Provide the instance with any necessary setup.
      *
-     * @var string|null
+     * @return void
      */
-    protected $prefix;
-
-    /**
-     * The suffix to display.
-     *
-     * @var string|null
-     */
-    protected $suffix;
-
-    /**
-     * The number of characters to display.
-     *
-     * @var int|null
-     */
-    protected $length;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function formatValue($value)
+    protected function setUp()
     {
-        if (\is_null($value)) {
-            return $this->getFallback();
-        }
+        $this->placeholder('N/A');
 
-        $value = type($value)->asString();
+        parent::setUp();
 
-        $prefix = $this->getPrefix();
-        $suffix = $this->getSuffix();
-        $length = $this->getLength();
-
-        if (! \is_null($prefix)) {
-            $value = $prefix.$value;
-        }
-
-        if (! \is_null($suffix)) {
-            $value = $value.$suffix;
-        }
-
-        if (! \is_null($length)) {
-            $value = substr($value, 0, $length);
-        }
-
-        return $value;
+        $this->type(self::TEXT);
     }
 
     /**
-     * Set the prefix to display.
+     * Format the value of the entry.
      *
-     * @param  string  $prefix
-     * @return $this
+     * @param  mixed  $value
+     * @return mixed
      */
-    public function prefix($prefix)
+    public function format($value)
     {
-        $this->prefix = $prefix;
-
-        return $this;
-    }
-
-    /**
-     * Get the prefix to display.
-     *
-     * @return string|null
-     */
-    public function getPrefix()
-    {
-        return $this->prefix;
-    }
-
-    /**
-     * Set the suffix to display.
-     *
-     * @param  string  $suffix
-     * @return $this
-     */
-    public function suffix($suffix)
-    {
-        $this->suffix = $suffix;
-
-        return $this;
-    }
-
-    /**
-     * Get the suffix to display.
-     *
-     * @return string|null
-     */
-    public function getSuffix()
-    {
-        return $this->suffix;
-    }
-
-    /**
-     * Set the number of characters to display.
-     *
-     * @param  int  $length
-     * @return $this
-     */
-    public function length($length)
-    {
-        $this->length = $length;
-
-        return $this;
-    }
-
-    /**
-     * Get the number of characters to display.
-     *
-     * @return int|null
-     */
-    public function getLength()
-    {
-        return $this->length;
+        return is_null($value) ? null : $this->formatText($value);
     }
 }

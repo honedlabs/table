@@ -4,196 +4,164 @@ declare(strict_types=1);
 
 namespace Workbench\App\Tables;
 
-use Honed\Action\BulkAction;
-use Honed\Action\InlineAction;
-use Honed\Action\PageAction;
-use Honed\Refine\Filter;
-use Honed\Refine\Search;
-use Honed\Refine\Sort;
+use Honed\Action\Operations\BulkOperation;
+use Honed\Action\Operations\InlineOperation;
+use Honed\Action\Operations\PageOperation;
+use Honed\Refine\Filters\Filter;
+use Honed\Refine\Searches\Search;
+use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\BooleanColumn;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\DateColumn;
-use Honed\Table\Columns\HiddenColumn;
 use Honed\Table\Columns\KeyColumn;
-use Honed\Table\Columns\NumberColumn;
+use Honed\Table\Columns\NumericColumn;
 use Honed\Table\Columns\TextColumn;
+use Honed\Table\Contracts\IsOrderable;
+use Honed\Table\Contracts\IsSelectable;
+use Honed\Table\Contracts\IsToggleable;
+use Honed\Table\Contracts\IsViewable;
 use Honed\Table\Table;
 use Workbench\App\Enums\Status;
 use Workbench\App\Models\Product;
 
-class ProductTable extends Table
+/**
+ * @template TModel of \Workbench\App\Models\Product
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends Table<TModel, TBuilder>
+ */
+class ProductTable extends Table implements IsOrderable, IsSelectable, IsToggleable, IsViewable
 {
     /**
-     * {@inheritdoc}
+     * Define the table.
+     *
+     * @param  $this  $table
+     * @return $this
      */
-    protected $toggle = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $remember = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected $perPage = [10, 25, 50];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resource()
+    protected function definition(Table $table): Table
     {
-        return Product::query()
-            ->with(['seller', 'categories']);
-    }
+        return $table
+            ->for(Product::query())
+            ->columns([
+                KeyColumn::make('id'),
 
-    /**
-     * {@inheritdoc}
-     */
-    public function columns()
-    {
-        return [
-            KeyColumn::make('id'),
+                TextColumn::make('name')
+                    ->defaultToggled()
+                    ->always()
+                    ->searchable(),
 
-            TextColumn::make('name')
-                ->always()
-                ->search(),
+                TextColumn::make('description')
+                    ->defaultToggled()
+                    ->filterable()
+                    ->placeholder('-'),
 
-            TextColumn::make('description')
-                ->filter()
-                ->fallback('-'),
+                BooleanColumn::make('best_seller', 'Favourite')
+                    ->trueText('Favourite')
+                    ->falseText('Not favourite'),
 
-            BooleanColumn::make('best_seller', 'Favourite')
-                ->labels('Favourite', 'Not favourite'),
+                TextColumn::make('seller.name', 'Sold by')
+                    ->defaultToggled(),
 
-            TextColumn::make('seller.name', 'Sold by')
-                ->sometimes(),
+                Column::make('status'),
 
-            Column::make('status'),
+                NumericColumn::make('price')
+                    ->alias('cost')
+                    ->sortable(),
 
-            NumberColumn::make('price')
-                ->alias('cost')
-                ->sort(),
+                DateColumn::make('created_at')
+                    ->sortable(),
 
-            DateColumn::make('created_at')
-                ->sometimes()
-                ->sort(),
+                Column::make('public_id')
+                    ->hidden()
+                    ->always(),
 
-            HiddenColumn::make('public_id')
-                ->hidden()
-                ->always(),
+                DateColumn::make('updated_at')
+                    ->filterable()
+                    ->allow(false),
+            ])
+            ->persistColumnsInCookie()
+            // ->perPage([10, 25, 50])
+            // ->defaultPerPage(15)
+            ->filters([
+                Filter::make('name')->operator('like'),
 
-            DateColumn::make('updated_at')
-                ->filter()
-                ->allow(false),
-        ];
-    }
+                Filter::make('price', 'Maximum price')
+                    ->strict()
+                    ->operator('<=')
+                    ->options([10, 20, 50, 100]),
 
-    /**
-     * {@inheritdoc}
-     */
-    public function filters()
-    {
-        return [
-            Filter::make('name')->operator('like'),
+                Filter::make('status')
+                    ->enum(Status::class)
+                    ->multiple(),
 
-            Filter::make('price', 'Maximum price')
-                ->strict()
-                ->operator('<=')
-                ->options([10, 20, 50, 100]),
+                Filter::make('status', 'Single')
+                    ->alias('only')
+                    ->enum(Status::class),
 
-            Filter::make('status')
-                ->enum(Status::class)
-                ->multiple(),
+                Filter::make('best_seller', 'Favourite')
+                    ->boolean()
+                    ->alias('favourite'),
 
-            Filter::make('status', 'Single')
-                ->alias('only')
-                ->enum(Status::class),
+                Filter::make('created_at', 'Oldest')
+                    ->alias('oldest')
+                    ->date()
+                    ->operator('>='),
 
-            Filter::make('best_seller', 'Favourite')
-                ->boolean()
-                ->alias('favourite'),
+                Filter::make('created_at', 'Newest')
+                    ->alias('newest')
+                    ->operator('<=')
+                    ->date(),
+            ])
+            ->sorts([
+                Sort::make('name', 'A-Z')
+                    ->desc()
+                    ->default(),
 
-            Filter::make('created_at', 'Oldest')
-                ->alias('oldest')
-                ->date()
-                ->operator('>='),
+                Sort::make('name', 'Z-A')
+                    ->asc(),
 
-            Filter::make('created_at', 'Newest')
-                ->alias('newest')
-                ->operator('<=')
-                ->asDate(),
-        ];
-    }
+                Sort::make('price'),
 
-    /**
-     * {@inheritdoc}
-     */
-    public function sorts()
-    {
-        return [
-            Sort::make('name', 'A-Z')
-                ->desc()
-                ->default(),
+                Sort::make('best_seller', 'Favourite')
+                    ->alias('favourite'),
 
-            Sort::make('name', 'Z-A')
-                ->asc(),
+                Sort::make('updated_at')
+                    ->allow(false),
+            ])
+            ->searches([
+                Search::make('description'),
+            ])
+            ->operations([
+                InlineOperation::make('edit')
+                    ->action(fn ($record) => $record->update(['name' => 'Inline'])),
 
-            Sort::make('price'),
+                InlineOperation::make('delete')
+                    ->allow(fn ($record) => $record->id % 2 === 0)
+                    ->action(fn ($record) => $record->delete())
+                    ->confirmable(fn ($confirm) => $confirm
+                        ->title(fn ($record) => 'You are about to delete '.$record->name)
+                        ->description('Are you sure?')),
 
-            Sort::make('best_seller', 'Favourite')
-                ->alias('favourite'),
+                InlineOperation::make('show')
+                    ->route(fn ($record) => route('products.show', $record)),
 
-            Sort::make('updated_at')
-                ->allow(false),
-        ];
-    }
+                BulkOperation::make('edit')
+                    ->action(fn ($record) => $record->update(['name' => 'Bulk'])),
 
-    /**
-     * {@inheritdoc}
-     */
-    public function searches()
-    {
-        return [
-            Search::make('description'),
-        ];
-    }
+                BulkOperation::make('delete')
+                    ->action(fn ($record) => $record->delete())
+                    ->allow(false),
 
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            InlineAction::make('edit')
-                ->action(fn ($product) => $product->update(['name' => 'Inline'])),
+                PageOperation::make('create')
+                    ->route('products.create'),
 
-            InlineAction::make('delete')
-                ->allow(fn ($product) => $product->id % 2 === 0)
-                ->action(fn ($product) => $product->delete())
-                ->confirm(fn ($confirm) => $confirm
-                    ->title(fn ($product) => 'You are about to delete '.$product->name)
-                    ->description('Are you sure?')),
+                PageOperation::make('factory')
+                    ->action(function () {
+                        $record = Product::factory()->create();
 
-            InlineAction::make('show')
-                ->route(fn ($product) => route('products.show', $product)),
+                        return to_route('products.show', $record);
+                    }),
 
-            BulkAction::make('edit')
-                ->action(fn ($product) => $product->update(['name' => 'Bulk'])),
-
-            BulkAction::make('delete')
-                ->action(fn ($product) => $product->delete())
-                ->allow(false),
-
-            PageAction::make('create')
-                ->route('products.create'),
-
-            PageAction::make('factory')
-                ->action(function () {
-                    $product = product('test');
-
-                    return to_route('products.show', $product);
-                }),
-        ];
+            ]);
     }
 }
