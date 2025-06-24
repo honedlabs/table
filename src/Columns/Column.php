@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Honed\Table\Columns;
 
 use Closure;
-use Honed\Core\Primitive;
-use Illuminate\Support\Str;
-use Honed\Refine\Sorts\Sort;
-use InvalidArgumentException;
-use Honed\Core\Concerns\HasIcon;
-use Honed\Core\Concerns\HasName;
-use Honed\Core\Concerns\HasType;
+use Honed\Core\Concerns\Allowable;
 use Honed\Core\Concerns\HasAlias;
 use Honed\Core\Concerns\HasExtra;
+use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasQuery;
+use Honed\Core\Concerns\HasType;
 use Honed\Core\Concerns\IsActive;
-use Honed\Core\Concerns\Allowable;
-use Honed\Table\Concerns\Selectable;
+use Honed\Core\Contracts\NullsAsUndefined;
+use Honed\Core\Primitive;
+use Honed\Infolist\Entries\Concerns\CanBeAggregated;
+use Honed\Infolist\Entries\Concerns\CanBeBadge;
+use Honed\Infolist\Entries\Concerns\CanFormatValues;
+use Honed\Infolist\Entries\Concerns\HasPlaceholder;
+use Honed\Infolist\Entries\Concerns\HasState;
 use Honed\Refine\Concerns\CanBeHidden;
 use Honed\Refine\Concerns\HasQualifier;
-use Illuminate\Database\Eloquent\Model;
+use Honed\Refine\Sorts\Sort;
+use Honed\Table\Concerns\Selectable;
 use Illuminate\Database\Eloquent\Builder;
-use Honed\Core\Contracts\NullsAsUndefined;
-use Honed\Infolist\Entries\Concerns\HasState;
-use Honed\Infolist\Entries\Concerns\CanBeBadge;
-use Honed\Infolist\Entries\Concerns\HasPlaceholder;
-use Honed\Infolist\Entries\Concerns\CanBeAggregated;
-use Honed\Infolist\Entries\Concerns\CanFormatValues;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
@@ -38,9 +38,9 @@ class Column extends Primitive implements NullsAsUndefined
 {
     use Allowable;
     use CanBeAggregated;
+    use CanBeBadge;
     use CanBeHidden;
     use CanFormatValues;
-    use CanBeBadge;
     use Concerns\CanBeKey;
     use Concerns\Exportable;
     use Concerns\Filterable;

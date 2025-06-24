@@ -25,7 +25,6 @@ it('is orderable via contract', function () {
         ->isOrderable()->toBeTrue();
 });
 
-
 it('is viewable with scopes', function () {
     expect($this->table)
         ->getViews()->toBeNull()
