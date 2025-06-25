@@ -12,6 +12,6 @@ it('is key', function () {
     expect($this->column)
         ->getType()->toBeNull()
         ->isKey()->toBeTrue()
-        ->isHidden()->toBeTrue()
+        ->isHidden()->toBeFalse()
         ->isQualifying()->toBeTrue();
 });

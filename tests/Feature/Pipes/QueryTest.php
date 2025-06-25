@@ -7,6 +7,7 @@ use Honed\Table\Pipes\Query;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Query\Grammars\Grammar;
+use Illuminate\Support\Facades\DB;
 use Workbench\App\Tables\ProductTable;
 
 beforeEach(function () {
@@ -38,6 +39,8 @@ it('does not apply without headings', function () {
 it('applies heading queries', function () {
     $this->pipe->run($this->table);
 
+    $connection = DB::connection();
+
     expect($this->table->getBuilder()->getQuery())
         ->wheres
         ->scoped(fn ($wheres) => $wheres
@@ -56,12 +59,12 @@ it('applies heading queries', function () {
             ->{1}
             ->scoped(fn ($column) => $column
                 ->toBeInstanceOf(Expression::class)
-                ->getValue(new Grammar())->toContain('users_count')
+                ->getValue(new Grammar($connection))->toContain('users_count')
             )
             ->{2}
             ->scoped(fn ($column) => $column
                 ->toBeInstanceOf(Expression::class)
-                ->getValue(new Grammar())->toContain('user_exists')
+                ->getValue(new Grammar($connection))->toContain('user_exists')
             )
         );
 });

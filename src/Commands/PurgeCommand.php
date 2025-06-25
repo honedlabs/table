@@ -48,7 +48,7 @@ class PurgeCommand extends Command
         $store = $manager->store($store);
 
         /** @var array<int, class-string<\Honed\Table\Table>>|null */
-        $tables = $this->argument('tables') ?: null; // @phpstan-ignore varTag.nativeType
+        $tables = $this->argument('tables') ?: null;
 
         if ($tables) {
             $tables = array_map(

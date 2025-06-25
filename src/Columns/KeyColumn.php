@@ -16,7 +16,6 @@ class KeyColumn extends Column
         parent::setUp();
 
         $this->key();
-        $this->hidden();
         $this->qualify();
     }
 }
