@@ -211,6 +211,17 @@ class Table extends Primitive implements HandlesOperations, NullsAsUndefined, Re
     }
 
     /**
+     * Get the default endpoint to execute server actions.
+     *
+     * @return string
+     */
+    public static function getDefaultEndpoint()
+    {
+        /** @var string */
+        return config('table.endpoint', 'table');
+    }
+
+    /**
      * Get the route key for the instance.
      *
      * @return string
@@ -358,6 +369,10 @@ class Table extends Primitive implements HandlesOperations, NullsAsUndefined, Re
 
         return [
             ...$this->refineToArray(),
+            'key' => $this->getKey(),
+            'column' => $this->getColumnKey(),
+            'record' => $this->getRecordKey(),
+            'page' => $this->getPageKey(),
             'records' => $this->getRecords(),
             'paginate' => $this->getPagination(),
             'columns' => $this->columnsToArray(),

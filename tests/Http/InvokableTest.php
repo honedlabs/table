@@ -23,7 +23,7 @@ beforeEach(function () {
 it('executes the action', function () {
     $data = $this->request->getData();
 
-    $response = post(route('actions.invoke', $this->table), $data);
+    $response = post(route('tables.invoke', $this->table), $data);
 
     $response->assertRedirect();
 
@@ -39,7 +39,7 @@ it('does not execute non-existent action', function () {
         ->name('create')
         ->getData();
 
-    $response = post(route('table.invoke', $this->table->getRouteKey()), $data);
+    $response = post(route('tables.invoke', $this->table->getRouteKey()), $data);
 
     $response->assertNotFound();
 });

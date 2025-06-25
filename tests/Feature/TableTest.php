@@ -14,7 +14,9 @@ use Workbench\App\Models\Product;
 use Workbench\App\Tables\ProductTable;
 
 beforeEach(function () {
-    $this->table = Table::make()->for(Product::class);
+    $this->table = Table::make()
+        ->for(Product::class)
+        ->key('id');
 });
 
 afterEach(function () {
@@ -30,7 +32,7 @@ it('has key', function () {
 });
 
 it('requires key', function () {
-    $this->table->getKey();
+    $this->table->key(null)->getKey();
 })->throws(KeyNotFoundException::class);
 
 it('is url routable', function () {
@@ -92,6 +94,10 @@ it('has array representation', function () {
             'sorts',
             'filters',
             'searches',
+            'key',
+            'column',
+            'record',
+            'page',
             'records',
             'paginate',
             'columns',
@@ -109,6 +115,10 @@ it('has array representation', function () {
         ->{'sorts'}->toBeArray()
         ->{'filters'}->toBeArray()
         ->{'searches'}->toBeArray()
+        ->{'key'}->toBe($this->table->getKey())
+        ->{'column'}->toBe($this->table->getColumnKey())
+        ->{'record'}->toBe($this->table->getRecordKey())
+        ->{'page'}->toBe($this->table->getPageKey())
         ->{'records'}->toBeArray()
         ->{'paginate'}->toBeArray()
         ->{'paginate'}->toBeArray()
@@ -145,7 +155,7 @@ it('serializes to json', function () {
 });
 
 describe('evaluation', function () {
-    it('named dependencies', function ($closure, $class) {
+    it('has named dependencies', function ($closure, $class) {
         expect($this->table->evaluate($closure))->toBeInstanceOf($class);
     })->with([
         'emptyState' => fn () => [fn ($emptyState) => $emptyState, EmptyState::class],
@@ -156,7 +166,7 @@ describe('evaluation', function () {
         'table' => fn () => [fn ($table) => $table, Table::class],
     ]);
 
-    it('typed dependencies', function ($closure, $class) {
+    it('has typed dependencies', function ($closure, $class) {
         expect($this->table->evaluate($closure))->toBeInstanceOf($class);
     })->with([
         'emptyState' => fn () => [fn (EmptyState $arg) => $arg, EmptyState::class],

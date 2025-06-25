@@ -76,17 +76,17 @@ class TableServiceProvider extends ServiceProvider
             /** @var Router $this */
 
             /** @var string $endpoint */
-            $endpoint = config('table.endpoint', 'table');
+            $endpoint = config('table.endpoint', 'tables');
 
             $endpoint = trim($endpoint, '/');
 
             $methods = ['post', 'patch', 'put'];
 
             $this->match($methods, $endpoint, [TableController::class, 'dispatch'])
-                ->name('table');
+                ->name('tables');
 
             $this->match($methods, $endpoint.'/{table}', [TableController::class, 'invoke'])
-                ->name('table.invoke');
+                ->name('tables.invoke');
         });
     }
 }

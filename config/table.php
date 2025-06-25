@@ -15,7 +15,21 @@ return [
     |
     */
 
-    'endpoint' => '/table',
+    'endpoint' => 'tables',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Handler
+    |--------------------------------------------------------------------------
+    |
+    | You can specify the handler class to be used for executing table actions.
+    | This allows you to customize the behaviour of the handler, such as adding
+    | additional logic or performing additional authorization checks. By default,
+    | the package will use the 'Honed\Action\Handlers\BatchHandler' class.
+    |
+    */
+
+    'handler' => Honed\Action\Handlers\BatchHandler::class,
 
     /*
     |--------------------------------------------------------------------------
