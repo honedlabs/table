@@ -41,7 +41,6 @@ beforeEach(function () {
 });
 
 it('builds class', function () {
-
     expect($this->table->build()->getBuilder()->getQuery())
         ->wheres
         ->scoped(fn ($wheres) => $wheres
@@ -123,6 +122,111 @@ it('builds class', function () {
             ])
         );
 
-    // expect($this->table->toArray())
-    //     ->dd();
+    expect($this->table)
+        ->isSorting()->toBeTrue()
+        ->isSearching()->toBeTrue()
+        ->isFiltering()->toBeTrue()
+        ->toArray()
+        ->scoped(fn ($array) => $array
+            ->toHaveKeys([
+                'sort',
+                'search',
+                'term',
+                'delimiter',
+                'sorts',
+                'filters',
+                'searches',
+                'key',
+                'column',
+                'record',
+                'records',
+                'paginate',
+                'columns',
+                'pages',
+                'toggleable',
+                'operations',
+                'views',
+                'emptyState',
+            ])
+            ->not->toHaveKeys([
+                'match',
+                'meta',
+            ])
+            ->{'sort'}->toBe($this->table->getSortKey())
+            ->{'search'}->toBe($this->table->getSearchKey())
+            ->{'term'}->toBe($this->table->getTerm())
+            ->{'delimiter'}->toBe($this->table->getDelimiter())
+            ->{'sorts'}
+            ->scoped(fn ($sorts) => $sorts
+                ->toBeArray()
+                // ->toHaveCount(count($this->table->getSorts()))
+            )
+            ->{'filters'}
+            ->scoped(fn ($filters) => $filters
+                ->toBeArray()
+                // ->toHaveCount(count($this->table->getFilters()))
+            )
+            ->{'searches'}
+            ->scoped(fn ($searches) => $searches
+                ->toBeArray()
+                ->toBeEmpty()
+            )
+            ->{'key'}->toBe($this->table->getKey())
+            ->{'column'}->toBe($this->table->getColumnKey())
+            ->{'record'}->toBe($this->table->getRecordKey())
+            ->{'records'}
+            ->scoped(fn ($records) => $records
+                ->toBeArray()
+                ->toBeEmpty() // no records matching the given filters
+            )
+            ->{'paginate'}
+            ->scoped(fn ($paginate) => $paginate
+                ->toBeArray()
+                ->{'empty'}->toBeTrue()
+            )
+            ->{'columns'}
+            ->scoped(fn ($columns) => $columns
+                ->toBeArray()
+                ->toHaveCount(count($this->table->getColumns()))
+            )
+            ->{'pages'}
+            ->scoped(fn ($pages) => $pages
+                ->toBeArray()
+                ->toHaveCount(count($this->table->getPerPage()))
+            )
+            ->{'toggleable'}->toBeTrue()
+            ->{'operations'}
+            ->scoped(fn ($operations) => $operations
+                ->toBeArray()
+                ->toHaveKeys(['inline', 'bulk', 'page'])
+                ->{'inline'}->toBeTrue()
+                ->{'bulk'}
+                ->scoped(fn ($bulk) => $bulk
+                    ->toBeArray()
+                    ->toHaveCount(count($this->table->getBulkOperations()))
+                )
+                ->{'page'}
+                ->scoped(fn ($page) => $page
+                    ->toBeArray()
+                    ->toHaveCount(count($this->table->getPageOperations()))
+                )
+            )
+            ->{'views'}
+            ->scoped(fn ($views) => $views
+                ->toBeArray()
+                ->toHaveCount(1)
+                ->{0}
+                ->scoped(fn ($view) => $view
+                    ->toBeObject()
+                    ->id->toBe(1)
+                    ->name->toBe('Filter view')
+                )
+            )
+            ->{'emptyState'}
+            ->scoped(fn ($emptyState) => $emptyState
+                ->toBeArray()
+                ->toHaveKeys(['heading', 'description', 'operations'])
+                ->not->toHaveKey('icon')
+            )
+        );
 });

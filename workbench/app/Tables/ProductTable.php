@@ -42,7 +42,7 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
     protected function definition(Table $table): Table
     {
         return $table
-            ->for(Product::query())
+            ->for(Product::class)
             ->columns([
                 KeyColumn::make('id'),
 

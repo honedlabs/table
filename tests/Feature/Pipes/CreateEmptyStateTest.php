@@ -15,19 +15,19 @@ beforeEach(function () {
         ->whenEmptyStateFiltering(fn ($emptyState) => $emptyState->heading('Filtering'));
 
     $this->table->setPagination([
-        'empty' => false,
+        'empty' => true,
     ]);
 });
 
 it('requires records to create empty state', function () {
     $this->table->setPagination([
-        'empty' => true,
+        'empty' => false,
     ]);
 
     $this->pipe->run($this->table);
 
     expect($this->table)
-        ->isEmpty()->toBeTrue()
+        ->isEmpty()->toBeFalse()
         ->getEmptyState()->toBeNull();
 });
 
@@ -80,7 +80,6 @@ it('has refining state', function () {
 
     $this->pipe->run(
         $this->table
-
             ->emptyState(EmptyState::make()
                 ->whenRefining(fn ($emptyState) => $emptyState->heading('Refining'))
             )

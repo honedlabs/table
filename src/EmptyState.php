@@ -9,6 +9,9 @@ use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Contracts\NullsAsUndefined;
 use Honed\Core\Primitive;
 
+/**
+ * @extends Primitive<string, mixed>
+ */
 class EmptyState extends Primitive implements NullsAsUndefined
 {
     use Concerns\AdaptsToRefinements;
@@ -162,11 +165,11 @@ class EmptyState extends Primitive implements NullsAsUndefined
     }
 
     /**
-     * Get the instance as an array.
+     * Get the representation of the instance.
      *
      * @return array<string, mixed>
      */
-    public function toArray()
+    protected function representation(): array
     {
         return [
             'heading' => $this->getHeading(),

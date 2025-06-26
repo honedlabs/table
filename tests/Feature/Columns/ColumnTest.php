@@ -106,15 +106,9 @@ it('has array representation', function () {
         ->toEqual([
             'name' => $this->name,
             'label' => $this->label,
-            'type' => null,
             'hidden' => false,
             'active' => true,
-            'badge' => false,
-            'icon' => null,
             'toggleable' => true,
-            'sort' => null,
-            'class' => null,
-            'record_class' => null,
         ]);
 });
 
@@ -124,32 +118,21 @@ it('has array representation with sort', function () {
         ->toEqual([
             'name' => $this->name,
             'label' => $this->label,
-            'type' => null,
             'hidden' => false,
-            'icon' => null,
             'toggleable' => true,
             'active' => true,
-            'badge' => false,
             'sort' => [
                 'active' => false,
                 'direction' => null,
                 'next' => $this->name,
             ],
-            'class' => null,
-            'record_class' => null,
         ]);
 });
 
 it('serializes to json', function () {
     expect($this->column->jsonSerialize())
         ->toBeArray()
-        ->toEqual([
-            'name' => $this->name,
-            'label' => $this->label,
-            'hidden' => false,
-            'toggleable' => true,
-            'active' => true,
-        ]);
+        ->toEqual($this->column->toArray());
 });
 
 describe('evaluation', function () {

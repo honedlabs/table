@@ -87,37 +87,36 @@ it('has array representation', function () {
         ->toHaveKeys([
             'sort',
             'search',
-            'match',
-            'term',
             'delimiter',
-            'placeholder',
             'sorts',
             'filters',
             'searches',
             'key',
-            'column',
-            'record',
             'page',
             'records',
             'paginate',
             'columns',
             'toggleable',
             'pages',
-            'emptyState',
             'operations',
+            'emptyState',
+        ])
+        ->not->toHaveKeys([
+            'column',
+            'record',
+            'match',
+            'term',
+            'placeholder',
             'views',
             'meta',
         ])
         ->{'sort'}->toBe($this->table->getSortKey())
         ->{'search'}->toBe($this->table->getSearchKey())
-        // ->{'match'}->toBe($this->table->getMatchKey())
         ->{'delimiter'}->toBe($this->table->getDelimiter())
         ->{'sorts'}->toBeArray()
         ->{'filters'}->toBeArray()
         ->{'searches'}->toBeArray()
         ->{'key'}->toBe($this->table->getKey())
-        ->{'column'}->toBe($this->table->getColumnKey())
-        ->{'record'}->toBe($this->table->getRecordKey())
         ->{'page'}->toBe($this->table->getPageKey())
         ->{'records'}->toBeArray()
         ->{'paginate'}->toBeArray()
@@ -139,19 +138,17 @@ it('has array representation', function () {
         )
         ->{'toggleable'}->toBeFalse()
         ->{'pages'}->toBeArray()
-        ->{'emptyState'}->toBeNull()
-        ->{'views'}->toBeNull()
-        ->{'meta'}->toBeNull();
+        ->{'emptyState'}
+        ->scoped(fn ($emptyState) => $emptyState
+            ->toBeArray()
+            ->toHaveKeys(['heading', 'description', 'operations'])
+            ->not->toHaveKey('icon')
+        );
 });
 
 it('serializes to json', function () {
-    expect($this->table->jsonSerialize())
-        ->toBeArray()
-        ->not->toHaveKeys([
-            'emptyState',
-            'term',
-            'placeholder',
-        ]);
+    expect($this->table)
+        ->jsonSerialize()->toEqual($this->table->toArray());
 });
 
 describe('evaluation', function () {

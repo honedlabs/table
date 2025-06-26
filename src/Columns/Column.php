@@ -240,7 +240,7 @@ class Column extends Primitive implements NullsAsUndefined
      *
      * @return array<string,mixed>
      */
-    public function toArray()
+    protected function representation(): array
     {
         return [
             'name' => $this->getParameter(),
@@ -251,7 +251,7 @@ class Column extends Primitive implements NullsAsUndefined
             'badge' => $this->isBadge(),
             'toggleable' => $this->isToggleable(),
             'class' => $this->getClasses(),
-            'record_class' => $this->getRecordClasses(),
+            'rowClass' => $this->getRecordClasses(),
             'icon' => $this->getIcon(),
             'sort' => $this->sortToArray(),
         ];

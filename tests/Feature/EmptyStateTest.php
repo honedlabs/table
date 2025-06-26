@@ -49,16 +49,11 @@ it('has array representation', function () {
         ->toArray()->toEqual([
             'heading' => EmptyState::DEFAULT_HEADING,
             'description' => EmptyState::DEFAULT_DESCRIPTION,
-            'icon' => null,
             'operations' => [],
         ]);
 });
 
 it('serializes to json', function () {
     expect($this->state)
-        ->jsonSerialize()->toEqual([
-            'heading' => EmptyState::DEFAULT_HEADING,
-            'description' => EmptyState::DEFAULT_DESCRIPTION,
-            'operations' => [],
-        ]);
+        ->jsonSerialize()->toEqual($this->state->toArray());
 });
