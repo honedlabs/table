@@ -43,6 +43,7 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
     {
         return $table
             ->for(Product::class)
+            ->classes('bg-black')
             ->columns([
                 KeyColumn::make('id'),
 

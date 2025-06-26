@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipes;
 
-use Generator;
 use Honed\Action\Operations\InlineOperation;
 use Honed\Core\Pipe;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 /**
@@ -28,40 +28,28 @@ class TransformRecords extends Pipe
         $operations = $instance->getInlineOperations();
         $records = $instance->getRecords();
 
-        $processedRecords = iterator_to_array(
-            $this->generator($records, $columns, $operations)
+        $processedRecords = array_map(
+            fn ($record) => $this->create($record, $instance, $columns, $operations),
+            $records
         );
 
         $instance->setRecords($processedRecords);
     }
 
     /**
-     * Create a generator that yields processed records.
-     *
-     * @param  array<int, array<string, mixed>|\Illuminate\Database\Eloquent\Model>  $records
-     * @param  array<int, \Honed\Table\Columns\Column>  $columns
-     * @param  array<int, InlineOperation>  $operations
-     * @return Generator<int, array<string, mixed>>
-     */
-    protected function generator($records, $columns, $operations)
-    {
-        foreach ($records as $record) {
-            yield $this->create($record, $columns, $operations);
-        }
-    }
-
-    /**
      * Create a record for the table.
      *
-     * @param  array<string, mixed>|\Illuminate\Database\Eloquent\Model  $record
+     * @param  array<string, mixed>|Model  $record
+     * @param  TClass  $instance
      * @param  array<int, \Honed\Table\Columns\Column>  $columns
      * @param  array<int, InlineOperation>  $operations
      * @return array<string, mixed>
      */
-    protected function create($record, $columns, $operations)
+    protected function create($record, $instance, $columns, $operations)
     {
         return [
             ...$this->getColumns($record, $columns),
+            'class' => $instance->getClasses($this->named($record), $this->typed($record)),
             'operations' => $this->getOperations($record, $operations),
         ];
     }
@@ -69,7 +57,7 @@ class TransformRecords extends Pipe
     /**
      * Get the operations for a record.
      *
-     * @param  array<string, mixed>|\Illuminate\Database\Eloquent\Model  $record
+     * @param  array<string, mixed>|Model  $record
      * @param  array<int, InlineOperation>  $operations
      * @return array<int, array<string, mixed>>
      */
@@ -89,7 +77,7 @@ class TransformRecords extends Pipe
     /**
      * Get the column values for a record.
      *
-     * @param  array<string, mixed>|\Illuminate\Database\Eloquent\Model  $record
+     * @param  array<string, mixed>|Model  $record
      * @param  array<int, \Honed\Table\Columns\Column>  $columns
      * @return array<string, array<string, mixed>>
      */
@@ -104,7 +92,7 @@ class TransformRecords extends Pipe
     /**
      * Get the column value for a record.
      *
-     * @param  array<string,mixed>|\Illuminate\Database\Eloquent\Model  $record
+     * @param  array<string,mixed>|Model  $record
      * @param  \Honed\Table\Columns\Column  $column
      * @return array<string, mixed>
      */
@@ -112,12 +100,39 @@ class TransformRecords extends Pipe
     {
         [$value, $placeholder] = $column->value($record);
 
-        return [$column->getParameter() => [
-            'v' => $value,
-            'e' => $column->getExtra(),
-            'c' => $column->getCellClasses(),
-            'f' => $placeholder,
-        ],
+        return [
+            $column->getParameter() => [
+                'v' => $value,
+                'e' => $column->getExtra(),
+                'c' => $column->getCellClasses(),
+                'f' => $placeholder,
+            ],
         ];
+    }
+
+    /**
+     * Get the typed evaluators for a record.
+     *
+     * @param  array<string, mixed>|Model  $record
+     * @return array<class-string, mixed>
+     */
+    protected function typed($record)
+    {
+        if ($record instanceof Model) {
+            return array_fill_keys([Model::class, $record::class], $record);
+        }
+
+        return [];
+    }
+
+    /**
+     * Get the named evaluators for a record.
+     *
+     * @param  array<string, mixed>|Model  $record
+     * @return array<string, mixed>
+     */
+    protected function named($record)
+    {
+        return array_fill_keys(['model', 'record', 'row'], $record);
     }
 }

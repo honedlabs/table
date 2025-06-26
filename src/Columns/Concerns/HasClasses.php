@@ -19,19 +19,12 @@ trait HasClasses
     protected $cellClasses = [];
 
     /**
-     * The classes to apply to the record (row).
-     *
-     * @var array<int, string|Closure(mixed...):string>
-     */
-    protected $recordClasses = [];
-
-    /**
      * Set the classes to apply to an individual cell.
      *
      * @param  string|Closure(mixed...):string  $classes
      * @return $this
      */
-    public function cellClasses($classes)
+    public function cells($classes)
     {
         $this->cellClasses[] = $classes;
 
@@ -45,29 +38,6 @@ trait HasClasses
      */
     public function getCellClasses()
     {
-        return $this->createClass($this->cellClasses);
-    }
-
-    /**
-     * Set the classes to apply to the record (row).
-     *
-     * @param  string|Closure(mixed...):string  $classes
-     * @return $this
-     */
-    public function recordClasses($classes)
-    {
-        $this->recordClasses[] = $classes;
-
-        return $this;
-    }
-
-    /**
-     * Get the classes to apply to the record (row).
-     *
-     * @return string|null
-     */
-    public function getRecordClasses()
-    {
-        return $this->createClass($this->recordClasses);
+        return $this->createClasses($this->cellClasses);
     }
 }

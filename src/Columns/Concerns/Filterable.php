@@ -69,7 +69,6 @@ trait Filterable
     protected function newFilter()
     {
         return Filter::make($this->getName(), $this->getLabel())
-            ->hidden()
             ->alias($this->getAlias())
             ->as($this->getFilterableType())
             ->qualify($this->getQualifier());

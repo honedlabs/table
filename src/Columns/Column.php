@@ -113,7 +113,7 @@ class Column extends Primitive implements NullsAsUndefined
     public function getParameter()
     {
         return $this->getAlias()
-            ?? str_replace('.', '-', $this->getName());
+            ?? str_replace('.', '_', $this->getName());
     }
 
     /**
@@ -251,7 +251,6 @@ class Column extends Primitive implements NullsAsUndefined
             'badge' => $this->isBadge(),
             'toggleable' => $this->isToggleable(),
             'class' => $this->getClasses(),
-            'rowClass' => $this->getRecordClasses(),
             'icon' => $this->getIcon(),
             'sort' => $this->sortToArray(),
         ];
@@ -329,7 +328,7 @@ class Column extends Primitive implements NullsAsUndefined
      * Provide a selection of default dependencies for evaluation by type.
      *
      * @param  class-string  $parameterType
-     * @return array<mixed>
+     * @return array<int, mixed>
      */
     protected function resolveDefaultClosureDependencyForEvaluationByType($parameterType)
     {

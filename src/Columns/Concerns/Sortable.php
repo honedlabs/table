@@ -17,6 +17,13 @@ trait Sortable
     protected $sortable = false;
 
     /**
+     * The sort instance.
+     *
+     * @var Sort|null
+     */
+    protected $sort;
+
+    /**
      * Set the sortable state of the column.
      *
      * @param  bool|string|Closure  $sortable
@@ -50,7 +57,7 @@ trait Sortable
             return null;
         }
 
-        return match (true) {
+        return $this->sort ??= match (true) {
             $this->sortable instanceof Closure => $this->newSort()->query($this->sortable),
 
             is_string($this->sortable) => $this->newSort($this->sortable),

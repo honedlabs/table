@@ -50,7 +50,7 @@ class Paginate extends Pipe
     /**
      * Get the pagination data for the length-aware paginator.
      *
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model>  $paginator
+     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, \Illuminate\Database\Eloquent\Model>  $paginator
      * @param  int  $window
      * @return array<string, mixed>
      */
@@ -69,7 +69,7 @@ class Paginate extends Pipe
     /**
      * Get the pagination data for the simple paginator.
      *
-     * @param  \Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model>  $paginator
+     * @param  \Illuminate\Contracts\Pagination\Paginator<int, \Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string, mixed>
      */
     public function simplePagination($paginator) // @phpstan-ignore-line
@@ -82,7 +82,7 @@ class Paginate extends Pipe
     /**
      * Get the pagination data for the cursor paginator.
      *
-     * @param  \Illuminate\Pagination\AbstractCursorPaginator<\Illuminate\Database\Eloquent\Model>|\Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model>  $paginator
+     * @param  \Illuminate\Pagination\AbstractCursorPaginator<int, \Illuminate\Database\Eloquent\Model>|\Illuminate\Contracts\Pagination\Paginator<int, \Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string, mixed>
      */
     public function cursorPagination($paginator) // @phpstan-ignore-line
@@ -182,7 +182,7 @@ class Paginate extends Pipe
     /**
      * Get the base metadata for the collection paginator.
      *
-     * @param  \Illuminate\Support\Collection<int,\Illuminate\Database\Eloquent\Model>|\Illuminate\Pagination\AbstractCursorPaginator<\Illuminate\Database\Eloquent\Model>|\Illuminate\Contracts\Pagination\Paginator<\Illuminate\Database\Eloquent\Model>  $paginator
+     * @param  \Illuminate\Support\Collection<int,\Illuminate\Database\Eloquent\Model>|\Illuminate\Pagination\AbstractCursorPaginator<int, \Illuminate\Database\Eloquent\Model>|\Illuminate\Contracts\Pagination\Paginator<int, \Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string, mixed>
      */
     protected function collectionPagination($paginator)
@@ -195,7 +195,7 @@ class Paginate extends Pipe
     /**
      * Create pagination links with a sliding window around the current page.
      *
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<\Illuminate\Database\Eloquent\Model>  $paginator
+     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, \Illuminate\Database\Eloquent\Model>  $paginator
      * @param  int  $window
      * @return array<int, array<string, mixed>>
      */

@@ -31,6 +31,10 @@ class Select extends Pipe
 
         $resource = $instance->getBuilder();
 
+        if (empty($selects)) {
+            $selects = ['*'];
+        }
+
         $resource->select($selects);
 
         // match (true) {

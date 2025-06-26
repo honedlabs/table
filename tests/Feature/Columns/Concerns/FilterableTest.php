@@ -45,3 +45,13 @@ it('infers filter type', function ($type, $as) {
     [Column::NUMERIC, 'int'],
     [Column::TEXT, 'string'],
 ]);
+
+it('creates filter with alias', function () {
+    $this->column->alias('alias');
+
+    expect($this->column->filterable()->getFilter())
+        ->toBeInstanceOf(Filter::class)
+        ->getAlias()->toBe('alias')
+        ->isHidden()->toBeFalse()
+        ->interpretsAs()->toBeNull();
+});

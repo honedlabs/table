@@ -23,7 +23,7 @@ it('has parameter', function () {
     expect($this->column)
         ->getParameter()->toBe($this->name)
         ->name('relation.column')->toBe($this->column)
-        ->getParameter()->toBe('relation-column')
+        ->getParameter()->toBe('relation_column')
         ->alias('alias')->toBe($this->column)
         ->getParameter()->toBe('alias');
 });

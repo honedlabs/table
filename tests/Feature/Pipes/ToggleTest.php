@@ -44,7 +44,7 @@ it('uses defaults', function () {
         ->isAlways()->toBeTrue()
         ->isToggleable()->toBeTrue()
         ->isActive()->toBeFalse()
-        ->isHidden()->toBeTrue();
+        ->isHidden()->toBeFalse();
 
     expect(getColumn($this->table, 'name'))
         ->isAlways()->toBeFalse()
@@ -95,7 +95,7 @@ it('retrieves from sources', function ($table) {
         ->isAlways()->toBeTrue()
         ->isToggleable()->toBeTrue()
         ->isActive()->toBeFalse()
-        ->isHidden()->toBeTrue();
+        ->isHidden()->toBeFalse();
 
     expect(getColumn($table, 'name'))
         ->isAlways()->toBeFalse()

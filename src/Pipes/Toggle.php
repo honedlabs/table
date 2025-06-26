@@ -88,8 +88,6 @@ class Toggle extends Pipe
                     if (! $active
                         && ($column->isAlways() || $column->isKey())
                     ) {
-                        $column->hidden();
-
                         return true;
                     }
 

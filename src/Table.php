@@ -23,6 +23,7 @@ use Honed\Refine\Pipes\SortQuery;
 use Honed\Refine\Stores\CookieStore;
 use Honed\Refine\Stores\SessionStore;
 use Honed\Table\Columns\Column;
+use Honed\Table\Columns\Concerns\HasClasses;
 use Honed\Table\Concerns\HasColumns;
 use Honed\Table\Concerns\HasEmptyState;
 use Honed\Table\Concerns\HasRecords;
@@ -58,6 +59,7 @@ class Table extends Primitive implements HandlesOperations, NullsAsUndefined, Re
 {
     use CanBeRefined;
     use CanHandleOperations;
+    use HasClasses;
     use HasColumns;
     use HasEmptyState;
     use HasMeta;
@@ -393,6 +395,7 @@ class Table extends Primitive implements HandlesOperations, NullsAsUndefined, Re
         $this->build();
 
         return [
+            ...$this->actionableToArray(),
             ...$this->refineToArray(),
             'key' => $this->getKey(),
             'column' => $this->isToggleable() ? $this->getColumnKey() : null,
