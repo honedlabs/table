@@ -5,37 +5,37 @@ declare(strict_types=1);
 namespace Honed\Table\Columns;
 
 use Closure;
-use Honed\Core\Concerns\Allowable;
-use Honed\Core\Concerns\CanBeActive;
-use Honed\Core\Concerns\CanHaveAlias;
-use Honed\Core\Concerns\CanHaveExtra;
+use Honed\Core\Primitive;
+use Illuminate\Support\Str;
+use Honed\Refine\Sorts\Sort;
+use InvalidArgumentException;
 use Honed\Core\Concerns\CanHaveIcon;
-use Honed\Core\Concerns\CanQuery;
-use Honed\Core\Concerns\HasLabel;
 use Honed\Core\Concerns\HasName;
 use Honed\Core\Concerns\HasType;
-use Honed\Core\Contracts\NullsAsUndefined;
-use Honed\Core\Primitive;
-use Honed\Infolist\Entries\Concerns\CanBeAggregated;
-use Honed\Infolist\Entries\Concerns\CanBeBadge;
-use Honed\Infolist\Entries\Concerns\CanFormatValues;
-use Honed\Infolist\Entries\Concerns\HasPlaceholder;
-use Honed\Infolist\Entries\Concerns\HasState;
+use Honed\Core\Concerns\CanHaveAlias;
+use Honed\Core\Concerns\CanHaveExtra;
+use Honed\Core\Concerns\HasLabel;
+use Honed\Core\Concerns\CanQuery;
+use Honed\Core\Concerns\CanBeActive;
+use Honed\Core\Concerns\Allowable;
+use Honed\Table\Concerns\Selectable;
 use Honed\Refine\Concerns\CanBeHidden;
 use Honed\Refine\Concerns\HasQualifier;
-use Honed\Refine\Sorts\Sort;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Honed\Core\Contracts\NullsAsUndefined;
 use Honed\Table\Columns\Concerns\CanBeKey;
-use Honed\Table\Columns\Concerns\CanBeToggled;
+use Honed\Table\Columns\Concerns\Sortable;
 use Honed\Table\Columns\Concerns\Exportable;
 use Honed\Table\Columns\Concerns\Filterable;
-use Honed\Table\Columns\Concerns\HasCellClasses;
 use Honed\Table\Columns\Concerns\Searchable;
-use Honed\Table\Columns\Concerns\Sortable;
-use Honed\Table\Concerns\Selectable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use InvalidArgumentException;
+use Honed\Infolist\Entries\Concerns\HasState;
+use Honed\Table\Columns\Concerns\CanBeToggled;
+use Honed\Infolist\Entries\Concerns\CanBeBadge;
+use Honed\Table\Columns\Concerns\HasCellClasses;
+use Honed\Infolist\Entries\Concerns\HasPlaceholder;
+use Honed\Infolist\Entries\Concerns\CanBeAggregated;
+use Honed\Infolist\Entries\Concerns\CanFormatValues;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
@@ -44,32 +44,32 @@ use InvalidArgumentException;
 class Column extends Primitive implements NullsAsUndefined
 {
     use Allowable;
-    use CanBeActive;
     use CanBeAggregated;
     use CanBeBadge;
     use CanBeHidden;
+    use CanFormatValues;
     use CanBeKey;
     use CanBeToggled;
-    use CanFormatValues;
-    use CanHaveAlias;
-    use CanHaveExtra;
-    use CanHaveIcon;
-    /** @use \Honed\Core\Concerns\CanQuery<TModel, TBuilder> */
-    use CanQuery;
     use Exportable;
     use Filterable;
     use HasCellClasses;
+    use Searchable;
+    use Sortable;
+    use CanHaveAlias;
+    use CanHaveExtra;
+    use CanHaveIcon;
     use HasLabel;
     use HasName;
     use HasPlaceholder;
     use HasQualifier;
 
-    use HasState;
+    /** @use \Honed\Core\Concerns\CanQuery<TModel, TBuilder> */
+    use CanQuery;
 
+    use HasState;
     use HasType;
-    use Searchable;
+    use CanBeActive;
     use Selectable;
-    use Sortable;
 
     public const BADGE = 'badge';
 

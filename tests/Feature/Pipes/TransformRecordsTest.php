@@ -54,7 +54,7 @@ beforeEach(function () {
 
 it('transforms records', function () {
     $this->pipe->instance($this->table);
-
+    
     $this->pipe->run();
 
     expect($this->table->getRecords())

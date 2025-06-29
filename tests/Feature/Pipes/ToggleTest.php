@@ -87,7 +87,7 @@ it('does not toggle if not toggleable', function () {
 
 it('passes', function ($table) {
     $this->pipe->instance($table);
-
+    
     $this->pipe->run();
 
     expect($table->getHeadings())

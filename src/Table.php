@@ -18,7 +18,10 @@ use Honed\Core\Pipes\CallsBefore;
 use Honed\Core\Primitive;
 use Honed\Infolist\Entries\Concerns\HasClasses;
 use Honed\Refine\Concerns\CanRefine;
+use Honed\Refine\Contracts\RefinesData;
 use Honed\Refine\Filters\Filter;
+use Honed\Refine\Pipes\AfterRefining;
+use Honed\Refine\Pipes\BeforeRefining;
 use Honed\Refine\Pipes\FilterQuery;
 use Honed\Refine\Pipes\PersistData;
 use Honed\Refine\Pipes\SearchQuery;
@@ -36,6 +39,7 @@ use Honed\Table\Concerns\Selectable;
 use Honed\Table\Concerns\Toggleable;
 use Honed\Table\Concerns\Viewable;
 use Honed\Table\Exceptions\KeyNotFoundException;
+use Honed\Table\Pipes\Count;
 use Honed\Table\Pipes\CreateEmptyState;
 use Honed\Table\Pipes\Paginate;
 use Honed\Table\Pipes\PrepareColumns;
@@ -58,13 +62,13 @@ use Throwable;
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  *
  * @extends Primitive<string, mixed>
- *
+ * 
  * @implements Stateful<string, mixed>
  */
-class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, NullsAsUndefined, Stateful
+class Table extends Primitive implements HandlesOperations, NullsAsUndefined, HooksIntoLifecycle, Stateful
 {
-    use CanHandleOperations;
     use CanRefine;
+    use CanHandleOperations;
     use HasClasses;
     use HasColumns;
     use HasEmptyState;
@@ -382,8 +386,22 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
     }
 
     /**
+     * Get the search term for the table.
+     * 
+     * @return array<string, mixed>
+     */
+    protected function getSearchState()
+    {
+        if ($this->isNotSearchable()) {
+            return [];
+        }
+
+        return [$this->getSearchKey() => $this->encodeSearchTerm($this->getSearchTerm())];
+    }
+
+    /**
      * Get the search column state for the table.
-     *
+     * 
      * @return array<string, mixed>
      */
     public function getSearchColumnsState()
@@ -402,7 +420,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
 
     /**
      * Get the sort state for the table.
-     *
+     * 
      * @return array<string, mixed>
      */
     public function getSortState()
@@ -418,7 +436,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
 
     /**
      * Get the filter state for the table.
-     *
+     * 
      * @return array<string, mixed>
      */
     public function getFiltersState()
@@ -437,7 +455,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
 
     /**
      * Get the column state for the table.
-     *
+     * 
      * @return array<string, mixed>
      */
     public function getColumnsState()
@@ -468,20 +486,6 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
         } catch (Throwable) {
             return 'App\\';
         }
-    }
-
-    /**
-     * Get the search term for the table.
-     *
-     * @return array<string, mixed>
-     */
-    protected function getSearchState()
-    {
-        if ($this->isNotSearchable()) {
-            return [];
-        }
-
-        return [$this->getSearchKey() => $this->encodeSearchTerm($this->getSearchTerm())];
     }
 
     /**
@@ -589,7 +593,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
         $builder = $this->getBuilder();
 
         return match ($parameterType) {
-            self::class => [$this],
+            Table::class => [$this],
             EmptyState::class => [$this->newEmptyState()],
             Request::class => [$this->getRequest()],
             $builder::class, Builder::class, BuilderContract::class => [$builder],

@@ -42,7 +42,7 @@ it('paginates length aware', function () {
 
 it('paginates simple', function () {
     $this->pipe->instance($this->table->simplePaginate());
-
+    
     $this->pipe->run();
 
     expect($this->table->getRecords())
@@ -61,7 +61,7 @@ it('paginates simple', function () {
 
 it('paginates cursor', function () {
     $this->pipe->instance($this->table->cursorPaginate());
-
+    
     $this->pipe->run();
 
     expect($this->table->getRecords())
@@ -79,7 +79,7 @@ it('paginates cursor', function () {
 
 it('paginates collection', function () {
     $this->pipe->instance($this->table->paginate(false));
-
+    
     $this->pipe->run();
 
     expect($this->table->getRecords())
@@ -108,7 +108,7 @@ it('changes per page', function () {
     $this->table->perPage([10, 25, 50])->request($request);
 
     $this->pipe->instance($this->table->paginate());
-
+    
     $this->pipe->run();
 
     expect($this->table->getRecords())
@@ -128,7 +128,7 @@ it('changes per page with restrictions', function () {
     $this->table->perPage([10, 25, 50])->request($request);
 
     $this->pipe->instance($this->table->paginate());
-
+    
     $this->pipe->run();
 
     expect($this->table->getRecords())
@@ -151,7 +151,7 @@ it('changes default per page', function () {
         ->request($request);
 
     $this->pipe->instance($this->table->paginate());
-
+    
     $this->pipe->run();
 
     expect($this->table->getRecords())
