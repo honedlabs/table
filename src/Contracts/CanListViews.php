@@ -7,6 +7,13 @@ namespace Honed\Table\Contracts;
 interface CanListViews
 {
     /**
+     * Get all the views stored for all tables.
+     *
+     * @return array<int, object>
+     */
+    public function all();
+
+    /**
      * Get the views stored for a given table or tables.
      *
      * @param  mixed|array<int, mixed>  $table

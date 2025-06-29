@@ -10,27 +10,38 @@ use Honed\Refine\Searches\Search;
 trait Searchable
 {
     /**
-     * The searchable state of the column.
+     * The searchable of the instance.
      *
      * @var bool|string|Closure
      */
     protected $searchable = false;
 
     /**
-     * Set the searchable state of the column.
+     * Set the instance to be searchable.
      *
-     * @param  bool|string|Closure  $searches
+     * @param  bool|string|Closure  $value
      * @return $this
      */
-    public function searchable($searches = true)
+    public function searchable($value = true)
     {
-        $this->searchable = $searches;
+        $this->searchable = $value;
 
         return $this;
     }
 
     /**
-     * Determine if the column is searchable.
+     * Set the instance to not be searchable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notSearchable($value = true)
+    {
+        return $this->searchable(! $value);
+    }
+
+    /**
+     * Determine if the instance is searchable.
      *
      * @return bool
      */
@@ -40,7 +51,17 @@ trait Searchable
     }
 
     /**
-     * Get the columns to search on.
+     * Determine if the instance is not searchable.
+     *
+     * @return bool
+     */
+    public function isNotSearchable()
+    {
+        return ! $this->isSearchable();
+    }
+
+    /**
+     * Get the search instance.
      *
      * @return Search|null
      */
@@ -52,9 +73,7 @@ trait Searchable
 
         return match (true) {
             $this->searchable instanceof Closure => $this->newSearch()->query($this->searchable),
-
             is_string($this->searchable) => $this->newSearch($this->searchable),
-
             default => $this->newSearch()
         };
     }

@@ -21,16 +21,27 @@ trait Filterable
     protected $filterable = false;
 
     /**
-     * Set the filterable state of the column.
+     * Set the instance to be filterable.
      *
-     * @param  bool|Closure  $filterable
+     * @param  bool|Closure  $value
      * @return $this
      */
-    public function filterable($filterable = true)
+    public function filterable($value = true)
     {
-        $this->filterable = $filterable;
+        $this->filterable = $value;
 
         return $this;
+    }
+
+    /**
+     * Set the instance to not be filterable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notFilterable($value = true)
+    {
+        return $this->filterable(! $value);
     }
 
     /**
@@ -41,6 +52,16 @@ trait Filterable
     public function isFilterable()
     {
         return (bool) $this->filterable;
+    }
+
+    /**
+     * Determine if the column is not filterable.
+     *
+     * @return bool
+     */
+    public function isNotFilterable()
+    {
+        return ! $this->isFilterable();
     }
 
     /**

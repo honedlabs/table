@@ -11,10 +11,14 @@ beforeEach(function () {
 
 it('is selectable', function () {
     expect($this->table)
+        ->isNotSelectable()->toBeTrue()
         ->isSelectable()->toBeFalse()
         ->getSelects()->toBe([])
         ->selectable()->toBe($this->table)
         ->isSelectable()->toBeTrue()
+        ->getSelects()->toBe([])
+        ->notSelectable()->toBe($this->table)
+        ->isNotSelectable()->toBeTrue()
         ->getSelects()->toBe([]);
 });
 

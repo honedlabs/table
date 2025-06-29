@@ -6,6 +6,7 @@ namespace Honed\Table\Drivers;
 
 use Honed\Table\Contracts\CanListViews;
 use Honed\Table\Contracts\Driver;
+use Honed\Table\Events\ViewCreated;
 use Honed\Table\Events\ViewDeleted;
 use Honed\Table\Events\ViewsPurged;
 use Honed\Table\Events\ViewUpdated;
@@ -118,22 +119,34 @@ class Decorator implements CanListViews, Driver
     }
 
     /**
+     * Get all the views stored for all tables.
+     *
+     * @return array<int, object>
+     *
+     * @throws RuntimeException
+     */
+    public function all()
+    {
+        $driver = $this->checkIfCanListViews();
+
+        return $driver->all();
+    }
+
+    /**
      * Get the views stored for a given table or tables.
      *
      * @param  mixed|array<int, mixed>  $table
      * @return array<int, object>
+     *
+     * @throws RuntimeException
      */
     public function stored($table)
     {
-        if (! $this->driver instanceof CanListViews) {
-            throw new RuntimeException(
-                "The [{$this->name}] driver does not support listing stored views."
-            );
-        }
+        $driver = $this->checkIfCanListViews();
 
         $table = $this->resolveTables($table);
 
-        return $this->driver->stored($table);
+        return $driver->stored($table);
     }
 
     /**
@@ -141,18 +154,36 @@ class Decorator implements CanListViews, Driver
      *
      * @param  mixed|array<int, mixed>  $scope
      * @return array<int, object>
+     *
+     * @throws RuntimeException
      */
     public function scoped($scope)
     {
-        if (! $this->driver instanceof CanListViews) {
-            throw new RuntimeException(
-                "The [{$this->name}] driver does not support listing scoped views."
-            );
-        }
+        $driver = $this->checkIfCanListViews();
 
         $scope = $this->resolveScopes($scope);
 
-        return $this->driver->scoped($scope);
+        return $driver->scoped($scope);
+    }
+
+    /**
+     * Create a new view for the given table, name and scope.
+     *
+     * @param  mixed  $table
+     * @param  string  $name
+     * @param  mixed  $scope
+     * @param  array<string, mixed>  $view
+     * @return void
+     */
+    public function create($table, $name, $scope, $view)
+    {
+        $table = Views::serializeTable($table);
+
+        $scope = Views::serializeScope($scope);
+
+        $this->driver->create($table, $name, $scope, $view);
+
+        Event::dispatch(new ViewCreated($table, $name, $scope, $view));
     }
 
     /**
@@ -261,5 +292,24 @@ class Decorator implements CanListViews, Driver
             static fn ($table) => Views::serializeTable($table),
             $tables
         );
+    }
+
+    /**
+     * Check if the driver supports listing views.
+     *
+     * @return CanListViews|never
+     *
+     * @throws RuntimeException
+     */
+    protected function checkIfCanListViews()
+    {
+        if (! $this->driver instanceof CanListViews) {
+            throw new RuntimeException(
+                "The [{$this->name}] driver does not support listing views."
+            );
+        }
+
+        /** @var CanListViews */
+        return $this->driver;
     }
 }

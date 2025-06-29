@@ -7,32 +7,53 @@ namespace Honed\Table\Columns\Concerns;
 trait CanBeKey
 {
     /**
-     * Whether the column is a key.
+     * Whether the instance is the key.
      *
      * @var bool
      */
     protected $key = false;
 
     /**
-     * Set the column to be a key.
+     * Set the instance to be the key.
      *
-     * @param  bool  $key
+     * @param  bool  $value
      * @return $this
      */
-    public function key($key = true)
+    public function key($value = true)
     {
-        $this->key = $key;
+        $this->key = $value;
 
         return $this;
     }
 
     /**
-     * Whether the column is a key.
+     * Set the instance to not the key.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notKey($value = true)
+    {
+        return $this->key(! $value);
+    }
+
+    /**
+     * Determine if the instance is the key.
      *
      * @return bool
      */
     public function isKey()
     {
         return $this->key;
+    }
+
+    /**
+     * Determine if the instance is not the key.
+     *
+     * @return bool
+     */
+    public function isNotKey()
+    {
+        return ! $this->isKey();
     }
 }

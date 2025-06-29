@@ -11,6 +11,7 @@ beforeEach(function () {
 
 it('is searchable', function () {
     expect($this->column)
+        ->isNotSearchable()->toBeTrue()
         ->isSearchable()->toBeFalse()
         ->getSearch()->toBeNull()
         ->searchable()->toBe($this->column)
@@ -20,8 +21,11 @@ it('is searchable', function () {
             ->toBeInstanceOf(Search::class)
             ->getName()->toBe($this->column->getName())
             ->getLabel()->toBe('Name')
-            ->getQuery()->toBeNull()
-        );
+            ->queryCallback()->toBeNull()
+        )
+        ->notSearchable()->toBe($this->column)
+        ->isNotSearchable()->toBeTrue()
+        ->getSearch()->toBeNull();
 });
 
 it('is searchable with string', function () {
@@ -34,7 +38,7 @@ it('is searchable with string', function () {
             ->toBeInstanceOf(Search::class)
             ->getName()->toBe('description')
             ->getLabel()->toBe('Name')
-            ->getQuery()->toBeNull()
+            ->queryCallback()->toBeNull()
         );
 });
 
@@ -49,6 +53,6 @@ it('is searchable with closure', function () {
             ->toBeInstanceOf(Search::class)
             ->getName()->toBe($this->column->getName())
             ->getLabel()->toBe('Name')
-            ->getQuery()->toBeInstanceOf(Closure::class)
+            ->queryCallback()->toBeInstanceOf(Closure::class)
         );
 });

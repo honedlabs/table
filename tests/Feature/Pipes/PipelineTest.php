@@ -147,14 +147,14 @@ it('builds class', function () {
                 'operations',
                 'views',
                 'emptyState',
+                'meta'
             ])
             ->not->toHaveKeys([
-                'match',
-                'meta',
+                'match'
             ])
             ->{'sort'}->toBe($this->table->getSortKey())
             ->{'search'}->toBe($this->table->getSearchKey())
-            ->{'term'}->toBe($this->table->getTerm())
+            ->{'term'}->toBe($this->table->getSearchTerm())
             ->{'delimiter'}->toBe($this->table->getDelimiter())
             ->{'sorts'}
             ->scoped(fn ($sorts) => $sorts
@@ -228,5 +228,6 @@ it('builds class', function () {
                 ->toHaveKeys(['heading', 'description', 'operations'])
                 ->not->toHaveKey('icon')
             )
+            ->{'meta'}->toBe([])
         );
 });

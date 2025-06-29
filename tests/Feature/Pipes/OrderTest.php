@@ -24,9 +24,9 @@ beforeEach(function () {
 });
 
 it('uses defaults', function () {
-    $this->pipe->run(
-        $this->table
-    );
+    $this->pipe->instance($this->table);
+
+    $this->pipe->run();
 
     expect(array_map(fn ($column) => $column->getName(), $this->table->getColumns()))
         ->toBe(['id', 'name', 'description', 'price']);
@@ -51,7 +51,9 @@ it('uses defaults', function () {
 ]);
 
 it('retrieves from sources', function ($table) {
-    $this->pipe->run($table);
+    $this->pipe->instance($table);
+
+    $this->pipe->run();
 
     expect(array_map(fn ($column) => $column->getName(), $table->getColumns()))
         ->toBe(['price', 'id', 'name', 'description']);

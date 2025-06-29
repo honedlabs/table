@@ -14,15 +14,12 @@ use Honed\Core\Pipe;
 class Query extends Pipe
 {
     /**
-     * Run the after refining logic.
-     *
-     * @param  TClass  $instance
-     * @return void
+     * Run the query logic.
      */
-    public function run($instance)
+    public function run(): void
     {
-        foreach ($instance->getHeadings() as $heading) {
-            $instance->evaluate($heading->getQuery());
+        foreach ($this->instance->getHeadings() as $heading) {
+            $this->instance->evaluate($heading->queryCallback());
         }
     }
 }

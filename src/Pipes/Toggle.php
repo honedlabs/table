@@ -16,13 +16,12 @@ use Honed\Table\Columns\Column;
 class Toggle extends Pipe
 {
     /**
-     * Run the after refining logic.
-     *
-     * @param  TClass  $instance
-     * @return void
+     * Run the toggle logic.
      */
-    public function run($instance)
+    public function run(): void
     {
+        $instance = $this->instance;
+
         $toggleable = $instance->isToggleable();
         $orderable = $instance->isOrderable();
 
@@ -151,7 +150,7 @@ class Toggle extends Pipe
     {
         return match (true) {
             ! $column->isToggleable() => true,
-            ! $names => $column->isDefaultToggled(),
+            ! $names => $column->isToggledByDefault(),
             default => in_array($column->getParameter(), $names),
         };
     }

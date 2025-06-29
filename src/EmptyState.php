@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Action\Operations\PageOperation;
-use Honed\Core\Concerns\HasIcon;
-use Honed\Core\Contracts\NullsAsUndefined;
 use Honed\Core\Primitive;
+use Honed\Core\Concerns\CanHaveIcon;
+use Honed\Action\Operations\PageOperation;
+use Honed\Core\Contracts\NullsAsUndefined;
+use Honed\Table\Concerns\AdaptsToRefinements;
 
 /**
  * @extends Primitive<string, mixed>
  */
 class EmptyState extends Primitive implements NullsAsUndefined
 {
-    use Concerns\AdaptsToRefinements;
-    use HasIcon;
+    use AdaptsToRefinements;
+    use CanHaveIcon;
 
     public const DEFAULT_HEADING = 'No results found';
 

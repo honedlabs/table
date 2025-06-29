@@ -48,12 +48,12 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                 KeyColumn::make('id'),
 
                 TextColumn::make('name')
-                    ->defaultToggled()
+                    ->toggledByDefault()
                     ->always()
                     ->searchable(),
 
                 TextColumn::make('description')
-                    ->defaultToggled()
+                    ->toggledByDefault()
                     ->filterable()
                     ->placeholder('-'),
 
@@ -62,7 +62,7 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                     ->falseText('Not favourite'),
 
                 TextColumn::make('seller.name', 'Sold by')
-                    ->defaultToggled(),
+                    ->toggledByDefault(),
 
                 Column::make('status'),
 
@@ -145,7 +145,7 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                         ->description('Are you sure?')),
 
                 InlineOperation::make('show')
-                    ->route(fn ($record) => route('products.show', $record)),
+                    ->url(fn ($record) => route('products.show', $record)),
 
                 BulkOperation::make('edit')
                     ->action(fn ($record) => $record->update(['name' => 'Bulk'])),
@@ -159,7 +159,7 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                     ->bulk(),
 
                 PageOperation::make('create')
-                    ->route('products.create'),
+                    ->url('products.create'),
 
                 PageOperation::make('factory')
                     ->action(function () {

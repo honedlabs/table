@@ -22,24 +22,27 @@ describe('searches', function () {
     });
 
     it('creates', function () {
-        $this->pipe->run($this->table);
+        $this->pipe->instance($this->table);
+
+        $this->pipe->run();
 
         expect($this->table->getSearches())->toHaveCount(1);
     });
 
     it('does not create if column has no search', function () {
-        $this->pipe->run(
-            $this->table
+        $this->pipe->instance($this->table
                 ->columns(NumericColumn::make('price'))
         );
+
+        $this->pipe->run();
 
         expect($this->table->getSearches())->toHaveCount(1);
     });
 
     it('does not create if table is not searchable', function () {
-        $this->pipe->run(
-            $this->table->searchable(false)
-        );
+        $this->pipe->instance($this->table->searchable(false));
+
+        $this->pipe->run();
 
         expect($this->table->getSearches())->toBeEmpty();
     });
@@ -51,7 +54,9 @@ describe('filters', function () {
     });
 
     it('creates', function () {
-        $this->pipe->run($this->table);
+        $this->pipe->instance($this->table);
+
+        $this->pipe->run();
 
         expect($this->table->getFilters())
             ->toHaveCount(1)
@@ -65,18 +70,19 @@ describe('filters', function () {
     });
 
     it('does not create if table is not filterable', function () {
-        $this->pipe->run(
-            $this->table->filterable(false)
-        );
+        $this->pipe->instance($this->table->filterable(false));
+
+        $this->pipe->run();
 
         expect($this->table->getFilters())->toBeEmpty();
     });
 
     it('does not create if column has no filter', function () {
-        $this->pipe->run(
-            $this->table
+        $this->pipe->instance($this->table
                 ->columns(TextColumn::make('name'))
         );
+
+        $this->pipe->run();
 
         expect($this->table->getFilters())->toHaveCount(1);
     });
@@ -88,7 +94,9 @@ describe('sorts', function () {
     });
 
     it('creates', function () {
-        $this->pipe->run($this->table);
+        $this->pipe->instance($this->table);
+
+        $this->pipe->run();
 
         expect($this->table->getSorts())
             ->toHaveCount(1)
@@ -101,27 +109,30 @@ describe('sorts', function () {
     });
 
     it('does not create if column has no sort', function () {
-        $this->pipe->run(
-            $this->table
-                ->columns(TextColumn::make('name'))
+        $this->pipe->instance($this->table
+            ->columns(TextColumn::make('name'))
         );
+
+        $this->pipe->run();
 
         expect($this->table->getSorts())->toHaveCount(1);
     });
 
     it('does not create if not active', function () {
-        $this->pipe->run(
-            $this->table
-                ->columns(NumericColumn::make('price')->active(false))
+        $this->pipe->instance($this->table
+            ->columns(NumericColumn::make('price')->active(false))
         );
+
+        $this->pipe->run();
 
         expect($this->table->getSorts())->toHaveCount(1);
     });
 
     it('does not create if table is not sortable', function () {
-        $this->pipe->run(
-            $this->table->sortable(false)
-        );
+
+        $this->pipe->instance($this->table->sortable(false));
+
+        $this->pipe->run();
 
         expect($this->table->getSorts())->toBeEmpty();
     });
@@ -136,9 +147,9 @@ describe('selects', function () {
     });
 
     it('selects', function () {
-        $this->pipe->run(
-            $this->table->selectable()
-        );
+        $this->pipe->instance($this->table->selectable());
+
+        $this->pipe->run();
 
         expect($this->table)
             ->isSelectable()->toBeTrue()
@@ -146,11 +157,12 @@ describe('selects', function () {
     });
 
     it('does not select if not active', function () {
-        $this->pipe->run(
-            $this->table
+        $this->pipe->instance($this->table
                 ->selectable()
                 ->columns(NumericColumn::make('price')->active(false))
         );
+        
+        $this->pipe->run();
 
         expect($this->table)
             ->isSelectable()->tobeTrue()
@@ -158,10 +170,11 @@ describe('selects', function () {
     });
 
     it('does not select if not selectable', function () {
-        $this->pipe->run(
-            $this->table
+        $this->pipe->instance($this->table
                 ->selectable(false)
         );
+        
+        $this->pipe->run();
 
         expect($this->table)
             ->isSelectable()->toBeFalse()

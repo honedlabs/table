@@ -43,6 +43,16 @@ it('sets headings', function () {
         ->getHeadings()->toHaveCount(2);
 });
 
+it('gets active columns', function () {
+    expect($this->table)
+        ->columns(Column::make('id'))->toBe($this->table)
+        ->getActiveColumns()->toHaveCount(1)
+        ->columns(Column::make('name')->allow(false))->toBe($this->table)
+        ->getActiveColumns()->toHaveCount(1)
+        ->column(Column::make('description')->notActive())->toBe($this->table)
+        ->getActiveColumns()->toHaveCount(1);
+});
+
 it('has array representation', function () {
     expect($this->table)
         ->columnsToArray()->toBeEmpty()

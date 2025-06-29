@@ -17,15 +17,14 @@ use InvalidArgumentException;
 class Paginate extends Pipe
 {
     /**
-     * Run the after refining logic.
-     *
-     * @param  TClass  $instance
-     * @return void
+     * Run the paginate logic.
      *
      * @throws InvalidArgumentException
      */
-    public function run($instance)
+    public function run(): void
     {
+        $instance = $this->instance;
+
         $paginate = $instance->getPaginate();
 
         $method = Str::camel($paginate);

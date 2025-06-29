@@ -11,9 +11,12 @@ beforeEach(function () {
 
 it('is orderable', function () {
     expect($this->table)
+        ->isNotOrderable()->toBeTrue()
         ->isOrderable()->toBeFalse()
         ->orderable()->toBe($this->table)
-        ->isOrderable()->toBeTrue();
+        ->isOrderable()->toBeTrue()
+        ->notOrderable()->toBe($this->table)
+        ->isNotOrderable()->toBeTrue();
 });
 
 it('is orderable via contract', function () {

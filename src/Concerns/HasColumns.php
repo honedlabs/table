@@ -99,6 +99,21 @@ trait HasColumns
     }
 
     /**
+     * Get the columns being applied.
+     *
+     * @return array<int,Column>
+     */
+    public function getActiveColumns()
+    {
+        return array_values(
+            array_filter(
+                $this->getColumns(),
+                static fn (Column $column) => $column->isActive()
+            )
+        );
+    }
+
+    /**
      * Get the columns as an array.
      *
      * @return array<int,array<string,mixed>>

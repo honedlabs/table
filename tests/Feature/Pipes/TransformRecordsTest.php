@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->table = Table::make()
         ->operations([
             InlineOperation::make('view')
-                ->route('products.show', '{id}'),
+                ->url('products.show', '{id}'),
 
             InlineOperation::make('edit')
                 ->allow(fn ($record) => $record->id % 2 === 0),
@@ -53,7 +53,9 @@ beforeEach(function () {
 });
 
 it('transforms records', function () {
-    $this->pipe->run($this->table);
+    $this->pipe->instance($this->table);
+    
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->each(fn ($record) => $record

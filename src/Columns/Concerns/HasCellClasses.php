@@ -7,7 +7,7 @@ namespace Honed\Table\Columns\Concerns;
 use Closure;
 use Honed\Infolist\Entries\Concerns\HasClasses as HasHeadingClasses;
 
-trait HasClasses
+trait HasCellClasses
 {
     use HasHeadingClasses;
 

@@ -94,6 +94,18 @@ class DatabaseDriver implements CanListViews, Driver
     }
 
     /**
+     * Get all the views stored for all tables.
+     *
+     * @return array<int, object>
+     */
+    public function all()
+    {
+        return $this->newQuery()
+            ->get()
+            ->all();
+    }
+
+    /**
      * Get the views stored for a given table or tables.
      *
      * @param  string|array<int, string>  $table
@@ -122,12 +134,28 @@ class DatabaseDriver implements CanListViews, Driver
     }
 
     /**
+     * Create a new view for the given table, name and scope.
+     *
+     * @param  string  $table
+     * @param  string  $name
+     * @param  string  $scope
+     * @param  array<string, mixed>  $view
+     * @return void
+     *
+     * @throws \Illuminate\Database\UniqueConstraintViolationException
+     */
+    public function create($table, $name, $scope, $view)
+    {
+        $this->insert($table, $name, $scope, $view);
+    }
+
+    /**
      * Set a view for the given table and scope.
      *
      * @param  string  $table
      * @param  string  $name
      * @param  string  $scope
-     * @param  mixed  $view
+     * @param  array<string, mixed>  $view
      * @return void
      */
     public function set($table, $name, $scope, $view)
@@ -145,23 +173,18 @@ class DatabaseDriver implements CanListViews, Driver
      * @param  string  $table
      * @param  string  $name
      * @param  mixed  $scope
-     * @param  mixed  $view
+     * @param  array<string, mixed>  $view
      * @return bool
      */
     public function insert($table, $name, $scope, $view)
     {
-        /** @var array<int, array{table: string, name: string, scope: mixed, view: mixed}> */
-        $inserts = [
-            $this->fill(compact('table', 'name', 'scope', 'view')),
-        ];
-
-        return $this->insertMany($inserts);
+        return $this->insertMany([compact('table', 'name', 'scope', 'view')]);
     }
 
     /**
      * Insert the table views into storage.
      *
-     * @param  array<int, array{table: string, name: string, scope: mixed, view: mixed}>  $inserts
+     * @param  array<int, array{table: string, name: string, scope: mixed, view: array<string, mixed>}>  $inserts
      * @return bool
      */
     public function insertMany($inserts)
@@ -207,14 +230,14 @@ class DatabaseDriver implements CanListViews, Driver
      * @param  string  $table
      * @param  string  $name
      * @param  string  $scope
-     * @param  mixed  $value
+     * @param  array<string, mixed>  $view
      * @return bool
      */
-    public function update($table, $name, $scope, $value)
+    public function update($table, $name, $scope, $view)
     {
         return (bool) $this->scope($table, $name, $scope)
             ->update([
-                'view' => json_encode($value, flags: JSON_THROW_ON_ERROR),
+                'view' => json_encode($view, flags: JSON_THROW_ON_ERROR),
                 static::UPDATED_AT => Carbon::now(),
             ]);
     }
@@ -238,7 +261,7 @@ class DatabaseDriver implements CanListViews, Driver
     /**
      * Create an array of values for the given insert.
      *
-     * @param  array{table: string, name: string, scope: mixed, view: mixed}  $insert
+     * @param  array{table: string, name: string, scope: mixed, view: array<string, mixed>}  $insert
      * @return array<string, mixed>
      */
     protected function fill($insert)

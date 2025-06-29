@@ -22,7 +22,9 @@ it('has paginate', function () {
         ->simplePaginate()->toBe($this->table)
         ->getPaginate()->toBe(Table::SIMPLE)
         ->lengthAwarePaginate()->toBe($this->table)
-        ->getPaginate()->toBe(Table::LENGTH_AWARE);
+        ->getPaginate()->toBe(Table::LENGTH_AWARE)
+        ->dontPaginate()->toBe($this->table)
+        ->getPaginate()->toBe(Table::COLLECTION);
 });
 
 it('has per page', function () {

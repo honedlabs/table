@@ -23,16 +23,16 @@ beforeEach(function () {
                 ->toggleable(false),
 
             Column::make('description')
-                ->defaultToggled(),
+                ->toggledByDefault(),
 
             Column::make('price'),
         ]);
 });
 
-it('uses defaults', function () {
-    $this->pipe->run(
-        $this->table
-    );
+it('defaults', function () {
+    $this->pipe->instance($this->table);
+
+    $this->pipe->run();
 
     expect($this->table->getHeadings())
         ->toHaveCount(3);
@@ -54,7 +54,7 @@ it('uses defaults', function () {
 
     expect(getColumn($this->table, 'description'))
         ->isAlways()->toBeFalse()
-        ->isDefaultToggled()->toBeTrue()
+        ->isToggledByDefault()->toBeTrue()
         ->isActive()->toBeTrue()
         ->isHidden()->toBeFalse();
 
@@ -76,17 +76,19 @@ it('uses defaults', function () {
 ]);
 
 it('does not toggle if not toggleable', function () {
-    $this->pipe->run(
-        $this->table->toggleable(false)
-    );
+    $this->pipe->instance($this->table->notToggleable());
+
+    $this->pipe->run();
 
     expect($this->table->getHeadings())
         ->toHaveCount(4)
         ->each(fn ($column) => $column->isActive()->toBeTrue());
 });
 
-it('retrieves from sources', function ($table) {
-    $this->pipe->run($table);
+it('passes', function ($table) {
+    $this->pipe->instance($table);
+    
+    $this->pipe->run();
 
     expect($table->getHeadings())
         ->toHaveCount(3);
@@ -105,7 +107,7 @@ it('retrieves from sources', function ($table) {
 
     expect(getColumn($table, 'description'))
         ->isAlways()->toBeFalse()
-        ->isDefaultToggled()->toBeTrue()
+        ->isToggledByDefault()->toBeTrue()
         ->isActive()->toBeFalse()
         ->isHidden()->toBeFalse();
 

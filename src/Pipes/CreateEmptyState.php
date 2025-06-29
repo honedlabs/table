@@ -16,13 +16,12 @@ use Honed\Table\EmptyState;
 class CreateEmptyState extends Pipe
 {
     /**
-     * Run the after refining logic.
-     *
-     * @param  TClass  $instance
-     * @return void
+     * Run the create empty state logic.
      */
-    public function run($instance)
+    public function run(): void
     {
+        $instance = $this->instance;
+
         if (! $instance->isEmpty()) {
             $instance->emptyState(null);
 

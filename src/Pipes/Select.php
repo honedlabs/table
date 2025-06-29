@@ -16,13 +16,12 @@ use Illuminate\Support\Arr;
 class Select extends Pipe
 {
     /**
-     * Run the after refining logic.
-     *
-     * @param  TClass  $instance
-     * @return void
+     * Run the select logic.
      */
-    public function run($instance)
+    public function run(): void
     {
+        $instance = $this->instance;
+
         if (! $instance->isSelectable()) {
             return;
         }

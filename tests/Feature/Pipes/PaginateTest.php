@@ -11,15 +11,14 @@ beforeEach(function () {
     Product::factory(100)->create();
 
     $this->pipe = new Paginate();
-    $this->next = fn ($table) => $table;
 
     $this->table = Table::make()->for(Product::class);
 });
 
 it('paginates length aware', function () {
-    $this->pipe->run(
-        $this->table->lengthAwarePaginate()
-    );
+    $this->pipe->instance($this->table->lengthAwarePaginate());
+
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->toBeArray()
@@ -42,9 +41,9 @@ it('paginates length aware', function () {
 });
 
 it('paginates simple', function () {
-    $this->pipe->run(
-        $this->table->simplePaginate()
-    );
+    $this->pipe->instance($this->table->simplePaginate());
+    
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->toBeArray()
@@ -61,9 +60,9 @@ it('paginates simple', function () {
 });
 
 it('paginates cursor', function () {
-    $this->pipe->run(
-        $this->table->cursorPaginate()
-    );
+    $this->pipe->instance($this->table->cursorPaginate());
+    
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->toBeArray()
@@ -79,9 +78,9 @@ it('paginates cursor', function () {
 });
 
 it('paginates collection', function () {
-    $this->pipe->run(
-        $this->table->paginate(false)
-    );
+    $this->pipe->instance($this->table->paginate(false));
+    
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->toBeArray()
@@ -94,9 +93,9 @@ it('paginates collection', function () {
 });
 
 it('errors if an invalid paginator is passed', function () {
-    $this->pipe->run(
-        $this->table->paginate('invalid')
-    );
+    $this->pipe->instance($this->table->paginate('invalid'));
+
+    $this->pipe->run();
 })->throws(InvalidArgumentException::class);
 
 it('changes per page', function () {
@@ -108,9 +107,9 @@ it('changes per page', function () {
 
     $this->table->perPage([10, 25, 50])->request($request);
 
-    $this->pipe->run(
-        $this->table->paginate()
-    );
+    $this->pipe->instance($this->table->paginate());
+    
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->toHaveCount($count);
@@ -128,9 +127,9 @@ it('changes per page with restrictions', function () {
 
     $this->table->perPage([10, 25, 50])->request($request);
 
-    $this->pipe->run(
-        $this->table->paginate()
-    );
+    $this->pipe->instance($this->table->paginate());
+    
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->toHaveCount($this->table->getDefaultPerPage());
@@ -151,9 +150,9 @@ it('changes default per page', function () {
         ->defaultPerPage($count)
         ->request($request);
 
-    $this->pipe->run(
-        $this->table->paginate()
-    );
+    $this->pipe->instance($this->table->paginate());
+    
+    $this->pipe->run();
 
     expect($this->table->getRecords())
         ->toHaveCount($count);

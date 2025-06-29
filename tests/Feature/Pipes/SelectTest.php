@@ -15,7 +15,9 @@ beforeEach(function () {
 });
 
 it('selects columns', function () {
-    $this->pipe->run($this->table);
+    $this->pipe->instance($this->table);
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->columns)
         ->toBeArray()
@@ -24,14 +26,18 @@ it('selects columns', function () {
 });
 
 it('does not select columns if selectable is false', function () {
-    $this->pipe->run($this->table->selectable(false));
+    $this->pipe->instance($this->table->selectable(false));
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->columns)
         ->toBeNull();
 });
 
 it('ensures uniqueness', function () {
-    $this->pipe->run($this->table->select(['id', 'products.id']));
+    $this->pipe->instance($this->table->select(['id', 'products.id']));
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->columns)
         ->toBeArray()

@@ -32,14 +32,14 @@ it('needs a search term', function () {
         'invalid' => $this->query,
     ]);
 
-    $this->pipe->run(
-        $this->table->request($request)
-    );
+    $this->pipe->instance($this->table->request($request));
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeEmpty();
 
-    expect($this->table->getTerm())
+    expect($this->table->getSearchTerm())
         ->toBeNull();
 });
 
@@ -48,15 +48,15 @@ it('applies search', function () {
         $this->table->getSearchKey() => $this->query,
     ]);
 
-    $this->pipe->run(
-        $this->table->request($request)
-    );
+    $this->pipe->instance($this->table->request($request));
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->{0}->toBeSearch('name', 'and')
         ->{1}->toBeSearch('description', 'or');
 
-    expect($this->table->getTerm())
+    expect($this->table->getSearchTerm())
         ->toBe($this->term);
 });
 
@@ -68,13 +68,13 @@ it('applies search with matching', function () {
         $this->table->getMatchKey() => 'name',
     ]);
 
-    $this->pipe->run(
-        $this->table->request($request)
-    );
+    $this->pipe->instance($this->table->request($request));
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeOnlySearch('name');
 
-    expect($this->table->getTerm())
+    expect($this->table->getSearchTerm())
         ->toBe($this->term);
 });

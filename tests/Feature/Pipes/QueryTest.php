@@ -29,7 +29,9 @@ beforeEach(function () {
 it('does not apply without headings', function () {
     $this->table->setHeadings([]);
 
-    $this->pipe->run($this->table);
+    $this->pipe->instance($this->table);
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery())
         ->wheres->toBeEmpty()
@@ -37,7 +39,9 @@ it('does not apply without headings', function () {
 });
 
 it('applies heading queries', function () {
-    $this->pipe->run($this->table);
+    $this->pipe->instance($this->table);
+
+    $this->pipe->run();
 
     $connection = DB::connection();
 

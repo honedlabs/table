@@ -25,9 +25,9 @@ it('needs a filter key', function () {
         'invalid' => $this->value,
     ]);
 
-    $this->pipe->run(
-        $this->table->request($request)
-    );
+    $this->pipe->instance($this->table->request($request));
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeEmpty();
@@ -38,9 +38,9 @@ it('applies filter', function () {
         $this->name => $this->value,
     ]);
 
-    $this->pipe->run(
-        $this->table->request($request)
-    );
+    $this->pipe->instance($this->table->request($request));
+
+    $this->pipe->run();
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeOnlyWhere($this->name, $this->value);

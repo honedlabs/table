@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
+use RuntimeException;
+
 class PendingViewInteraction
 {
     /**
@@ -56,13 +58,48 @@ class PendingViewInteraction
     }
 
     /**
-     * Load the pending view interaction for the given table.
+     * Get the underlying driver for the interaction.
+     *
+     * @return Drivers\Decorator
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    /**
+     * Retrieve the views for the given table.
      *
      * @param  mixed  $table
      * @return array<int, object>
      */
-    public function load($table)
+    public function list($table)
     {
-        return $this->driver->list($table, $this->scope);
+        return $this->driver->list($table, $this->getScope());
+    }
+
+    /**
+     * Get the views stored for the given table.
+     *
+     * @param  mixed  $table
+     * @return array<int, object>
+     *
+     * @throws RuntimeException
+     */
+    public function stored($table)
+    {
+        return $this->driver->stored($table);
+    }
+
+    /**
+     * Get the views stored.
+     *
+     * @return array<int, object>
+     *
+     * @throws RuntimeException
+     */
+    public function scoped()
+    {
+        return $this->driver->scoped($this->getScope());
     }
 }

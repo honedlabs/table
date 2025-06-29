@@ -44,7 +44,7 @@ it('creates pending view interaction', function () {
             ->toHaveCount(1)
             ->{0}->toBeInstanceOf(User::class)
         )
-        ->load($this->table)
+        ->list($this->table)
         ->scoped(fn ($views) => $views
             ->toBeArray()
             ->toHaveCount(1)
@@ -77,6 +77,23 @@ it('lists views', function () {
             ->view->toBe(json_encode(['name' => 'test']))
         );
 });
+
+it('gets all views', function () {
+    $views = $this->decorator->all();
+
+    expect($views)
+        ->toBeArray()
+        ->toHaveCount(1)
+        ->{0}
+        ->scoped(fn ($view) => $view
+            ->name->toBe('Filter view')
+            ->view->toBe(json_encode(['name' => 'test']))
+        );
+});
+
+it('errors if driver does not support all', function () {
+    Views::store('array')->all();
+})->throws(RuntimeException::class);
 
 it('gets stored', function () {
     $views = $this->decorator->stored($this->table);
@@ -111,6 +128,14 @@ it('gets scoped', function () {
 it('errors if driver does not support scoped', function () {
     Views::store('array')->scoped($this->scope);
 })->throws(RuntimeException::class);
+
+it('creates a new view', function () {
+    $this->decorator->create($this->table, 'Search view', $this->scope, ['name' => 'new']);
+
+    expect($this->decorator->get($this->table, 'Search view', $this->scope))
+        ->name->toBe('Search view')
+        ->view->toBe(json_encode(['name' => 'new']));
+});
 
 it('sets view', function () {
     $this->decorator->set(
@@ -159,3 +184,12 @@ it('calls driver methods', function () {
         $this->table, 'Filter view', $this->scope, ['name' => 'test']
     );
 })->throws(UniqueConstraintViolationException::class);
+
+it('is macroable', function () {
+    $this->decorator->macro('test', function () {
+        return 'test';
+    });
+
+    expect($this->decorator->test())
+        ->toBe('test');
+});

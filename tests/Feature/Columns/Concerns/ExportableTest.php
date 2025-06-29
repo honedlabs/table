@@ -12,10 +12,14 @@ beforeEach(function () {
 it('is exportable', function () {
     expect($this->column)
         ->isExportable()->toBeTrue()
+        ->isNotExportable()->toBeFalse()
         ->getExportable()->toBeTrue()
         ->exportable(fn () => 'value')->toBe($this->column)
         ->isExportable()->toBeTrue()
-        ->getExportable()->toBeInstanceOf(Closure::class);
+        ->getExportable()->toBeInstanceOf(Closure::class)
+        ->notExportable()->toBe($this->column)
+        ->isNotExportable()->toBeTrue()
+        ->getExportable()->toBeFalse();
 });
 
 it('has export style', function () {

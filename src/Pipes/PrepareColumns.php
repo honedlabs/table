@@ -15,13 +15,12 @@ use Illuminate\Support\Str;
 class PrepareColumns extends Pipe
 {
     /**
-     * Run the after refining logic.
-     *
-     * @param  TClass  $instance
-     * @return void
+     * Run the prepare columns logic.
      */
-    public function run($instance)
+    public function run(): void
     {
+        $instance = $this->instance;
+
         foreach ($instance->getColumns() as $column) {
             foreach ($this->prepare($instance) as $method) {
                 $this->{'prepare'.Str::studly($method)}($instance, $column);

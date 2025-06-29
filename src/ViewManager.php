@@ -216,8 +216,7 @@ class ViewManager
                 && $this->usesMorphMap() =>
                     // @phpstan-ignore-next-line cast.string
                     $scope->getMorphClass().'|'.(string) $scope->getKey(),
-            $scope instanceof Model
-                && ! $this->usesMorphMap() =>
+            $scope instanceof Model =>
                     // @phpstan-ignore-next-line cast.string
                     $scope::class.'|'.(string) $scope->getKey(),
             default => throw new RuntimeException(

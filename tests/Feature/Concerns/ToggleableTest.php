@@ -11,9 +11,12 @@ beforeEach(function () {
 
 it('is toggleable', function () {
     expect($this->table)
+        ->isNotToggleable()->toBeTrue()
         ->isToggleable()->toBeFalse()
         ->toggleable()->toBe($this->table)
-        ->isToggleable()->toBeTrue();
+        ->isToggleable()->toBeTrue()
+        ->notToggleable()->toBe($this->table)
+        ->isNotToggleable()->toBeTrue();
 });
 
 it('has column key', function () {

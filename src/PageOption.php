@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Honed\Core\Concerns\HasValue;
-use Honed\Core\Concerns\IsActive;
+use Honed\Core\Concerns\CanBeActive;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
@@ -15,7 +15,7 @@ use JsonSerializable;
 class PageOption implements Arrayable, JsonSerializable
 {
     use HasValue;
-    use IsActive;
+    use CanBeActive;
 
     /**
      * Create a new per page record.

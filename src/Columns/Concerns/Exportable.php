@@ -43,6 +43,17 @@ trait Exportable
     }
 
     /**
+     * Set the instance to not be exportable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notExportable($value = true)
+    {
+        return $this->exportable(! $value);
+    }
+
+    /**
      * Check if the column is exportable.
      *
      * @return bool
@@ -50,6 +61,16 @@ trait Exportable
     public function isExportable()
     {
         return (bool) $this->exportable;
+    }
+
+    /**
+     * Determine if the column is not exportable.
+     *
+     * @return bool
+     */
+    public function isNotExportable()
+    {
+        return ! $this->isExportable();
     }
 
     /**

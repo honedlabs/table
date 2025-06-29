@@ -26,8 +26,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Honed\Table\PendingViewInteraction for(mixed|array<int, mixed> $scope = null) Create a pending view retrieval
  * @method static object|null get(string|\Honed\Table\Table $table, string $name, mixed $scope) Retrieve the view for the given table, name, and scope from storage
  * @method static array<int, object> list(mixed $table, array<int, mixed> $scopes) Retrieve the views for the given table and scopes from storage
+ * @method static array<int, object> all() Get all the views stored for all tables
  * @method static array<int, object> stored(mixed|array<int, mixed> $table) Get the views stored for a given table or tables
  * @method static array<int, object> scoped(mixed|array<int, mixed> $scope) Get the views stored for a given scope or scopes
+ * @method static void create(mixed $table, string $name, mixed $scope, mixed $view) Create a new view for the given table, name and scope
  * @method static void set(mixed $table, string $name, mixed $scope, array<string, mixed> $view) Set the view for the given table and scope
  * @method static void delete(mixed $table, string $name, mixed $scope) Delete the view for the given table and scope from storage
  * @method static void purge(mixed|array<int, mixed>|null $table = null) Purge all views for the given table

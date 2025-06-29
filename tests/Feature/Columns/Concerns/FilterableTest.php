@@ -11,11 +11,21 @@ beforeEach(function () {
 
 it('is filterable', function () {
     expect($this->column)
+        ->isNotFilterable()->toBeTrue()
         ->isFilterable()->toBeFalse()
         ->getFilter()->toBeNull()
         ->filterable()->toBe($this->column)
         ->isFilterable()->toBeTrue()
-        ->getFilter()->toBeInstanceOf(Filter::class);
+        ->getFilter()
+        ->scoped(fn ($filter) => $filter
+            ->toBeInstanceOf(Filter::class)
+            ->getName()->toBe('name')
+            ->getLabel()->toBe('Name')
+            ->isHidden()->toBeFalse()
+        )
+        ->notFilterable()->toBe($this->column)
+        ->isNotFilterable()->toBeTrue()
+        ->getFilter()->toBeNull();
 });
 
 it('is filterable with closure', function () {
@@ -28,7 +38,7 @@ it('is filterable with closure', function () {
         ->scoped(fn ($filter) => $filter
             ->toBeInstanceOf(Filter::class)
             ->getLabel()->toBe('Name')
-            ->getQuery()->toBeInstanceOf(Closure::class)
+            ->queryCallback()->toBeInstanceOf(Closure::class)
         );
 });
 

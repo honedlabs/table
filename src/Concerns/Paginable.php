@@ -78,18 +78,29 @@ trait Paginable
     /**
      * Set the paginator type.
      *
-     * @param  bool|string  $paginate
+     * @param  bool|string  $value
      * @return $this
      */
-    public function paginate($paginate = true)
+    public function paginate($value = true)
     {
-        $this->paginate = match ($paginate) {
+        $this->paginate = match ($value) {
             true => self::LENGTH_AWARE,
             false => self::COLLECTION,
-            default => $paginate,
+            default => $value,
         };
 
         return $this;
+    }
+
+    /**
+     * Set the instance to not be paginable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function dontPaginate($value = true)
+    {
+        return $this->paginate(! $value);
     }
 
     /**
@@ -198,7 +209,7 @@ trait Paginable
      */
     public function getPageKey()
     {
-        return $this->formatScope($this->pageKey);
+        return $this->scoped($this->pageKey);
     }
 
     /**
@@ -221,7 +232,7 @@ trait Paginable
      */
     public function getRecordKey()
     {
-        return $this->formatScope($this->recordKey);
+        return $this->scoped($this->recordKey);
     }
 
     /**

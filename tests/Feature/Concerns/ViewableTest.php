@@ -13,16 +13,20 @@ beforeEach(function () {
 
 it('is viewable', function () {
     expect($this->table)
+        ->isNotViewable()->toBeTrue()
         ->isViewable()->toBeFalse()
         ->getViews()->toBeNull()
         ->viewable()->toBe($this->table)
         ->isViewable()->toBeTrue()
-        ->getViews()->toBeInstanceOf(PendingViewInteraction::class);
+        ->getViews()->toBeInstanceOf(PendingViewInteraction::class)
+        ->notViewable()->toBe($this->table)
+        ->isNotViewable()->toBeTrue()
+        ->getViews()->toBeNull();
 });
 
-it('is orderable via contract', function () {
+it('is viewable via contract', function () {
     expect(ProductTable::make())
-        ->isOrderable()->toBeTrue();
+        ->isViewable()->toBeTrue();
 });
 
 it('is viewable with scopes', function () {
@@ -34,7 +38,7 @@ it('is viewable with scopes', function () {
 
 it('loads views', function () {
     expect($this->table)
-        ->loadViews()->toBeNull()
+        ->listViews()->toBeNull()
         ->viewable(Product::factory()->create())->toBe($this->table)
-        ->loadViews()->toBeArray();
+        ->listViews()->toBeArray();
 });

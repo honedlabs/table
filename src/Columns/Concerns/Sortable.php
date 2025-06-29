@@ -10,7 +10,7 @@ use Honed\Refine\Sorts\Sort;
 trait Sortable
 {
     /**
-     * The sortable state of the column.
+     * The sortable of the instance.
      *
      * @var bool|string|Closure
      */
@@ -24,20 +24,31 @@ trait Sortable
     protected $sort;
 
     /**
-     * Set the sortable state of the column.
+     * Set the instance to be sortable.
      *
-     * @param  bool|string|Closure  $sortable
+     * @param  bool|string|Closure  $value
      * @return $this
      */
-    public function sortable($sortable = true)
+    public function sortable($value = true)
     {
-        $this->sortable = $sortable;
+        $this->sortable = $value;
 
         return $this;
     }
 
     /**
-     * Determine if the column is sortable.
+     * Set the instance to not be sortable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notSortable($value = true)
+    {
+        return $this->sortable(! $value);
+    }
+
+    /**
+     * Determine if the instance is sortable.
      *
      * @return bool
      */
@@ -47,7 +58,17 @@ trait Sortable
     }
 
     /**
-     * Get the sortable state of the column.
+     * Determine if the instance is not sortable.
+     *
+     * @return bool
+     */
+    public function isNotSortable()
+    {
+        return ! $this->isSortable();
+    }
+
+    /**
+     * Get the sort instance.
      *
      * @return Sort|null
      */

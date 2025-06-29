@@ -7,7 +7,7 @@ namespace Honed\Table\Http\Controllers;
 use Honed\Table\Table;
 use Illuminate\Routing\Controller;
 
-class ViewController extends Controller
+class TableViewController extends Controller
 {
     // public function store(Table $table)
     // {

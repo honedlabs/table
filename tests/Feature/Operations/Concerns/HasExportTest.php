@@ -30,25 +30,35 @@ it('sets file type', function () {
 
 it('can be downloaded', function () {
     expect($this->export)
+        ->isNotDownload()->toBeTrue()
         ->isDownload()->toBeFalse()
         ->download()->toBe($this->export)
-        ->isDownload()->toBeTrue();
+        ->isDownload()->toBeTrue()
+        ->dontDownload()->toBe($this->export)
+        ->isNotDownload()->toBeTrue();
 });
 
 it('can be stored', function () {
     expect($this->export)
+        ->isNotStored()->toBeTrue()
         ->isStored()->toBeFalse()
         ->store()->toBe($this->export)
-        ->isStored()->toBeTrue();
+        ->isStored()->toBeTrue()
+        ->dontStore()->toBe($this->export)
+        ->isNotStored()->toBeTrue();
 });
 
 it('can be queued', function () {
     expect($this->export)
+        ->isNotQueued()->toBeTrue()
         ->isQueued()->toBeFalse()
         ->getQueue()->toBeNull()
         ->queue('default')->toBe($this->export)
         ->isQueued()->toBeTrue()
-        ->getQueue()->toBe('default');
+        ->getQueue()->toBe('default')
+        ->dontQueue()->toBe($this->export)
+        ->isNotQueued()->toBeTrue()
+        ->getQueue()->toBeNull();
 });
 
 it('can be stored on a disk', function () {

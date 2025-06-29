@@ -18,12 +18,11 @@ class TransformRecords extends Pipe
 {
     /**
      * Run the after refining logic.
-     *
-     * @param  TClass  $instance
-     * @return void
      */
-    public function run($instance)
+    public function run(): void
     {
+        $instance = $this->instance;
+
         $columns = $instance->getHeadings();
         $operations = $instance->getInlineOperations();
         $records = $instance->getRecords();

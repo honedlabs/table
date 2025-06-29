@@ -38,6 +38,17 @@ trait Toggleable
     }
 
     /**
+     * Set the instance to not be toggleable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notToggleable($value = true)
+    {
+        return $this->toggleable(! $value);
+    }
+
+    /**
      * Determine if the instance is toggleable.
      *
      * @return bool
@@ -45,6 +56,16 @@ trait Toggleable
     public function isToggleable()
     {
         return $this->toggleable || $this instanceof IsToggleable;
+    }
+
+    /**
+     * Determine if the instance is not toggleable.
+     *
+     * @return bool
+     */
+    public function isNotToggleable()
+    {
+        return ! $this->isToggleable();
     }
 
     /**

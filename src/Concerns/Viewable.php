@@ -34,6 +34,19 @@ trait Viewable
     }
 
     /**
+     * Set whether the table is not viewable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notViewable($value = true)
+    {
+        $this->viewable = ! $value;
+
+        return $this;
+    }
+
+    /**
      * Determine if the table has views.
      *
      * @return bool
@@ -41,6 +54,16 @@ trait Viewable
     public function isViewable()
     {
         return (bool) $this->viewable || $this instanceof IsViewable;
+    }
+
+    /**
+     * Determine if the table does not have views.
+     *
+     * @return bool
+     */
+    public function isNotViewable()
+    {
+        return ! $this->isViewable();
     }
 
     /**
@@ -62,8 +85,8 @@ trait Viewable
      *
      * @return array<int, object>|null
      */
-    public function loadViews()
+    public function listViews()
     {
-        return $this->getViews()?->load($this);
+        return $this->getViews()?->list($this);
     }
 }

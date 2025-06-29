@@ -20,9 +20,12 @@ it('is sortable', function () {
             ->toBeInstanceOf(Sort::class)
             ->getName()->toBe($this->column->getName())
             ->getLabel()->toBe('Name')
-            ->getQuery()->toBeNull()
+            ->queryCallback()->toBeNull()
             ->isHidden()->toBeTrue()
-        );
+        )
+        ->notSortable()->toBe($this->column)
+        ->isNotSortable()->toBeTrue()
+        ->getSort()->toBeNull();
 });
 
 it('is sortable with string', function () {
@@ -35,7 +38,7 @@ it('is sortable with string', function () {
             ->toBeInstanceOf(Sort::class)
             ->getName()->toBe('description')
             ->getLabel()->toBe('Name')
-            ->getQuery()->toBeNull()
+            ->queryCallback()->toBeNull()
             ->isHidden()->toBeTrue()
         );
 });
@@ -51,7 +54,7 @@ it('is sortable with closure', function () {
             ->toBeInstanceOf(Sort::class)
             ->getName()->toBe($this->column->getName())
             ->getLabel()->toBe('Name')
-            ->getQuery()->toBeInstanceOf(Closure::class)
+            ->queryCallback()->toBeInstanceOf(Closure::class)
             ->isHidden()->toBeTrue()
         );
 });

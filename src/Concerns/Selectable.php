@@ -29,6 +29,17 @@ trait Selectable
     }
 
     /**
+     * Set the instance to not be selectable.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function notSelectable($value = true)
+    {
+        return $this->selectable(! $value);
+    }
+
+    /**
      * Select the columns to be displayed.
      *
      * @param  string|array<int, string>  $selects
@@ -51,7 +62,17 @@ trait Selectable
      */
     public function isSelectable()
     {
-        return ((bool) $this->selectable) || $this instanceof IsSelectable;
+        return (bool) $this->selectable || $this instanceof IsSelectable;
+    }
+
+    /**
+     * Determine if the instance is not selectable.
+     *
+     * @return bool
+     */
+    public function isNotSelectable()
+    {
+        return ! $this->isSelectable();
     }
 
     /**

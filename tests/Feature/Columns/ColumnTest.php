@@ -32,58 +32,58 @@ it('has count relationship', function () {
     $column = Column::make('users_count');
 
     expect($column)
-        ->getQuery()->toBeNull()
+        ->queryCallback()->toBeNull()
         ->count()->toBe($column)
-        ->getQuery()->toBeInstanceOf(Closure::class);
+        ->queryCallback()->toBeInstanceOf(Closure::class);
 });
 
 it('has exists relationship', function () {
     $column = Column::make('users_exists');
 
     expect($column)
-        ->getQuery()->toBeNull()
+        ->queryCallback()->toBeNull()
         ->exists()->toBe($column)
-        ->getQuery()->toBeInstanceOf(Closure::class);
+        ->queryCallback()->toBeInstanceOf(Closure::class);
 });
 
 it('has avg relationship', function () {
     $column = Column::make('users_avg_age');
 
     expect($column)
-        ->getQuery()->toBeNull()
+        ->queryCallback()->toBeNull()
         ->avg()->toBe($column)
-        ->getQuery()->toBeInstanceOf(Closure::class);
+        ->queryCallback()->toBeInstanceOf(Closure::class);
 
     expect($column)
         ->average()->toBe($column)
-        ->getQuery()->toBeInstanceOf(Closure::class);
+        ->queryCallback()->toBeInstanceOf(Closure::class);
 });
 
 it('has sum relationship', function () {
     $column = Column::make('users_sum_age');
 
     expect($column)
-        ->getQuery()->toBeNull()
+        ->queryCallback()->toBeNull()
         ->sum()->toBe($column)
-        ->getQuery()->toBeInstanceOf(Closure::class);
+        ->queryCallback()->toBeInstanceOf(Closure::class);
 });
 
 it('has max relationship', function () {
     $column = Column::make('users_max_age');
 
     expect($column)
-        ->getQuery()->toBeNull()
+        ->queryCallback()->toBeNull()
         ->max()->toBe($column)
-        ->getQuery()->toBeInstanceOf(Closure::class);
+        ->queryCallback()->toBeInstanceOf(Closure::class);
 });
 
 it('has min relationship', function () {
     $column = Column::make('users_min_age');
 
     expect($column)
-        ->getQuery()->toBeNull()
+        ->queryCallback()->toBeNull()
         ->min()->toBe($column)
-        ->getQuery()->toBeInstanceOf(Closure::class);
+        ->queryCallback()->toBeInstanceOf(Closure::class);
 });
 
 it('requires a column when using aggregate relationships', function () {

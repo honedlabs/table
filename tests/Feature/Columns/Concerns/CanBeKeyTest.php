@@ -10,7 +10,10 @@ beforeEach(function () {
 
 it('is key', function () {
     expect($this->column)
+        ->isNotKey()->toBeTrue()
         ->isKey()->toBeFalse()
         ->key()->toBe($this->column)
-        ->isKey()->toBeTrue();
+        ->isKey()->toBeTrue()
+        ->notKey()->toBe($this->column)
+        ->isNotKey()->toBeTrue();
 });

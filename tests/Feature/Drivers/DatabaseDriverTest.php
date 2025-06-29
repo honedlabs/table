@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Honed\Table\Facades\Views;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Workbench\App\Models\User;
 use Workbench\App\Tables\ProductTable;
@@ -52,6 +53,19 @@ it('lists views', function () {
         );
 });
 
+it('gets all views', function () {
+    $views = $this->driver->all();
+
+    expect($views)
+        ->toBeArray()
+        ->toHaveCount(1)
+        ->{0}
+        ->scoped(fn ($view) => $view
+            ->name->toBe('Filter view')
+            ->view->toBe(json_encode(['name' => 'test']))
+        );
+});
+
 it('gets stored views', function () {
     $views = $this->driver->stored($this->table);
 
@@ -77,6 +91,18 @@ it('gets scoped views', function () {
             ->view->toBe(json_encode(['name' => 'test']))
         );
 });
+
+it('creates a new view', function () {
+    $this->driver->create($this->table, 'Search view', $this->scope, ['name' => 'new']);
+
+    expect($this->driver->get($this->table, 'Search view', $this->scope))
+        ->name->toBe('Search view')
+        ->view->toBe(json_encode(['name' => 'new']));
+});
+
+it('throws exception when creating a duplicate view', function () {
+    $this->driver->create($this->table, 'Filter view', $this->scope, ['name' => 'created']);
+})->throws(UniqueConstraintViolationException::class);
 
 it('sets existing view', function () {
     $this->driver->set($this->table, 'Filter view', $this->scope, ['name' => 'updated']);

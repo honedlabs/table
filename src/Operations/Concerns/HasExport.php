@@ -120,6 +120,17 @@ trait HasExport
     }
 
     /**
+     * Set the export to not be downloaded.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function dontDownload($value = true)
+    {
+        return $this->download(! $value);
+    }
+
+    /**
      * Determine if the export is downloaded.
      *
      * @return bool
@@ -127,6 +138,16 @@ trait HasExport
     public function isDownload()
     {
         return $this->download;
+    }
+
+    /**
+     * Determine if the export is not downloaded.
+     *
+     * @return bool
+     */
+    public function isNotDownload()
+    {
+        return ! $this->isDownload();
     }
 
     /**
@@ -143,6 +164,17 @@ trait HasExport
     }
 
     /**
+     * Set the export to not be stored on disk.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function dontStore($value = true)
+    {
+        return $this->store(! $value);
+    }
+
+    /**
      * Determine if the export is stored on disk.
      *
      * @return bool
@@ -150,6 +182,16 @@ trait HasExport
     public function isStored()
     {
         return $this->store;
+    }
+
+    /**
+     * Determine if the export is not stored on disk.
+     *
+     * @return bool
+     */
+    public function isNotStored()
+    {
+        return ! $this->isStored();
     }
 
     /**
@@ -166,6 +208,17 @@ trait HasExport
     }
 
     /**
+     * Set the export to not be queued.
+     *
+     * @param  bool  $value
+     * @return $this
+     */
+    public function dontQueue($value = true)
+    {
+        return $this->queue(! $value);
+    }
+
+    /**
      * Determine if the export is queued.
      *
      * @return bool
@@ -173,6 +226,16 @@ trait HasExport
     public function isQueued()
     {
         return (bool) $this->queue;
+    }
+
+    /**
+     * Determine if the export is not queued.
+     *
+     * @return bool
+     */
+    public function isNotQueued()
+    {
+        return ! $this->isQueued();
     }
 
     /**

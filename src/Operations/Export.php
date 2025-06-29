@@ -106,15 +106,25 @@ class Export extends Operation implements Action
         }
 
         $exporter = $this->getExporter($table);
+
         $export = new $exporter($table, $this->getEvents());
+
         $fileName = $this->getFilename();
 
         return match (true) {
             $this->isDownload() => $this->downloadExport($export, $fileName),
             $this->isQueued() => $this->queueExport($export, $fileName),
             $this->isStored() => $this->storeExport($export, $fileName),
-            default => $this->storeExport($export, $fileName),
+            default => $this->defaultExport($export, $fileName),
         };
+    }
+
+    /**
+     * Get the type of the operation.
+     */
+    public function type(): string
+    {
+        return 'bulk';
     }
 
     /**
@@ -155,6 +165,18 @@ class Export extends Operation implements Action
         return Excel::store(
             $export, $fileName, $this->getDisk(), $this->getFileType()
         );
+    }
+
+    /**
+     * Default the export to be stored on disk if no other method is specified.
+     *
+     * @param  ExportsTable  $export
+     * @param  string  $fileName
+     * @return bool
+     */
+    protected function defaultExport($export, $fileName)
+    {
+        return $this->storeExport($export, $fileName);
     }
 
     /**

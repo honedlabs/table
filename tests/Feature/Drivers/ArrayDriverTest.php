@@ -47,6 +47,15 @@ it('lists views', function () {
         );
 });
 
+it('creates a new view', function () {
+    $this->driver->create($this->table, 'Filter view', $this->scope, ['name' => 'created']);
+
+    expect($this->driver->get($this->table, 'Filter view', $this->scope))
+        ->toBeObject()
+        ->name->toBe('Filter view')
+        ->view->toEqual(['name' => 'created']);
+});
+
 it('sets existing view', function () {
     $this->driver->set($this->table, 'Filter view', $this->scope, ['name' => 'updated']);
 

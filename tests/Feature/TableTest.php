@@ -100,6 +100,7 @@ it('has array representation', function () {
             'pages',
             'operations',
             'emptyState',
+            'meta',
         ])
         ->not->toHaveKeys([
             'column',
@@ -107,8 +108,7 @@ it('has array representation', function () {
             'match',
             'term',
             'placeholder',
-            'views',
-            'meta',
+            'views'
         ])
         ->{'sort'}->toBe($this->table->getSortKey())
         ->{'search'}->toBe($this->table->getSearchKey())
@@ -143,7 +143,8 @@ it('has array representation', function () {
             ->toBeArray()
             ->toHaveKeys(['heading', 'description', 'operations'])
             ->not->toHaveKey('icon')
-        );
+        )
+        ->{'meta'}->toBe([]);
 });
 
 it('serializes to json', function () {
