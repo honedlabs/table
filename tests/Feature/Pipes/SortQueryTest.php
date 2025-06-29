@@ -52,8 +52,8 @@ it('applies default sort', function () {
     ]);
 
     $this->pipe->instance($this->table
-            ->sorts(Sort::make($name)->default())
-            ->request($request)
+        ->sorts(Sort::make($name)->default())
+        ->request($request)
     );
 
     $this->pipe->run();

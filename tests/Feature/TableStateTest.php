@@ -6,12 +6,9 @@ use Honed\Refine\Filters\Filter;
 use Honed\Refine\Searches\Search;
 use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\Column;
-use Honed\Table\Facades\Views;
 use Honed\Table\Table;
 use Illuminate\Http\Request;
-use Workbench\App\Enums\Status;
 use Workbench\App\Models\Product;
-use Workbench\App\Tables\ProductTable;
 
 beforeEach(function () {
     $this->table = Table::make()

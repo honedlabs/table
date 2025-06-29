@@ -12,7 +12,7 @@ class ViewCreated
 
     /**
      * Create a new view created event.
-     * 
+     *
      * @param  array<string, mixed>  $view
      */
     public function __construct(
