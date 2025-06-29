@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
-use Honed\Core\Primitive;
-use Honed\Core\Concerns\CanHaveIcon;
 use Honed\Action\Operations\PageOperation;
+use Honed\Core\Concerns\CanHaveIcon;
 use Honed\Core\Contracts\NullsAsUndefined;
+use Honed\Core\Primitive;
 use Honed\Table\Concerns\AdaptsToRefinements;
 
 /**

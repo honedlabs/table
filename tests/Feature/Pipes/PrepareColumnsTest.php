@@ -31,7 +31,7 @@ describe('searches', function () {
 
     it('does not create if column has no search', function () {
         $this->pipe->instance($this->table
-                ->columns(NumericColumn::make('price'))
+            ->columns(NumericColumn::make('price'))
         );
 
         $this->pipe->run();
@@ -79,7 +79,7 @@ describe('filters', function () {
 
     it('does not create if column has no filter', function () {
         $this->pipe->instance($this->table
-                ->columns(TextColumn::make('name'))
+            ->columns(TextColumn::make('name'))
         );
 
         $this->pipe->run();
@@ -158,10 +158,10 @@ describe('selects', function () {
 
     it('does not select if not active', function () {
         $this->pipe->instance($this->table
-                ->selectable()
-                ->columns(NumericColumn::make('price')->active(false))
+            ->selectable()
+            ->columns(NumericColumn::make('price')->active(false))
         );
-        
+
         $this->pipe->run();
 
         expect($this->table)
@@ -171,9 +171,9 @@ describe('selects', function () {
 
     it('does not select if not selectable', function () {
         $this->pipe->instance($this->table
-                ->selectable(false)
+            ->selectable(false)
         );
-        
+
         $this->pipe->run();
 
         expect($this->table)
