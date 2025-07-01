@@ -23,10 +23,9 @@ trait Filterable
     /**
      * Set the instance to be filterable.
      *
-     * @param  bool|Closure  $value
      * @return $this
      */
-    public function filterable($value = true)
+    public function filterable(bool|Closure $value = true): static
     {
         $this->filterable = $value;
 
@@ -36,40 +35,33 @@ trait Filterable
     /**
      * Set the instance to not be filterable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function notFilterable($value = true)
+    public function notFilterable(bool $value = true): static
     {
         return $this->filterable(! $value);
     }
 
     /**
      * Determine if the column is filterable.
-     *
-     * @return bool
      */
-    public function isFilterable()
+    public function isFilterable(): bool
     {
         return (bool) $this->filterable;
     }
 
     /**
      * Determine if the column is not filterable.
-     *
-     * @return bool
      */
-    public function isNotFilterable()
+    public function isNotFilterable(): bool
     {
         return ! $this->isFilterable();
     }
 
     /**
      * Get the filterable state of the column.
-     *
-     * @return Filter|null
      */
-    public function getFilter()
+    public function getFilter(): ?Filter
     {
         if (! $this->filterable) {
             return null;
@@ -84,10 +76,8 @@ trait Filterable
 
     /**
      * Create a new filter instance.
-     *
-     * @return Filter
      */
-    protected function newFilter()
+    protected function newFilter(): Filter
     {
         return Filter::make($this->getName(), $this->getLabel())
             ->alias($this->getAlias())
@@ -100,7 +90,7 @@ trait Filterable
      *
      * @return 'string'|'array'|'boolean'|'int'|'date'|'datetime'|'time'|null
      */
-    protected function getFilterableType()
+    protected function getFilterableType(): ?string
     {
         return match ($this->getType()) {
             Column::ARRAY => 'array',

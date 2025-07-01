@@ -32,17 +32,16 @@ beforeEach(function () {
 });
 
 it('gets driver', function () {
-    expect($this->decorator->getDriver())
-        ->toBeInstanceOf(DatabaseDriver::class);
+    expect($this->decorator)
+        ->getDriver()->toBeInstanceOf(DatabaseDriver::class);
 });
 
 it('creates pending view interaction', function () {
     expect($this->decorator->for())
         ->getScope()
-        ->scoped(fn ($scopes) => $scopes
-            ->toBeArray()
-            ->toHaveCount(1)
-            ->{0}->toBeInstanceOf(User::class)
+        ->scoped(fn ($scope) => $scope
+            ->toBeInstanceOf(User::class)
+            ->id->toBe($this->scope->id)
         )
         ->list($this->table)
         ->scoped(fn ($views) => $views

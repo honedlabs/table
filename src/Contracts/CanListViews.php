@@ -11,7 +11,7 @@ interface CanListViews
      *
      * @return array<int, object>
      */
-    public function all();
+    public function all(): array;
 
     /**
      * Get the views stored for a given table or tables.
@@ -19,13 +19,13 @@ interface CanListViews
      * @param  mixed|array<int, mixed>  $table
      * @return array<int, object>
      */
-    public function stored($table);
+    public function stored(mixed $table): array;
 
     /**
      * Get the views stored for a given scope or scopes.
      *
-     * @param  mixed|array<int, mixed>  $scope
+     * @param  mixed|array<int, mixed>  $scopes
      * @return array<int, object>
      */
-    public function scoped($scope);
+    public function scoped(mixed $scopes): array;
 }

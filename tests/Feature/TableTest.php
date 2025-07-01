@@ -35,25 +35,6 @@ it('requires key', function () {
     $this->table->key(null)->getKey();
 })->throws(KeyNotFoundException::class);
 
-it('is url routable', function () {
-    expect($this->table)
-        ->getRouteKeyName()->toBe('table');
-
-    expect($this->table)
-        ->resolveRouteBinding($this->table->getRouteKey())
-        ->toBeNull();
-
-    $table = ProductTable::make();
-
-    expect($table)
-        ->resolveRouteBinding($table->getRouteKey())
-        ->toBeInstanceOf(ProductTable::class);
-
-    expect($table)
-        ->resolveChildRouteBinding(null, $table->getRouteKey())
-        ->toBeInstanceOf(ProductTable::class);
-});
-
 it('resolves table', function () {
     ProductTable::guessTableNamesUsing(function ($class) {
         return Str::of($class)
@@ -85,21 +66,20 @@ it('has array representation', function () {
     expect($this->table->toArray())
         ->toBeArray()
         ->toHaveKeys([
-            'sort',
-            'search',
-            'delimiter',
+            '_page_key',
+            '_sort_key',
+            '_search_key',
+            '_delimiter',
             'sorts',
             'filters',
             'searches',
-            'key',
-            'page',
             'records',
             'paginate',
             'columns',
             'toggleable',
             'pages',
             'operations',
-            'emptyState',
+            'state',
             'meta',
         ])
         ->not->toHaveKeys([
@@ -110,16 +90,14 @@ it('has array representation', function () {
             'placeholder',
             'views',
         ])
-        ->{'sort'}->toBe($this->table->getSortKey())
-        ->{'search'}->toBe($this->table->getSearchKey())
-        ->{'delimiter'}->toBe($this->table->getDelimiter())
+        ->{'_page_key'}->toBe($this->table->getPageKey())
+        ->{'_sort_key'}->toBe($this->table->getSortKey())
+        ->{'_search_key'}->toBe($this->table->getSearchKey())
+        ->{'_delimiter'}->toBe($this->table->getDelimiter())
         ->{'sorts'}->toBeArray()
         ->{'filters'}->toBeArray()
         ->{'searches'}->toBeArray()
-        ->{'key'}->toBe($this->table->getKey())
-        ->{'page'}->toBe($this->table->getPageKey())
         ->{'records'}->toBeArray()
-        ->{'paginate'}->toBeArray()
         ->{'paginate'}->toBeArray()
         ->{'columns'}->toBeArray()
         ->{'toggleable'}->toBeFalse()
@@ -138,7 +116,7 @@ it('has array representation', function () {
         )
         ->{'toggleable'}->toBeFalse()
         ->{'pages'}->toBeArray()
-        ->{'emptyState'}
+        ->{'state'}
         ->scoped(fn ($emptyState) => $emptyState
             ->toBeArray()
             ->toHaveKeys(['heading', 'description', 'operations'])

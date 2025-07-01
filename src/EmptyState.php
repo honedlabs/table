@@ -52,10 +52,8 @@ class EmptyState extends Primitive implements NullsAsUndefined
 
     /**
      * Provide the instance with any necessary setup.
-     *
-     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -64,12 +62,8 @@ class EmptyState extends Primitive implements NullsAsUndefined
 
     /**
      * Create a new empty state.
-     *
-     * @param  string|null  $heading
-     * @param  string|null  $description
-     * @return static
      */
-    public static function make($heading = null, $description = null)
+    public static function make(?string $heading = null, ?string $description = null): static
     {
         return resolve(static::class)
             ->when($heading,
@@ -83,10 +77,9 @@ class EmptyState extends Primitive implements NullsAsUndefined
     /**
      * Set the heading of the empty state.
      *
-     * @param  string  $heading
      * @return $this
      */
-    public function heading($heading)
+    public function heading(string $heading): static
     {
         $this->heading = $heading;
 
@@ -95,10 +88,8 @@ class EmptyState extends Primitive implements NullsAsUndefined
 
     /**
      * Get the heading of the empty state.
-     *
-     * @return string
      */
-    public function getHeading()
+    public function getHeading(): string
     {
         return $this->heading;
     }
@@ -106,10 +97,9 @@ class EmptyState extends Primitive implements NullsAsUndefined
     /**
      * Set the description of the empty state.
      *
-     * @param  string  $description
      * @return $this
      */
-    public function description($description)
+    public function description(string $description): static
     {
         $this->description = $description;
 
@@ -118,10 +108,8 @@ class EmptyState extends Primitive implements NullsAsUndefined
 
     /**
      * Get the description of the empty state.
-     *
-     * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -132,7 +120,7 @@ class EmptyState extends Primitive implements NullsAsUndefined
      * @param  PageOperation|array<int, PageOperation>  $operations
      * @return $this
      */
-    public function operations($operations)
+    public function operations(PageOperation|array $operations): static
     {
         /** @var array<int, PageOperation> */
         $operations = is_array($operations) ? $operations : func_get_args();
@@ -145,10 +133,9 @@ class EmptyState extends Primitive implements NullsAsUndefined
     /**
      * Add an operation to the empty state.
      *
-     * @param  PageOperation  $operation
      * @return $this
      */
-    public function operation($operation)
+    public function operation(PageOperation $operation): static
     {
         $this->operations[] = $operation;
 
@@ -160,7 +147,7 @@ class EmptyState extends Primitive implements NullsAsUndefined
      *
      * @return array<int, PageOperation>
      */
-    public function getOperations()
+    public function getOperations(): array
     {
         return $this->operations;
     }
@@ -185,7 +172,7 @@ class EmptyState extends Primitive implements NullsAsUndefined
      *
      * @return array<int, array<string, mixed>>
      */
-    protected function operationsToArray()
+    protected function operationsToArray(): array
     {
         return array_map(
             static fn (PageOperation $operation) => $operation->toArray(),

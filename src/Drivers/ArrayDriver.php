@@ -46,11 +46,10 @@ class ArrayDriver implements Driver
      * Retrieve the view for the given table, name, and scope from storage.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
      * @return object|null
      */
-    public function get($table, $name, $scope)
+    public function get(mixed $table, string $name, mixed $scope)
     {
         if (isset($this->resolved[$table][$scope][$name])) {
             $view = $this->resolved[$table][$scope][$name];
@@ -73,7 +72,7 @@ class ArrayDriver implements Driver
      * @param  string|array<int, string>  $scopes
      * @return array<int, object>
      */
-    public function list($table, $scopes)
+    public function list(mixed $table, mixed $scopes): array
     {
         $views = [];
 
@@ -95,12 +94,10 @@ class ArrayDriver implements Driver
      * Create a new view for the given table, name and scope.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      */
-    public function create($table, $name, $scope, $view)
+    public function create(mixed $table, string $name, mixed $scope, array $view): void
     {
         $this->set($table, $name, $scope, $view);
     }
@@ -109,12 +106,10 @@ class ArrayDriver implements Driver
      * Set the view for the given table and scope.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      */
-    public function set($table, $name, $scope, $view)
+    public function set(mixed $table, string $name, mixed $scope, array $view): void
     {
         $this->resolved[$table][$scope][$name] = $view;
     }
@@ -123,11 +118,9 @@ class ArrayDriver implements Driver
      * Delete the view for the given table and scope from storage.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
-     * @return void
      */
-    public function delete($table, $name, $scope)
+    public function delete(mixed $table, string $name, mixed $scope): void
     {
         unset($this->resolved[$table][$scope][$name]);
     }
@@ -136,9 +129,8 @@ class ArrayDriver implements Driver
      * Purge all views for the given table.
      *
      * @param  string|array<int, string>|null  $table
-     * @return void
      */
-    public function purge($table = null)
+    public function purge(mixed $table = null): void
     {
         if ($table === null) {
             $this->resolved = [];

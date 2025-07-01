@@ -150,8 +150,10 @@ it('passes', function ($table) {
 
         ]);
 
-        return $this->table
-            ->request($request)
-            ->persistColumnsInCookie();
+        $this->table->request($request)->persistColumnsInCookie();
+
+        $this->table->getColumnsDriver()->request($request);
+
+        return $this->table;
     },
 ]);

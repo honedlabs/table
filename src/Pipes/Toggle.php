@@ -163,7 +163,7 @@ class Toggle extends Pipe
      */
     protected function persisted($instance)
     {
-        $data = $instance->getColumnStore()?->get($instance->getColumnKey());
+        $data = $instance->getColumnsDriver()?->get($instance->getColumnKey());
 
         if (! is_array($data)) {
             return null;
@@ -182,6 +182,6 @@ class Toggle extends Pipe
      */
     protected function persist($instance, $params)
     {
-        $instance->getColumnStore()?->put($instance->getColumnKey(), $params);
+        $instance->getColumnsDriver()?->put($instance->getColumnKey(), $params);
     }
 }

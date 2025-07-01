@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Honed\Table;
 
+use Honed\Table\Drivers\Decorator;
+use Honed\Table\Facades\Views;
 use RuntimeException;
 
 class PendingViewInteraction
@@ -11,23 +13,21 @@ class PendingViewInteraction
     /**
      * The view driver.
      *
-     * @var Drivers\Decorator
+     * @var Decorator
      */
     protected $driver;
 
     /**
      * The feature interaction scope.
      *
-     * @var array<int, mixed>
+     * @var mixed
      */
-    protected $scope = [];
+    protected $scope;
 
     /**
      * Create a new pending view interaction.
-     *
-     * @param  Drivers\Decorator  $driver
      */
-    public function __construct($driver)
+    public function __construct(Decorator $driver)
     {
         $this->driver = $driver;
     }
@@ -35,45 +35,47 @@ class PendingViewInteraction
     /**
      * Set the scope for the pending view interaction.
      *
-     * @param  mixed|array<int, mixed>  $scope
      * @return $this
      */
-    public function for($scope)
+    public function for(mixed $scope): static
     {
-        $scope = is_array($scope) ? $scope : func_get_args();
-
-        $this->scope = [...$this->scope, ...$scope];
+        $this->scope = $scope;
 
         return $this;
     }
 
     /**
      * Get the scope for the pending view interaction.
-     *
-     * @return array<int, mixed>
      */
-    public function getScope()
+    public function getScope(): mixed
     {
         return $this->scope;
     }
 
     /**
      * Get the underlying driver for the interaction.
-     *
-     * @return Drivers\Decorator
      */
-    public function getDriver()
+    public function getDriver(): Decorator
     {
         return $this->driver;
     }
 
     /**
+     * Retrieve the view for the given table and name, and scopes.
+     *
+     * @return object|null
+     */
+    public function get(mixed $table, string $name)
+    {
+        return $this->driver->get($table, $name, $this->getScope());
+    }
+
+    /**
      * Retrieve the views for the given table.
      *
-     * @param  mixed  $table
      * @return array<int, object>
      */
-    public function list($table)
+    public function list(mixed $table): array
     {
         return $this->driver->list($table, $this->getScope());
     }
@@ -81,12 +83,11 @@ class PendingViewInteraction
     /**
      * Get the views stored for the given table.
      *
-     * @param  mixed  $table
      * @return array<int, object>
      *
      * @throws RuntimeException
      */
-    public function stored($table)
+    public function stored(mixed $table): array
     {
         return $this->driver->stored($table);
     }
@@ -98,8 +99,36 @@ class PendingViewInteraction
      *
      * @throws RuntimeException
      */
-    public function scoped()
+    public function scoped(): array
     {
         return $this->driver->scoped($this->getScope());
+    }
+
+    /**
+     * Create a new view for the given table and name.
+     *
+     * @param  array<string, mixed>  $view
+     */
+    public function create(mixed $table, string $name, array $view): void
+    {
+        $this->driver->create($table, $name, $this->getScope(), $view);
+    }
+
+    /**
+     * Set the view for the given table and name.
+     *
+     * @param  array<string, mixed>  $view
+     */
+    public function set(mixed $table, string $name, array $view): void
+    {
+        $this->driver->set($table, $name, $this->getScope(), $view);
+    }
+
+    /**
+     * Delete the view for the given table and name.
+     */
+    public function delete(mixed $table, string $name): void
+    {
+        $this->driver->delete($table, $name, $this->getScope());
     }
 }

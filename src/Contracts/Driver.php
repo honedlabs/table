@@ -9,59 +9,41 @@ interface Driver
     /**
      * Retrieve the view for the given table, name, and scope from storage.
      *
-     * @param  mixed  $table
-     * @param  string  $name
-     * @param  mixed  $scope
      * @return object|null
      */
-    public function get($table, $name, $scope);
+    public function get(mixed $table, string $name, mixed $scope);
 
     /**
      * Retrieve the views for the given table and scopes from storage.
      *
-     * @param  mixed  $table
-     * @param  array<int, mixed>  $scopes
+     * @param  mixed|array<int, mixed>  $scopes
      * @return array<int, object>
      */
-    public function list($table, $scopes);
+    public function list(mixed $table, mixed $scopes): array;
 
     /**
      * Create a new view for the given table and scope.
      *
-     * @param  mixed  $table
-     * @param  string  $name
-     * @param  mixed  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      */
-    public function create($table, $name, $scope, $view);
+    public function create(mixed $table, string $name, mixed $scope, array $view): void;
 
     /**
      * Set the view for the given table and scope.
      *
-     * @param  mixed  $table
-     * @param  string  $name
-     * @param  mixed  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      */
-    public function set($table, $name, $scope, $view);
+    public function set(mixed $table, string $name, mixed $scope, array $view): void;
 
     /**
      * Delete the view for the given table and scope from storage.
-     *
-     * @param  mixed  $table
-     * @param  string  $name
-     * @param  mixed  $scope
-     * @return void
      */
-    public function delete($table, $name, $scope);
+    public function delete(mixed $table, string $name, mixed $scope): void;
 
     /**
      * Purge all views for the given table.
      *
      * @param  mixed|array<int, mixed>|null  $table
-     * @return void
      */
-    public function purge($table = null);
+    public function purge(mixed $table = null): void;
 }

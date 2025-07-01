@@ -8,10 +8,8 @@ class IconColumn extends Column
 {
     /**
      * Provide the instance with any necessary setup.
-     *
-     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

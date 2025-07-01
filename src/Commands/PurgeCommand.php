@@ -47,7 +47,7 @@ class PurgeCommand extends Command
 
         $store = $manager->store($store);
 
-        /** @var array<int, class-string<\Honed\Table\Table>>|null */
+        /** @var array<int, class-string<\Honed\Table\Table>>|null $tables */
         $tables = $this->argument('tables') ?: null;
 
         if ($tables) {

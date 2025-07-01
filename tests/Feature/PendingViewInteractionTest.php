@@ -28,20 +28,21 @@ beforeEach(function () {
 });
 
 it('has scope', function () {
-    $product = Product::factory()->create();
-
-    $this->interaction->for($product);
-
-    expect($this->interaction->getScope())
-        ->toBeArray()
-        ->toHaveCount(2)
-        ->each(fn ($scope) => $scope->toBeInstanceOf(Product::class));
+    expect($this->interaction)
+        ->getScope()->toBe($this->product);
 });
 
 it('has driver', function () {
     expect($this->interaction->getDriver())
         ->toBeInstanceOf(Decorator::class)
         ->getDriver()->toBeInstanceOf(DatabaseDriver::class);
+});
+
+it('gets view', function () {
+    expect($this->interaction->get($this->table, 'Filter view'))
+        ->toBeObject()
+        ->name->toBe('Filter view')
+        ->view->toBe(json_encode(['name' => 'test']));
 });
 
 it('lists views', function () {
@@ -75,4 +76,28 @@ it('gets scoped views', function () {
             ->name->toBe('Filter view')
             ->view->toBe(json_encode(['name' => 'test']))
         );
+});
+
+it('creates view', function () {
+    $this->interaction->create($this->table, 'Search view', ['name' => 'test']);
+
+    expect($this->interaction->get($this->table, 'Search view'))
+        ->toBeObject()
+        ->name->toBe('Search view')
+        ->view->toBe(json_encode(['name' => 'test']));
+});
+
+it('sets view', function () {
+    $this->interaction->set($this->table, 'Filter view', ['name' => 'updated']);
+
+    expect($this->interaction->get($this->table, 'Filter view'))
+        ->toBeObject()
+        ->name->toBe('Filter view')
+        ->view->toBe(json_encode(['name' => 'updated']));
+});
+
+it('deletes view', function () {
+    $this->interaction->delete($this->table, 'Filter view');
+
+    expect($this->interaction->get($this->table, 'Filter view'))->toBeNull();
 });

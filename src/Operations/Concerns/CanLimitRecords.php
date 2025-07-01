@@ -38,10 +38,9 @@ trait CanLimitRecords
      * Limit the export to only the filtered rows. This will execute part of the
      * refining pipeline.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function limitToFilteredRows($value = true)
+    public function limitToFilteredRows(bool $value = true): static
     {
         $this->filtered = $value;
 
@@ -50,10 +49,8 @@ trait CanLimitRecords
 
     /**
      * Determine if the export is limited to filtered rows.
-     *
-     * @return bool
      */
-    public function isLimitedToFilteredRows()
+    public function isLimitedToFilteredRows(): bool
     {
         return $this->filtered;
     }
@@ -62,10 +59,9 @@ trait CanLimitRecords
      * Limit the export to only the filtered rows. This will execute part of the
      * refining pipeline.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function limitToSelectedRows($value = true)
+    public function limitToSelectedRows(bool $value = true): static
     {
         $this->selected = $value;
 
@@ -74,10 +70,8 @@ trait CanLimitRecords
 
     /**
      * Determine if the export is limited to selected rows.
-     *
-     * @return bool
      */
-    public function isLimitedToSelectedRows()
+    public function isLimitedToSelectedRows(): bool
     {
         return $this->selected;
     }
@@ -97,10 +91,8 @@ trait CanLimitRecords
 
     /**
      * Determine if the export is a page operation.
-     *
-     * @return bool
      */
-    public function isPage()
+    public function isPage(): bool
     {
         return $this->page;
     }
@@ -120,10 +112,8 @@ trait CanLimitRecords
 
     /**
      * Determine if the export is a bulk operation.
-     *
-     * @return bool
      */
-    public function isBulk()
+    public function isBulk(): bool
     {
         return $this->bulk;
     }

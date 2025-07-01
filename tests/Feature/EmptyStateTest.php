@@ -33,7 +33,7 @@ it('adds operations', function () {
     expect($this->state)
         ->getOperations()->toBeEmpty()
         ->operations(PageOperation::make('create')->label('Create'))->toBe($this->state)
-        ->operation([PageOperation::make('edit')->label('Edit')])->toBe($this->state)
+        ->operations([PageOperation::make('edit')->label('Edit')])->toBe($this->state)
         ->getOperations()->toHaveCount(2);
 });
 

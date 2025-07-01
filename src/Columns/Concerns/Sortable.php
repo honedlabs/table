@@ -26,10 +26,9 @@ trait Sortable
     /**
      * Set the instance to be sortable.
      *
-     * @param  bool|string|Closure  $value
      * @return $this
      */
-    public function sortable($value = true)
+    public function sortable(bool|string|Closure $value = true): static
     {
         $this->sortable = $value;
 
@@ -39,40 +38,33 @@ trait Sortable
     /**
      * Set the instance to not be sortable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function notSortable($value = true)
+    public function notSortable(bool $value = true): static
     {
         return $this->sortable(! $value);
     }
 
     /**
      * Determine if the instance is sortable.
-     *
-     * @return bool
      */
-    public function isSortable()
+    public function isSortable(): bool
     {
         return (bool) $this->sortable;
     }
 
     /**
      * Determine if the instance is not sortable.
-     *
-     * @return bool
      */
-    public function isNotSortable()
+    public function isNotSortable(): bool
     {
         return ! $this->isSortable();
     }
 
     /**
      * Get the sort instance.
-     *
-     * @return Sort|null
      */
-    public function getSort()
+    public function getSort(): ?Sort
     {
         if (! $this->sortable) {
             return null;
@@ -89,13 +81,13 @@ trait Sortable
 
     /**
      * Create a new sort instance.
-     *
-     * @param  string|null  $name
-     * @return Sort
      */
-    protected function newSort($name = null)
+    protected function newSort(?string $name = null): Sort
     {
-        return Sort::make($name ?? $this->getName(), $this->getLabel())
+        /** @var string */
+        $name = $name ?? $this->getName();
+
+        return Sort::make($name, $this->getLabel())
             ->hidden()
             ->alias($this->getAlias())
             ->qualify($this->getQualifier());

@@ -91,8 +91,8 @@ it('retrieves from sources', function ($table) {
 
         ]);
 
-        return $this->table
-            ->request($request)
-            ->persistColumnsInCookie();
+        $this->table->persistColumnsInCookie()->request($request);
+
+        return $this->table;
     },
 ]);

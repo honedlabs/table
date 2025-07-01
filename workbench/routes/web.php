@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
-Route::table();
+Route::actions();
+
+Route::tableViews();
 
 Route::get('/', fn () => view('welcome'))
     ->name('home');

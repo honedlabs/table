@@ -3,7 +3,7 @@
 namespace Illuminate\Routing {
 
     /**
-     * @method void table() Register the table route macro.
+     * @method void tableViews() Register the routes for the table views.
      */
     class Router { }
 }
@@ -11,7 +11,7 @@ namespace Illuminate\Routing {
 namespace Illuminate\Support\Facades {
 
     /**
-     * @method void table() Register the table route macro.
+     * @method void tableViews() Register the routes for the table views.
      */
     class Route { }
 }

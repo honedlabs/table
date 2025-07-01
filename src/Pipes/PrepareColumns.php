@@ -96,7 +96,10 @@ class PrepareColumns extends Pipe
         $selects = $column->getSelects();
 
         if (empty($selects)) {
-            $selects[] = $column->getName();
+            /** @var string $name */
+            $name = $column->getName();
+
+            $selects[] = $name;
         }
 
         $builder = $instance->getBuilder();

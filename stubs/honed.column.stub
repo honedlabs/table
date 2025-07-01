@@ -6,22 +6,16 @@ namespace {{ namespace }};
 
 use Honed\Table\Columns\Column;
 
-/**
- * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel>
- *
- * @extends Column<TModel, TBuilder>
- */
 class {{ class }} extends Column
 {
     /**
-     * Provide the column with any necessary setup
+     * Define the column.
      *
-     * @return void
+     * @param  $this  $column
+     * @return $this
      */
-    public function setUp()
+    protected function definition(Column $column): Column
     {
-        $this->type('column');
+        return $column;
     }
-    
 }

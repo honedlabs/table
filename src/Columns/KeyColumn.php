@@ -8,14 +8,13 @@ class KeyColumn extends Column
 {
     /**
      * Provide the instance with any necessary setup.
-     *
-     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->key();
+
         $this->qualify();
     }
 }

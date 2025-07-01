@@ -28,7 +28,7 @@ beforeEach(function () {
                 ->action(DestroyAction::class),
         ]);
 
-    $this->table->setHeadings([
+    $this->table->key('id')->setHeadings([
         KeyColumn::make('id'),
 
         Column::make('name')
@@ -60,6 +60,6 @@ it('transforms records', function () {
     expect($this->table->getRecords())
         ->each(fn ($record) => $record
             ->toBeArray()
-            ->toHaveKeys(['id', 'title', 'status', 'operations'])
+            ->toHaveKeys(['id', 'title', 'status', 'class', '_key', 'operations'])
         );
 });

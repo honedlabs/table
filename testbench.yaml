@@ -3,6 +3,8 @@ laravel: '@testbench'
 providers:
   - Workbench\App\Providers\WorkbenchServiceProvider
   - Honed\Table\TableServiceProvider
+  - Honed\Action\ActionServiceProvider
+  - Honed\Persist\PersistServiceProvider
   - Maatwebsite\Excel\ExcelServiceProvider
 
 migrations:

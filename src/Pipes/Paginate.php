@@ -53,9 +53,9 @@ class Paginate extends Pipe
      * @param  int  $window
      * @return array<string, mixed>
      */
-    public function lengthAwarePagination($paginator, $window) // @phpstan-ignore-line
+    public function lengthAwarePagination($paginator, $window)
     {
-        return array_merge($this->simplePagination($paginator), [ // @phpstan-ignore-line
+        return array_merge($this->simplePagination($paginator), [
             'total' => $paginator->total(),
             'from' => $paginator->firstItem(),
             'to' => $paginator->lastItem(),
@@ -71,7 +71,7 @@ class Paginate extends Pipe
      * @param  \Illuminate\Contracts\Pagination\Paginator<int, \Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string, mixed>
      */
-    public function simplePagination($paginator) // @phpstan-ignore-line
+    public function simplePagination($paginator)
     {
         return array_merge($this->cursorPagination($paginator), [
             'currentPage' => $paginator->currentPage(),
@@ -84,7 +84,7 @@ class Paginate extends Pipe
      * @param  \Illuminate\Pagination\AbstractCursorPaginator<int, \Illuminate\Database\Eloquent\Model>|\Illuminate\Contracts\Pagination\Paginator<int, \Illuminate\Database\Eloquent\Model>  $paginator
      * @return array<string, mixed>
      */
-    public function cursorPagination($paginator) // @phpstan-ignore-line
+    public function cursorPagination($paginator)
     {
         return array_merge($this->collectionPagination($paginator), [
             'prevLink' => $paginator->previousPageUrl(),

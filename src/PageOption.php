@@ -19,12 +19,8 @@ class PageOption implements Arrayable, JsonSerializable
 
     /**
      * Create a new per page record.
-     *
-     * @param  int  $value
-     * @param  int  $current
-     * @return static
      */
-    public static function make($value, $current = 0)
+    public static function make(int $value, int $current = 0): static
     {
         return resolve(static::class)
             ->value($value)
@@ -46,7 +42,7 @@ class PageOption implements Arrayable, JsonSerializable
      *
      * @return array<string, mixed>
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'value' => $this->getValue(),

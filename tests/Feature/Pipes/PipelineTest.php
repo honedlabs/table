@@ -129,33 +129,36 @@ it('builds class', function () {
         ->toArray()
         ->scoped(fn ($array) => $array
             ->toHaveKeys([
-                'sort',
-                'search',
+                '_column_key',
+                '_record_key',
+                '_page_key',
+                '_search_key',
+                '_sort_key',
+                '_delimiter',
+                'toggleable',
                 'term',
-                'delimiter',
                 'sorts',
                 'filters',
                 'searches',
-                'key',
-                'column',
-                'record',
                 'records',
                 'paginate',
                 'columns',
                 'pages',
-                'toggleable',
                 'operations',
                 'views',
-                'emptyState',
+                'state',
                 'meta',
             ])
             ->not->toHaveKeys([
-                'match',
+                '_match_key',
             ])
-            ->{'sort'}->toBe($this->table->getSortKey())
-            ->{'search'}->toBe($this->table->getSearchKey())
+            ->{'_search_key'}->toBe($this->table->getSearchKey())
+            ->{'_sort_key'}->toBe($this->table->getSortKey())
+            ->{'_delimiter'}->toBe($this->table->getDelimiter())
+            ->{'_column_key'}->toBe($this->table->getColumnKey())
+            ->{'_record_key'}->toBe($this->table->getRecordKey())
+            ->{'_page_key'}->toBe($this->table->getPageKey())
             ->{'term'}->toBe($this->table->getSearchTerm())
-            ->{'delimiter'}->toBe($this->table->getDelimiter())
             ->{'sorts'}
             ->scoped(fn ($sorts) => $sorts
                 ->toBeArray()
@@ -171,9 +174,6 @@ it('builds class', function () {
                 ->toBeArray()
                 ->toBeEmpty()
             )
-            ->{'key'}->toBe($this->table->getKey())
-            ->{'column'}->toBe($this->table->getColumnKey())
-            ->{'record'}->toBe($this->table->getRecordKey())
             ->{'records'}
             ->scoped(fn ($records) => $records
                 ->toBeArray()
@@ -222,7 +222,7 @@ it('builds class', function () {
                     ->name->toBe('Filter view')
                 )
             )
-            ->{'emptyState'}
+            ->{'state'}
             ->scoped(fn ($emptyState) => $emptyState
                 ->toBeArray()
                 ->toHaveKeys(['heading', 'description', 'operations'])

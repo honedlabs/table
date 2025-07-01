@@ -19,10 +19,9 @@ trait Searchable
     /**
      * Set the instance to be searchable.
      *
-     * @param  bool|string|Closure  $value
      * @return $this
      */
-    public function searchable($value = true)
+    public function searchable(bool|string|Closure $value = true): static
     {
         $this->searchable = $value;
 
@@ -32,40 +31,33 @@ trait Searchable
     /**
      * Set the instance to not be searchable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function notSearchable($value = true)
+    public function notSearchable(bool $value = true): static
     {
         return $this->searchable(! $value);
     }
 
     /**
      * Determine if the instance is searchable.
-     *
-     * @return bool
      */
-    public function isSearchable()
+    public function isSearchable(): bool
     {
         return (bool) $this->searchable;
     }
 
     /**
      * Determine if the instance is not searchable.
-     *
-     * @return bool
      */
-    public function isNotSearchable()
+    public function isNotSearchable(): bool
     {
         return ! $this->isSearchable();
     }
 
     /**
      * Get the search instance.
-     *
-     * @return Search|null
      */
-    public function getSearch()
+    public function getSearch(): ?Search
     {
         if (! $this->searchable) {
             return null;
@@ -80,13 +72,13 @@ trait Searchable
 
     /**
      * Create a new search instance.
-     *
-     * @param  string|null  $name
-     * @return Search
      */
-    protected function newSearch($name = null)
+    protected function newSearch(?string $name = null): Search
     {
-        return Search::make($name ?? $this->getName(), $this->getLabel())
+        /** @var string */
+        $name = $name ?? $this->getName();
+
+        return Search::make($name, $this->getLabel())
             ->alias($this->getAlias())
             ->qualify($this->getQualifier());
     }

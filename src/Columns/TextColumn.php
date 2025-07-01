@@ -10,14 +10,12 @@ class TextColumn extends Column
 {
     /**
      * Provide the instance with any necessary setup.
-     *
-     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->placeholder('N/A');
-
         parent::setUp();
+
+        $this->placeholder('N/A');
 
         $this->type(self::TEXT);
     }

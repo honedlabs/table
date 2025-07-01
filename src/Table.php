@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Closure;
-use Honed\Action\Concerns\CanHandleOperations;
-use Honed\Action\Contracts\HandlesOperations;
-use Honed\Action\Handler;
-use Honed\Action\Handlers\BatchHandler;
+use Honed\Action\Unit;
 use Honed\Core\Concerns\HasMeta;
 use Honed\Core\Contracts\HooksIntoLifecycle;
 use Honed\Core\Contracts\NullsAsUndefined;
 use Honed\Core\Contracts\Stateful;
 use Honed\Core\Pipes\CallsAfter;
 use Honed\Core\Pipes\CallsBefore;
-use Honed\Core\Primitive;
 use Honed\Infolist\Entries\Concerns\HasClasses;
+use Honed\Persist\Contracts\CanPersistData;
 use Honed\Refine\Concerns\CanRefine;
 use Honed\Refine\Filters\Filter;
 use Honed\Refine\Pipes\FilterQuery;
@@ -24,8 +21,6 @@ use Honed\Refine\Pipes\PersistData;
 use Honed\Refine\Pipes\SearchQuery;
 use Honed\Refine\Pipes\SortQuery;
 use Honed\Refine\Searches\Search;
-use Honed\Refine\Stores\CookieStore;
-use Honed\Refine\Stores\SessionStore;
 use Honed\Table\Columns\Column;
 use Honed\Table\Concerns\HasColumns;
 use Honed\Table\Concerns\HasEmptyState;
@@ -44,9 +39,7 @@ use Honed\Table\Pipes\Select;
 use Honed\Table\Pipes\Toggle;
 use Honed\Table\Pipes\TransformRecords;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Pipeline;
@@ -57,14 +50,19 @@ use Throwable;
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  *
- * @extends Primitive<string, mixed>
- *
  * @implements Stateful<string, mixed>
+ *
+ * @method self persistColumns(string|bool $driver = true)
+ * @method self persistColumnsInSession()
+ * @method self persistColumnsInCookie()
+ * @method bool isPersistingColumns()
+ * @method \Honed\Persist\Drivers\Decorator|null getColumnsDriver()
  */
-class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, NullsAsUndefined, Stateful
+class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsUndefined, Stateful
 {
-    use CanHandleOperations;
-    use CanRefine;
+    use CanRefine {
+        persist as refinePersist;
+    }
     use HasClasses;
     use HasColumns;
     use HasEmptyState;
@@ -89,13 +87,6 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      * @var string
      */
     protected $evaluationIdentifier = 'table';
-
-    /**
-     * The unique identifier key for table records.
-     *
-     * @var string|null
-     */
-    protected $key;
 
     /**
      * The store to use for persisting the toggled columns.
@@ -173,11 +164,8 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
 
     /**
      * Specify the default namespace that contains the application's model tables.
-     *
-     * @param  string  $namespace
-     * @return void
      */
-    public static function useNamespace($namespace)
+    public static function useNamespace(string $namespace): void
     {
         static::$namespace = $namespace;
     }
@@ -186,22 +174,18 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      * Specify the callback that should be invoked to guess the name of a model table.
      *
      * @param  Closure(class-string<\Illuminate\Database\Eloquent\Model>):class-string<Table>  $callback
-     * @return void
      */
-    public static function guessTableNamesUsing($callback)
+    public static function guessTableNamesUsing(Closure $callback): void
     {
         static::$tableNameResolver = $callback;
     }
 
     /**
      * Flush the global configuration state.
-     *
-     * @return void
      */
-    public static function flushState()
+    public static function flushState(): void
     {
-        static::$encoder = null;
-        static::$decoder = null;
+        parent::flushState();
         static::$tableNameResolver = null;
         static::$namespace = 'App\\Tables\\';
     }
@@ -211,64 +195,31 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      *
      * @return class-string<Table>
      */
-    public static function getParentClass()
+    public static function getParentClass(): string
     {
         return self::class;
     }
 
     /**
-     * Get the default endpoint to execute server actions.
+     * Define the names of persistable properties.
      *
-     * @return string
+     * @return array<int, string>
      */
-    public static function getDefaultEndpoint()
+    public function persist(): array
     {
-        /** @var string */
-        return config('table.endpoint', 'table');
-    }
-
-    /**
-     * Get the route key for the instance.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'table';
-    }
-
-    /**
-     * Get the handler for the instance.
-     *
-     * @return class-string<\Honed\Action\Handlers\Handler<self>>
-     */
-    public function getHandler() // @phpstan-ignore-line
-    {
-        /** @var class-string<\Honed\Action\Handlers\Handler<self>> */
-        return config('table.handler', BatchHandler::class);
-    }
-
-    /**
-     * Set the record key to use.
-     *
-     * @param  string|null  $key
-     * @return $this
-     */
-    public function key($key)
-    {
-        $this->key = $key;
-
-        return $this;
+        return [
+            ...$this->refinePersist(),
+            'columns',
+        ];
     }
 
     /**
      * Get the unique identifier key for table records.
      *
-     * @return string
      *
      * @throws KeyNotFoundException
      */
-    public function getKey()
+    public function getKey(): ?string
     {
         if (isset($this->key)) {
             return $this->key;
@@ -287,64 +238,9 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
     }
 
     /**
-     * Set the store to use for persisting toggled columns.
-     *
-     * @param  bool|string|null  $store
-     * @return $this
-     */
-    public function persistColumns($store = true)
-    {
-        $this->persistColumns = $store;
-
-        return $this;
-    }
-
-    /**
-     * Set the session store to be used for persisting toggled columns.
-     *
-     * @return $this
-     */
-    public function persistColumnsInSession()
-    {
-        return $this->persistColumns(SessionStore::NAME);
-    }
-
-    /**
-     * Set the cookie store to be used for persisting toggled columns.
-     *
-     * @return $this
-     */
-    public function persistColumnsInCookie()
-    {
-        return $this->persistColumns(CookieStore::NAME);
-    }
-
-    /**
-     * Determine if the toggled columns should be persisted.
-     *
-     * @return bool
-     */
-    public function shouldPersistColumns()
-    {
-        return (bool) $this->persistColumns;
-    }
-
-    /**
-     * Get the store to use for persisting toggled columns.
-     *
-     * @return \Honed\Refine\Stores\Store|null
-     */
-    public function getColumnStore()
-    {
-        return $this->getStore($this->persistColumns);
-    }
-
-    /**
      * Determine if the table is empty using the pagination metadata.
-     *
-     * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return (bool) Arr::get($this->getPagination(), 'empty', true);
     }
@@ -354,7 +250,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      *
      * @return array<string, mixed>
      */
-    public function operationsToArray()
+    public function operationsToArray(): array
     {
         return [
             'inline' => filled($this->getInlineOperations()),
@@ -386,7 +282,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      *
      * @return array<string, mixed>
      */
-    public function getSearchColumnsState()
+    public function getSearchColumnsState(): array
     {
         if ($this->isNotMatchable() || $this->isNotSearchable()) {
             return [];
@@ -405,7 +301,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      *
      * @return array<string, mixed>
      */
-    public function getSortState()
+    public function getSortState(): array
     {
         $sort = $this->getActiveSort();
 
@@ -421,7 +317,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      *
      * @return array<string, mixed>
      */
-    public function getFiltersState()
+    public function getFiltersState(): array
     {
         if ($this->isNotFilterable()) {
             return [];
@@ -440,7 +336,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      *
      * @return array<string, mixed>
      */
-    public function getColumnsState()
+    public function getColumnsState(): array
     {
         if ($this->isNotToggleable()) {
             return [];
@@ -456,10 +352,8 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
 
     /**
      * Get the application namespace for the application.
-     *
-     * @return string
      */
-    protected static function appNamespace()
+    protected static function appNamespace(): string
     {
         try {
             return Container::getInstance()
@@ -475,7 +369,7 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      *
      * @return array<string, mixed>
      */
-    protected function getSearchState()
+    protected function getSearchState(): array
     {
         if ($this->isNotSearchable()) {
             return [];
@@ -505,21 +399,19 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
         $this->build();
 
         return [
-            ...$this->actionableToArray(),
-            ...$this->refineToArray(),
-            'key' => $this->getKey(),
-            'column' => $this->isToggleable() ? $this->getColumnKey() : null,
-            'record' => is_array($this->getPerPage()) ? $this->getRecordKey() : null,
-            'page' => $this->getPageKey(),
+            '_column_key' => $this->isToggleable() ? $this->getColumnKey() : null,
+            '_record_key' => is_array($this->getPerPage()) ? $this->getRecordKey() : null,
+            '_page_key' => $this->getPageKey(),
+            'toggleable' => $this->isToggleable(),
             'records' => $this->getRecords(),
             'paginate' => $this->getPagination(),
             'columns' => $this->columnsToArray(),
             'pages' => $this->pageOptionsToArray(),
-            'toggleable' => $this->isToggleable(),
             'operations' => $this->operationsToArray(),
-            'emptyState' => $this->getEmptyState()?->toArray(),
+            'state' => $this->getEmptyState()?->toArray(),
             'views' => $this->listViews(),
             'meta' => $this->getMeta(),
+            ...$this->refineToArray(),
         ];
     }
 
@@ -527,10 +419,11 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
      * Get a partial set of pipes to be used for refining the resource, without
      * executing or persisting the data.
      *
-     * @return array<int,class-string<\Honed\Core\Pipe>>
+     * @return array<int,class-string<\Honed\Core\Pipe<self>>>
      */
-    protected function refinements()
+    protected function refinements(): array
     {
+        // @phpstan-ignore-next-line
         return [
             Toggle::class,
             CallsBefore::class,
@@ -547,10 +440,11 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
     /**
      * Get the pipes to be used for building the table.
      *
-     * @return array<int,class-string<\Honed\Core\Pipe>>
+     * @return array<int,class-string<\Honed\Core\Pipe<self>>>
      */
-    protected function pipes()
+    protected function pipes(): array
     {
+        // @phpstan-ignore-next-line
         return [
             ...$this->refinements(),
             Paginate::class,
@@ -563,17 +457,15 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
     /**
      * Provide a selection of default dependencies for evaluation by name.
      *
-     * @param  string  $parameterName
      * @return array<int, mixed>
      */
-    protected function resolveDefaultClosureDependencyForEvaluationByName($parameterName)
+    protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
     {
         return match ($parameterName) {
             'columns' => [$this->getColumns()],
             'headings' => [$this->getHeadings()],
             'emptyState' => [$this->newEmptyState()],
             'request' => [$this->getRequest()],
-            'builder', 'query', 'q' => [$this->getBuilder()],
             default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
         };
     }
@@ -581,18 +473,15 @@ class Table extends Primitive implements HandlesOperations, HooksIntoLifecycle, 
     /**
      * Provide a selection of default dependencies for evaluation by type.
      *
-     * @param  string  $parameterType
+     * @param  class-string  $parameterType
      * @return array<int, mixed>
      */
-    protected function resolveDefaultClosureDependencyForEvaluationByType($parameterType)
+    protected function resolveDefaultClosureDependencyForEvaluationByType(string $parameterType): array
     {
-        $builder = $this->getBuilder();
-
         return match ($parameterType) {
             self::class => [$this],
             EmptyState::class => [$this->newEmptyState()],
             Request::class => [$this->getRequest()],
-            $builder::class, Builder::class, BuilderContract::class => [$builder],
             default => parent::resolveDefaultClosureDependencyForEvaluationByType($parameterType),
         };
     }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Honed\Table\Pipes;
 
+use Honed\Action\Handlers\Concerns\Parameterisable;
 use Honed\Action\Operations\InlineOperation;
 use Honed\Core\Pipe;
+use Honed\Table\Columns\Column;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -16,86 +18,66 @@ use Illuminate\Support\Arr;
  */
 class TransformRecords extends Pipe
 {
+    use Parameterisable;
+
     /**
      * Run the after refining logic.
      */
     public function run(): void
     {
-        $instance = $this->instance;
+        $columns = $this->instance->getHeadings();
 
-        $columns = $instance->getHeadings();
-        $operations = $instance->getInlineOperations();
-        $records = $instance->getRecords();
+        $operations = $this->instance->getInlineOperations();
 
-        $processedRecords = array_map(
-            fn ($record) => $this->create($record, $instance, $columns, $operations),
-            $records
+        $records = $this->instance->getRecords();
+
+        $this->instance->setRecords(
+            array_map(
+                fn ($record) => $this->newRecord($record, $columns, $operations),
+                $records
+            )
+
         );
-
-        $instance->setRecords($processedRecords);
     }
 
     /**
      * Create a record for the table.
      *
      * @param  array<string, mixed>|Model  $record
-     * @param  TClass  $instance
-     * @param  array<int, \Honed\Table\Columns\Column>  $columns
+     * @param  array<int, Column>  $columns
      * @param  array<int, InlineOperation>  $operations
      * @return array<string, mixed>
      */
-    protected function create($record, $instance, $columns, $operations)
+    protected function newRecord(array|Model $record, array $columns, array $operations)
     {
         return [
-            ...$this->getColumns($record, $columns),
-            'class' => $instance->getClasses($this->named($record), $this->typed($record)),
-            'operations' => $this->getOperations($record, $operations),
-        ];
-    }
-
-    /**
-     * Get the operations for a record.
-     *
-     * @param  array<string, mixed>|Model  $record
-     * @param  array<int, InlineOperation>  $operations
-     * @return array<int, array<string, mixed>>
-     */
-    protected function getOperations($record, $operations)
-    {
-        return array_map(
-            static fn (InlineOperation $operation) => $operation->record($record)->toArray(),
-            array_values(
-                array_filter(
-                    $operations,
-                    static fn (InlineOperation $operation) => $operation->record($record)->isAllowed()
+            ...Arr::mapWithKeys(
+                $columns,
+                fn ($column) => $this->getColumn($record, $column)
+            ),
+            'class' => $this->instance->getClasses(
+                $this->getNamedParameters($record), $this->getTypedParameters($record)
+            ),
+            '_key' => Arr::get($record, $this->instance->getKey()),
+            'operations' => array_map(
+                static fn (InlineOperation $operation) => $operation->record($record)->toArray(),
+                array_values(
+                    array_filter(
+                        $operations,
+                        static fn (InlineOperation $operation) => $operation->record($record)->isAllowed()
+                    )
                 )
-            )
-        );
-    }
-
-    /**
-     * Get the column values for a record.
-     *
-     * @param  array<string, mixed>|Model  $record
-     * @param  array<int, \Honed\Table\Columns\Column>  $columns
-     * @return array<string, array<string, mixed>>
-     */
-    protected function getColumns($record, $columns)
-    {
-        return Arr::mapWithKeys(
-            $columns,
-            fn ($column) => $this->getColumn($record, $column)
-        );
+            ),
+        ];
     }
 
     /**
      * Get the column value for a record.
      *
      * @param  array<string,mixed>|Model  $record
-     * @param  \Honed\Table\Columns\Column  $column
      * @return array<string, mixed>
      */
-    protected function getColumn($record, $column)
+    protected function getColumn(array|Model $record, Column $column): array
     {
         [$value, $placeholder] = $column->value($record);
 
@@ -107,31 +89,5 @@ class TransformRecords extends Pipe
                 'f' => $placeholder,
             ],
         ];
-    }
-
-    /**
-     * Get the typed evaluators for a record.
-     *
-     * @param  array<string, mixed>|Model  $record
-     * @return array<class-string, mixed>
-     */
-    protected function typed($record)
-    {
-        if ($record instanceof Model) {
-            return array_fill_keys([Model::class, $record::class], $record);
-        }
-
-        return [];
-    }
-
-    /**
-     * Get the named evaluators for a record.
-     *
-     * @param  array<string, mixed>|Model  $record
-     * @return array<string, mixed>
-     */
-    protected function named($record)
-    {
-        return array_fill_keys(['model', 'record', 'row'], $record);
     }
 }

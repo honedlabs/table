@@ -10,14 +10,12 @@ class NumericColumn extends Column
 {
     /**
      * Provide the instance with any necessary setup.
-     *
-     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->placeholder('0');
-
         parent::setUp();
+
+        $this->placeholder('0');
 
         $this->type(self::NUMERIC);
 

@@ -86,26 +86,18 @@ class Column extends Primitive implements NullsAsUndefined
 
     /**
      * Provide the instance with any necessary setup.
-     *
-     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->active();
-
-        $this->definition($this);
     }
 
     /**
      * Create a new column instance.
-     *
-     * @param  string  $name
-     * @param  string|null  $label
-     * @return static
      */
-    public static function make($name, $label = null)
+    public static function make(string $name, ?string $label = null): static
     {
         return resolve(static::class)
             ->name($name)
@@ -114,10 +106,8 @@ class Column extends Primitive implements NullsAsUndefined
 
     /**
      * Get the parameter for the column.
-     *
-     * @return string
      */
-    public function getParameter()
+    public function getParameter(): string
     {
         return $this->getAlias()
             ?? str_replace('.', '_', $this->getName());
@@ -129,7 +119,7 @@ class Column extends Primitive implements NullsAsUndefined
      * @param  string|array<string, Closure>|null  $relationship
      * @return $this
      */
-    public function count($relationship = null)
+    public function count(string|array|null $relationship = null): static
     {
         return $this->addSimpleRelationship($relationship, 'count');
     }
@@ -140,7 +130,7 @@ class Column extends Primitive implements NullsAsUndefined
      * @param  string|array<string, Closure>|null  $relationship
      * @return $this
      */
-    public function exists($relationship = null)
+    public function exists(string|array|null $relationship = null): static
     {
         return $this->addSimpleRelationship($relationship, 'exists');
     }
@@ -149,10 +139,9 @@ class Column extends Primitive implements NullsAsUndefined
      * Add an average aggregate to the column state.
      *
      * @param  string|array<string, Closure>|null  $relationship
-     * @param  string|null  $column
      * @return $this
      */
-    public function avg($relationship = null, $column = null)
+    public function avg(string|array|null $relationship = null, ?string $column = null): static
     {
         return $this->addAggregateRelationship($relationship, $column, 'avg');
     }
@@ -161,10 +150,9 @@ class Column extends Primitive implements NullsAsUndefined
      * Add an average aggregate to the column state.
      *
      * @param  string|array<string, Closure>|null  $relationship
-     * @param  string|null  $column
      * @return $this
      */
-    public function average($relationship = null, $column = null)
+    public function average(string|array|null $relationship = null, ?string $column = null): static
     {
         return $this->avg($relationship, $column);
     }
@@ -173,10 +161,9 @@ class Column extends Primitive implements NullsAsUndefined
      * Add a sum aggregate to the column state.
      *
      * @param  string|array<string, Closure>|null  $relationship
-     * @param  string|null  $column
      * @return $this
      */
-    public function sum($relationship = null, $column = null)
+    public function sum(string|array|null $relationship = null, ?string $column = null): static
     {
         return $this->addAggregateRelationship($relationship, $column, 'sum');
     }
@@ -185,10 +172,9 @@ class Column extends Primitive implements NullsAsUndefined
      * Add a maximum aggregate to the column state.
      *
      * @param  string|array<string, Closure>|null  $relationship
-     * @param  string|null  $column
      * @return $this
      */
-    public function max($relationship = null, $column = null)
+    public function max(string|array|null $relationship = null, ?string $column = null): static
     {
         return $this->addAggregateRelationship($relationship, $column, 'max');
     }
@@ -197,10 +183,9 @@ class Column extends Primitive implements NullsAsUndefined
      * Add a minimum aggregate to the column state.
      *
      * @param  string|array<string, Closure>|null  $relationship
-     * @param  string|null  $column
      * @return $this
      */
-    public function min($relationship = null, $column = null)
+    public function min(string|array|null $relationship = null, ?string $column = null): static
     {
         return $this->addAggregateRelationship($relationship, $column, 'min');
     }
@@ -210,7 +195,7 @@ class Column extends Primitive implements NullsAsUndefined
      *
      * @return array<string,mixed>|null
      */
-    public function sortToArray()
+    public function sortToArray(): ?array
     {
         $sort = $this->getSort();
 
@@ -228,10 +213,10 @@ class Column extends Primitive implements NullsAsUndefined
     /**
      * Get the column value for a record.
      *
-     * @param  array<string, mixed>|Model  $value
+     * @param  array<string, mixed>|Model|null  $value
      * @return array{mixed, bool}
      */
-    public function value($value)
+    public function value(array|Model|null $value): array
     {
         $this->record($value);
 
@@ -239,7 +224,7 @@ class Column extends Primitive implements NullsAsUndefined
             $this->state($this->getName());
         }
 
-        return $this->apply($this->getState());
+        return $this->apply($this->resolveState());
     }
 
     /**
@@ -278,10 +263,9 @@ class Column extends Primitive implements NullsAsUndefined
      * Add a simple relationship to the column state.
      *
      * @param  string|array<string, Closure>|null  $relationship
-     * @param  string  $method
      * @return $this
      */
-    protected function addSimpleRelationship($relationship, $method)
+    protected function addSimpleRelationship(string|array|null $relationship, string $method): static
     {
         return $this->query(match (true) {
             (bool) $relationship => fn (Builder $query) => $query->{'with'.Str::studly($method)}($relationship),
@@ -295,11 +279,9 @@ class Column extends Primitive implements NullsAsUndefined
      * Add an aggregate relationship to the column state.
      *
      * @param  string|array<string, Closure>|null  $relationship
-     * @param  string|null  $column
-     * @param  string  $method
      * @return $this
      */
-    protected function addAggregateRelationship($relationship, $column, $method)
+    protected function addAggregateRelationship(string|array|null $relationship, ?string $column, string $method): static
     {
         if ($relationship && ! $column) {
             throw new InvalidArgumentException(
@@ -319,10 +301,9 @@ class Column extends Primitive implements NullsAsUndefined
     /**
      * Provide a selection of default dependencies for evaluation by name.
      *
-     * @param  string  $parameterName
      * @return array<int, mixed>
      */
-    protected function resolveDefaultClosureDependencyForEvaluationByName($parameterName)
+    protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
     {
         return match ($parameterName) {
             'state' => [$this->getState()],
@@ -337,7 +318,7 @@ class Column extends Primitive implements NullsAsUndefined
      * @param  class-string  $parameterType
      * @return array<int, mixed>
      */
-    protected function resolveDefaultClosureDependencyForEvaluationByType($parameterType)
+    protected function resolveDefaultClosureDependencyForEvaluationByType(string $parameterType): array
     {
         $record = $this->getRecord();
 

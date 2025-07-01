@@ -147,10 +147,10 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                 InlineOperation::make('show')
                     ->url(fn ($record) => route('products.show', $record)),
 
-                BulkOperation::make('edit')
+                BulkOperation::make('bulk-edit')
                     ->action(fn ($record) => $record->update(['name' => 'Bulk'])),
 
-                BulkOperation::make('delete')
+                BulkOperation::make('bulk-delete')
                     ->action(fn ($record) => $record->delete())
                     ->allow(false),
 

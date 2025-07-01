@@ -9,7 +9,9 @@ use Honed\Table\Contracts\CanListViews;
 use Honed\Table\Contracts\Driver;
 use Honed\Table\Facades\Views;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 
 class DatabaseDriver implements CanListViews, Driver
@@ -68,11 +70,10 @@ class DatabaseDriver implements CanListViews, Driver
      * Retrieve the value for the given name and scope from storage.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
      * @return object|null
      */
-    public function get($table, $name, $scope)
+    public function get(mixed $table, string $name, mixed $scope)
     {
         return $this->scope($table, $name, $scope)->first();
     }
@@ -84,7 +85,7 @@ class DatabaseDriver implements CanListViews, Driver
      * @param  string|array<int, string>  $scopes
      * @return array<int, object>
      */
-    public function list($table, $scopes)
+    public function list(mixed $table, mixed $scopes): array
     {
         return $this->newQuery()
             ->where('table', $table)
@@ -98,7 +99,7 @@ class DatabaseDriver implements CanListViews, Driver
      *
      * @return array<int, object>
      */
-    public function all()
+    public function all(): array
     {
         return $this->newQuery()
             ->get()
@@ -111,7 +112,7 @@ class DatabaseDriver implements CanListViews, Driver
      * @param  string|array<int, string>  $table
      * @return array<int, object>
      */
-    public function stored($table)
+    public function stored(mixed $table): array
     {
         return $this->newQuery()
             ->whereIn('table', (array) $table)
@@ -125,7 +126,7 @@ class DatabaseDriver implements CanListViews, Driver
      * @param  string|array<int, string>  $scope
      * @return array<int, object>
      */
-    public function scoped($scope)
+    public function scoped(mixed $scope): array
     {
         return $this->newQuery()
             ->whereIn('scope', (array) $scope)
@@ -137,14 +138,12 @@ class DatabaseDriver implements CanListViews, Driver
      * Create a new view for the given table, name and scope.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      *
      * @throws \Illuminate\Database\UniqueConstraintViolationException
      */
-    public function create($table, $name, $scope, $view)
+    public function create(mixed $table, string $name, mixed $scope, array $view): void
     {
         $this->insert($table, $name, $scope, $view);
     }
@@ -153,12 +152,10 @@ class DatabaseDriver implements CanListViews, Driver
      * Set a view for the given table and scope.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      */
-    public function set($table, $name, $scope, $view)
+    public function set(mixed $table, string $name, mixed $scope, array $view): void
     {
         $this->newQuery()->upsert(
             $this->fill(compact('table', 'name', 'scope', 'view')),
@@ -171,12 +168,9 @@ class DatabaseDriver implements CanListViews, Driver
      * Insert the table view for the given scope into storage.
      *
      * @param  string  $table
-     * @param  string  $name
-     * @param  mixed  $scope
      * @param  array<string, mixed>  $view
-     * @return bool
      */
-    public function insert($table, $name, $scope, $view)
+    public function insert(mixed $table, string $name, mixed $scope, array $view): bool
     {
         return $this->insertMany([compact('table', 'name', 'scope', 'view')]);
     }
@@ -185,9 +179,8 @@ class DatabaseDriver implements CanListViews, Driver
      * Insert the table views into storage.
      *
      * @param  array<int, array{table: string, name: string, scope: mixed, view: array<string, mixed>}>  $inserts
-     * @return bool
      */
-    public function insertMany($inserts)
+    public function insertMany(array $inserts): bool
     {
         return $this->newQuery()->insert(
             array_map(fn ($insert) => $this->fill($insert), $inserts)
@@ -198,11 +191,9 @@ class DatabaseDriver implements CanListViews, Driver
      * Delete a view.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
-     * @return void
      */
-    public function delete($table, $name, $scope)
+    public function delete(mixed $table, string $name, mixed $scope): void
     {
         $this->scope($table, $name, $scope)->delete();
     }
@@ -211,9 +202,8 @@ class DatabaseDriver implements CanListViews, Driver
      * Purge all views for the given table.
      *
      * @param  string|array<int, string>|null  $table
-     * @return void
      */
-    public function purge($table = null)
+    public function purge(mixed $table = null): void
     {
         if ($table === null) {
             $this->newQuery()->delete();
@@ -228,12 +218,10 @@ class DatabaseDriver implements CanListViews, Driver
      * Update the value for the given feature and scope in storage.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
      * @param  array<string, mixed>  $view
-     * @return bool
      */
-    public function update($table, $name, $scope, $view)
+    public function update(mixed $table, string $name, mixed $scope, array $view): bool
     {
         return (bool) $this->scope($table, $name, $scope)
             ->update([
@@ -246,11 +234,9 @@ class DatabaseDriver implements CanListViews, Driver
      * Get a new query builder for the given table, name, and scope.
      *
      * @param  string  $table
-     * @param  string  $name
      * @param  string  $scope
-     * @return \Illuminate\Database\Query\Builder
      */
-    protected function scope($table, $name, $scope)
+    protected function scope(mixed $table, string $name, mixed $scope): Builder
     {
         return $this->newQuery()
             ->where('table', $table)
@@ -264,7 +250,7 @@ class DatabaseDriver implements CanListViews, Driver
      * @param  array{table: string, name: string, scope: mixed, view: array<string, mixed>}  $insert
      * @return array<string, mixed>
      */
-    protected function fill($insert)
+    protected function fill(array $insert): array
     {
         $now = Carbon::now();
 
@@ -280,10 +266,8 @@ class DatabaseDriver implements CanListViews, Driver
 
     /**
      * Create a new table query.
-     *
-     * @return \Illuminate\Database\Query\Builder
      */
-    protected function newQuery()
+    protected function newQuery(): Builder
     {
         return $this->connection()
             ->table($this->getTableName());
@@ -291,10 +275,8 @@ class DatabaseDriver implements CanListViews, Driver
 
     /**
      * The database connection.
-     *
-     * @return \Illuminate\Database\Connection
      */
-    protected function connection()
+    protected function connection(): Connection
     {
         return $this->db->connection($this->getConnection());
     }

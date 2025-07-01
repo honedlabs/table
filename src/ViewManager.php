@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Closure;
+use Honed\Table\Contracts\Driver;
 use Honed\Table\Contracts\ViewScopeSerializeable;
 use Honed\Table\Drivers\ArrayDriver;
 use Honed\Table\Drivers\DatabaseDriver;
@@ -35,7 +36,7 @@ class ViewManager
     /**
      * The registered custom driver creators.
      *
-     * @var array<string, Closure(string, Container): Contracts\Driver>
+     * @var array<string, Closure(string, Container): Driver>
      */
     protected $customCreators = [];
 
@@ -78,12 +79,10 @@ class ViewManager
     /**
      * Get a view store instance.
      *
-     * @param  string|null  $store
-     * @return Decorator
      *
      * @throws InvalidArgumentException
      */
-    public function store($store = null)
+    public function store(?string $store = null): Decorator
     {
         return $this->driver($store);
     }
@@ -91,12 +90,10 @@ class ViewManager
     /**
      * Get a view store instance by name.
      *
-     * @param  string|null  $name
-     * @return Decorator
      *
      * @throws InvalidArgumentException
      */
-    public function driver($name = null)
+    public function driver(?string $name = null): Decorator
     {
         $name = $name ?: $this->getDefaultDriver();
 
@@ -105,11 +102,8 @@ class ViewManager
 
     /**
      * Create an instance of the array driver.
-     *
-     * @param  string  $name
-     * @return ArrayDriver
      */
-    public function createArrayDriver($name)
+    public function createArrayDriver(string $name): ArrayDriver
     {
         return new ArrayDriver(
             $this->getDispatcher(), $name
@@ -118,11 +112,8 @@ class ViewManager
 
     /**
      * Create an instance of the database driver.
-     *
-     * @param  string  $name
-     * @return DatabaseDriver
      */
-    public function createDatabaseDriver($name)
+    public function createDatabaseDriver(string $name): DatabaseDriver
     {
         return new DatabaseDriver(
             $this->getDatabaseManager(), $this->getDispatcher(), $name
@@ -131,10 +122,8 @@ class ViewManager
 
     /**
      * Get the default driver name.
-     *
-     * @return string
      */
-    public function getDefaultDriver()
+    public function getDefaultDriver(): string
     {
         // @phpstan-ignore-next-line offsetAccess.nonOffsetAccessible
         return $this->container['config']->get('table.views.driver', 'database');
@@ -142,11 +131,8 @@ class ViewManager
 
     /**
      * Set the default driver name.
-     *
-     * @param  string  $name
-     * @return void
      */
-    public function setDefaultDriver($name)
+    public function setDefaultDriver(string $name): void
     {
         // @phpstan-ignore-next-line offsetAccess.nonOffsetAccessible
         $this->container['config']->set('table.views.driver', $name);
@@ -158,7 +144,7 @@ class ViewManager
      * @param  string|array<int, string>|null  $name
      * @return $this
      */
-    public function forgetDriver($name = null)
+    public function forgetDriver(string|array|null $name = null): static
     {
         $name ??= $this->getDefaultDriver();
 
@@ -176,7 +162,7 @@ class ViewManager
      *
      * @return $this
      */
-    public function forgetDrivers()
+    public function forgetDrivers(): static
     {
         $this->stores = [];
 
@@ -186,11 +172,10 @@ class ViewManager
     /**
      * Register a custom driver creator closure.
      *
-     * @param  string  $driver
-     * @param  Closure(string, Container): Contracts\Driver  $callback
+     * @param  Closure(string, Container): Driver  $callback
      * @return $this
      */
-    public function extend($driver, $callback)
+    public function extend(string $driver, Closure $callback): static
     {
         $this->customCreators[$driver] = $callback->bindTo($this, $this);
 
@@ -200,12 +185,10 @@ class ViewManager
     /**
      * Serialize the given scope for storage.
      *
-     * @param  mixed  $scope
-     * @return string
      *
      * @throws RuntimeException
      */
-    public function serializeScope($scope)
+    public function serializeScope(mixed $scope): string
     {
         return match (true) {
             $scope instanceof ViewScopeSerializeable => $scope->viewScopeSerialize(),
@@ -227,11 +210,8 @@ class ViewManager
 
     /**
      * Get the scope for the given table.
-     *
-     * @param  mixed  $table
-     * @return string
      */
-    public function serializeTable($table)
+    public function serializeTable(mixed $table): string
     {
         return match (true) {
             $table === null => '__laravel_null',
@@ -246,10 +226,9 @@ class ViewManager
     /**
      * Specify that the Eloquent morph map should be used when serializing.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function useMorphMap($value = true)
+    public function useMorphMap(bool $value = true): static
     {
         $this->useMorphMap = $value;
 
@@ -258,10 +237,8 @@ class ViewManager
 
     /**
      * Determine if the Eloquent morph map should be used when serializing.
-     *
-     * @return bool
      */
-    public function usesMorphMap()
+    public function usesMorphMap(): bool
     {
         return $this->useMorphMap;
     }
@@ -270,9 +247,8 @@ class ViewManager
      * Set the default scope resolver.
      *
      * @param  (callable(): mixed)  $resolver
-     * @return void
      */
-    public function resolveScopeUsing($resolver)
+    public function resolveScopeUsing(callable $resolver): void
     {
         $this->defaultScopeResolver = $resolver;
     }
@@ -280,10 +256,9 @@ class ViewManager
     /**
      * The default scope resolver.
      *
-     * @param  string  $driver
      * @return callable(): mixed
      */
-    public function defaultScopeResolver($driver)
+    public function defaultScopeResolver(string $driver): callable
     {
         return function () use ($driver) {
             if ($this->defaultScopeResolver !== null) {
@@ -298,12 +273,10 @@ class ViewManager
     /**
      * Attempt to get the store from the local cache.
      *
-     * @param  string  $name
-     * @return Decorator
      *
      * @throws InvalidArgumentException
      */
-    protected function cached($name)
+    protected function cached(string $name): Decorator
     {
         return $this->stores[$name] ?? $this->resolve($name);
     }
@@ -311,12 +284,10 @@ class ViewManager
     /**
      * Resolve a view store instance.
      *
-     * @param  string  $name
-     * @return Decorator
      *
      * @throws InvalidArgumentException
      */
-    protected function resolve($name)
+    protected function resolve(string $name): Decorator
     {
         if (isset($this->customCreators[$name])) {
             $driver = $this->callCustomCreator($name);
@@ -324,7 +295,7 @@ class ViewManager
             $method = 'create'.ucfirst($name).'Driver';
 
             if (method_exists($this, $method)) {
-                /** @var Contracts\Driver */
+                /** @var Driver */
                 $driver = $this->{$method}($name);
             } else {
                 throw new InvalidArgumentException(
@@ -342,21 +313,16 @@ class ViewManager
 
     /**
      * Call a custom driver creator.
-     *
-     * @param  string  $name
-     * @return Contracts\Driver
      */
-    protected function callCustomCreator($name)
+    protected function callCustomCreator(string $name): Driver
     {
         return $this->customCreators[$name]($name, $this->container);
     }
 
     /**
      * Get the database manager instance from the container.
-     *
-     * @return DatabaseManager
      */
-    protected function getDatabaseManager()
+    protected function getDatabaseManager(): DatabaseManager
     {
         /** @var DatabaseManager */
         return $this->container['db']; // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
@@ -364,10 +330,8 @@ class ViewManager
 
     /**
      * Get the event dispatcher instance from the container.
-     *
-     * @return Dispatcher
      */
-    protected function getDispatcher()
+    protected function getDispatcher(): Dispatcher
     {
         /** @var Dispatcher */
         return $this->container['events']; // @phpstan-ignore-line offsetAccess.nonOffsetAccessible

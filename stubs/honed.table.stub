@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-use Honed\Action\BulkAction;
-use Honed\Action\PageAction;
-use Honed\Action\InlineAction;
+use Honed\Action\Operations\BulkOperation;
+use Honed\Action\Operations\BulkOperation;
+use Honed\Action\Operations\PageOperation;
 use Honed\Refine\Filters\Filter;
 use Honed\Refine\Sorts\Sort;
 use Honed\Refine\Searches\Search;
 use Honed\Table\Columns\Column;
 use Honed\Table\Columns\KeyColumn;
 use Honed\Table\Table;
-use Honed\Table\Contracts\ShouldToggle;
-use Honed\Table\Contracts\ShouldRemember;
-use Honed\Table\Contracts\ShouldSelect;
+use Honed\Table\Contracts\IsToggleable;
+use Honed\Table\Contracts\IsSelectable;
+use Honed\Table\Contracts\IsOrderable;
+use Honed\Table\Contracts\IsViewable;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model

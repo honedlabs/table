@@ -36,12 +36,6 @@ it('sets exporter', function () {
         ->getExporter($this->table)->toBe(Product::class);
 });
 
-it('has array representation', function () {
-    expect($this->export->toArray())
-        ->toBeArray()
-        ->{'action'}->toBeTrue();
-});
-
 it('handles action via download', function () {
     $this->export->download()->handle($this->table);
 

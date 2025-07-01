@@ -46,11 +46,9 @@ class Decorator implements CanListViews, Driver
     /**
      * Create a new driver decorator instance.
      *
-     * @param  string  $name
-     * @param  Driver  $driver
      * @param  (callable(): mixed)  $defaultScopeResolver
      */
-    public function __construct($name, $driver, $defaultScopeResolver)
+    public function __construct(string $name, Driver $driver, callable $defaultScopeResolver)
     {
         $this->name = $name;
         $this->driver = $driver;
@@ -75,11 +73,8 @@ class Decorator implements CanListViews, Driver
 
     /**
      * Create a pending view retrieval.
-     *
-     * @param  mixed|array<int, mixed>  $scope
-     * @return PendingViewInteraction
      */
-    public function for($scope = null)
+    public function for(mixed $scope = null): PendingViewInteraction
     {
         return (new PendingViewInteraction($this))
             ->for($scope ?? $this->defaultScope());
@@ -88,12 +83,9 @@ class Decorator implements CanListViews, Driver
     /**
      * Retrieve the view for the given table, name, and scope from storage.
      *
-     * @param  string|\Honed\Table\Table  $table
-     * @param  string  $name
-     * @param  mixed  $scope
      * @return object|null
      */
-    public function get($table, $name, $scope)
+    public function get(mixed $table, string $name, mixed $scope)
     {
         $table = Views::serializeTable($table);
 
@@ -105,11 +97,10 @@ class Decorator implements CanListViews, Driver
     /**
      * Retrieve the views for the given table and scopes from storage.
      *
-     * @param  mixed  $table
-     * @param  array<int, mixed>  $scopes
+     * @param  mixed|array<int, mixed>  $scopes
      * @return array<int, object>
      */
-    public function list($table, $scopes)
+    public function list(mixed $table, mixed $scopes): array
     {
         $scopes = $this->resolveScopes($scopes);
 
@@ -125,7 +116,7 @@ class Decorator implements CanListViews, Driver
      *
      * @throws RuntimeException
      */
-    public function all()
+    public function all(): array
     {
         $driver = $this->checkIfCanListViews();
 
@@ -140,7 +131,7 @@ class Decorator implements CanListViews, Driver
      *
      * @throws RuntimeException
      */
-    public function stored($table)
+    public function stored(mixed $table): array
     {
         $driver = $this->checkIfCanListViews();
 
@@ -157,7 +148,7 @@ class Decorator implements CanListViews, Driver
      *
      * @throws RuntimeException
      */
-    public function scoped($scope)
+    public function scoped(mixed $scope): array
     {
         $driver = $this->checkIfCanListViews();
 
@@ -169,13 +160,9 @@ class Decorator implements CanListViews, Driver
     /**
      * Create a new view for the given table, name and scope.
      *
-     * @param  mixed  $table
-     * @param  string  $name
-     * @param  mixed  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      */
-    public function create($table, $name, $scope, $view)
+    public function create(mixed $table, string $name, mixed $scope, array $view): void
     {
         $table = Views::serializeTable($table);
 
@@ -189,13 +176,9 @@ class Decorator implements CanListViews, Driver
     /**
      * Set the view for the given table and scope.
      *
-     * @param  mixed  $table
-     * @param  string  $name
-     * @param  mixed  $scope
      * @param  array<string, mixed>  $view
-     * @return void
      */
-    public function set($table, $name, $scope, $view)
+    public function set(mixed $table, string $name, mixed $scope, array $view): void
     {
         $table = Views::serializeTable($table);
 
@@ -208,13 +191,8 @@ class Decorator implements CanListViews, Driver
 
     /**
      * Delete the view for the given table and scope from storage.
-     *
-     * @param  mixed  $table
-     * @param  string  $name
-     * @param  mixed  $scope
-     * @return void
      */
-    public function delete($table, $name, $scope)
+    public function delete(mixed $table, string $name, mixed $scope): void
     {
         $table = Views::serializeTable($table);
 
@@ -229,9 +207,8 @@ class Decorator implements CanListViews, Driver
      * Purge all views for the given table.
      *
      * @param  mixed|array<int, mixed>|null  $table
-     * @return void
      */
-    public function purge($table = null)
+    public function purge(mixed $table = null): void
     {
         if ($table !== null) {
             $table = $this->resolveTables($table);
@@ -244,20 +221,16 @@ class Decorator implements CanListViews, Driver
 
     /**
      * Get the underlying view driver.
-     *
-     * @return Driver
      */
-    public function getDriver()
+    public function getDriver(): Driver
     {
         return $this->driver;
     }
 
     /**
      * Retrieve the default scope.
-     *
-     * @return mixed
      */
-    protected function defaultScope()
+    protected function defaultScope(): mixed
     {
         return ($this->defaultScopeResolver)();
     }
@@ -268,9 +241,9 @@ class Decorator implements CanListViews, Driver
      * @param  mixed|array<int, mixed>  $scopes
      * @return array<int, string>
      */
-    protected function resolveScopes($scopes)
+    protected function resolveScopes(mixed $scopes): array
     {
-        $scopes = is_array($scopes) ? $scopes : [$scopes];
+        $scopes = is_array($scopes) ? $scopes : func_get_args();
 
         return array_map(
             static fn ($scope) => Views::serializeScope($scope),
@@ -284,9 +257,9 @@ class Decorator implements CanListViews, Driver
      * @param  mixed|array<int, mixed>  $tables
      * @return array<int, string>
      */
-    protected function resolveTables($tables)
+    protected function resolveTables(mixed $tables): array
     {
-        $tables = is_array($tables) ? $tables : [$tables];
+        $tables = is_array($tables) ? $tables : func_get_args();
 
         return array_map(
             static fn ($table) => Views::serializeTable($table),
@@ -297,11 +270,9 @@ class Decorator implements CanListViews, Driver
     /**
      * Check if the driver supports listing views.
      *
-     * @return CanListViews|never
-     *
      * @throws RuntimeException
      */
-    protected function checkIfCanListViews()
+    protected function checkIfCanListViews(): CanListViews
     {
         if (! $this->driver instanceof CanListViews) {
             throw new RuntimeException(
