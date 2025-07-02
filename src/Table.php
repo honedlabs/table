@@ -113,6 +113,28 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
     }
 
     /**
+     * Handle dynamic method calls into the instance.
+     *
+     * @param  string  $method
+     * @param  array<int, mixed>  $parameters
+     * @return mixed
+     *
+     * @throws BadMethodCallException
+     */
+    public function __call($method, $parameters)
+    {
+        if (static::hasMacro($method)) {
+            return parent::macroCall($method, $parameters);
+        }
+
+        if ($call = $this->getPersistableCall($method)) {
+            return $this->callPersistable($call, $parameters);
+        }
+
+        throw new BadMethodCallException("Method {$method} does not exist.");
+    }
+
+    /**
      * Create a new table instance.
      *
      * @param  Closure(TBuilder):void|null  $before

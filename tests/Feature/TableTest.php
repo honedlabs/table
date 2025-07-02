@@ -152,3 +152,11 @@ describe('evaluation', function () {
         'table' => fn () => [fn (Table $arg) => $arg, Table::class],
     ]);
 });
+
+it('is macroable', function () {
+    Table::macro('test', function () {
+        return 'test';
+    });
+
+    expect($this->table->test())->toBe('test');
+});
