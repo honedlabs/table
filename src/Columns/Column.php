@@ -54,8 +54,10 @@ class Column extends Primitive implements NullsAsUndefined
     use CanHaveAlias;
     use CanHaveExtra;
     use CanHaveIcon;
+
     /** @use \Honed\Core\Concerns\CanQuery<TModel, TBuilder> */
     use CanQuery;
+
     use Exportable;
     use Filterable;
     use HasCellClasses;
@@ -63,9 +65,7 @@ class Column extends Primitive implements NullsAsUndefined
     use HasName;
     use HasPlaceholder;
     use HasQualifier;
-
     use HasState;
-
     use HasType;
     use Searchable;
     use Selectable;
