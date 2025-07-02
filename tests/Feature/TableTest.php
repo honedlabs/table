@@ -66,6 +66,7 @@ it('has array representation', function () {
     expect($this->table->toArray())
         ->toBeArray()
         ->toHaveKeys([
+            '_id',
             '_page_key',
             '_sort_key',
             '_search_key',
@@ -90,6 +91,7 @@ it('has array representation', function () {
             'placeholder',
             'views',
         ])
+        ->{'_id'}->toBe($this->table->getId())
         ->{'_page_key'}->toBe($this->table->getPageKey())
         ->{'_sort_key'}->toBe($this->table->getSortKey())
         ->{'_search_key'}->toBe($this->table->getSearchKey())

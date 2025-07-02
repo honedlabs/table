@@ -129,6 +129,7 @@ it('builds class', function () {
         ->toArray()
         ->scoped(fn ($array) => $array
             ->toHaveKeys([
+                '_id',
                 '_column_key',
                 '_record_key',
                 '_page_key',
@@ -152,6 +153,7 @@ it('builds class', function () {
             ->not->toHaveKeys([
                 '_match_key',
             ])
+            ->{'_id'}->toBe($this->table->getId())
             ->{'_search_key'}->toBe($this->table->getSearchKey())
             ->{'_sort_key'}->toBe($this->table->getSortKey())
             ->{'_delimiter'}->toBe($this->table->getDelimiter())
