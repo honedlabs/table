@@ -6,11 +6,13 @@ namespace Honed\Table\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 use function Orchestra\Testbench\workbench_path;
 
+#[WithMigration]
 class TestCase extends Orchestra
 {
     use RefreshDatabase;
@@ -21,10 +23,9 @@ class TestCase extends Orchestra
      */
     protected function setUp(): void
     {
-        Carbon::setTestNow(Carbon::parse('2000-01-01 00:00:00'));
-
         parent::setUp();
 
+        Carbon::setTestNow(Carbon::parse('2000-01-01 00:00:00'));
     }
 
     /**
