@@ -21,9 +21,10 @@ class TestCase extends Orchestra
      */
     protected function setUp(): void
     {
+        Carbon::setTestNow(Carbon::parse('2000-01-01 00:00:00'));
+        
         parent::setUp();
 
-        Carbon::setTestNow(Carbon::parse('2000-01-01 00:00:00'));
     }
 
     /**
