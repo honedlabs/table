@@ -12,28 +12,15 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 use function Orchestra\Testbench\workbench_path;
 
-#[WithMigration]
 class TestCase extends Orchestra
 {
     use RefreshDatabase;
     use WithWorkbench;
 
     /**
-     * Setup the test environment.
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Carbon::setTestNow(Carbon::parse('2000-01-01 00:00:00'));
-    }
-
-    /**
      * Define database migrations.
-     *
-     * @return void
      */
-    protected function defineDatabaseMigrations()
+    protected function defineDatabaseMigrations(): void
     {
         $this->loadMigrationsFrom([
             workbench_path('database/migrations'),
