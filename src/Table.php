@@ -144,7 +144,7 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
     public static function make($before = null)
     {
         return resolve(static::class)
-            ->when($before, fn ($table, $before) => $table->before($before));
+            ->when((bool) $before, fn ($table) => $table->before($before));
     }
 
     /**

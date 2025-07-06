@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Honed\Action\Handlers\Concerns\Parameterisable;
+use Honed\Action\Operations\InlineOperation;
 use Honed\Core\Pipe;
 use Honed\Table\Columns\Column;
 use Illuminate\Database\Eloquent\Model;
@@ -55,7 +56,7 @@ class TransformRecords extends Pipe
                 $this->getNamedParameters($record), $this->getTypedParameters($record)
             ),
             '_key' => Arr::get($record, $this->instance->getKey()),
-            'operations' => $this->instance->inlineOperationsToArray($record),
+            'operations' => $this->instance->inlineOperationsToArray($record)
         ];
     }
 

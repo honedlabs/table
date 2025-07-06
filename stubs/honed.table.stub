@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-use Honed\Action\Operations\BulkOperation;
+use Honed\Action\Operations\InlineOperation;
 use Honed\Action\Operations\BulkOperation;
 use Honed\Action\Operations\PageOperation;
 use Honed\Refine\Filters\Filter;
@@ -34,6 +34,19 @@ class {{ class }} extends Table
      */
     protected function definition(Table $table): Table
     {
-        return $table;
+        return $table
+            ->for()
+            ->columns([
+
+            ])
+            ->filters([
+
+            ])
+            ->sorts([
+
+            ])
+            ->operations([
+
+            ]);
     }
 }
