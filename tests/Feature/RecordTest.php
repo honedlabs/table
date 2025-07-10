@@ -12,6 +12,8 @@ beforeEach(function () {
 });
 
 it('has table with record', function () {
+    $this->table->define(); // @TODO
+
     expect($this->table->build()->toArray())
         ->toBeArray()
         ->not->toHaveKey('emptyState')

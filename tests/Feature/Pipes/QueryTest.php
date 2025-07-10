@@ -15,6 +15,8 @@ beforeEach(function () {
 
     $this->table = ProductTable::make();
 
+    $this->table->define(); // @TODO
+
     $this->table->setHeadings([
         Column::make('users_count')->count(),
 
@@ -29,9 +31,7 @@ beforeEach(function () {
 it('does not apply without headings', function () {
     $this->table->setHeadings([]);
 
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->through($this->table);
 
     expect($this->table->getBuilder()->getQuery())
         ->wheres->toBeEmpty()
@@ -39,9 +39,7 @@ it('does not apply without headings', function () {
 });
 
 it('applies heading queries', function () {
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->through($this->table);
 
     $connection = DB::connection();
 

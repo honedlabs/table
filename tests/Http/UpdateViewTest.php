@@ -20,6 +20,8 @@ beforeEach(function () {
     $this->name = 'View';
 
     $this->table = ProductTable::make();
+
+    $this->table->define(); // @TODO
 });
 
 it('updates a view', function () {

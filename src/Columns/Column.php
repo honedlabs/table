@@ -23,11 +23,11 @@ use Honed\Infolist\Entries\Concerns\HasPlaceholder;
 use Honed\Infolist\Entries\Concerns\HasState;
 use Honed\Refine\Concerns\CanBeHidden;
 use Honed\Refine\Concerns\HasQualifier;
-use Honed\Refine\Sorts\Sort;
 use Honed\Table\Columns\Concerns\CanBeKey;
 use Honed\Table\Columns\Concerns\CanBeToggled;
 use Honed\Table\Columns\Concerns\Exportable;
 use Honed\Table\Columns\Concerns\Filterable;
+use Honed\Table\Columns\Concerns\HasAlignment;
 use Honed\Table\Columns\Concerns\HasCellClasses;
 use Honed\Table\Columns\Concerns\Searchable;
 use Honed\Table\Columns\Concerns\Sortable;
@@ -60,6 +60,7 @@ class Column extends Primitive implements NullsAsUndefined
 
     use Exportable;
     use Filterable;
+    use HasAlignment;
     use HasCellClasses;
     use HasLabel;
     use HasName;
@@ -90,6 +91,8 @@ class Column extends Primitive implements NullsAsUndefined
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->define(); // @TODO
 
         $this->active();
     }
@@ -191,26 +194,6 @@ class Column extends Primitive implements NullsAsUndefined
     }
 
     /**
-     * Get the sort instance as an array.
-     *
-     * @return array<string,mixed>|null
-     */
-    public function sortToArray(): ?array
-    {
-        $sort = $this->getSort();
-
-        if (! $sort) {
-            return null;
-        }
-
-        return [
-            'active' => $sort->isActive(),
-            'direction' => $sort->getDirection(),
-            'next' => $sort->getNextDirection(),
-        ];
-    }
-
-    /**
      * Get the column value for a record.
      *
      * @param  array<string, mixed>|Model|null  $value
@@ -243,20 +226,10 @@ class Column extends Primitive implements NullsAsUndefined
             'badge' => $this->isBadge(),
             'toggleable' => $this->isToggleable(),
             'class' => $this->getClasses(),
+            'align' => $this->getAlignment(),
             'icon' => $this->getIcon(),
             'sort' => $this->sortToArray(),
         ];
-    }
-
-    /**
-     * Define the column.
-     *
-     * @param  $this  $column
-     * @return $this
-     */
-    protected function definition(self $column): self
-    {
-        return $column;
     }
 
     /**

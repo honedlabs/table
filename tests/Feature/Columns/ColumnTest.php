@@ -109,6 +109,7 @@ it('has array representation', function () {
             'hidden' => false,
             'active' => true,
             'toggleable' => true,
+            'align' => Column::ALIGN_LEFT,
         ]);
 });
 
@@ -121,6 +122,7 @@ it('has array representation with sort', function () {
             'hidden' => false,
             'toggleable' => true,
             'active' => true,
+            'align' => Column::ALIGN_LEFT,
             'sort' => [
                 'active' => false,
                 'direction' => null,

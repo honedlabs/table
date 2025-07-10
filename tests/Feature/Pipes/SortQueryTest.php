@@ -16,6 +16,8 @@ beforeEach(function () {
     $this->table = Table::make()
         ->for(User::class)
         ->sorts(Sort::make($this->name));
+
+    $this->table->define(); // @TODO
 });
 
 it('needs a sort key', function () {
@@ -23,9 +25,7 @@ it('needs a sort key', function () {
         'invalid' => $this->name,
     ]);
 
-    $this->pipe->instance($this->table->request($request));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->orders)
         ->toBeEmpty();
@@ -36,9 +36,7 @@ it('applies sort', function () {
         $this->table->getSortKey() => $this->name,
     ]);
 
-    $this->pipe->instance($this->table->request($request));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->orders)
         ->toBeOnlyOrder($this->name, Sort::ASCENDING);
@@ -51,12 +49,9 @@ it('applies default sort', function () {
         $this->table->getSortKey() => $name,
     ]);
 
-    $this->pipe->instance($this->table
+    $this->pipe->through($this->table
         ->sorts(Sort::make($name)->default())
-        ->request($request)
-    );
-
-    $this->pipe->run();
+        ->request($request));
 
     expect($this->table->getBuilder()->getQuery()->orders)
         ->toBeOnlyOrder($name, Sort::ASCENDING);

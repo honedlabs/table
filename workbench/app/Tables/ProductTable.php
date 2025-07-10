@@ -36,12 +36,11 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
     /**
      * Define the table.
      *
-     * @param  $this  $table
      * @return $this
      */
-    protected function definition(Table $table): Table
+    protected function definition(): static
     {
-        return $table
+        return $this
             ->for(Product::class)
             ->classes('bg-black')
             ->columns([

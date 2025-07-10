@@ -9,6 +9,8 @@ use Workbench\App\Tables\ProductTable;
 beforeEach(function () {
     $this->table = ProductTable::make();
 
+    $this->table->define(); // @TODO
+
     $this->exporter = new EloquentExporter($this->table);
 });
 

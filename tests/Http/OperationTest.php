@@ -11,6 +11,8 @@ use function Pest\Laravel\post;
 
 beforeEach(function () {
     $this->table = ProductTable::make();
+
+    $this->table->define(); // @TODO
 });
 
 it('handles inline operation', function () {

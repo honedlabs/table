@@ -18,6 +18,8 @@ beforeEach(function () {
     $this->table = Table::make()
         ->for(User::class)
         ->filters(Filter::make($this->name)->int());
+
+    $this->table->define(); // @TODO
 });
 
 it('needs a filter key', function () {
@@ -25,9 +27,7 @@ it('needs a filter key', function () {
         'invalid' => $this->value,
     ]);
 
-    $this->pipe->instance($this->table->request($request));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeEmpty();
@@ -38,9 +38,7 @@ it('applies filter', function () {
         $this->name => $this->value,
     ]);
 
-    $this->pipe->instance($this->table->request($request));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeOnlyWhere($this->name, $this->value);

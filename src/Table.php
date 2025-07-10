@@ -402,23 +402,13 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
     }
 
     /**
-     * Define the table.
-     *
-     * @param  $this  $table
-     * @return $this
-     */
-    protected function definition(self $table): self
-    {
-        return $table;
-    }
-
-    /**
      * Get the representation of the instance.
      *
      * @return array<string, mixed>
      */
     protected function representation(): array
     {
+        $this->define(); // @TODO
         $this->build();
 
         return [

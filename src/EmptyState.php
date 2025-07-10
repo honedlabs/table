@@ -57,7 +57,7 @@ class EmptyState extends Primitive implements NullsAsUndefined
     {
         parent::setUp();
 
-        $this->definition($this);
+        $this->define();
     }
 
     /**
@@ -183,16 +183,5 @@ class EmptyState extends Primitive implements NullsAsUndefined
                 )
             )
         );
-    }
-
-    /**
-     * Define the empty state.
-     *
-     * @param  $this  $emptyState
-     * @return $this
-     */
-    protected function definition(self $emptyState): self
-    {
-        return $emptyState;
     }
 }

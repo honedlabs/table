@@ -27,12 +27,12 @@ beforeEach(function () {
 
             Column::make('price'),
         ]);
+
+    $this->table->define(); // @TODO
 });
 
 it('defaults', function () {
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->through($this->table);
 
     expect($this->table->getHeadings())
         ->toHaveCount(3);
@@ -76,9 +76,7 @@ it('defaults', function () {
 ]);
 
 it('does not toggle if not toggleable', function () {
-    $this->pipe->instance($this->table->notToggleable());
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->notToggleable());
 
     expect($this->table->getHeadings())
         ->toHaveCount(4)
@@ -86,9 +84,7 @@ it('does not toggle if not toggleable', function () {
 });
 
 it('passes', function ($table) {
-    $this->pipe->instance($table);
-
-    $this->pipe->run();
+    $this->pipe->through($table);
 
     expect($table->getHeadings())
         ->toHaveCount(3);

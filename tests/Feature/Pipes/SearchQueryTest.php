@@ -25,6 +25,8 @@ beforeEach(function () {
             Search::make('name'),
             Search::make('description'),
         ]);
+
+    $this->table->define(); // @TODO
 });
 
 it('needs a search term', function () {
@@ -32,9 +34,7 @@ it('needs a search term', function () {
         'invalid' => $this->query,
     ]);
 
-    $this->pipe->instance($this->table->request($request));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeEmpty();
@@ -48,9 +48,7 @@ it('applies search', function () {
         $this->table->getSearchKey() => $this->query,
     ]);
 
-    $this->pipe->instance($this->table->request($request));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->{0}->toBeSearch('name', 'and')
@@ -68,9 +66,7 @@ it('applies search with matching', function () {
         $this->table->getMatchKey() => 'name',
     ]);
 
-    $this->pipe->instance($this->table->request($request));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeOnlySearch('name');

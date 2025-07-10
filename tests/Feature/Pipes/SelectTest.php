@@ -12,12 +12,12 @@ beforeEach(function () {
     $this->table = Table::make()
         ->for(Product::class)
         ->selectable(['id', 'name']);
+
+    $this->table->define(); // @TODO
 });
 
 it('selects columns', function () {
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->through($this->table);
 
     expect($this->table->getBuilder()->getQuery()->columns)
         ->toBeArray()
@@ -26,9 +26,7 @@ it('selects columns', function () {
 });
 
 it('does not select columns if selectable is false', function () {
-    $this->pipe->instance($this->table->selectable(false));
-
-    $this->pipe->run();
+    $this->pipe->through($this->table->selectable(false));
 
     expect($this->table->getBuilder()->getQuery()->columns)
         ->toBeNull();

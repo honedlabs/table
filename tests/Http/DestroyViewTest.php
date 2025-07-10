@@ -20,6 +20,8 @@ beforeEach(function () {
 
     $this->table = ProductTable::make();
 
+    $this->table->define(); // @TODO
+
     Views::for()->create(
         $this->table, $this->name, []
     );

@@ -80,6 +80,26 @@ trait Sortable
     }
 
     /**
+     * Get the sort instance as an array.
+     *
+     * @return array<string,mixed>|null
+     */
+    public function sortToArray(): ?array
+    {
+        $sort = $this->getSort();
+
+        if (! $sort) {
+            return null;
+        }
+
+        return [
+            'active' => $sort->isActive(),
+            'direction' => $sort->getDirection(),
+            'next' => $sort->getNextDirection(),
+        ];
+    }
+
+    /**
      * Create a new sort instance.
      */
     protected function newSort(?string $name = null): Sort

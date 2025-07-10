@@ -18,11 +18,10 @@ class UserTable extends Table
     /**
      * Define the table.
      *
-     * @param  $this  $table
      * @return $this
      */
-    protected function definition(Table $table): Table
+    protected function definition(): static
     {
-        return $table->for(User::class);
+        return $this->for(User::class);
     }
 }

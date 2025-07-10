@@ -21,12 +21,12 @@ beforeEach(function () {
             Column::make('description'),
             Column::make('price'),
         ]);
+
+    $this->table->define(); // @TODO
 });
 
 it('uses defaults', function () {
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->through($this->table);
 
     expect(array_map(fn ($column) => $column->getName(), $this->table->getColumns()))
         ->toBe(['id', 'name', 'description', 'price']);
@@ -51,9 +51,7 @@ it('uses defaults', function () {
 ]);
 
 it('retrieves from sources', function ($table) {
-    $this->pipe->instance($table);
-
-    $this->pipe->run();
+    $this->pipe->through($table);
 
     expect(array_map(fn ($column) => $column->getName(), $table->getColumns()))
         ->toBe(['price', 'id', 'name', 'description']);

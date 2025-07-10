@@ -38,6 +38,8 @@ beforeEach(function () {
     Views::set($this->table::class, 'Filter view', null, [
         'name' => 'joshua',
     ]);
+
+    $this->table->define(); // @TODO
 });
 
 it('builds class', function () {

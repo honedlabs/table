@@ -28,6 +28,8 @@ beforeEach(function () {
                 ->action(DestroyAction::class),
         ]);
 
+    $this->table->define(); // @TODO
+
     $this->table->key('id')->setHeadings([
         KeyColumn::make('id'),
 
@@ -53,9 +55,7 @@ beforeEach(function () {
 });
 
 it('transforms records', function () {
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->through($this->table);
 
     expect($this->table->getRecords())
         ->each(fn ($record) => $record
