@@ -18,10 +18,9 @@ trait Orderable
     /**
      * Set the instance to be orderable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function orderable($value = true)
+    public function orderable(bool $value = true): static
     {
         $this->orderable = $value;
 
@@ -31,30 +30,25 @@ trait Orderable
     /**
      * Set the instance to not be orderable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function notOrderable($value = true)
+    public function notOrderable(bool $value = true): static
     {
         return $this->orderable(! $value);
     }
 
     /**
      * Determine if the instance is orderable.
-     *
-     * @return bool
      */
-    public function isOrderable()
+    public function isOrderable(): bool
     {
         return $this->orderable || $this instanceof IsOrderable;
     }
 
     /**
      * Determine if the instance is not orderable.
-     *
-     * @return bool
      */
-    public function isNotOrderable()
+    public function isNotOrderable(): bool
     {
         return ! $this->isOrderable();
     }

@@ -11,17 +11,17 @@ trait Selectable
     /**
      * The columns to select, indicative of whether the instance is selectable.
      *
-     * @var bool|string|array<int, string>
+     * @var bool|string|\Illuminate\Contracts\Database\Query\Expression|array<int, string|\Illuminate\Contracts\Database\Query\Expression>
      */
     protected $selectable = false;
 
     /**
      * Set the instance to be selectable, optionally with a list of columns to select.
      *
-     * @param  bool|array<int, string>  $value
+     * @param  bool|\Illuminate\Contracts\Database\Query\Expression|array<int, string|\Illuminate\Contracts\Database\Query\Expression>  $value
      * @return $this
      */
-    public function selectable($value = true)
+    public function selectable($value = true): static
     {
         $this->selectable = $value;
 
@@ -31,10 +31,9 @@ trait Selectable
     /**
      * Set the instance to not be selectable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function notSelectable($value = true)
+    public function notSelectable(bool $value = true): static
     {
         return $this->selectable(! $value);
     }
@@ -42,12 +41,12 @@ trait Selectable
     /**
      * Select the columns to be displayed.
      *
-     * @param  string|array<int, string>  $selects
+     * @param  string|\Illuminate\Contracts\Database\Query\Expression|array<int, string|\Illuminate\Contracts\Database\Query\Expression>  $selects
      * @return $this
      */
-    public function select($selects)
+    public function select($selects): static
     {
-        /** @var array<int, string> */
+        /** @var array<int, string|\Illuminate\Contracts\Database\Query\Expression> */
         $selects = is_array($selects) ? $selects : func_get_args();
 
         $this->selectable = array_merge($this->getSelects(), $selects);
@@ -57,20 +56,16 @@ trait Selectable
 
     /**
      * Determine if the instance is selectable.
-     *
-     * @return bool
      */
-    public function isSelectable()
+    public function isSelectable(): bool
     {
         return (bool) $this->selectable || $this instanceof IsSelectable;
     }
 
     /**
      * Determine if the instance is not selectable.
-     *
-     * @return bool
      */
-    public function isNotSelectable()
+    public function isNotSelectable(): bool
     {
         return ! $this->isSelectable();
     }
@@ -80,9 +75,9 @@ trait Selectable
      *
      * @return array<int, string>
      */
-    public function getSelects()
+    public function getSelects(): array
     {
-        /** @var array<int, string> */
+        /** @var array<int, string|\Illuminate\Contracts\Database\Query\Expression> */
         return match (true) {
             is_array($this->selectable) => $this->selectable,
             is_string($this->selectable) => [$this->selectable],

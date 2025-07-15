@@ -27,10 +27,9 @@ trait Toggleable
     /**
      * Set the instance to be toggleable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function toggleable($value = true)
+    public function toggleable(bool $value = true): static
     {
         $this->toggleable = $value;
 
@@ -40,30 +39,25 @@ trait Toggleable
     /**
      * Set the instance to not be toggleable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function notToggleable($value = true)
+    public function notToggleable(bool $value = true): static
     {
         return $this->toggleable(! $value);
     }
 
     /**
      * Determine if the instance is toggleable.
-     *
-     * @return bool
      */
-    public function isToggleable()
+    public function isToggleable(): bool
     {
         return $this->toggleable || $this instanceof IsToggleable;
     }
 
     /**
      * Determine if the instance is not toggleable.
-     *
-     * @return bool
      */
-    public function isNotToggleable()
+    public function isNotToggleable(): bool
     {
         return ! $this->isToggleable();
     }
@@ -71,10 +65,9 @@ trait Toggleable
     /**
      * Set the query parameter for which columns to display.
      *
-     * @param  string  $columnKey
      * @return $this
      */
-    public function columnKey($columnKey): static
+    public function columnKey(string $columnKey): static
     {
         $this->columnKey = $columnKey;
 
@@ -83,10 +76,8 @@ trait Toggleable
 
     /**
      * Get the query parameter for which columns to display.
-     *
-     * @return string
      */
-    public function getColumnKey()
+    public function getColumnKey(): string
     {
         return $this->columnKey;
     }

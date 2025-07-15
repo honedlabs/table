@@ -20,15 +20,13 @@ class Select extends Pipe
      */
     public function run(): void
     {
-        $instance = $this->instance;
-
-        if (! $instance->isSelectable()) {
+        if ($this->instance->isNotSelectable()) {
             return;
         }
 
-        $selects = array_unique($instance->getSelects(), SORT_STRING);
+        $selects = array_unique($this->instance->getSelects(), SORT_STRING);
 
-        $resource = $instance->getBuilder();
+        $resource = $this->instance->getBuilder();
 
         if (empty($selects)) {
             $selects = ['*'];

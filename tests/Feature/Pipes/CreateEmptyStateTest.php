@@ -12,9 +12,8 @@ beforeEach(function () {
 
     $this->table = ProductTable::make()
         ->whenEmptyStateSearching(fn ($emptyState) => $emptyState->heading('Searching'))
-        ->whenEmptyStateFiltering(fn ($emptyState) => $emptyState->heading('Filtering'));
-
-    $this->table->define(); // @TODO
+        ->whenEmptyStateFiltering(fn ($emptyState) => $emptyState->heading('Filtering'))
+        ->define();
 
     $this->table->setPagination([
         'empty' => true,

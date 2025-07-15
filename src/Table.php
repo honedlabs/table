@@ -33,10 +33,13 @@ use Honed\Table\Concerns\Toggleable;
 use Honed\Table\Concerns\Viewable;
 use Honed\Table\Exceptions\KeyNotFoundException;
 use Honed\Table\Pipes\CreateEmptyState;
+use Honed\Table\Pipes\FilterColumns;
 use Honed\Table\Pipes\Paginate;
-use Honed\Table\Pipes\PrepareColumns;
 use Honed\Table\Pipes\Query;
+use Honed\Table\Pipes\SearchColumns;
 use Honed\Table\Pipes\Select;
+use Honed\Table\Pipes\SelectColumns;
+use Honed\Table\Pipes\SortColumns;
 use Honed\Table\Pipes\Toggle;
 use Honed\Table\Pipes\TransformRecords;
 use Illuminate\Container\Container;
@@ -287,6 +290,8 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
      */
     public function toState(): array
     {
+        $this->define();
+
         Pipeline::send($this)
             ->through($this->refinements())
             ->thenReturn();
@@ -408,7 +413,6 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
      */
     protected function representation(): array
     {
-        $this->define(); // @TODO
         $this->build();
 
         return [
@@ -441,7 +445,10 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
         return [
             Toggle::class,
             CallsBefore::class,
-            PrepareColumns::class,
+            SelectColumns::class,
+            SearchColumns::class,
+            FilterColumns::class,
+            SortColumns::class,
             Select::class,
             SearchQuery::class,
             FilterQuery::class,

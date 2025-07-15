@@ -61,7 +61,7 @@ class Product extends Model
      *
      * @return BelongsTo<User, $this>
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -71,7 +71,7 @@ class Product extends Model
      *
      * @return BelongsToMany<User, $this>
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }

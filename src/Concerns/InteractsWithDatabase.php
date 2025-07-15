@@ -8,10 +8,8 @@ trait InteractsWithDatabase
 {
     /**
      * Get the connection name for filter views.
-     *
-     * @return string
      */
-    public function getConnection()
+    public function getConnection(): string
     {
         /** @var string|null */
         $connection = config('table.views.connection');
@@ -22,10 +20,8 @@ trait InteractsWithDatabase
 
     /**
      * Get the migration table name for filter views.
-     *
-     * @return string
      */
-    public function getTableName()
+    public function getTableName(): string
     {
         /** @var string|null */
         $table = config('table.views.table');

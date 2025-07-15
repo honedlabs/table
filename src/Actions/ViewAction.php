@@ -64,8 +64,6 @@ abstract class ViewAction implements Action
             $request = Request::create($referer, Request::METHOD_GET);
         }
 
-        $table->define(); // @TODO
-
         return $table->request($request)->toState();
     }
 

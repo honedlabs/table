@@ -22,7 +22,7 @@ trait HasEmptyState
      * @param  EmptyState|Closure|null  $emptyState
      * @return $this
      */
-    public function emptyState($emptyState)
+    public function emptyState($emptyState): static
     {
         match (true) {
             $emptyState instanceof Closure => $this->evaluate($emptyState),
@@ -34,10 +34,8 @@ trait HasEmptyState
 
     /**
      * Get the empty state of the table.
-     *
-     * @return EmptyState|null
      */
-    public function getEmptyState()
+    public function getEmptyState(): ?EmptyState
     {
         return $this->emptyState;
     }

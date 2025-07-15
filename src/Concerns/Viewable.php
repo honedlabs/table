@@ -23,7 +23,7 @@ trait Viewable
      * @param  mixed|array<int, mixed>  $scope
      * @return $this
      */
-    public function viewable($scope = true)
+    public function viewable($scope = true): static
     {
         $this->viewable = match (true) {
             is_bool($scope) => $scope,
@@ -36,10 +36,9 @@ trait Viewable
     /**
      * Set whether the table is not viewable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function notViewable($value = true)
+    public function notViewable(bool $value = true): static
     {
         $this->viewable = ! $value;
 
@@ -48,30 +47,24 @@ trait Viewable
 
     /**
      * Determine if the table has views.
-     *
-     * @return bool
      */
-    public function isViewable()
+    public function isViewable(): bool
     {
         return (bool) $this->viewable || $this instanceof IsViewable;
     }
 
     /**
      * Determine if the table does not have views.
-     *
-     * @return bool
      */
-    public function isNotViewable()
+    public function isNotViewable(): bool
     {
         return ! $this->isViewable();
     }
 
     /**
      * Get the views for the table.
-     *
-     * @return PendingViewInteraction|null
      */
-    public function getViews()
+    public function getViews(): ?PendingViewInteraction
     {
         return match (true) {
             ! $this->isViewable() => null,
@@ -85,7 +78,7 @@ trait Viewable
      *
      * @return array<int, object>|null
      */
-    public function listViews()
+    public function listViews(): ?array
     {
         return $this->getViews()?->list($this);
     }

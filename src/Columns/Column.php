@@ -85,6 +85,13 @@ class Column extends Primitive implements NullsAsUndefined
      */
     protected $evaluationIdentifier = 'column';
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->define();
+    }
+
     /**
      * Provide the instance with any necessary setup.
      */
@@ -92,9 +99,9 @@ class Column extends Primitive implements NullsAsUndefined
     {
         parent::setUp();
 
-        $this->define(); // @TODO
-
         $this->active();
+
+        $this->selectable();
     }
 
     /**
@@ -240,6 +247,8 @@ class Column extends Primitive implements NullsAsUndefined
      */
     protected function addSimpleRelationship(string|array|null $relationship, string $method): static
     {
+        $this->notSelectable();
+
         return $this->query(match (true) {
             (bool) $relationship => fn (Builder $query) => $query->{'with'.Str::studly($method)}($relationship),
             default => fn (Builder $query) => $query->{'with'.Str::studly($method)}(
@@ -256,6 +265,8 @@ class Column extends Primitive implements NullsAsUndefined
      */
     protected function addAggregateRelationship(string|array|null $relationship, ?string $column, string $method): static
     {
+        $this->notSelectable();
+
         if ($relationship && ! $column) {
             throw new InvalidArgumentException(
                 'A column must be specified when an aggregate relationship is used.'

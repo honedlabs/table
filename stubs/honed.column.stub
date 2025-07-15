@@ -17,11 +17,10 @@ class {{ class }} extends Column
     /**
      * Define the column.
      *
-     * @param  $this  $column
      * @return $this
      */
-    protected function definition(Column $column): Column
+    protected function definition(): static
     {
-        return $column;
+        return $this;
     }
 }

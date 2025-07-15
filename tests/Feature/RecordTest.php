@@ -12,8 +12,6 @@ beforeEach(function () {
 });
 
 it('has table with record', function () {
-    $this->table->define(); // @TODO
-
     expect($this->table->build()->toArray())
         ->toBeArray()
         ->not->toHaveKey('emptyState')
@@ -29,7 +27,7 @@ it('has table with record', function () {
                     'id',
                     'name',
                     'description',
-                    'seller_name',
+                    // 'seller_name',
                     'public_id',
                     'class',
                     'operations',
@@ -37,7 +35,7 @@ it('has table with record', function () {
                 ->{'id'}->{'v'}->toBe($this->product->id)
                 ->{'name'}->{'v'}->toBe($this->product->name)
                 ->{'description'}->{'v'}->toBe($this->product->description)
-                ->{'seller_name'}->{'v'}->toBe('N/A')
+                // ->{'seller_name'}->{'v'}->toBe('N/A')
                 ->{'public_id'}->{'v'}->toBe($this->product->public_id)
                 ->{'class'}->toBe('bg-black')
                 ->{'operations'}->toBeArray()

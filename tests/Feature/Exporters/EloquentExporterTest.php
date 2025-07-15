@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Workbench\App\Tables\ProductTable;
 
 beforeEach(function () {
-    $this->table = ProductTable::make();
-
-    $this->table->define(); // @TODO
+    $this->table = ProductTable::make()
+        ->define();
 
     $this->exporter = new EloquentExporter($this->table);
 });

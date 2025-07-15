@@ -15,6 +15,8 @@ class KeyColumn extends Column
 
         $this->key();
 
+        $this->always();
+
         $this->qualify();
     }
 }

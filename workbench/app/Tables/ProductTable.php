@@ -60,8 +60,9 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                     ->trueText('Favourite')
                     ->falseText('Not favourite'),
 
-                TextColumn::make('seller.name', 'Sold by')
-                    ->toggledByDefault(),
+                // TextColumn::make('user', 'Sold by')
+                //     ->query(fn ($query) => $query->with('user'))
+                //     ->toggledByDefault(),
 
                 Column::make('status'),
 
@@ -139,18 +140,19 @@ class ProductTable extends Table implements IsOrderable, IsSelectable, IsTogglea
                 InlineOperation::make('delete')
                     ->allow(fn ($record) => $record->id % 2 === 0)
                     ->action(fn ($record) => $record->delete())
-                    ->confirmable(fn ($confirm) => $confirm
-                        ->title(fn ($record) => 'You are about to delete '.$record->name)
-                        ->description('Are you sure?')),
+                    ->confirmable(),
+                // ->confirmable(fn ($confirm) => $confirm
+                //     ->title(fn ($record) => 'You are about to delete '.$record->name)
+                //     ->description('Are you sure?')),
 
                 InlineOperation::make('show')
                     ->url(fn ($record) => route('products.show', $record)),
 
                 BulkOperation::make('bulk-edit')
-                    ->action(fn ($record) => $record->update(['name' => 'Bulk'])),
+                    ->action(fn ($query) => $query->update(['name' => 'Bulk'])),
 
                 BulkOperation::make('bulk-delete')
-                    ->action(fn ($record) => $record->delete())
+                    ->action(fn ($query) => $query->delete())
                     ->allow(false),
 
                 Export::make('export')
