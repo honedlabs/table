@@ -73,7 +73,7 @@ trait Selectable
     /**
      * Get the columns to select.
      *
-     * @return array<int, string>
+     * @return array<int, string|\Illuminate\Contracts\Database\Query\Expression>
      */
     public function getSelects(): array
     {
