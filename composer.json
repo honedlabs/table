@@ -83,7 +83,8 @@
         "lint": [
             "@php vendor/bin/pint --ansi",
             "@php vendor/bin/phpstan analyse --verbose --ansi"
-        ]
+        ],
+        "artisan": "vendor/bin/testbench"
     },
     "config": {
         "sort-packages": true,

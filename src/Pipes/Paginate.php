@@ -144,7 +144,8 @@ class Paginate extends Pipe
      */
     protected function lengthAware($builder, $perPage, $key, $window)
     {
-        $paginator = $builder->paginate($perPage, pageName: $key);
+        $paginator = $builder->paginate($perPage, pageName: $key)
+            ->withQueryString();
 
         return [$paginator->items(), $this->lengthAwarePagination($paginator, $window)];
     }

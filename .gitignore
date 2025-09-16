@@ -1,11 +1,11 @@
 .idea
+.phpunit.cache
 build
-.phpunit.result.cache
-package-lock.json
 composer.lock
+coverage
+docs
+phpunit.xml
+phpstan.neon
+testbench.yaml
 vendor
-.php-cs-fixer.cache
-.vscode/
-coverage/
 node_modules
-.phpunit.cache/

@@ -269,8 +269,7 @@ class DatabaseDriver implements CanListViews, Driver
      */
     protected function newQuery(): Builder
     {
-        return $this->connection()
-            ->table($this->getTableName());
+        return $this->connection()->table($this->getTableName());
     }
 
     /**
