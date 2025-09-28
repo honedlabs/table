@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Honed\Table\Facades\Views;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Workbench\App\Enums\Status;
 use Workbench\App\Models\Product;
@@ -15,18 +16,13 @@ beforeEach(function () {
 
     $this->request = Request::create('/', 'GET', [
         'name' => 'test',
-
         'price' => 100,
         'status' => \sprintf('%s,%s', Status::Available->value, Status::Unavailable->value),
         'only' => Status::ComingSoon->value,
-
         'favourite' => '1',
-
         'oldest' => '2000-01-01',
         'newest' => '2001-01-01',
-
         'missing' => 'test',
-
         $this->table->getSortKey() => '-price',
         $this->table->getSearchKey() => 'search+term',
         $this->table->getColumnKey() => 'id,name,price,status,best_seller,created_at',
@@ -39,7 +35,7 @@ beforeEach(function () {
         'name' => 'joshua',
     ]);
 
-    $this->table->define(); // @TODO
+    $this->table->define();
 });
 
 it('builds class', function () {
@@ -47,81 +43,37 @@ it('builds class', function () {
         ->wheres
         ->scoped(fn ($wheres) => $wheres
             ->toBeArray()
-            ->toHaveCount(9)
-            ->toEqualCanonicalizing([
-                // Search done on name (column) and description (property)
-                [
-                    'type' => 'raw',
-                    'sql' => 'LOWER(description) LIKE ?',
-                    'boolean' => 'and',
-                ],
-                [
-                    'type' => 'raw',
-                    'sql' => 'LOWER(name) LIKE ?',
-                    'boolean' => 'or',
-                ],
-                // Name where filter
-                [
-                    'type' => 'raw',
-                    'sql' => 'LOWER(name) LIKE ?',
-                    'boolean' => 'and',
-                ],
-                // Price set filter
-                [
-                    'type' => 'Basic',
-                    'column' => 'price',
-                    'operator' => '<=',
-                    'value' => 100,
-                    'boolean' => 'and',
-                ],
-                // Status set filter
-                [
-                    'type' => 'In',
-                    'column' => 'status',
-                    'values' => [Status::Available->value, Status::Unavailable->value],
-                    'boolean' => 'and',
-                ],
-                // Only set filter
-                [
-                    'type' => 'In',
-                    'column' => 'status',
-                    'values' => [Status::ComingSoon->value],
-                    'boolean' => 'and',
-                ],
-                // Favourite filter
-                [
-                    'type' => 'Basic',
-                    'column' => 'best_seller',
-                    'operator' => '=',
-                    'value' => true,
-                    'boolean' => 'and',
-                ],
-                // Oldest date filter
-                [
-                    'type' => 'Date',
-                    'column' => 'created_at',
-                    'operator' => '>=',
-                    'value' => '2000-01-01',
-                    'boolean' => 'and',
-                ],
-                // Newest date filter
-                [
-                    'type' => 'Date',
-                    'column' => 'created_at',
-                    'operator' => '<=',
-                    'value' => '2001-01-01',
-                    'boolean' => 'and',
-                ],
-            ])
+            ->toHaveCount(8)
+            ->{0}->scoped(fn ($where) => $where
+            ->toBeArray()
+            ->toHaveKeys(['type', 'query', 'boolean'])
+            ->{'type'}->toBe('Nested')
+            ->{'boolean'}->toBe('and')
+            ->{'query'}
+            ->scoped(fn ($query) => $query
+                ->toBeInstanceOf(Builder::class)
+                ->wheres
+                ->scoped(fn ($wheres) => $wheres
+                    ->toBeArray()
+                    ->toHaveCount(2)
+                    ->{0}->toBeSearch('description', 'and')
+                    ->{1}->toBeSearch('name', 'or')
+                )
+            )
+            )
+            ->{1}->toBeSearch('name')
+            ->{2}->toBeWhere('price', 100, '<=')
+            ->{3}->toBeWhereIn('status', [Status::Available->value, Status::Unavailable->value])
+            ->{4}->toBeWhereIn('status', [Status::ComingSoon->value])
+            ->{5}->toBeWhere('best_seller', true, '=')
+            ->{6}->toBeWhereDate('created_at', '>=', '2000-01-01')
+            ->{7}->toBeWhereDate('created_at', '<=', '2001-01-01')
         )
         ->orders
         ->scoped(fn ($orders) => $orders
             ->toBeArray()
             ->toHaveCount(1)
-            ->{0}->toEqual([
-                'column' => 'price',
-                'direction' => 'desc',
-            ])
+            ->{0}->toBeOrder('price', 'desc')
         );
 
     expect($this->table)

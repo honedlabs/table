@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Concerns;
 
 use Honed\Table\PageOption;
+use Illuminate\Database\Eloquent\Builder;
 
 use function array_map;
 
@@ -25,6 +26,13 @@ trait Paginable
     public const PER_PAGE = 10;
 
     public const WINDOW = 2;
+
+    /**
+     * The callback to use for custom pagination.
+     *
+     * @var callable(Builder,int,string,int):Builder
+     */
+    protected $paginateUsing;
 
     /**
      * The paginator to use.
@@ -74,6 +82,33 @@ trait Paginable
      * @var array<int,PageOption>
      */
     protected $pageOptions = [];
+
+    /**
+     * Register the callback to use for custom pagination.
+     *
+     * @param  callable(Builder,int,string,int):Builder  $callback
+     * @return $this
+     */
+    public function paginateUsing(callable $callback): static
+    {
+        $this->paginateUsing = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Call the paginator callback.
+     *
+     * @return mixed
+     */
+    public function callPaginator(Builder $builder, $value)
+    {
+        if (isset($this->paginateUsing)) {
+            return ($this->paginateUsing)($builder, $value, $this->getPageKey(), $this->getWindow());
+        }
+
+        return null;
+    }
 
     /**
      * Set the paginator type.

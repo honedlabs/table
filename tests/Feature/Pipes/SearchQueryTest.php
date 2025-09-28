@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Honed\Refine\Pipes\SearchQuery;
 use Honed\Refine\Searches\Search;
 use Honed\Table\Table;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Workbench\App\Models\Product;
@@ -51,8 +52,25 @@ it('applies search', function () {
     $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
-        ->{0}->toBeSearch('name', 'and')
-        ->{1}->toBeSearch('description', 'or');
+        ->toBeArray()
+        ->toHaveCount(1)
+        ->{0}->scoped(fn ($where) => $where
+        ->toBeArray()
+        ->toHaveKeys(['type', 'query', 'boolean'])
+        ->{'type'}->toBe('Nested')
+        ->{'boolean'}->toBe('and')
+        ->{'query'}
+        ->scoped(fn ($query) => $query
+            ->toBeInstanceOf(Builder::class)
+            ->wheres
+            ->scoped(fn ($wheres) => $wheres
+                ->toBeArray()
+                ->toHaveCount(2)
+                ->{0}->toBeSearch('name', 'and')
+                ->{1}->toBeSearch('description', 'or')
+            )
+        )
+        );
 
     expect($this->table->getSearchTerm())
         ->toBe($this->term);
@@ -69,7 +87,24 @@ it('applies search with matching', function () {
     $this->pipe->through($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
-        ->toBeOnlySearch('name');
+        ->toBeArray()
+        ->toHaveCount(1)
+        ->{0}->scoped(fn ($where) => $where
+        ->toBeArray()
+        ->toHaveKeys(['type', 'query', 'boolean'])
+        ->{'type'}->toBe('Nested')
+        ->{'boolean'}->toBe('and')
+        ->{'query'}
+        ->scoped(fn ($query) => $query
+            ->toBeInstanceOf(Builder::class)
+            ->wheres
+            ->scoped(fn ($wheres) => $wheres
+                ->toBeArray()
+                ->toHaveCount(1)
+                ->{0}->toBeSearch('name', 'and')
+            )
+        )
+        );
 
     expect($this->table->getSearchTerm())
         ->toBe($this->term);

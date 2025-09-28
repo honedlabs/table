@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Honed\Core\Pipe;
-use Honed\Table\Columns\Column;
 
 /**
  * @template TClass of \Honed\Table\Table
@@ -19,26 +18,16 @@ class SortColumns extends Pipe
      */
     public function run(): void
     {
-        if ($this->instance->isNotSortable()) {
+        if ($this->isNotSortable()) {
             return;
         }
 
-        $columns = $this->instance->getHeadings();
+        foreach ($this->getHeadings() as $column) {
+            $sort = $column->getSort();
 
-        foreach ($columns as $column) {
-            $this->sort($column);
-        }
-    }
-
-    /**
-     * Prepare the column sort state.
-     */
-    protected function sort(Column $column): void
-    {
-        $sort = $column->getSort();
-
-        if ($sort) {
-            $this->instance->sort($sort);
+            if ($sort) {
+                $this->sort($sort);
+            }
         }
     }
 }
