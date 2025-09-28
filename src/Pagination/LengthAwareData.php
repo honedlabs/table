@@ -77,7 +77,7 @@ class LengthAwareData extends SimpleData
     /**
      * Create a new length aware data instance.
      *
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *>  $paginator
+     * @param \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *> $paginator
      */
     public static function make(mixed $paginator): static
     {
@@ -99,16 +99,15 @@ class LengthAwareData extends SimpleData
     /**
      * Create the pagination links.
      *
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *>  $paginator
+     * @param \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *> $paginator
      */
-    public static function links(mixed $paginator): array
+    public static function links(mixed $paginator, int $window = 3): array
     {
         $currentPage = $paginator->currentPage();
         $lastPage = $paginator->lastPage();
-        $onEachSide = 3;
 
-        $start = max(1, min($currentPage - $onEachSide, $lastPage - ($onEachSide * 2)));
-        $end = min($lastPage, max($currentPage + $onEachSide, ($onEachSide * 2 + 1)));
+        $start = max(1, min($currentPage - $window, $lastPage - ($window * 2)));
+        $end = min($lastPage, max($currentPage + $window, ($window * 2 + 1)));
 
         return array_map(
             static fn (int $page) => [
