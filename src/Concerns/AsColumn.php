@@ -32,14 +32,14 @@ trait AsColumn
     use CanBeActive;
     use CanBeHidden;
     use CanBeKey;
-
     use CanBeToggled;
-
     use CanHaveIcon;
+
     /**
      * @use \Honed\Core\Concerns\CanQuery<TModel, TBuilder>
      */
     use CanQuery;
+
     use Exportable;
     use Filterable;
     use HasAlignment;
