@@ -4,74 +4,25 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use BackedEnum;
-use RuntimeException;
+use Honed\Infolist\Entries\EnumEntry;
+use Honed\Table\Concerns\AsColumn;
+use Honed\Table\Contracts\Column as ColumnContract;
 
-class EnumColumn extends BadgeColumn
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
+ */
+class EnumColumn extends EnumEntry implements ColumnContract
 {
     /**
-     * The backing enum for the column.
+     * @use \Honed\Table\Concerns\AsColumn<TModel, TBuilder>
+     */
+    use AsColumn;
+
+    /**
+     * The identifier to use for evaluation.
      *
-     * @var class-string<BackedEnum>
+     * @var string
      */
-    protected $enum;
-
-    /**
-     * Provide the instance with any necessary setup.
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->transformer(function (int|string|BackedEnum|null $value) {
-            if ($this->missingEnum()) {
-                throw new RuntimeException("Enum backing value is not set for {$this->getName()}.");
-            }
-
-            return match (true) {
-                is_null($value) => null,
-                $value instanceof BackedEnum => static::makeLabel($value->name),
-                default => ($enum = $this->getEnum()::tryFrom($value)) ? static::makeLabel($enum->name) : null,
-            };
-        });
-    }
-
-    /**
-     * Set the backing enum for the column.
-     *
-     * @param  class-string<BackedEnum>  $enum
-     * @return $this
-     */
-    public function enum(string $enum): static
-    {
-        $this->enum = $enum;
-
-        return $this;
-    }
-
-    /**
-     * Get the backing enum for the column.
-     *
-     * @return class-string<BackedEnum>
-     */
-    public function getEnum(): string
-    {
-        return $this->enum;
-    }
-
-    /**
-     * Check if the enum backing value is set.
-     */
-    public function hasEnum(): bool
-    {
-        return isset($this->enum);
-    }
-
-    /**
-     * Check if the enum backing value is missing.
-     */
-    public function missingEnum(): bool
-    {
-        return ! $this->hasEnum();
-    }
+    protected $evaluationIdentifier = 'column';
 }

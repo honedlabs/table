@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Honed\Table\Columns\ColorColumn;
-use Honed\Table\Columns\Column;
 
 beforeEach(function () {
     $this->column = ColorColumn::make('color');
@@ -11,5 +10,5 @@ beforeEach(function () {
 
 it('is type color', function () {
     expect($this->column)
-        ->getType()->toBe(Column::COLOR);
+        ->getType()->toBe('color');
 });

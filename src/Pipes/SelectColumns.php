@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Honed\Core\Pipe;
-use Honed\Table\Columns\Column;
+use Honed\Table\Contracts\Column;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -36,7 +36,7 @@ class SelectColumns extends Pipe
      */
     protected function select(Column $column, Builder $builder): void
     {
-        if ($column->isNotSelectable()) {
+        if (! $column->isSelectable()) {
             return;
         }
 

@@ -5,23 +5,24 @@ declare(strict_types=1);
 namespace Honed\Table\Concerns;
 
 use Honed\Table\Contracts\IsSelectable;
+use Illuminate\Contracts\Database\Query\Expression;
 
 trait Selectable
 {
     /**
      * The columns to select, indicative of whether the instance is selectable.
      *
-     * @var bool|string|\Illuminate\Contracts\Database\Query\Expression|array<int, string|\Illuminate\Contracts\Database\Query\Expression>
+     * @var bool|string|Expression|array<int, string|Expression>
      */
     protected $selectable = false;
 
     /**
      * Set the instance to be selectable, optionally with a list of columns to select.
      *
-     * @param  bool|\Illuminate\Contracts\Database\Query\Expression|array<int, string|\Illuminate\Contracts\Database\Query\Expression>  $value
+     * @param  bool|Expression|array<int, string|Expression>  $value
      * @return $this
      */
-    public function selectable($value = true): static
+    public function selectable(bool|Expression|array $value = true): static
     {
         $this->selectable = $value;
 
@@ -41,12 +42,12 @@ trait Selectable
     /**
      * Select the columns to be displayed.
      *
-     * @param  string|\Illuminate\Contracts\Database\Query\Expression|array<int, string|\Illuminate\Contracts\Database\Query\Expression>  $selects
+     * @param  string|Expression|array<int, string|Expression>  $selects
      * @return $this
      */
     public function select($selects): static
     {
-        /** @var array<int, string|\Illuminate\Contracts\Database\Query\Expression> */
+        /** @var array<int, string|Expression> */
         $selects = is_array($selects) ? $selects : func_get_args();
 
         $this->selectable = array_merge($this->getSelects(), $selects);
@@ -73,11 +74,11 @@ trait Selectable
     /**
      * Get the columns to select.
      *
-     * @return array<int, string|\Illuminate\Contracts\Database\Query\Expression>
+     * @return array<int, string|Expression>
      */
     public function getSelects(): array
     {
-        /** @var array<int, string|\Illuminate\Contracts\Database\Query\Expression> */
+        /** @var array<int, string|Expression> */
         return match (true) {
             is_array($this->selectable) => $this->selectable,
             is_string($this->selectable) => [$this->selectable],

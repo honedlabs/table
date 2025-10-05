@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-class TimeColumn extends Column
+use Honed\Infolist\Entries\TimeEntry;
+use Honed\Table\Concerns\AsColumn;
+use Honed\Table\Contracts\Column as ColumnContract;
+
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
+ */
+class TimeColumn extends TimeEntry implements ColumnContract
 {
     /**
-     * Provide the instance with any necessary setup.
+     * @use \Honed\Table\Concerns\AsColumn<TModel, TBuilder>
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->placeholder('-');
-
-        $this->time();
-    }
+    use AsColumn;
 
     /**
-     * Format the value of the entry.
+     * The identifier to use for evaluation.
      *
-     * @param  \Carbon\CarbonInterface|string|int|float|null  $value
-     * @return string|null
+     * @var string
      */
-    public function format($value)
-    {
-        return $this->formatTime($value);
-    }
+    protected $evaluationIdentifier = 'column';
 }

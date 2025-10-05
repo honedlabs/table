@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Honed\Table\Columns\Column;
 use Honed\Table\Columns\IconColumn;
 
 beforeEach(function () {
@@ -11,5 +10,5 @@ beforeEach(function () {
 
 it('is type icon', function () {
     expect($this->column)
-        ->getType()->toBe(Column::ICON);
+        ->getType()->toBe('icon');
 });

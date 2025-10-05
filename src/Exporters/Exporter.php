@@ -80,7 +80,7 @@ abstract class Exporter implements ExportsTable, ShouldAutoSize, WithStrictNullC
         $this->getHeadings();
 
         return array_map(
-            static fn ($heading) => $heading->value($row)[0],
+            static fn ($heading) => $heading->generate($row),
             $this->getHeadings()
         );
     }

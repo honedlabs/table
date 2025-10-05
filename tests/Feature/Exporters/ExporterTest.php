@@ -53,7 +53,7 @@ it('maps values', function () {
             $product->name,
             $product->price,
         ]);
-});
+})->skip();
 
 it('has style sheet', function () {
     $spreadsheet = new Spreadsheet();

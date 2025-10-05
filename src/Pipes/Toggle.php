@@ -6,7 +6,7 @@ namespace Honed\Table\Pipes;
 
 use Honed\Core\Interpret;
 use Honed\Core\Pipe;
-use Honed\Table\Columns\Column;
+use Honed\Table\Contracts\Column;
 
 /**
  * @template TClass of \Honed\Table\Table

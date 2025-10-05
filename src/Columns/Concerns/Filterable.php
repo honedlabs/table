@@ -6,7 +6,6 @@ namespace Honed\Table\Columns\Concerns;
 
 use Closure;
 use Honed\Refine\Filters\Filter;
-use Honed\Table\Columns\Column;
 
 /**
  * @phpstan-require-extends \Honed\Table\Columns\Column
@@ -93,13 +92,13 @@ trait Filterable
     protected function getFilterableType(): ?string
     {
         return match ($this->getType()) {
-            Column::ARRAY => 'array',
-            Column::BOOLEAN => 'boolean',
-            Column::DATE => 'date',
-            Column::DATETIME => 'datetime',
-            Column::TIME => 'time',
-            Column::NUMERIC => 'int',
-            Column::TEXT => 'string',
+            'array' => 'array',
+            'boolean' => 'boolean',
+            'date' => 'date',
+            'datetime' => 'datetime',
+            'time' => 'time',
+            'numeric' => 'int',
+            'text' => 'string',
             default => null,
         };
     }

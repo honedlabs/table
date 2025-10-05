@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table\Columns\Concerns;
 
 use Closure;
-use Honed\Infolist\Entries\Concerns\HasClasses as HasHeadingClasses;
+use Honed\Infolist\Concerns\HasClasses as HasHeadingClasses;
 
 trait HasCellClasses
 {

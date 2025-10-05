@@ -147,10 +147,8 @@ trait CanBeToggled
 
     /**
      * Determine if the instance should always be shown, just hidden if it is inactive.
-     *
-     * @return bool
      */
-    public function isAlways()
+    public function isAlways(): bool
     {
         return $this->always;
     }

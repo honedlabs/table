@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use function is_null;
+use Honed\Infolist\Entries\ArrayEntry;
+use Honed\Table\Concerns\AsColumn;
+use Honed\Table\Contracts\Column as ColumnContract;
 
-class ArrayColumn extends Column
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
+ */
+class ArrayColumn extends ArrayEntry implements ColumnContract
 {
     /**
-     * Provide the instance with any necessary setup.
+     * @use \Honed\Table\Concerns\AsColumn<TModel, TBuilder>
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->type(self::ARRAY);
-    }
+    use AsColumn;
 
     /**
-     * Format the value of the entry.
+     * The identifier to use for evaluation.
      *
-     * @param  array<int, mixed>|\Illuminate\Support\Collection<int, mixed>|null  $value
-     * @return array<int, mixed>|string|null
+     * @var string
      */
-    public function format($value)
-    {
-        return is_null($value) ? null : $this->formatArray($value);
-    }
+    protected $evaluationIdentifier = 'column';
 }

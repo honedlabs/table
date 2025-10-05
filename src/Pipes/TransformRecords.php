@@ -24,11 +24,11 @@ class TransformRecords extends Pipe
      */
     public function run(): void
     {
-        $columns = $this->instance->getHeadings();
+        $columns = $this->getHeadings();
 
-        $records = $this->instance->getRecords();
+        $records = $this->getRecords();
 
-        $this->instance->setRecords(
+        $this->setRecords(
             array_map(
                 fn ($record) => $this->newRecord($record, $columns),
                 $records
@@ -44,38 +44,20 @@ class TransformRecords extends Pipe
      * @param  array<int, Column>  $columns
      * @return array<string, mixed>
      */
-    protected function newRecord(array|Model $record, array $columns)
+    protected function newRecord(array|Model $record, array $columns): array
     {
         return [
             ...Arr::mapWithKeys(
                 $columns,
-                fn ($column) => $this->getColumn($record, $column)
+                fn ($column) => [
+                    $column->getParameter() => $column->generate($record),
+                ]
             ),
-            'class' => $this->instance->getClasses(
+            'class' => $this->getClasses(
                 $this->getNamedParameters($record), $this->getTypedParameters($record)
             ),
-            '_key' => Arr::get($record, $this->instance->getKey()),
-            'operations' => $this->instance->inlineOperationsToArray($record),
-        ];
-    }
-
-    /**
-     * Get the column value for a record.
-     *
-     * @param  array<string,mixed>|Model  $record
-     * @return array<string, mixed>
-     */
-    protected function getColumn(array|Model $record, Column $column): array
-    {
-        [$value, $placeholder] = $column->value($record);
-
-        return [
-            $column->getParameter() => [
-                'v' => $value,
-                'e' => $column->getExtra(),
-                'c' => $column->getCellClasses(),
-                'f' => $placeholder,
-            ],
+            '_key' => Arr::get($record, $this->getKey()),
+            'operations' => $this->inlineOperationsToArray($record),
         ];
     }
 }

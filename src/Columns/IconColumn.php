@@ -13,6 +13,6 @@ class IconColumn extends Column
     {
         parent::setUp();
 
-        $this->type(self::ICON);
+        $this->type('icon');
     }
 }

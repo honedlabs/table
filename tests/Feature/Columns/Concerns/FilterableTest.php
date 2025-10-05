@@ -47,13 +47,13 @@ it('infers filter type', function ($type, $as) {
         ->toBeInstanceOf(Filter::class)
         ->interpretsAs()->toBe($as);
 })->with([
-    [Column::ARRAY, 'array'],
-    [Column::BOOLEAN, 'boolean'],
-    [Column::DATE, 'date'],
-    [Column::DATETIME, 'datetime'],
-    [Column::TIME, 'time'],
-    [Column::NUMERIC, 'int'],
-    [Column::TEXT, 'string'],
+    ['array', 'array'],
+    ['boolean', 'boolean'],
+    ['date', 'date'],
+    ['datetime', 'datetime'],
+    ['time', 'time'],
+    ['numeric', 'int'],
+    ['text', 'string'],
 ]);
 
 it('creates filter with alias', function () {

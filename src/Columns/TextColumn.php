@@ -4,30 +4,25 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use function is_null;
+use Honed\Infolist\Entries\TextEntry;
+use Honed\Table\Concerns\AsColumn;
+use Honed\Table\Contracts\Column as ColumnContract;
 
-class TextColumn extends Column
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
+ */
+class TextColumn extends TextEntry implements ColumnContract
 {
     /**
-     * Provide the instance with any necessary setup.
+     * @use \Honed\Table\Concerns\AsColumn<TModel, TBuilder>
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->placeholder('N/A');
-
-        $this->type(self::TEXT);
-    }
+    use AsColumn;
 
     /**
-     * Format the value of the entry.
+     * The identifier to use for evaluation.
      *
-     * @param  mixed  $value
-     * @return mixed
+     * @var string
      */
-    public function format($value)
-    {
-        return is_null($value) ? null : $this->formatText($value);
-    }
+    protected $evaluationIdentifier = 'column';
 }

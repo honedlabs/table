@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-class DateTimeColumn extends Column
+use Honed\Infolist\Entries\DateTimeEntry;
+use Honed\Table\Concerns\AsColumn;
+use Honed\Table\Contracts\Column as ColumnContract;
+
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
+ */
+class DateTimeColumn extends DateTimeEntry implements ColumnContract
 {
     /**
-     * Provide the instance with any necessary setup.
+     * @use \Honed\Table\Concerns\AsColumn<TModel, TBuilder>
      */
-    protected function setUp(): void
-    {
-        $this->placeholder('-');
-
-        parent::setUp();
-
-        $this->dateTime();
-    }
+    use AsColumn;
 
     /**
-     * Format the value of the entry.
+     * The identifier to use for evaluation.
      *
-     * @param  \Carbon\CarbonInterface|string|int|float|null  $value
-     * @return string|null
+     * @var string
      */
-    public function format($value)
-    {
-        return $this->formatDateTime($value);
-    }
+    protected $evaluationIdentifier = 'column';
 }
