@@ -37,7 +37,7 @@ beforeEach(function () {
             ->alias('title'),
 
         Column::make('status')
-            ->transformer(fn ($state) => $state?->name)
+            ->beforeFormatting(fn ($state) => $state?->name)
             ->state(fn ($record) => $record->status)
             ->extra(fn ($state) => [
                 'variant' => match ($state) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Closure;
 use Honed\Core\Concerns\CanBeActive;
 use Honed\Core\Concerns\CanHaveIcon;
 use Honed\Core\Concerns\CanQuery;
@@ -14,7 +15,6 @@ use Honed\Table\Columns\Concerns\CanBeToggled;
 use Honed\Table\Columns\Concerns\Exportable;
 use Honed\Table\Columns\Concerns\Filterable;
 use Honed\Table\Columns\Concerns\HasAlignment;
-use Honed\Table\Columns\Concerns\HasCellClasses;
 use Honed\Table\Columns\Concerns\Searchable;
 use Honed\Table\Columns\Concerns\Sortable;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,12 +43,18 @@ trait AsColumn
     use Exportable;
     use Filterable;
     use HasAlignment;
-    use HasCellClasses;
     use HasQualifier;
     use Searchable;
     use Selectable;
     use Selectable;
     use Sortable;
+
+    /**
+     * The classes to apply to the table header.
+     *
+     * @var array<int, string|Closure(mixed...):string>
+     */
+    protected $columnClasses = [];
 
     public function __construct()
     {
@@ -67,6 +73,29 @@ trait AsColumn
         $this->active();
 
         $this->selectable();
+    }
+
+    /**
+     * Set the classes to apply to an individual cell.
+     *
+     * @param  string|Closure(mixed...):string  $classes
+     * @return $this
+     */
+    public function columnClass(string|Closure $classes): static
+    {
+        $this->columnClasses[] = $classes;
+
+        return $this;
+    }
+
+    /**
+     * Get the classes to apply to an individual cell.
+     *
+     * @return string|null
+     */
+    public function getColumnClass()
+    {
+        return $this->createClasses($this->columnClasses);
     }
 
     /**
@@ -171,7 +200,7 @@ trait AsColumn
             'active' => $this->isActive(),
             'badge' => $this->isBadge(),
             'toggleable' => $this->isToggleable(),
-            'class' => $this->getClasses(),
+            'class' => $this->getColumnClass(),
             'align' => $this->getAlignment(),
             'sort' => $this->sortToArray(),
         ];

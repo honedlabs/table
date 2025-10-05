@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Columns;
 
-use Honed\Infolist\Entries\ColorEntry;
+use Honed\Infolist\Entries\CurrencyEntry;
 use Honed\Table\Concerns\AsColumn;
 use Honed\Table\Contracts\Column as ColumnContract;
 
@@ -12,7 +12,7 @@ use Honed\Table\Contracts\Column as ColumnContract;
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
  */
-class ColorColumn extends ColorEntry implements ColumnContract
+class CurrencyColumn extends CurrencyEntry implements ColumnContract
 {
     /**
      * @use \Honed\Table\Concerns\AsColumn<TModel, TBuilder>
