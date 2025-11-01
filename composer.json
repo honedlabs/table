@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "honed/action": "^0.31.0",
+        "honed/action": "^0.32.0",
         "honed/core": "^0.53.0",
         "honed/infolist": "^0.16.0",
         "honed/persist": "^0.4.0",
