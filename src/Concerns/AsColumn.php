@@ -34,16 +34,16 @@ trait AsColumn
     use CanBeKey;
     use CanBeToggled;
     use Exportable;
-
     use Filterable;
-
     use HasAlignment;
     use HasIcon;
     use HasQualifier;
+
     /**
      * @use \Honed\Core\Concerns\HasQuery<TModel, TBuilder>
      */
     use HasQuery;
+
     use Searchable;
     use Selectable;
     use Selectable;
