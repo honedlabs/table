@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Honed\Table;
 
 use Honed\Action\Operations\PageOperation;
-use Honed\Core\Concerns\CanHaveIcon;
+use Honed\Core\Concerns\HasIcon;
 use Honed\Core\Contracts\NullsAsUndefined;
 use Honed\Core\Primitive;
 use Honed\Table\Concerns\AdaptsToRefinements;
@@ -16,7 +16,7 @@ use Honed\Table\Concerns\AdaptsToRefinements;
 class EmptyState extends Primitive implements NullsAsUndefined
 {
     use AdaptsToRefinements;
-    use CanHaveIcon;
+    use HasIcon;
 
     public const DEFAULT_HEADING = 'No results found';
 

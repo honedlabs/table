@@ -6,8 +6,8 @@ namespace Honed\Table\Concerns;
 
 use Closure;
 use Honed\Core\Concerns\CanBeActive;
-use Honed\Core\Concerns\CanHaveIcon;
-use Honed\Core\Concerns\CanQuery;
+use Honed\Core\Concerns\HasIcon;
+use Honed\Core\Concerns\HasQuery;
 use Honed\Refine\Concerns\CanBeHidden;
 use Honed\Refine\Concerns\HasQualifier;
 use Honed\Table\Columns\Concerns\CanBeKey;
@@ -33,12 +33,12 @@ trait AsColumn
     use CanBeHidden;
     use CanBeKey;
     use CanBeToggled;
-    use CanHaveIcon;
+    use HasIcon;
 
     /**
-     * @use \Honed\Core\Concerns\CanQuery<TModel, TBuilder>
+     * @use \Honed\Core\Concerns\HasQuery<TModel, TBuilder>
      */
-    use CanQuery;
+    use HasQuery;
 
     use Exportable;
     use Filterable;

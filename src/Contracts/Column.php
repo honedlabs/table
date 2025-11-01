@@ -8,6 +8,7 @@ use Honed\Infolist\Contracts\Entryable;
 use Honed\Refine\Filters\Filter;
 use Honed\Refine\Searches\Search;
 use Honed\Refine\Sorts\Sort;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -30,7 +31,7 @@ interface Column extends Arrayable, Entryable
 
     public function isKey(): bool;
 
-    public function qualifyColumn(string $column, Builder $builder): string;
+    public function qualifyColumn(string|Expression $column, Builder $builder): mixed;
 
     public function isActive(): bool;
 
