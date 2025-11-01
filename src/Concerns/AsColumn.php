@@ -33,17 +33,17 @@ trait AsColumn
     use CanBeHidden;
     use CanBeKey;
     use CanBeToggled;
-    use HasIcon;
+    use Exportable;
 
+    use Filterable;
+
+    use HasAlignment;
+    use HasIcon;
+    use HasQualifier;
     /**
      * @use \Honed\Core\Concerns\HasQuery<TModel, TBuilder>
      */
     use HasQuery;
-
-    use Exportable;
-    use Filterable;
-    use HasAlignment;
-    use HasQualifier;
     use Searchable;
     use Selectable;
     use Selectable;

@@ -56,6 +56,7 @@ class Select extends Pipe
             // DB expressions are assumed to be unique, always include them
             if ($select instanceof Expression) {
                 $unique[] = $select;
+
                 continue;
             }
 
