@@ -25,7 +25,7 @@ beforeEach(function () {
         ]);
 
     $this->export = new EloquentExporter($this->table);
-});
+})->skip(fn () => app()->version() < '12.0');
 
 it('can create export', function () {
     Excel::store($this->export, 'products.xlsx', null, ExcelClass::XLSX);

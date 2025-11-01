@@ -34,4 +34,4 @@ it('has export format', function () {
         ->getExportFormat()->toBeNull()
         ->exportFormat(NumberFormat::FORMAT_CURRENCY_USD_INTEGER)->toBe($this->column)
         ->getExportFormat()->toBe(NumberFormat::FORMAT_CURRENCY_USD_INTEGER);
-});
+})->skip(fn () => app()->version() < '12.0');
