@@ -77,7 +77,7 @@ class LengthAwareData extends SimpleData
     /**
      * Create a new length aware data instance.
      *
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *>  $paginator
+     * @param \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *> $paginator
      */
     public static function make(mixed $paginator): static
     {
@@ -99,7 +99,7 @@ class LengthAwareData extends SimpleData
     /**
      * Create the pagination links.
      *
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *>  $paginator
+     * @param \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *> $paginator
      */
     public static function links(mixed $paginator, int $window = 3): array
     {
