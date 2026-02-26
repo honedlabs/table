@@ -15,7 +15,7 @@ trait Filterable
     /**
      * The filterable state of the column.
      *
-     * @var bool|Closure
+     * @var bool|Closure|Filter
      */
     protected $filterable = false;
 
@@ -24,7 +24,7 @@ trait Filterable
      *
      * @return $this
      */
-    public function filterable(bool|Closure $value = true): static
+    public function filterable(bool|Closure|Filter $value = true): static
     {
         $this->filterable = $value;
 
@@ -68,7 +68,7 @@ trait Filterable
 
         return match (true) {
             $this->filterable instanceof Closure => $this->newFilter()->query($this->filterable),
-
+            $this->filterable instanceof Filter => $this->filterable,
             default => $this->newFilter()
         };
     }

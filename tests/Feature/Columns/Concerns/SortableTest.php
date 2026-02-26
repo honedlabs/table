@@ -43,6 +43,15 @@ it('is sortable with string', function () {
         );
 });
 
+it('is sortable with sort instance', function () {
+    $this->column->sortable(Sort::make('name', 'Name'));
+
+    expect($this->column)
+        ->sortable(Sort::make('name', 'Name'))->toBe($this->column)
+        ->isSortable()->toBeTrue()
+        ->getSort()->toBeInstanceOf(Sort::class);
+});
+
 it('is sortable with closure', function () {
     $this->column->sortable(fn () => 'value');
 

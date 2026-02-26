@@ -42,6 +42,15 @@ it('is searchable with string', function () {
         );
 });
 
+it('is searchable with search instance', function () {
+    $this->column->searchable(Search::make('name', 'Name'));
+
+    expect($this->column)
+        ->searchable(Search::make('name', 'Name'))->toBe($this->column)
+        ->isSearchable()->toBeTrue()
+        ->getSearch()->toBeInstanceOf(Search::class);
+});
+
 it('is searchable with closure', function () {
     $this->column->searchable(fn () => 'value');
 

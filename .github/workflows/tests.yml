@@ -1,69 +1,60 @@
-name: Run tests
+name: Code coverage
 
 permissions:
-  contents: read
+  contents: write
 
 on:
   push:
     paths:
       - '**.php'
-      - '.github/workflows/tests.yml'
+      - '.github/workflows/coverage.yml'
       - 'phpunit.xml.dist'
       - 'composer.json'
       - 'composer.lock'
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 5
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        php: [8.4, 8.3, 8.2]
-        laravel: [12.*, 11.*]
-        stability: [prefer-lowest, prefer-stable]
+        php: [8.4]
+        laravel: [12.*]
         include:
           - laravel: 12.*
             testbench: 10.*
             carbon: 3.*
-          - laravel: 11.*
-            testbench: 9.*
-            carbon: ^2.63
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    name: Coverage - P${{ matrix.php }} - L${{ matrix.laravel }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
+          coverage: xdebug
 
       - name: Setup problem matchers
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Create testbench directories
-        run: |
-          mkdir -p @testbench/bootstrap/cache
-          mkdir -p @testbench/storage/framework/cache
-          mkdir -p @testbench/storage/framework/sessions
-          mkdir -p @testbench/storage/framework/views
-          mkdir -p @testbench/storage/logs
-
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.os == 'windows-latest' && '^^^' || '' }}${{ matrix.carbon }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction
 
-      - name: List Installed Dependencies
-        run: composer show -D
+      - name: Execute tests with coverage
+        run: vendor/bin/pest --coverage-clover clover.xml
 
-      - name: Execute tests
-        run: vendor/bin/pest --ci
+      - name: Generate coverage badge
+        uses: timkrase/phpunit-coverage-badge@v1.2.1
+        with:
+          coverage_badge_path: 'badge-coverage.svg'
+          push_badge: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}

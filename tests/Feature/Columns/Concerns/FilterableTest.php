@@ -28,6 +28,15 @@ it('is filterable', function () {
         ->getFilter()->toBeNull();
 });
 
+it('is filterable with filter instance', function () {
+    $this->column->filterable(Filter::make('name', 'Name'));
+
+    expect($this->column)
+        ->filterable(Filter::make('name', 'Name'))->toBe($this->column)
+        ->isFilterable()->toBeTrue()
+        ->getFilter()->toBeInstanceOf(Filter::class);
+});
+
 it('is filterable with closure', function () {
     $this->column->filterable(fn () => 'value');
 

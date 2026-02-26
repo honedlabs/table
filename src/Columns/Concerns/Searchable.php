@@ -12,7 +12,7 @@ trait Searchable
     /**
      * The searchable of the instance.
      *
-     * @var bool|string|Closure
+     * @var bool|string|Closure|Search
      */
     protected $searchable = false;
 
@@ -21,7 +21,7 @@ trait Searchable
      *
      * @return $this
      */
-    public function searchable(bool|string|Closure $value = true): static
+    public function searchable(bool|string|Closure|Search $value = true): static
     {
         $this->searchable = $value;
 
@@ -65,6 +65,7 @@ trait Searchable
 
         return match (true) {
             $this->searchable instanceof Closure => $this->newSearch()->query($this->searchable),
+            $this->searchable instanceof Search => $this->searchable,
             is_string($this->searchable) => $this->newSearch($this->searchable),
             default => $this->newSearch()
         };

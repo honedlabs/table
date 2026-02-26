@@ -5,6 +5,13 @@
   </picture>
 </a>
 
+<p>
+    <a href="https://github.com/honedlabs/table/actions"><img src="https://github.com/honedlabs/table/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
+    <a href="https://github.com/honedlabs/table"><img src="https://raw.githubusercontent.com/honedlabs/table/main/badge-coverage.svg" alt="Code Coverage"></a>
+    <a href="https://packagist.org/packages/honed/table"><img src="https://img.shields.io/packagist/dt/honed/table" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/honed/table"><img src="https://img.shields.io/packagist/v/honed/table" alt="Latest Stable Version"></a>
+</p>
+
 # Table
 Honed is a fullstack datatable and search query builder package for Laravel, with a companion Vue frontend composable using the InertiaJS HTTP protocol specification. It provides an elegant API to define tables, columns, actions and refiners for your data.
 

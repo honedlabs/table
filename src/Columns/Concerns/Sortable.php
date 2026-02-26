@@ -12,7 +12,7 @@ trait Sortable
     /**
      * The sortable of the instance.
      *
-     * @var bool|string|Closure
+     * @var bool|string|Closure|Sort
      */
     protected $sortable = false;
 
@@ -28,7 +28,7 @@ trait Sortable
      *
      * @return $this
      */
-    public function sortable(bool|string|Closure $value = true): static
+    public function sortable(bool|string|Closure|Sort $value = true): static
     {
         $this->sortable = $value;
 
@@ -72,9 +72,8 @@ trait Sortable
 
         return $this->sort ??= match (true) {
             $this->sortable instanceof Closure => $this->newSort()->query($this->sortable),
-
+            $this->sortable instanceof Sort => $this->sortable,
             is_string($this->sortable) => $this->newSort($this->sortable),
-
             default => $this->newSort()
         };
     }
