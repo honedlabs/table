@@ -421,6 +421,7 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
             '_record_key' => is_array($this->getPerPage()) ? $this->getRecordKey() : null,
             '_page_key' => $this->getPageKey(),
             'toggleable' => $this->isToggleable(),
+            'viewable' => $this->isViewable(),
             'records' => $this->getRecords(),
             'paginate' => $this->getPagination(),
             'columns' => $this->columnsToArray(),

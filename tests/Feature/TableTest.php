@@ -103,6 +103,7 @@ it('has array representation', function () {
         ->{'paginate'}->toBeArray()
         ->{'columns'}->toBeArray()
         ->{'toggleable'}->toBeFalse()
+        ->{'viewable'}->toBeFalse()
         ->{'operations'}
         ->scoped(fn ($operations) => $operations
             ->toBeArray()
@@ -117,6 +118,7 @@ it('has array representation', function () {
             ->{'page'}->toBeArray()
         )
         ->{'toggleable'}->toBeFalse()
+        ->{'viewable'}->toBeFalse()
         ->{'pages'}->toBeArray()
         ->{'state'}
         ->scoped(fn ($emptyState) => $emptyState
