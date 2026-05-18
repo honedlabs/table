@@ -26,7 +26,7 @@ class PaginationData implements Arrayable
     /**
      * Create a new pagination data instance.
      *
-     * @param \Illuminate\Support\Collection<int, *> $paginator
+     * @param  \Illuminate\Support\Collection<int, *>  $paginator
      */
     public static function make(mixed $paginator): static
     {
