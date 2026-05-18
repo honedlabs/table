@@ -43,7 +43,7 @@ class CursorData extends PaginationData
     /**
      * Create a new cursor data instance.
      *
-     * @param  \Illuminate\Contracts\Pagination\CursorPaginator<int, *>  $paginator
+     * @param \Illuminate\Contracts\Pagination\CursorPaginator<int, *> $paginator
      */
     public static function make(mixed $paginator): static
     {
