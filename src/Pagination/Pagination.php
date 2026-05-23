@@ -31,7 +31,7 @@ readonly class Pagination
     /**
      * Create a pagination data instance for the given length-aware paginator.
      *
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *>  $paginator
+     * @param  LengthAwarePaginator<int, *>  $paginator
      */
     public static function forLengthAware(LengthAwarePaginator $paginator): LengthAwareData
     {
@@ -41,7 +41,7 @@ readonly class Pagination
     /**
      * Create a pagination data instance for the given simple paginator.
      *
-     * @param  \Illuminate\Contracts\Pagination\Paginator<int, *>  $paginator
+     * @param  Paginator<int, *>  $paginator
      */
     public static function forSimple(Paginator $paginator): SimpleData
     {
@@ -51,7 +51,7 @@ readonly class Pagination
     /**
      * Create a pagination data instance for the given cursor paginator.
      *
-     * @param  \Illuminate\Contracts\Pagination\CursorPaginator<int, *>  $paginator
+     * @param  CursorPaginator<int, *>  $paginator
      */
     public static function forCursor(CursorPaginator $paginator): CursorData
     {
@@ -61,7 +61,7 @@ readonly class Pagination
     /**
      * Create a pagination data instance for the given collection.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection<int, *>  $paginator
+     * @param  Collection<int, *>  $paginator
      */
     public static function forCollection(Collection $paginator): PaginationData
     {
