@@ -325,7 +325,7 @@ class ViewManager
     protected function getDatabaseManager(): DatabaseManager
     {
         /** @var DatabaseManager */
-        return $this->container['db']; // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+        return $this->container->make('db');
     }
 
     /**
@@ -334,6 +334,6 @@ class ViewManager
     protected function getDispatcher(): Dispatcher
     {
         /** @var Dispatcher */
-        return $this->container['events']; // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+        return $this->container->make('events');
     }
 }

@@ -1,32 +1,37 @@
-name: Code coverage
+name: Run tests
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
     paths:
       - '**.php'
-      - '.github/workflows/coverage.yml'
+      - '.github/workflows/tests.yml'
       - 'phpunit.xml.dist'
       - 'composer.json'
       - 'composer.lock'
 
 jobs:
-  coverage:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        php: [8.4]
-        laravel: [12.*]
+        os: [ubuntu-latest, windows-latest]
+        php: [8.4, 8.3]
+        laravel: [13.*, 12.*]
+        stability: [prefer-lowest, prefer-stable]
         include:
+          - laravel: 13.*
+            testbench: 11.*
+            carbon: 3.*
           - laravel: 12.*
             testbench: 10.*
             carbon: 3.*
 
-    name: Coverage - P${{ matrix.php }} - L${{ matrix.laravel }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -37,7 +42,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: xdebug
+          coverage: none
 
       - name: Setup problem matchers
         run: |
@@ -46,15 +51,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
-          composer update --prefer-stable --prefer-dist --no-interaction
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.os == 'windows-latest' && '^^^' || '' }}${{ matrix.carbon }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Execute tests with coverage
-        run: vendor/bin/pest --coverage-clover clover.xml
+      - name: List Installed Dependencies
+        run: composer show -D
 
-      - name: Generate coverage badge
-        uses: timkrase/phpunit-coverage-badge@v1.2.1
-        with:
-          coverage_badge_path: 'badge-coverage.svg'
-          push_badge: true
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Execute tests
+        run: vendor/bin/pest --ci --no-coverage
