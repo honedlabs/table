@@ -93,8 +93,6 @@ class Paginate extends Pipe
 
     /**
      * Get the value to be used for pagination.
-     *
-     * @return int
      */
     protected function getValue(Table $instance): int
     {
