@@ -5,28 +5,27 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Honed\Core\Pipe;
+use Honed\Table\Table;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class FilterColumns extends Pipe
 {
     /**
      * Run the pipe logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        if ($this->isNotFilterable()) {
+        if ($instance->isNotFilterable()) {
             return;
         }
 
-        foreach ($this->getColumns() as $column) {
+        foreach ($instance->getColumns() as $column) {
             $filter = $column->getFilter();
 
             if ($filter) {
-                $this->filter($filter);
+                $instance->filter($filter);
             }
         }
     }

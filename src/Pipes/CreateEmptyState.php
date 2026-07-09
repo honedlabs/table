@@ -7,21 +7,18 @@ namespace Honed\Table\Pipes;
 use Closure;
 use Honed\Core\Pipe;
 use Honed\Table\EmptyState;
+use Honed\Table\Table;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class CreateEmptyState extends Pipe
 {
     /**
      * Run the create empty state logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        $instance = $this->instance;
-
         if (! $instance->isEmpty()) {
             $instance->emptyState(null);
 
@@ -42,11 +39,9 @@ class CreateEmptyState extends Pipe
     /**
      * Resolve the appropriate callback for the current table state.
      *
-     * @param  TClass  $instance
-     * @param  EmptyState  $emptyState
-     * @return (Closure(mixed...):EmptyState|void)|null
+     * @return ?Closure
      */
-    protected function resolveCallback($instance, $emptyState)
+    protected function resolveCallback(Table $instance, EmptyState $emptyState): ?Closure
     {
         $states = [
             'searching' => $instance->isSearching(),

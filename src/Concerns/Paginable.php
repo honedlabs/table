@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Concerns;
 
+use Honed\Table\Enums\Paginate;
 use Honed\Table\PageOption;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -11,14 +12,6 @@ use function array_map;
 
 trait Paginable
 {
-    public const CURSOR = 'cursor';
-
-    public const SIMPLE = 'simple';
-
-    public const LENGTH_AWARE = 'length-aware';
-
-    public const COLLECTION = 'collection';
-
     public const PAGE_KEY = 'page';
 
     public const RECORD_KEY = 'rows';
@@ -30,16 +23,23 @@ trait Paginable
     /**
      * The callback to use for custom pagination.
      *
-     * @var callable(Builder,int,string,int):Builder
+     * @var ?(callable(Builder,int,string,int):Builder)
      */
     protected $paginateUsing;
 
     /**
+     * The callback to use for counting the total number of records.
+     *
+     * @var (callable(Builder):int)|null
+     */
+    protected $countUsing;
+
+    /**
      * The paginator to use.
      *
-     * @var string
+     * @var Paginate
      */
-    protected $paginate = self::LENGTH_AWARE;
+    protected $paginate = Paginate::LengthAware;
 
     /**
      * The pagination options.
@@ -113,14 +113,13 @@ trait Paginable
     /**
      * Set the paginator type.
      *
-     * @param  bool|string  $value
      * @return $this
      */
-    public function paginate($value = true)
+    public function paginate(bool|Paginate $value = true): static
     {
         $this->paginate = match ($value) {
-            true => self::LENGTH_AWARE,
-            false => self::COLLECTION,
+            true => Paginate::LengthAware,
+            false => Paginate::Collection,
             default => $value,
         };
 
@@ -130,10 +129,9 @@ trait Paginable
     /**
      * Set the instance to not be paginable.
      *
-     * @param  bool  $value
      * @return $this
      */
-    public function dontPaginate($value = true)
+    public function dontPaginate(bool $value = true): static
     {
         return $this->paginate(! $value);
     }
@@ -143,9 +141,9 @@ trait Paginable
      *
      * @return $this
      */
-    public function lengthAwarePaginate()
+    public function lengthAwarePaginate(): static
     {
-        return $this->paginate(self::LENGTH_AWARE);
+        return $this->paginate(Paginate::LengthAware);
     }
 
     /**
@@ -153,9 +151,9 @@ trait Paginable
      *
      * @return $this
      */
-    public function simplePaginate()
+    public function simplePaginate(): static
     {
-        return $this->paginate(self::SIMPLE);
+        return $this->paginate(Paginate::Simple);
     }
 
     /**
@@ -163,19 +161,42 @@ trait Paginable
      *
      * @return $this
      */
-    public function cursorPaginate()
+    public function cursorPaginate(): static
     {
-        return $this->paginate(self::CURSOR);
+        return $this->paginate(Paginate::Cursor);
     }
 
     /**
      * Get the paginator type.
-     *
-     * @return string
      */
-    public function getPaginate()
+    public function getPaginate(): Paginate
     {
         return $this->paginate;
+    }
+
+    /**
+     * Register the callback to use for counting the total number of records.
+     *
+     * @param  callable(Builder):int  $callback
+     * @return $this
+     */
+    public function countUsing(callable $callback): static
+    {
+        $this->countUsing = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Call the count callback.
+     */
+    public function callCount(Builder $builder): ?int
+    {
+        if (isset($this->countUsing)) {
+            return value($this->countUsing, $builder);
+        }
+
+        return null;
     }
 
     /**
@@ -285,10 +306,8 @@ trait Paginable
 
     /**
      * Get the number of page links to show either side of the current page.
-     *
-     * @return int
      */
-    public function getWindow()
+    public function getWindow(): int
     {
         return $this->window;
     }
@@ -313,7 +332,7 @@ trait Paginable
      *
      * @return array<int,PageOption>
      */
-    public function getPageOptions()
+    public function getPageOptions(): array
     {
         return $this->pageOptions;
     }
@@ -323,7 +342,7 @@ trait Paginable
      *
      * @return array<int,array<string,mixed>>
      */
-    public function pageOptionsToArray()
+    public function pageOptionsToArray(): array
     {
         return array_map(
             static fn (PageOption $record) => $record->toArray(),

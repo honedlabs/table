@@ -81,7 +81,8 @@ class LengthAwareData extends SimpleData
      */
     public static function make(mixed $paginator): static
     {
-        return new self(
+        /** @var static $instance */
+        $instance = new self(
             empty: $paginator->isEmpty(),
             prevLink: $paginator->previousPageUrl(),
             nextLink: $paginator->nextPageUrl(),
@@ -94,6 +95,8 @@ class LengthAwareData extends SimpleData
             lastLink: $paginator->url($paginator->lastPage()),
             links: static::links($paginator),
         );
+
+        return $instance;
     }
 
     /**

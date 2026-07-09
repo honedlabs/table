@@ -7,21 +7,18 @@ namespace Honed\Table\Pipes;
 use Honed\Core\Interpret;
 use Honed\Core\Pipe;
 use Honed\Table\Contracts\Column;
+use Honed\Table\Table;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class Toggle extends Pipe
 {
     /**
      * Run the toggle logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        $instance = $this->instance;
-
         $toggleable = $instance->isToggleable();
         $orderable = $instance->isOrderable();
 
@@ -45,10 +42,9 @@ class Toggle extends Pipe
     /**
      * Get the columns which should be displayed.
      *
-     * @param  TClass  $instance
      * @return array<int, string>|null
      */
-    protected function getColumns($instance)
+    protected function getColumns(Table $instance): ?array
     {
         $request = $instance->getRequest();
 
@@ -68,11 +64,9 @@ class Toggle extends Pipe
     /**
      * Toggle and order the columns, setting the active status.
      *
-     * @param  TClass  $instance
      * @param  array<int, string>|null  $names
-     * @return void
      */
-    protected function toggle($instance, $names)
+    protected function toggle(Table $instance, ?array $names): void
     {
         $columns = $instance->getColumns();
 
@@ -101,11 +95,9 @@ class Toggle extends Pipe
     /**
      * Order columns based on the provided order.
      *
-     * @param  TClass  $instance
      * @param  array<int, string>|null  $names
-     * @return void
      */
-    protected function order($instance, $names)
+    protected function order(Table $instance, ?array $names): void
     {
         if (! $names) {
             return;
@@ -158,10 +150,9 @@ class Toggle extends Pipe
     /**
      * Get the persisted columns from the store.
      *
-     * @param  TClass  $instance
      * @return array<int, string>|null
      */
-    protected function persisted($instance)
+    protected function persisted(Table $instance): ?array
     {
         $data = $instance->getColumnsDriver()?->get($instance->getColumnKey());
 
@@ -176,11 +167,9 @@ class Toggle extends Pipe
     /**
      * Persist the columns which should be displayed.
      *
-     * @param  TClass  $instance
      * @param  array<int, string>|null  $params
-     * @return void
      */
-    protected function persist($instance, $params)
+    protected function persist(Table $instance, ?array $params): void
     {
         $instance->getColumnsDriver()?->put($instance->getColumnKey(), $params);
     }

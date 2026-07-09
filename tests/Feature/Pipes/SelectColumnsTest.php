@@ -36,7 +36,7 @@ beforeEach(function () {
 });
 
 it('selects', function () {
-    $this->pipe->through($this->table);
+    $this->pipe->run($this->table);
 
     expect($this->table)
         ->isSelectable()->toBeTrue()

@@ -438,7 +438,7 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
      * Get a partial set of pipes to be used for refining the resource, without
      * executing or persisting the data.
      *
-     * @return array<int,class-string<\Honed\Core\Pipe<self>>>
+     * @return list<class-string<\Honed\Core\Pipe<$this>>>
      */
     protected function refinements(): array
     {
@@ -462,7 +462,7 @@ class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsU
     /**
      * Get the pipes to be used for building the table.
      *
-     * @return array<int,class-string<\Honed\Core\Pipe<self>>>
+     * @return list<class-string<\Honed\Core\Pipe<$this>>>
      */
     protected function pipes(): array
     {

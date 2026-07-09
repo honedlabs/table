@@ -5,28 +5,27 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Honed\Core\Pipe;
+use Honed\Table\Table;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class SearchColumns extends Pipe
 {
     /**
      * Run the pipe logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        if ($this->isNotSearchable()) {
+        if ($instance->isNotSearchable()) {
             return;
         }
 
-        foreach ($this->getColumns() as $column) {
+        foreach ($instance->getColumns() as $column) {
             $search = $column->getSearch();
 
             if ($search) {
-                $this->search($search);
+                $instance->search($search);
             }
         }
     }

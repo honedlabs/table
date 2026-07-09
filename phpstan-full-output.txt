@@ -1,0 +1,335 @@
+Note: Using configuration file /home/josh/code/honed/honed/packages/laravel/table/phpstan.neon.dist.
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Columns/Column.php                                                
+ ------ ---------------------------------------------------------------------- 
+  15     Class Honed\Table\Columns\Column extends generic class                
+         Honed\Infolist\Entries\Entry but does not specify its types: TValue,  
+         TReturn                                                               
+         🪪  missingType.generics                                              
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class             
+         Honed\Table\Columns\ArrayColumn)                                       
+ ------ ----------------------------------------------------------------------- 
+  65     Return type mixed of method                                            
+         Honed\Table\Columns\ArrayColumn::isToggleable() is not covariant with  
+         return type bool of method                                             
+         Honed\Table\Contracts\Column::isToggleable().                          
+         🪪  method.childReturnType (non-ignorable)                             
+  109    Return type mixed of method                                            
+         Honed\Table\Columns\ArrayColumn::isToggledByDefault() is not           
+         covariant with return type bool of method                              
+         Honed\Table\Contracts\Column::isToggledByDefault().                    
+         🪪  method.childReturnType (non-ignorable)                             
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class          
+         Honed\Table\Columns\BooleanColumn)                                  
+ ------ -------------------------------------------------------------------- 
+  65     Return type mixed of method                                         
+         Honed\Table\Columns\BooleanColumn::isToggleable() is not covariant  
+         with return type bool of method                                     
+         Honed\Table\Contracts\Column::isToggleable().                       
+         🪪  method.childReturnType (non-ignorable)                          
+  109    Return type mixed of method                                         
+         Honed\Table\Columns\BooleanColumn::isToggledByDefault() is not      
+         covariant with return type bool of method                           
+         Honed\Table\Contracts\Column::isToggledByDefault().                 
+         🪪  method.childReturnType (non-ignorable)                          
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class             
+         Honed\Table\Columns\ColorColumn)                                       
+ ------ ----------------------------------------------------------------------- 
+  65     Return type mixed of method                                            
+         Honed\Table\Columns\ColorColumn::isToggleable() is not covariant with  
+         return type bool of method                                             
+         Honed\Table\Contracts\Column::isToggleable().                          
+         🪪  method.childReturnType (non-ignorable)                             
+  109    Return type mixed of method                                            
+         Honed\Table\Columns\ColorColumn::isToggledByDefault() is not           
+         covariant with return type bool of method                              
+         Honed\Table\Contracts\Column::isToggledByDefault().                    
+         🪪  method.childReturnType (non-ignorable)                             
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class         
+         Honed\Table\Columns\Column)                                        
+ ------ ------------------------------------------------------------------- 
+  65     Return type mixed of method                                        
+         Honed\Table\Columns\Column::isToggleable() is not covariant with   
+         return type bool of method                                         
+         Honed\Table\Contracts\Column::isToggleable().                      
+         🪪  method.childReturnType (non-ignorable)                         
+  109    Return type mixed of method                                        
+         Honed\Table\Columns\Column::isToggledByDefault() is not covariant  
+         with return type bool of method                                    
+         Honed\Table\Contracts\Column::isToggledByDefault().                
+         🪪  method.childReturnType (non-ignorable)                         
+ ------ ------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class           
+         Honed\Table\Columns\CurrencyColumn)                                  
+ ------ --------------------------------------------------------------------- 
+  65     Return type mixed of method                                          
+         Honed\Table\Columns\CurrencyColumn::isToggleable() is not covariant  
+         with return type bool of method                                      
+         Honed\Table\Contracts\Column::isToggleable().                        
+         🪪  method.childReturnType (non-ignorable)                           
+  109    Return type mixed of method                                          
+         Honed\Table\Columns\CurrencyColumn::isToggledByDefault() is not      
+         covariant with return type bool of method                            
+         Honed\Table\Contracts\Column::isToggledByDefault().                  
+         🪪  method.childReturnType (non-ignorable)                           
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class             
+         Honed\Table\Columns\DateColumn)                                        
+ ------ ----------------------------------------------------------------------- 
+  65     Return type mixed of method                                            
+         Honed\Table\Columns\DateColumn::isToggleable() is not covariant with   
+         return type bool of method                                             
+         Honed\Table\Contracts\Column::isToggleable().                          
+         🪪  method.childReturnType (non-ignorable)                             
+  109    Return type mixed of method                                            
+         Honed\Table\Columns\DateColumn::isToggledByDefault() is not covariant  
+         with return type bool of method                                        
+         Honed\Table\Contracts\Column::isToggledByDefault().                    
+         🪪  method.childReturnType (non-ignorable)                             
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class           
+         Honed\Table\Columns\DateTimeColumn)                                  
+ ------ --------------------------------------------------------------------- 
+  65     Return type mixed of method                                          
+         Honed\Table\Columns\DateTimeColumn::isToggleable() is not covariant  
+         with return type bool of method                                      
+         Honed\Table\Contracts\Column::isToggleable().                        
+         🪪  method.childReturnType (non-ignorable)                           
+  109    Return type mixed of method                                          
+         Honed\Table\Columns\DateTimeColumn::isToggledByDefault() is not      
+         covariant with return type bool of method                            
+         Honed\Table\Contracts\Column::isToggledByDefault().                  
+         🪪  method.childReturnType (non-ignorable)                           
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class             
+         Honed\Table\Columns\EnumColumn)                                        
+ ------ ----------------------------------------------------------------------- 
+  65     Return type mixed of method                                            
+         Honed\Table\Columns\EnumColumn::isToggleable() is not covariant with   
+         return type bool of method                                             
+         Honed\Table\Contracts\Column::isToggleable().                          
+         🪪  method.childReturnType (non-ignorable)                             
+  109    Return type mixed of method                                            
+         Honed\Table\Columns\EnumColumn::isToggledByDefault() is not covariant  
+         with return type bool of method                                        
+         Honed\Table\Contracts\Column::isToggledByDefault().                    
+         🪪  method.childReturnType (non-ignorable)                             
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class             
+         Honed\Table\Columns\ImageColumn)                                       
+ ------ ----------------------------------------------------------------------- 
+  65     Return type mixed of method                                            
+         Honed\Table\Columns\ImageColumn::isToggleable() is not covariant with  
+         return type bool of method                                             
+         Honed\Table\Contracts\Column::isToggleable().                          
+         🪪  method.childReturnType (non-ignorable)                             
+  109    Return type mixed of method                                            
+         Honed\Table\Columns\ImageColumn::isToggledByDefault() is not           
+         covariant with return type bool of method                              
+         Honed\Table\Contracts\Column::isToggledByDefault().                    
+         🪪  method.childReturnType (non-ignorable)                             
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class         
+         Honed\Table\Columns\MappedColumn)                                  
+ ------ ------------------------------------------------------------------- 
+  65     Return type mixed of method                                        
+         Honed\Table\Columns\MappedColumn::isToggleable() is not covariant  
+         with return type bool of method                                    
+         Honed\Table\Contracts\Column::isToggleable().                      
+         🪪  method.childReturnType (non-ignorable)                         
+  109    Return type mixed of method                                        
+         Honed\Table\Columns\MappedColumn::isToggledByDefault() is not      
+         covariant with return type bool of method                          
+         Honed\Table\Contracts\Column::isToggledByDefault().                
+         🪪  method.childReturnType (non-ignorable)                         
+ ------ ------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class          
+         Honed\Table\Columns\NumericColumn)                                  
+ ------ -------------------------------------------------------------------- 
+  65     Return type mixed of method                                         
+         Honed\Table\Columns\NumericColumn::isToggleable() is not covariant  
+         with return type bool of method                                     
+         Honed\Table\Contracts\Column::isToggleable().                       
+         🪪  method.childReturnType (non-ignorable)                          
+  109    Return type mixed of method                                         
+         Honed\Table\Columns\NumericColumn::isToggledByDefault() is not      
+         covariant with return type bool of method                           
+         Honed\Table\Contracts\Column::isToggledByDefault().                 
+         🪪  method.childReturnType (non-ignorable)                          
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class             
+         Honed\Table\Columns\TextColumn)                                        
+ ------ ----------------------------------------------------------------------- 
+  65     Return type mixed of method                                            
+         Honed\Table\Columns\TextColumn::isToggleable() is not covariant with   
+         return type bool of method                                             
+         Honed\Table\Contracts\Column::isToggleable().                          
+         🪪  method.childReturnType (non-ignorable)                             
+  109    Return type mixed of method                                            
+         Honed\Table\Columns\TextColumn::isToggledByDefault() is not covariant  
+         with return type bool of method                                        
+         Honed\Table\Contracts\Column::isToggledByDefault().                    
+         🪪  method.childReturnType (non-ignorable)                             
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Columns/Concerns/CanBeToggled.php (in context of class             
+         Honed\Table\Columns\TimeColumn)                                        
+ ------ ----------------------------------------------------------------------- 
+  65     Return type mixed of method                                            
+         Honed\Table\Columns\TimeColumn::isToggleable() is not covariant with   
+         return type bool of method                                             
+         Honed\Table\Contracts\Column::isToggleable().                          
+         🪪  method.childReturnType (non-ignorable)                             
+  109    Return type mixed of method                                            
+         Honed\Table\Columns\TimeColumn::isToggledByDefault() is not covariant  
+         with return type bool of method                                        
+         Honed\Table\Contracts\Column::isToggledByDefault().                    
+         🪪  method.childReturnType (non-ignorable)                             
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Concerns/Paginable.php (in context of class Honed\Table\Table)     
+ ------ ----------------------------------------------------------------------- 
+  28     Property Honed\Table\Table::$paginateUsing with generic class          
+         Illuminate\Database\Eloquent\Builder does not specify its types:       
+         TModel                                                                 
+         🪪  missingType.generics                                               
+  28     Property Honed\Table\Table::$paginateUsing with generic class          
+         Illuminate\Database\Eloquent\Builder does not specify its types:       
+         TModel                                                                 
+         🪪  missingType.generics                                               
+  35     Property Honed\Table\Table::$countUsing with generic class             
+         Illuminate\Database\Eloquent\Builder does not specify its types:       
+         TModel                                                                 
+         🪪  missingType.generics                                               
+  92     Method Honed\Table\Table::paginateUsing() has parameter $callback      
+         with generic class Illuminate\Database\Eloquent\Builder but does not   
+         specify its types: TModel                                              
+         🪪  missingType.generics                                               
+  92     Method Honed\Table\Table::paginateUsing() has parameter $callback      
+         with generic class Illuminate\Database\Eloquent\Builder but does not   
+         specify its types: TModel                                              
+         🪪  missingType.generics                                               
+  104    Method Honed\Table\Table::callPaginator() has parameter $builder with  
+         generic class Illuminate\Database\Eloquent\Builder but does not        
+         specify its types: TModel                                              
+         🪪  missingType.generics                                               
+  104    Method Honed\Table\Table::callPaginator() has parameter $value with    
+         no type specified.                                                     
+         🪪  missingType.parameter                                              
+  183    Method Honed\Table\Table::countUsing() has parameter $callback with    
+         generic class Illuminate\Database\Eloquent\Builder but does not        
+         specify its types: TModel                                              
+         🪪  missingType.generics                                               
+  193    Method Honed\Table\Table::callCount() has parameter $builder with      
+         generic class Illuminate\Database\Eloquent\Builder but does not        
+         specify its types: TModel                                              
+         🪪  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Contracts/Column.php                                               
+ ------ ----------------------------------------------------------------------- 
+  26     Method Honed\Table\Contracts\Column::getSelects() return type has no   
+         value type specified in iterable type array.                           
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  48     Method Honed\Table\Contracts\Column::qualifyColumn() has parameter     
+         $builder with generic class Illuminate\Database\Eloquent\Builder but   
+         does not specify its types: TModel                                     
+         🪪  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Exporters/Exporter.php                                             
+ ------ ----------------------------------------------------------------------- 
+  134    Method Honed\Table\Exporters\Exporter::getHeadings() should return     
+         array<int, Honed\Table\Columns\Column> but returns array<int, Honed\T  
+         able\Contracts\Column>.                                                
+         🪪  return.type                                                        
+  134    Property Honed\Table\Exporters\Exporter::$headings (array<int, Honed\  
+         Table\Columns\Column>|null) does not accept array<int, Honed\Table\Co  
+         ntracts\Column>.                                                       
+         🪪  assign.propertyType                                                
+  137    Call to an undefined method                                            
+         Honed\Table\Contracts\Column::isExportable().                          
+         🪪  method.notFound                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------- 
+  Line   src/Pagination/CursorData.php                                   
+ ------ ---------------------------------------------------------------- 
+  50     Method Honed\Table\Pagination\CursorData::make() should return  
+         static(Honed\Table\Pagination\CursorData) but returns           
+         Honed\Table\Pagination\CursorData.                              
+         🪪  return.type                                                 
+ ------ ---------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Pagination/LengthAwareData.php                                     
+ ------ ----------------------------------------------------------------------- 
+  84     Method Honed\Table\Pagination\LengthAwareData::make() should return    
+         static(Honed\Table\Pagination\LengthAwareData) but returns             
+         Honed\Table\Pagination\LengthAwareData.                                
+         🪪  return.type                                                        
+  104    Method Honed\Table\Pagination\LengthAwareData::links() return type     
+         has no value type specified in iterable type array.                    
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Pagination/PaginationData.php                                      
+ ------ ----------------------------------------------------------------------- 
+  33     Unsafe usage of new static().                                          
+         🪪  new.static                                                         
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-error-unsafe-usage-of-new-st  
+         atic                                                                   
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Pagination/SimpleData.php                                          
+ ------ ----------------------------------------------------------------------- 
+  35     Unsafe usage of new static().                                          
+         🪪  new.static                                                         
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-error-unsafe-usage-of-new-st  
+         atic                                                                   
+ ------ ----------------------------------------------------------------------- 
+
+ [ERROR] Found 46 errors                                                        
+

@@ -32,13 +32,16 @@ class SimpleData extends CursorData
      */
     public static function make(mixed $paginator): static
     {
-        return new self(
+        /** @var static $instance */
+        $instance = new self(
             empty: $paginator->isEmpty(),
             prevLink: $paginator->previousPageUrl(),
             nextLink: $paginator->nextPageUrl(),
             perPage: $paginator->perPage(),
             currentPage: $paginator->currentPage()
         );
+
+        return $instance;
     }
 
     /**

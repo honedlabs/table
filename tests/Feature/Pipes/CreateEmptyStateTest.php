@@ -25,7 +25,7 @@ it('requires records to create empty state', function () {
         'empty' => false,
     ]);
 
-    $this->pipe->through($this->table);
+    $this->pipe->run($this->table);
 
     expect($this->table)
         ->isEmpty()->toBeFalse()
@@ -33,9 +33,7 @@ it('requires records to create empty state', function () {
 });
 
 it('creates empty state', function () {
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->run($this->table);
 
     expect($this->table->getEmptyState())
         ->toBeInstanceOf(EmptyState::class)
@@ -46,7 +44,7 @@ it('creates empty state', function () {
 it('has searching state', function () {
     $this->table->setSearchTerm('term');
 
-    $this->pipe->through($this->table);
+    $this->pipe->run($this->table);
 
     expect($this->table)
         ->isSearching()->toBeTrue()
@@ -59,7 +57,7 @@ it('has searching state', function () {
 
 it('has filtering state', function () {
 
-    $this->pipe->through(
+    $this->pipe->run(
         $this->table->filters(
             Filter::make('filter')
                 ->value('value')
@@ -79,7 +77,7 @@ it('has filtering state', function () {
 it('has refining state', function () {
     $this->table->setSearchTerm('term');
 
-    $this->pipe->through(
+    $this->pipe->run(
         $this->table
             ->emptyState(EmptyState::make()
                 ->whenRefining(fn ($emptyState) => $emptyState->heading('Refining'))

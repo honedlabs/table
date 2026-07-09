@@ -17,27 +17,21 @@ beforeEach(function () {
 });
 
 it('creates', function () {
-    $this->pipe->instance($this->table);
-
-    $this->pipe->run();
+    $this->pipe->run($this->table);
 
     expect($this->table->getSearches())->toHaveCount(1);
 });
 
 it('does not create if column has no search', function () {
-    $this->pipe->instance($this->table
+    $this->pipe->run($this->table
         ->columns(NumericColumn::make('price'))
     );
-
-    $this->pipe->run();
 
     expect($this->table->getSearches())->toHaveCount(1);
 });
 
 it('does not create if table is not searchable', function () {
-    $this->pipe->instance($this->table->searchable(false));
-
-    $this->pipe->run();
+    $this->pipe->run($this->table->searchable(false));
 
     expect($this->table->getSearches())->toBeEmpty();
 });

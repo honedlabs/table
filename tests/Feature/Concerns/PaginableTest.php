@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use Honed\Table\Enums\Paginate;
 use Honed\Table\PageOption;
 use Honed\Table\Table;
-use Honed\Table\Tests\Stubs\Product;
+use Workbench\App\Models\Product;
 
 beforeEach(function () {
     $this->table = Table::make();
@@ -12,19 +13,28 @@ beforeEach(function () {
 
 it('has paginate', function () {
     expect($this->table)
-        ->getPaginate()->toBe(Table::LENGTH_AWARE)
+        ->getPaginate()->toBe(Paginate::LengthAware)
         ->paginate(false)->toBe($this->table)
-        ->getPaginate()->toBe(Table::COLLECTION)
+        ->getPaginate()->toBe(Paginate::Collection)
         ->paginate(true)->toBe($this->table)
-        ->getPaginate()->toBe(Table::LENGTH_AWARE)
+        ->getPaginate()->toBe(Paginate::LengthAware)
         ->cursorPaginate()->toBe($this->table)
-        ->getPaginate()->toBe(Table::CURSOR)
+        ->getPaginate()->toBe(Paginate::Cursor)
         ->simplePaginate()->toBe($this->table)
-        ->getPaginate()->toBe(Table::SIMPLE)
+        ->getPaginate()->toBe(Paginate::Simple)
         ->lengthAwarePaginate()->toBe($this->table)
-        ->getPaginate()->toBe(Table::LENGTH_AWARE)
+        ->getPaginate()->toBe(Paginate::LengthAware)
         ->dontPaginate()->toBe($this->table)
-        ->getPaginate()->toBe(Table::COLLECTION);
+        ->getPaginate()->toBe(Paginate::Collection);
+});
+
+it('overrides the count callback', function () {
+    $query = Product::query();
+
+    expect($this->table)
+        ->callCount($query)->toBeNull()
+        ->countUsing(fn ($builder) => 5)
+        ->callCount($query)->toBe(5);
 });
 
 it('has per page', function () {

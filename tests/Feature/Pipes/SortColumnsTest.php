@@ -18,7 +18,7 @@ beforeEach(function () {
 });
 
 it('creates', function () {
-    $this->pipe->through($this->table);
+    $this->pipe->run($this->table);
 
     expect($this->table->getSorts())
         ->toHaveCount(1)
@@ -31,23 +31,25 @@ it('creates', function () {
 });
 
 it('does not create if column has no sort', function () {
-    $this->pipe->through($this->table
-        ->columns(TextColumn::make('name'))
+    $this->pipe->run(
+        $this->table
+            ->columns(TextColumn::make('name'))
     );
 
     expect($this->table->getSorts())->toHaveCount(1);
 });
 
 it('does not create if not active', function () {
-    $this->pipe->through($this->table
-        ->columns(NumericColumn::make('price')->active(false))
+    $this->pipe->run(
+        $this->table
+            ->columns(NumericColumn::make('price')->active(false))
     );
 
     expect($this->table->getSorts())->toHaveCount(1);
 });
 
 it('does not create if table is not sortable', function () {
-    $this->pipe->through($this->table->sortable(false));
+    $this->pipe->run($this->table->sortable(false));
 
     expect($this->table->getSorts())->toBeEmpty();
 });

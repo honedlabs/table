@@ -6,26 +6,26 @@ namespace Honed\Table\Pipes;
 
 use Honed\Core\Pipe;
 use Honed\Table\Contracts\Column;
+use Honed\Table\Table;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class SelectColumns extends Pipe
 {
     /**
      * Run the prepare columns logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        $columns = $this->instance->getHeadings();
+        $columns = $instance->getHeadings();
 
-        $builder = $this->instance->getBuilder();
+        $builder = $instance->getBuilder();
 
         foreach ($columns as $column) {
-            $this->select($column, $builder);
+            $this->select($instance, $column, $builder);
         }
     }
 
@@ -34,7 +34,7 @@ class SelectColumns extends Pipe
      *
      * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
      */
-    protected function select(Column $column, Builder $builder): void
+    protected function select(Table $instance, Column $column, Builder $builder): void
     {
         if (! $column->isSelectable()) {
             return;
@@ -49,11 +49,15 @@ class SelectColumns extends Pipe
             $selects[] = $name;
         }
 
-        $this->instance->select(
-            array_map(
-                static fn ($select) => $column->qualifyColumn($select, $builder),
-                $selects
-            )
+        /** @var array<int, string|Expression> $qualifiedSelects */
+        $qualifiedSelects = array_map(
+            static function (string|Expression $select) use ($column, $builder) {
+                /** @var string|Expression */
+                return $column->qualifyColumn($select, $builder);
+            },
+            $selects
         );
+
+        $instance->select($qualifiedSelects);
     }
 }

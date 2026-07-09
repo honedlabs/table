@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Honed\Table\Contracts;
 
+use Closure;
 use Honed\Infolist\Contracts\Entryable;
 use Honed\Refine\Filters\Filter;
 use Honed\Refine\Searches\Search;
@@ -30,6 +31,12 @@ interface Column extends Arrayable, Entryable
     public function isAlways(): bool;
 
     public function isKey(): bool;
+
+    public function isToggleable(): bool;
+
+    public function isToggledByDefault(): bool;
+
+    public function queryCallback(): ?Closure;
 
     public function qualifyColumn(string|Expression $column, Builder $builder): mixed;
 

@@ -6,13 +6,12 @@ namespace Honed\Table\Pipes;
 
 use Honed\Core\Interpret;
 use Honed\Core\Pipe;
-use Illuminate\Support\Str;
+use Honed\Table\Enums\Paginate as PaginateEnum;
+use Honed\Table\Table;
 use InvalidArgumentException;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class Paginate extends Pipe
 {
@@ -21,26 +20,25 @@ class Paginate extends Pipe
      *
      * @throws InvalidArgumentException
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        $instance = $this->instance;
+        $builder = $instance->getBuilder();
+        $perPage = $this->getValue($instance);
+        $pageName = $instance->getPageKey();
+        $window = $instance->getWindow();
 
-        $paginate = $instance->getPaginate();
-
-        $method = Str::camel($paginate);
-
-        if (! method_exists($this, $method)) {
-            throw new InvalidArgumentException(
-                "The supplied paginator type [{$paginate}] is not supported."
-            );
-        }
-
-        [$records, $pagination] = $this->{$method}(
-            $instance->getBuilder(),
-            $this->getValue($instance),
-            $instance->getPageKey(),
-            $instance->getWindow()
-        );
+        [$records, $pagination] = match ($instance->getPaginate()) {
+            PaginateEnum::LengthAware => $this->lengthAware(
+                $builder, $perPage, $pageName, $window, $instance->callCount($builder),
+            ),
+            PaginateEnum::Simple => $this->simple(
+                $builder, $perPage, $pageName,
+            ),
+            PaginateEnum::Cursor => $this->cursor(
+                $builder, $perPage, $pageName,
+            ),
+            PaginateEnum::Collection => $this->collection($builder),
+        };
 
         $instance->setRecords($records);
         $instance->setPagination($pagination);
@@ -96,10 +94,9 @@ class Paginate extends Pipe
     /**
      * Get the value to be used for pagination.
      *
-     * @param  TClass  $instance
      * @return int
      */
-    protected function getValue($instance)
+    protected function getValue(Table $instance): int
     {
         $options = $instance->getPerPage();
 
@@ -142,10 +139,11 @@ class Paginate extends Pipe
      * @param  int  $window
      * @return array{array<int, \Illuminate\Database\Eloquent\Model>, array<string, mixed>}
      */
-    protected function lengthAware($builder, $perPage, $key, $window)
+    protected function lengthAware($builder, $perPage, $key, $window, ?int $total)
     {
-        $paginator = $builder->paginate($perPage, pageName: $key)
-            ->withQueryString();
+        $paginator = $builder->paginate(
+            $perPage, ['*'], $key, $total
+        )->withQueryString();
 
         return [$paginator->items(), $this->lengthAwarePagination($paginator, $window)];
     }

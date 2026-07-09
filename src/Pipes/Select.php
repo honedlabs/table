@@ -5,29 +5,28 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Honed\Core\Pipe;
+use Honed\Table\Table;
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class Select extends Pipe
 {
     /**
      * Run the select logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        if ($this->instance->isNotSelectable()) {
+        if ($instance->isNotSelectable()) {
             return;
         }
 
-        $selects = $this->uniqueSelects($this->instance->getSelects());
+        $selects = $this->uniqueSelects($instance->getSelects());
 
-        $resource = $this->instance->getBuilder();
+        $resource = $instance->getBuilder();
 
         if (empty($selects)) {
             $selects = ['*'];
@@ -60,8 +59,7 @@ class Select extends Pipe
                 continue;
             }
 
-            // For strings, check for uniqueness
-            if (is_string($select) && ! isset($seen[$select])) {
+            if (! isset($seen[$select])) {
                 $seen[$select] = true;
                 $unique[] = $select;
             }

@@ -32,7 +32,7 @@ beforeEach(function () {
 });
 
 it('defaults', function () {
-    $this->pipe->through($this->table);
+    $this->pipe->run($this->table);
 
     expect($this->table->getHeadings())
         ->toHaveCount(3);

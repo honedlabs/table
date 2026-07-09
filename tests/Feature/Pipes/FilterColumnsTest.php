@@ -18,7 +18,7 @@ beforeEach(function () {
 });
 
 it('creates', function () {
-    $this->pipe->through($this->table);
+    $this->pipe->run($this->table);
 
     expect($this->table->getFilters())
         ->toHaveCount(1)
@@ -32,13 +32,13 @@ it('creates', function () {
 });
 
 it('does not create if table is not filterable', function () {
-    $this->pipe->through($this->table->filterable(false));
+    $this->pipe->run($this->table->filterable(false));
 
     expect($this->table->getFilters())->toBeEmpty();
 });
 
 it('does not create if column has no filter', function () {
-    $this->pipe->through($this->table
+    $this->pipe->run($this->table
         ->columns(TextColumn::make('name'))
     );
 

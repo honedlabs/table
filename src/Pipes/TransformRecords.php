@@ -6,14 +6,14 @@ namespace Honed\Table\Pipes;
 
 use Honed\Action\Handlers\Concerns\Parameterisable;
 use Honed\Core\Pipe;
-use Honed\Table\Columns\Column;
+use Honed\Infolist\Entries\Entry;
+use Honed\Table\Contracts\Column;
+use Honed\Table\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class TransformRecords extends Pipe
 {
@@ -22,15 +22,15 @@ class TransformRecords extends Pipe
     /**
      * Run the after refining logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        $columns = $this->getHeadings();
+        $columns = $instance->getHeadings();
 
-        $records = $this->getRecords();
+        $records = $instance->getRecords();
 
-        $this->setRecords(
+        $instance->setRecords(
             array_map(
-                fn ($record) => $this->newRecord($record, $columns),
+                fn ($record) => $this->newRecord($instance, $record, $columns),
                 $records
             )
 
@@ -44,20 +44,22 @@ class TransformRecords extends Pipe
      * @param  array<int, Column>  $columns
      * @return array<string, mixed>
      */
-    protected function newRecord(array|Model $record, array $columns): array
+    protected function newRecord(Table $instance, array|Model $record, array $columns): array
     {
         return [
             ...Arr::mapWithKeys(
                 $columns,
-                fn ($column) => [
-                    $column->getParameter() => $column->generate($record),
+                fn (Column $column) => [
+                    $column->getParameter() => $column instanceof Entry
+                        ? $column->generate($record)
+                        : [],
                 ]
             ),
-            'class' => $this->getClasses(
+            'class' => $instance->getClasses(
                 $this->getNamedParameters($record), $this->getTypedParameters($record)
             ),
-            '_key' => Arr::get($record, $this->getKey()),
-            'operations' => $this->inlineOperationsToArray($record),
+            '_key' => Arr::get($record, $instance->getKey()),
+            'operations' => $instance->inlineOperationsToArray($record),
         ];
     }
 }

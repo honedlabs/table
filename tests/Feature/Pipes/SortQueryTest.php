@@ -25,7 +25,7 @@ it('needs a sort key', function () {
         'invalid' => $this->name,
     ]);
 
-    $this->pipe->through($this->table->request($request));
+    $this->pipe->run($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->orders)
         ->toBeEmpty();
@@ -36,7 +36,7 @@ it('applies sort', function () {
         $this->table->getSortKey() => $this->name,
     ]);
 
-    $this->pipe->through($this->table->request($request));
+    $this->pipe->run($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->orders)
         ->toBeOnlyOrder($this->name, Sort::ASCENDING);
@@ -49,9 +49,11 @@ it('applies default sort', function () {
         $this->table->getSortKey() => $name,
     ]);
 
-    $this->pipe->through($this->table
-        ->sorts(Sort::make($name)->default())
-        ->request($request));
+    $this->pipe->run(
+        $this->table
+            ->sorts(Sort::make($name)->default())
+            ->request($request)
+    );
 
     expect($this->table->getBuilder()->getQuery()->orders)
         ->toBeOnlyOrder($name, Sort::ASCENDING);

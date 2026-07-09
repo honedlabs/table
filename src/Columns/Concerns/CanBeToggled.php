@@ -62,7 +62,7 @@ trait CanBeToggled
      *
      * @return bool
      */
-    public function isToggleable()
+    public function isToggleable(): bool
     {
         return $this->toggleable || $this instanceof IsToggleable;
     }
@@ -103,10 +103,8 @@ trait CanBeToggled
 
     /**
      * Determine if the instance is toggled active by default.
-     *
-     * @return bool
      */
-    public function isToggledByDefault()
+    public function isToggledByDefault(): bool
     {
         return $this->toggledByDefault;
     }

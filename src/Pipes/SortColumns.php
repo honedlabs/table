@@ -5,28 +5,27 @@ declare(strict_types=1);
 namespace Honed\Table\Pipes;
 
 use Honed\Core\Pipe;
+use Honed\Table\Table;
 
 /**
- * @template TClass of \Honed\Table\Table
- *
- * @extends Pipe<TClass>
+ * @extends Pipe<\Honed\Table\Table>
  */
 class SortColumns extends Pipe
 {
     /**
      * Run the prepare columns logic.
      */
-    public function run(): void
+    public function run(Table $instance): void
     {
-        if ($this->isNotSortable()) {
+        if ($instance->isNotSortable()) {
             return;
         }
 
-        foreach ($this->getHeadings() as $column) {
+        foreach ($instance->getHeadings() as $column) {
             $sort = $column->getSort();
 
             if ($sort) {
-                $this->sort($sort);
+                $instance->sort($sort);
             }
         }
     }

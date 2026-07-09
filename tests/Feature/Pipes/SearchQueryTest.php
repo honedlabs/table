@@ -35,7 +35,7 @@ it('needs a search term', function () {
         'invalid' => $this->query,
     ]);
 
-    $this->pipe->through($this->table->request($request));
+    $this->pipe->run($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeEmpty();
@@ -49,7 +49,7 @@ it('applies search', function () {
         $this->table->getSearchKey() => $this->query,
     ]);
 
-    $this->pipe->through($this->table->request($request));
+    $this->pipe->run($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeArray()
@@ -84,7 +84,7 @@ it('applies search with matching', function () {
         $this->table->getMatchKey() => 'name',
     ]);
 
-    $this->pipe->through($this->table->request($request));
+    $this->pipe->run($this->table->request($request));
 
     expect($this->table->getBuilder()->getQuery()->wheres)
         ->toBeArray()

@@ -8,7 +8,7 @@ use Closure;
 use Honed\Refine\Filters\Filter;
 
 /**
- * @phpstan-require-extends \Honed\Table\Columns\Column
+ * @phpstan-require-extends \Honed\Infolist\Entries\Entry<*, *>
  */
 trait Filterable
 {
