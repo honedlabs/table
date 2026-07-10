@@ -38,6 +38,8 @@ class CreateEmptyState extends Pipe
 
     /**
      * Resolve the appropriate callback for the current table state.
+     *
+     * @return ?Closure
      */
     protected function resolveCallback(Table $instance, EmptyState $emptyState): ?Closure
     {

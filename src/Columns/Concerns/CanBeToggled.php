@@ -59,6 +59,8 @@ trait CanBeToggled
 
     /**
      * Determine if the instance is toggleable.
+     *
+     * @return bool
      */
     public function isToggleable(): bool
     {
