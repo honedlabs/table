@@ -76,7 +76,7 @@ it('defaults', function () {
 ]);
 
 it('does not toggle if not toggleable', function () {
-    $this->pipe->through($this->table->notToggleable());
+    $this->pipe->run($this->table->notToggleable());
 
     expect($this->table->getHeadings())
         ->toHaveCount(4)
@@ -84,7 +84,7 @@ it('does not toggle if not toggleable', function () {
 });
 
 it('passes', function ($table) {
-    $this->pipe->through($table);
+    $this->pipe->run($table);
 
     expect($table->getHeadings())
         ->toHaveCount(3);

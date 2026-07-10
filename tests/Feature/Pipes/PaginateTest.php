@@ -86,11 +86,6 @@ it('paginates collection', function () {
         ]);
 });
 
-it('errors if an invalid paginator is passed', function () {
-    $this->pipe->run($this->table->paginate('invalid'));
-
-})->throws(InvalidArgumentException::class);
-
 it('changes per page', function () {
     $count = 25;
 

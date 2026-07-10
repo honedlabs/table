@@ -8,14 +8,12 @@ use BadMethodCallException;
 use Closure;
 use Honed\Action\Unit;
 use Honed\Core\Concerns\HasMeta;
-use Honed\Core\Contracts\HooksIntoLifecycle;
-use Honed\Core\Contracts\NullsAsUndefined;
 use Honed\Core\Contracts\Stateful;
 use Honed\Core\Pipes\CallsAfter;
 use Honed\Core\Pipes\CallsBefore;
 use Honed\Infolist\Concerns\HasClasses;
-use Honed\Persist\Contracts\CanPersistData;
 use Honed\Refine\Concerns\CanRefine;
+use Honed\Refine\Contracts\Refine;
 use Honed\Refine\Filters\Filter;
 use Honed\Refine\Pipes\FilterQuery;
 use Honed\Refine\Pipes\PersistData;
@@ -62,7 +60,7 @@ use Throwable;
  * @method bool isPersistingColumns()
  * @method \Honed\Persist\Drivers\Decorator|null getColumnsDriver()
  */
-class Table extends Unit implements CanPersistData, HooksIntoLifecycle, NullsAsUndefined, Stateful
+class Table extends Unit implements Refine, Stateful
 {
     use CanRefine {
         persist as refinePersist;
