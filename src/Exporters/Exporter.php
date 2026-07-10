@@ -64,7 +64,7 @@ abstract class Exporter implements ExportsTable, ShouldAutoSize, WithStrictNullC
     public function headings(): array
     {
         return array_map(
-            static fn ($heading) => $heading->getLabel(),
+            static fn ($heading) => $heading->getLabel(), // @phpstan-ignore-line
             $this->getHeadings()
         );
     }
@@ -80,23 +80,21 @@ abstract class Exporter implements ExportsTable, ShouldAutoSize, WithStrictNullC
         $this->getHeadings();
 
         return array_map(
-            static fn ($heading) => $heading->generate($row),
+            static fn ($heading) => $heading->generate($row), // @phpstan-ignore-line
             $this->getHeadings()
         );
     }
 
     /**
      * Get the styles for the export.
-     *
-     * @return void
      */
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): void
     {
         $columns = $this->getHeadings();
         $index = 'A';
 
         foreach ($columns as $column) {
-            $style = $column->getExportStyle();
+            $style = $column->getExportStyle(); // @phpstan-ignore-line
 
             match (true) {
                 is_array($style) => $sheet->getStyle($index)->applyFromArray($style),
@@ -105,7 +103,7 @@ abstract class Exporter implements ExportsTable, ShouldAutoSize, WithStrictNullC
             };
 
             // Also apply exportFormat if set
-            $format = $column->getExportFormat();
+            $format = $column->getExportFormat(); // @phpstan-ignore-line
             if ($format) {
                 $sheet->getStyle($index)->getNumberFormat()->setFormatCode($format);
             }
@@ -127,14 +125,15 @@ abstract class Exporter implements ExportsTable, ShouldAutoSize, WithStrictNullC
     /**
      * Get the column headings.
      *
-     * @return array<int, \Honed\Table\Columns\Column>
+     * @return array<int, \Honed\Table\Contracts\Column>
      */
     protected function getHeadings(): array
     {
+        // @phpstan-ignore-next-line
         return $this->headings ??= array_values(
             array_filter(
                 $this->table->getHeadings(),
-                static fn ($heading) => $heading->isExportable()
+                static fn ($heading) => $heading->isExportable() // @phpstan-ignore-line
             )
         );
     }

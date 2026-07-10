@@ -103,6 +103,7 @@ class LengthAwareData extends SimpleData
      * Create the pagination links.
      *
      * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, *>  $paginator
+     * @return list<array<string, mixed>>
      */
     public static function links(mixed $paginator, int $window = 3): array
     {

@@ -22,6 +22,11 @@ interface Column extends Arrayable, Entryable
 
     public function getParameter(): string;
 
+    /**
+     * Get the columns to select.
+     *
+     * @return array<int, string|Expression>
+     */
     public function getSelects(): array;
 
     public function isSelectable(): bool;
@@ -38,6 +43,9 @@ interface Column extends Arrayable, Entryable
 
     public function queryCallback(): ?Closure;
 
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     */
     public function qualifyColumn(string|Expression $column, Builder $builder): mixed;
 
     public function isActive(): bool;

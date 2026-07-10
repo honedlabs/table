@@ -11,6 +11,8 @@ use Honed\Table\Contracts\Column as ColumnContract;
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model = \Illuminate\Database\Eloquent\Model
  * @template TBuilder of \Illuminate\Database\Eloquent\Builder<TModel> = \Illuminate\Database\Eloquent\Builder<TModel>
+ *
+ * @extends Entry<TModel, mixed>
  */
 class Column extends Entry implements ColumnContract
 {

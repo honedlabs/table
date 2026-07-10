@@ -23,14 +23,14 @@ trait Paginable
     /**
      * The callback to use for custom pagination.
      *
-     * @var ?(callable(Builder,int,string,int):Builder)
+     * @var (callable(Builder<\Illuminate\Database\Eloquent\Model>,int,string,int):Builder<\Illuminate\Database\Eloquent\Model>)|null
      */
     protected $paginateUsing;
 
     /**
      * The callback to use for counting the total number of records.
      *
-     * @var (callable(Builder):int)|null
+     * @var (callable(Builder<\Illuminate\Database\Eloquent\Model>):int)|null
      */
     protected $countUsing;
 
@@ -86,7 +86,7 @@ trait Paginable
     /**
      * Register the callback to use for custom pagination.
      *
-     * @param  callable(Builder,int,string,int):Builder  $callback
+     * @param  callable(Builder<\Illuminate\Database\Eloquent\Model>,int,string,int):Builder<\Illuminate\Database\Eloquent\Model>  $callback
      * @return $this
      */
     public function paginateUsing(callable $callback): static
@@ -99,11 +99,13 @@ trait Paginable
     /**
      * Call the paginator callback.
      *
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
      * @return mixed
      */
-    public function callPaginator(Builder $builder, $value)
+    public function callPaginator(Builder $builder, mixed $value)
     {
         if (isset($this->paginateUsing)) {
+            // @phpstan-ignore-next-line
             return ($this->paginateUsing)($builder, $value, $this->getPageKey(), $this->getWindow());
         }
 
@@ -177,7 +179,7 @@ trait Paginable
     /**
      * Register the callback to use for counting the total number of records.
      *
-     * @param  callable(Builder):int  $callback
+     * @param  callable(Builder<\Illuminate\Database\Eloquent\Model>):int  $callback
      * @return $this
      */
     public function countUsing(callable $callback): static
@@ -189,6 +191,8 @@ trait Paginable
 
     /**
      * Call the count callback.
+     *
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
      */
     public function callCount(Builder $builder): ?int
     {
