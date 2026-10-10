@@ -88,7 +88,7 @@ abstract class Exporter implements ExportsTable, ShouldAutoSize, WithStrictNullC
     /**
      * Get the styles for the export.
      */
-    public function styles(Worksheet $sheet): void
+    public function styles(Worksheet $sheet): ?array
     {
         $columns = $this->getHeadings();
         $index = 'A';
@@ -110,6 +110,8 @@ abstract class Exporter implements ExportsTable, ShouldAutoSize, WithStrictNullC
 
             $index++;
         }
+
+        return null;
     }
 
     /**
